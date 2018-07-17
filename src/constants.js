@@ -2,6 +2,8 @@ global.HARVESTERS_DESIRED = 6;
 global.UPGRADERS_DESIRED = 1;
 global.BUILDERS_DESIRED = 1;
 
+global.CRITICAL_TICKS_TO_LIVE_VALUE = 250;
+
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
 global.TASK.STORE_ENERGY = 'store_energy';

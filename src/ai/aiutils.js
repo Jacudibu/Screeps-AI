@@ -1,0 +1,69 @@
+const aiutils = {
+    setTaskRenewWhenNeededOr(creep, alternativeTask) {
+        if (creep.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
+            creep.memory.task = TASK.RENEW_CREEP;
+        } else {
+            creep.memory.task = alternativeTask;
+        }
+    },
+
+    findClosestAvailableEnergyStorage: function (creep) {
+        const storages = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType === STRUCTURE_EXTENSION ||
+                    structure.structureType === STRUCTURE_SPAWN) && structure.energy >= creep.carryCapacity;
+            }
+        });
+
+        if (storages.length === 0) {
+            return undefined;
+        }
+
+        return _.sortBy(storages, s => creep.pos.getRangeTo(s))[0];
+    },
+
+    collectEnergy: function (creep, taskWhenFinished) {
+        let storage = this.findClosestAvailableEnergyStorage(creep);
+
+        if (storage === undefined) {
+            creep.say("No Energy");
+            return;
+        }
+
+        switch (creep.withdraw(storage, RESOURCE_ENERGY)) {
+            case OK:
+                creep.memory.task = taskWhenFinished;
+                break;
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(storage);
+                break;
+            default:
+                console.log("Collecting Energy resulted in unhandled error: " + creep.withdraw(storage, RESOURCE_ENERGY));
+                break;
+        }
+    },
+
+    renewCreep: function (creep, taskWhenFinished) {
+        let spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+
+        switch (spawn.renewCreep(creep)) {
+            case OK:
+                break;
+            case ERR_BUSY:
+                break;
+            case ERR_NOT_ENOUGH_ENERGY:
+                break;
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(spawn);
+                break;
+            case ERR_FULL:
+                creep.memory.task = taskWhenFinished;
+                console.log("renew of creep complete!" + creep);
+                break;
+            default:
+                console.log("unexpected error when renewing creep: " + spawn.renewCreep(creep));
+        }
+    },
+};
+
+module.exports = aiutils;

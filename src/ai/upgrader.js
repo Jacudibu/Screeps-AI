@@ -1,11 +1,16 @@
+const aiutils = require("ai_aiutils");
+
 const upgrader = {
     run: function (creep) {
         switch (creep.memory.task) {
             case TASK.COLLECT_ENERGY:
-                this.collectEnergy(creep);
+                aiutils.collectEnergy(creep, TASK.UPGRADE_CONTROLLER);
                 break;
             case TASK.UPGRADE_CONTROLLER:
                 this.upgradeController(creep);
+                break;
+            case TASK.RENEW_CREEP:
+                aiutils.renewCreep(creep, TASK.HARVEST_ENERGY);
                 break;
             default:
                 creep.memory.task = TASK.COLLECT_ENERGY;
@@ -13,58 +18,21 @@ const upgrader = {
         }
     },
 
-    findClosestAvailableEnergyStorage: function (creep) {
-        const storages = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType === STRUCTURE_EXTENSION ||
-                    structure.structureType === STRUCTURE_SPAWN) && structure.energy >= creep.carryCapacity;
-            }
-        });
-
-        if (storages.length === 0) {
-            return undefined;
-        }
-
-        return _.sortBy(storages, s => creep.pos.getRangeTo(s))[0];
-    },
-
-    collectEnergy: function (creep) {
-        let storage = this.findClosestAvailableEnergyStorage(creep);
-
-        if (storage === undefined) {
-            creep.say("No Energy");
-            return;
-        }
-
-        switch (creep.withdraw(storage, RESOURCE_ENERGY)) {
+    upgradeController: function(creep) {
+        switch (creep.upgradeController(creep.room.controller)) {
             case OK:
-                creep.memory.task = TASK.UPGRADE_CONTROLLER;
                 break;
             case ERR_NOT_IN_RANGE:
-                creep.moveTo(storage);
+                creep.moveTo(creep.room.controller);
                 break;
-            case ERR_FULL:
-                creep.memory.task = TASK.UPGRADE_CONTROLLER;
+            case ERR_NOT_ENOUGH_RESOURCES:
+                aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
                 break;
             default:
-                console.log("Collecting Energy resulted in unhandled error: " + creep.withdraw(storage, RESOURCE_ENERGY));
+                console.log("unexpected error when upgrading controller: " + creep.upgradeController(creep.room.controller));
                 break;
         }
     },
-
-    upgradeController: function(creep) {
-        if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller);
-        }
-
-        this.checkWetherEnergyShouldBeCollected(creep);
-    },
-
-    checkWetherEnergyShouldBeCollected: function (creep) {
-        if (creep.carry.energy === 0) {
-            creep.memory.task = TASK.COLLECT_ENERGY;
-        }
-    }
 };
 
 module.exports = upgrader;

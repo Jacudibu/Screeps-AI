@@ -1,3 +1,5 @@
+const aiutils = require('ai_aiutils');
+
 const harvester = {
     run: function (creep) {
         switch (creep.memory.task) {
@@ -8,7 +10,7 @@ const harvester = {
                 this.storeEnergy(creep);
                 break;
             case TASK.RENEW_CREEP:
-                this.renew(creep);
+                aiutils.renewCreep(creep, TASK.HARVEST_ENERGY);
                 break;
             default:
                 creep.memory.task = TASK.HARVEST_ENERGY;
@@ -40,7 +42,7 @@ const harvester = {
         if (creep.memory.targetSourceId == null) {
             let targetSource = this.findClosestAvailableResource(creep);
             if (targetSource == null) {
-                console.log("[worker.harvest] Warning: targetSource was null!");
+                console.log("[harvester.energy] Warning: targetSource was null!");
                 return;
             }
 
@@ -62,62 +64,32 @@ const harvester = {
     },
 
     storeEnergy: function (creep) {
-        const targets = creep.room.find(FIND_STRUCTURES, {
+        const structuresThatRequireEnergy = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType === STRUCTURE_EXTENSION ||
                     structure.structureType === STRUCTURE_SPAWN ||
                     structure.structureType === STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
             }
         });
-        if (targets.length > 0) {
-            if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0]);
-            }
-        }
-        else {
+
+        if (structuresThatRequireEnergy.length === 0) {
             creep.moveTo(Game.spawns.Spawn1.pos);
             creep.say('No Storage');
+            return;
         }
 
-        if (this.checkEmptyEnergy(creep)) {
-            this.checkLifetime(creep);
-        }
-    },
-
-    renew: function (creep) {
-        let spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
-
-        switch (spawn.renewCreep(creep)) {
+        switch (creep.transfer(structuresThatRequireEnergy[0], RESOURCE_ENERGY)) {
             case OK:
                 break;
-            case ERR_BUSY:
-                break;
-            case ERR_NOT_ENOUGH_ENERGY:
-                break;
             case ERR_NOT_IN_RANGE:
-                creep.moveTo(spawn);
+                creep.moveTo(structuresThatRequireEnergy[0]);
                 break;
-            case ERR_FULL:
-                creep.memory.task = TASK.HARVEST_ENERGY;
-                console.log("renew of creep complete!" + creep);
+            case ERR_NOT_ENOUGH_RESOURCES:
+                creep.memory.task = aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
                 break;
             default:
-                console.log("unexpected error when renewing creep: " + spawn.renewCreep(creep));
-        }
-    },
-
-    checkEmptyEnergy: function (creep) {
-        if (creep.carry.energy === 0) {
-            creep.memory.task = TASK.HARVEST_ENERGY;
-            return true;
-        }
-
-        return false;
-    },
-
-    checkLifetime: function (creep) {
-        if (creep.ticksToLive < 250) {
-            creep.memory.task = TASK.RENEW_CREEP;
+                console.log("unexpected error when transferring energy: " + creep.transfer(structuresThatRequireEnergy[0], RESOURCE_ENERGY));
+                break;
         }
     },
 };
