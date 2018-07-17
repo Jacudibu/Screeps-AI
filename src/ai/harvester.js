@@ -7,7 +7,7 @@ const harvester = {
             case TASK.STORE_ENERGY:
                 this.storeEnergy(creep);
                 break;
-            case TASK.RENEW:
+            case TASK.RENEW_CREEP:
                 this.renew(creep);
                 break;
             default:
@@ -76,7 +76,7 @@ const harvester = {
         }
         else {
             creep.moveTo(Game.spawns.Spawn1.pos);
-            creep.say('All full!');
+            creep.say('No Storage');
         }
 
         if (this.checkEmptyEnergy(creep)) {
@@ -117,7 +117,7 @@ const harvester = {
 
     checkLifetime: function (creep) {
         if (creep.ticksToLive < 250) {
-            creep.memory.task = TASK.RENEW;
+            creep.memory.task = TASK.RENEW_CREEP;
         }
     },
 };

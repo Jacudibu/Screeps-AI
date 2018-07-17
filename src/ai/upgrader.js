@@ -32,6 +32,7 @@ const upgrader = {
         let storage = this.findClosestAvailableEnergyStorage(creep);
 
         if (storage === undefined) {
+            creep.say("No Energy");
             return;
         }
 
@@ -46,7 +47,7 @@ const upgrader = {
                 creep.memory.task = TASK.UPGRADE_CONTROLLER;
                 break;
             default:
-                console.log('Collecting Energy resulted in unhandled error: ' + creep.withdraw(storage, RESOURCE_ENERGY));
+                console.log("Collecting Energy resulted in unhandled error: " + creep.withdraw(storage, RESOURCE_ENERGY));
                 break;
         }
     },
