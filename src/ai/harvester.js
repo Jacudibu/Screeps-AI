@@ -1,42 +1,21 @@
-const jobs = require('roles_jobs');
+const tasks = {
+    HARVEST_ENERGY: 'harvest_energy',
+    STORE_ENERGY: 'store_energy',
+};
 
-const worker = {
-
+const harvester = {
     run: function (creep) {
-        switch (creep.memory.job) {
-            case jobs.IDLE:
-                creep.memory.job = jobs.HARVEST_ENERGY;
-                break;
-            case jobs.HARVEST_ENERGY:
+        switch (creep.memory.task) {
+            case tasks.HARVEST_ENERGY:
                 this.harvestEnergy(creep);
                 break;
-            case jobs.STORE_ENERGY:
+            case tasks.STORE_ENERGY:
                 this.storeEnergy(creep);
                 break;
-            case jobs.BUILD_STRUCTURE:
-                this.buildStructures(creep);
-                break;
-            case jobs.UPGRADE_CONTROLLER:
-                this.upgradeController(creep);
-                break;
             default:
-                creep.say("BEEEEP~~~");
+                creep.memory.task = tasks.HARVEST_ENERGY;
                 break;
         }
-    },
-
-    getWorkerJob: function (creep) {
-        let room = creep.room;
-
-        if (creep.memory.priority === jobs.STORE_ENERGY) {
-            if (room.energyAvailable < room.energyCapacityAvailable) {
-                return jobs.STORE_ENERGY;
-            } else {
-                return jobs.BUILD_STRUCTURE;
-            }
-        }
-
-        return creep.memory.priority;
     },
 
     findClosestAvailableResource: function (creep) {
@@ -54,7 +33,7 @@ const worker = {
             for (let source of room.find(FIND_SOURCES)) {
                 room.memory.sources[source.id] = {};
                 room.memory.sources[source.id].workers = 0;
-                room.memory.sources[source.id].max_workers = 4;
+                room.memory.sources[source.id].max_workers = 3;
             }
         }
     },
@@ -80,7 +59,7 @@ const worker = {
         if (creep.carry.energy === creep.carryCapacity) {
             creep.room.memory.sources[creep.memory.targetSourceId].workers--;
             creep.memory.targetSourceId = null;
-            creep.memory.job = this.getWorkerJob(creep);
+            creep.memory.task = tasks.STORE_ENERGY;
         }
     },
 
@@ -100,29 +79,6 @@ const worker = {
         else {
             creep.moveTo(Game.spawns.Spawn1.pos);
             creep.say('All full!');
-            creep.memory.job = jobs.BUILD_STRUCTURE;
-        }
-
-        this.checkEmptyEnergy(creep);
-    },
-
-    upgradeController: function(creep) {
-        if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller);
-        }
-
-        this.checkEmptyEnergy(creep);
-    },
-
-    buildStructures: function (creep) {
-        let targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-        if (targets.length > 0) {
-            if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0]);
-            }
-        } else {
-            creep.say('No Builderino');
-            creep.memory.job = jobs.STORE_ENERGY;
         }
 
         this.checkEmptyEnergy(creep);
@@ -130,9 +86,9 @@ const worker = {
 
     checkEmptyEnergy: function (creep) {
         if (creep.carry.energy === 0) {
-            creep.memory.job = jobs.IDLE;
+            creep.memory.task = tasks.HARVEST_ENERGY;
         }
     }
 };
 
-module.exports = worker;
+module.exports = harvester;
