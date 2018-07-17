@@ -1,6 +1,7 @@
 const tasks = {
     HARVEST_ENERGY: 'harvest_energy',
     STORE_ENERGY: 'store_energy',
+    RENEW: 'renew',
 };
 
 const harvester = {
@@ -11,6 +12,9 @@ const harvester = {
                 break;
             case tasks.STORE_ENERGY:
                 this.storeEnergy(creep);
+                break;
+            case tasks.RENEW:
+                this.renew(creep);
                 break;
             default:
                 creep.memory.task = tasks.HARVEST_ENERGY;
@@ -81,14 +85,47 @@ const harvester = {
             creep.say('All full!');
         }
 
-        this.checkEmptyEnergy(creep);
+        if (this.checkEmptyEnergy(creep)) {
+            this.checkLifetime(creep);
+        }
+    },
+
+    renew: function (creep) {
+        let spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS);
+
+        switch (spawn.renewCreep(creep)) {
+            case OK:
+                break;
+            case ERR_BUSY:
+                break;
+            case ERR_NOT_ENOUGH_ENERGY:
+                break;
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(spawn);
+                break;
+            case ERR_FULL:
+                creep.memory.task = tasks.HARVEST_ENERGY;
+                console.log("renew of creep complete!" + creep);
+                break;
+            default:
+                console.log("unexpected error when renewing creep: " + spawn.renewCreep(creep));
+        }
     },
 
     checkEmptyEnergy: function (creep) {
         if (creep.carry.energy === 0) {
             creep.memory.task = tasks.HARVEST_ENERGY;
+            return true;
         }
-    }
+
+        return false;
+    },
+
+    checkLifetime: function (creep) {
+        if (creep.ticksToLive < 250) {
+            creep.memory.task = tasks.RENEW;
+        }
+    },
 };
 
 module.exports = harvester;
