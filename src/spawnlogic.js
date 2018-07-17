@@ -1,5 +1,3 @@
-const roles = require('roles');
-
 const spawnlogic = {
     run: function() {
         for (const i in Game.spawns) {
@@ -15,26 +13,26 @@ const spawnlogic = {
         }
 
         if (this.areHarvestersNeeded()) {
-            this.spawnWorker(spawn, roles.HARVESTER);
+            this.spawnWorker(spawn, ROLE.HARVESTER);
         } else if (this.areUpgradersNeeded()) {
-            this.spawnWorker(spawn, roles.UPGRADER);
+            this.spawnWorker(spawn, ROLE.UPGRADER);
         } else if (this.areBuildersNeeded()) {
-            this.spawnWorker(spawn, roles.BUILDER);
+            this.spawnWorker(spawn, ROLE.BUILDER);
         }
     },
 
     areHarvestersNeeded: function() {
-        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === roles.HARVESTER);
+        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.HARVESTER);
         return harvesters.length < HARVESTERS_DESIRED;
     },
 
     areUpgradersNeeded: function() {
-        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === roles.UPGRADER);
+        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.UPGRADER);
         return upgraders.length < UPGRADERS_DESIRED;
     },
 
     areBuildersNeeded: function() {
-        let builders = _.filter(Game.creeps, (creep) => creep.memory.role === roles.BUILDER);
+        let builders = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.BUILDER);
         return builders.length < BUILDERS_DESIRED;
     },
 

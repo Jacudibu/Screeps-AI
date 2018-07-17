@@ -1,5 +1,3 @@
-const roles = require('roles');
-
 const builderAI = require('ai_builder');
 const harvesterAI = require('ai_harvester');
 const upgraderAI = require('ai_upgrader');
@@ -14,13 +12,13 @@ const creepAi = {
             }
 
             switch (creep.memory.role) {
-                case roles.HARVESTER:
+                case ROLE.HARVESTER:
                     harvesterAI.run(creep);
                     break;
-                case roles.BUILDER:
+                case ROLE.BUILDER:
                     builderAI.run(creep);
                     break;
-                case roles.UPGRADER:
+                case ROLE.UPGRADER:
                     upgraderAI.run(creep);
                     break;
             }

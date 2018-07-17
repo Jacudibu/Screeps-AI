@@ -1,23 +1,17 @@
-const tasks = {
-    HARVEST_ENERGY: 'harvest_energy',
-    STORE_ENERGY: 'store_energy',
-    RENEW: 'renew',
-};
-
 const harvester = {
     run: function (creep) {
         switch (creep.memory.task) {
-            case tasks.HARVEST_ENERGY:
+            case TASK.HARVEST_ENERGY:
                 this.harvestEnergy(creep);
                 break;
-            case tasks.STORE_ENERGY:
+            case TASK.STORE_ENERGY:
                 this.storeEnergy(creep);
                 break;
-            case tasks.RENEW:
+            case TASK.RENEW:
                 this.renew(creep);
                 break;
             default:
-                creep.memory.task = tasks.HARVEST_ENERGY;
+                creep.memory.task = TASK.HARVEST_ENERGY;
                 break;
         }
     },
@@ -63,7 +57,7 @@ const harvester = {
         if (creep.carry.energy === creep.carryCapacity) {
             creep.room.memory.sources[creep.memory.targetSourceId].workers--;
             creep.memory.targetSourceId = null;
-            creep.memory.task = tasks.STORE_ENERGY;
+            creep.memory.task = TASK.STORE_ENERGY;
         }
     },
 
@@ -104,7 +98,7 @@ const harvester = {
                 creep.moveTo(spawn);
                 break;
             case ERR_FULL:
-                creep.memory.task = tasks.HARVEST_ENERGY;
+                creep.memory.task = TASK.HARVEST_ENERGY;
                 console.log("renew of creep complete!" + creep);
                 break;
             default:
@@ -114,7 +108,7 @@ const harvester = {
 
     checkEmptyEnergy: function (creep) {
         if (creep.carry.energy === 0) {
-            creep.memory.task = tasks.HARVEST_ENERGY;
+            creep.memory.task = TASK.HARVEST_ENERGY;
             return true;
         }
 
@@ -123,7 +117,7 @@ const harvester = {
 
     checkLifetime: function (creep) {
         if (creep.ticksToLive < 250) {
-            creep.memory.task = tasks.RENEW;
+            creep.memory.task = TASK.RENEW;
         }
     },
 };

@@ -1,24 +1,17 @@
-const tasks = {
-    COLLECT_ENERGY: 'collect_energy',
-    BUILD_STRUCTURE: 'build_structure',
-    REPAIR_STRUCTURE: 'repair_structure',
-};
-
 const builder = {
-
     run: function (creep) {
         switch (creep.memory.task) {
-            case tasks.COLLECT_ENERGY:
+            case TASK.COLLECT_ENERGY:
                 this.collectEnergy(creep);
                 break;
-            case tasks.BUILD_STRUCTURE:
+            case TASK.BUILD_STRUCTURE:
                 this.buildStructures(creep);
                 break;
-            case tasks.REPAIR_STRUCTURE:
-                creep.memory.task = tasks.BUILD_STRUCTURE;
+            case TASK.REPAIR_STRUCTURE:
+                creep.memory.task = TASK.BUILD_STRUCTURE;
                 break;
             default:
-                creep.memory.task = tasks.COLLECT_ENERGY;
+                creep.memory.task = TASK.COLLECT_ENERGY;
                 break;
         }
     },
@@ -48,7 +41,7 @@ const builder = {
 
         switch (creep.withdraw(storage, RESOURCE_ENERGY)) {
             case OK:
-                creep.memory.task = tasks.BUILD_STRUCTURE;
+                creep.memory.task = TASK.BUILD_STRUCTURE;
                 break;
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(storage);
@@ -67,7 +60,7 @@ const builder = {
             }
         } else {
             creep.say('No Builderino');
-            creep.memory.task = tasks.REPAIR_STRUCTURE;
+            creep.memory.task = TASK.REPAIR_STRUCTURE;
         }
 
         this.checkEmptyEnergy(creep);
@@ -75,7 +68,7 @@ const builder = {
 
     checkEmptyEnergy: function (creep) {
         if (creep.carry.energy === 0) {
-            creep.memory.task = tasks.COLLECT_ENERGY;
+            creep.memory.task = TASK.COLLECT_ENERGY;
         }
     }
 };

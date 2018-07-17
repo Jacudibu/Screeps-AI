@@ -1,20 +1,14 @@
-const tasks = {
-    COLLECT_ENERGY: 'collect_energy',
-    UPGRADE_CONTROLLER: 'upgrade_controller',
-};
-
 const upgrader = {
-
     run: function (creep) {
         switch (creep.memory.task) {
-            case tasks.COLLECT_ENERGY:
+            case TASK.COLLECT_ENERGY:
                 this.collectEnergy(creep);
                 break;
-            case tasks.UPGRADE_CONTROLLER:
+            case TASK.UPGRADE_CONTROLLER:
                 this.upgradeController(creep);
                 break;
             default:
-                creep.memory.task = tasks.COLLECT_ENERGY;
+                creep.memory.task = TASK.COLLECT_ENERGY;
                 break;
         }
     },
@@ -43,13 +37,13 @@ const upgrader = {
 
         switch (creep.withdraw(storage, RESOURCE_ENERGY)) {
             case OK:
-                creep.memory.task = tasks.UPGRADE_CONTROLLER;
+                creep.memory.task = TASK.UPGRADE_CONTROLLER;
                 break;
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(storage);
                 break;
             case ERR_FULL:
-                creep.memory.task = tasks.UPGRADE_CONTROLLER;
+                creep.memory.task = TASK.UPGRADE_CONTROLLER;
                 break;
             default:
                 console.log('Collecting Energy resulted in unhandled error: ' + creep.withdraw(storage, RESOURCE_ENERGY));
@@ -62,12 +56,12 @@ const upgrader = {
             creep.moveTo(creep.room.controller);
         }
 
-        this.checkEmptyEnergy(creep);
+        this.checkWetherEnergyShouldBeCollected(creep);
     },
 
-    checkEmptyEnergy: function (creep) {
+    checkWetherEnergyShouldBeCollected: function (creep) {
         if (creep.carry.energy === 0) {
-            creep.memory.task = tasks.COLLECT_ENERGY;
+            creep.memory.task = TASK.COLLECT_ENERGY;
         }
     }
 };
