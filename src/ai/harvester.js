@@ -42,7 +42,7 @@ const harvester = {
         if (creep.memory.targetSourceId == null) {
             let targetSource = this.findClosestAvailableResource(creep);
             if (targetSource == null) {
-                console.log("[harvester.energy] Warning: targetSource was null!");
+                creep.say("NO SOURCE");
                 return;
             }
 
@@ -64,31 +64,24 @@ const harvester = {
     },
 
     storeEnergy: function (creep) {
-        const structuresThatRequireEnergy = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType === STRUCTURE_EXTENSION ||
-                    structure.structureType === STRUCTURE_SPAWN ||
-                    structure.structureType === STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
-            }
-        });
+        const structureThatRequiresEnergy = aiutils.findClosestFreeEnergyStorage(creep);
 
-        if (structuresThatRequireEnergy.length === 0) {
-            creep.moveTo(Game.spawns.Spawn1.pos);
+        if (structureThatRequiresEnergy.length === undefined) {
             creep.say('No Storage');
             return;
         }
 
-        switch (creep.transfer(structuresThatRequireEnergy[0], RESOURCE_ENERGY)) {
+        switch (creep.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY)) {
             case OK:
                 break;
             case ERR_NOT_IN_RANGE:
-                creep.moveTo(structuresThatRequireEnergy[0]);
+                creep.moveTo(structureThatRequiresEnergy);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
                 creep.memory.task = aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
                 break;
             default:
-                console.log("unexpected error when transferring energy: " + creep.transfer(structuresThatRequireEnergy[0], RESOURCE_ENERGY));
+                console.log("unexpected error when transferring energy: " + creep.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
                 break;
         }
     },

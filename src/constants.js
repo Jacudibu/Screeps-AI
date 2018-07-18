@@ -12,7 +12,6 @@ global.TASK.STORE_ENERGY = 'store_energy';
 global.TASK.COLLECT_ENERGY = 'collect_energy';
 global.TASK.UPGRADE_CONTROLLER = 'upgrade_controller';
 global.TASK.RENEW_CREEP = 'renew_creep';
-global.TASK.COLLECT_ENERGY = 'collect_energy';
 global.TASK.BUILD_STRUCTURE = 'build_structure';
 global.TASK.REPAIR_STRUCTURE = 'repair_structure';
 

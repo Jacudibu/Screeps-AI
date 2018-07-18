@@ -9,11 +9,17 @@ const aiutils = {
         }
     },
 
-    findClosestAvailableEnergyStorage: function (creep) {
+    doesStructureStoreEnergy: function (structure) {
+        return structure.structureType === STRUCTURE_EXTENSION
+            || structure.structureType === STRUCTURE_SPAWN
+            || structure.structureType === STRUCTURE_CONTAINER
+            || structure.structureType === STRUCTURE_STORAGE;
+    },
+
+    findClosesFilledEnergyStorage: function (creep) {
         const storages = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return (structure.structureType === STRUCTURE_EXTENSION ||
-                    structure.structureType === STRUCTURE_SPAWN) && structure.energy >= creep.carryCapacity;
+                return this.doesStructureStoreEnergy(structure) && structure.energy >= creep.carryCapacity;
             }
         });
 
@@ -22,6 +28,20 @@ const aiutils = {
         }
 
         return _.sortBy(storages, s => creep.pos.getRangeTo(s))[0];
+    },
+
+    findClosestFreeEnergyStorage: function (creep) {
+        const structuresThatRequireEnergy = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return this.doesStructureStoreEnergy(structure) && structure.energy < structure.energyCapacity;
+            }
+        });
+
+        if (structuresThatRequireEnergy.length === 0) {
+            return undefined;
+        }
+
+        return _.sortBy(structuresThatRequireEnergy, s => creep.pos.getRangeTo(s))[0];
     },
 
     collectEnergy: function (creep, taskWhenFinished) {
@@ -35,7 +55,7 @@ const aiutils = {
             return;
         }
 
-        let storage = this.findClosestAvailableEnergyStorage(creep);
+        let storage = this.findClosesFilledEnergyStorage(creep);
 
         if (storage === undefined) {
             creep.say("No Energy");
