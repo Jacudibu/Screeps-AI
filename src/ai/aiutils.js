@@ -1,6 +1,6 @@
 const aiutils = {
     setTaskRenewWhenNeededOr(creep, alternativeTask) {
-        if (creep.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
+        if (creep.memory.shouldRespawn && creep.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
             if (creep.memory.tier >= Math.floor(creep.room.energyCapacityAvailable / COST_PER_WORKER_TIER)) {
                 creep.memory.task = TASK.RENEW_CREEP;
             }

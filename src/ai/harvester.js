@@ -23,7 +23,7 @@ const harvester = {
         this.initializeSourcesInRoom(room);
 
         return creep.pos.findClosestByPath(FIND_SOURCES, {filter: function(source) {
-                return room.memory.sources[source.id].workers < room.memory.sources[source.id].max_workers;
+                return room.memory.sources[source.id].assignedWorkers < room.memory.sources[source.id].max_workers;
             }});
     },
 
@@ -32,7 +32,7 @@ const harvester = {
             room.memory.sources = {};
             for (let source of room.find(FIND_SOURCES)) {
                 room.memory.sources[source.id] = {};
-                room.memory.sources[source.id].workers = 0;
+                room.memory.sources[source.id].assignedWorkers = 0;
                 room.memory.sources[source.id].max_workers = 3;
             }
         }
@@ -47,7 +47,7 @@ const harvester = {
             }
 
             creep.memory.targetSourceId = targetSource.id;
-            creep.room.memory.sources[targetSource.id].workers++;
+            creep.room.memory.sources[targetSource.id].assignedWorkers++;
         }
 
         let targetSource = Game.getObjectById(creep.memory.targetSourceId);
@@ -57,7 +57,7 @@ const harvester = {
         }
 
         if (creep.carry.energy === creep.carryCapacity) {
-            creep.room.memory.sources[creep.memory.targetSourceId].workers--;
+            creep.room.memory.sources[creep.memory.targetSourceId].assignedWorkers--;
             creep.memory.targetSourceId = null;
             creep.memory.task = TASK.STORE_ENERGY;
         }

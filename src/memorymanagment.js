@@ -5,18 +5,22 @@ const memoryManagment = {
     },
 
     deleteDeadCreeps: function() {
-        for(let creepMemory in Memory.creeps) {
-            if(!Game.creeps[creepMemory]) {
-                this.deletePotentialHarvester(creepMemory);
-                delete Memory.creeps[creepMemory];
+        for(let creepName in Memory.creeps) {
+            if(Game.creeps[creepName]) {
+                continue;
             }
+
+            let creep = Memory.creeps[creepName];
+            this.deletePotentialHarvester(creep);
+
+            delete Memory.creeps[creepName];
         }
     },
 
-    deletePotentialHarvester: function (creepMemoryJson) {
-        if (creepMemoryJson.targetSourceId != null) {
-            let source = Game.getObjectById(creepMemoryJson.targetSourceId);
-            source.room.memory.sources[source.id].workers--;
+    deletePotentialHarvester: function (creep) {
+        if (creep.role === ROLE.HARVESTER) {
+            let source = Game.getObjectById(creep.targetSourceId);
+            source.room.memory.sources[source.id].assignedWorkers--;
         }
     }
 };

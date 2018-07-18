@@ -13,11 +13,13 @@ const spawnlogic = {
         }
 
         if (this.areHarvestersNeeded()) {
-            this.spawnWorker(spawn, ROLE.HARVESTER);
+            this.spawnWorker(spawn, ROLE.HARVESTER, true);
         } else if (this.areUpgradersNeeded()) {
-            this.spawnWorker(spawn, ROLE.UPGRADER);
+            this.spawnWorker(spawn, ROLE.UPGRADER, true);
         } else if (this.areBuildersNeeded()) {
-            this.spawnWorker(spawn, ROLE.BUILDER);
+            this.spawnWorker(spawn, ROLE.BUILDER, true);
+        } else {
+            this.spawnWorker(spawn, ROLE.UPGRADER, false);
         }
     },
 
@@ -40,7 +42,7 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
-    spawnWorker: function(spawn, role) {
+    spawnWorker: function(spawn, role, blockSpawningIfNoRessources) {
         let newName = role + ' ' + Game.time;
         let currentTier = Math.floor(spawn.room.energyCapacityAvailable / COST_PER_WORKER_TIER);
         let body = [];
@@ -68,7 +70,9 @@ const spawnlogic = {
                 spawn.room.memory.allowEnergyCollection = true;
                 break;
             case ERR_NOT_ENOUGH_ENERGY:
-                spawn.room.memory.allowEnergyCollection = false;
+                if (blockSpawningIfNoRessources) {
+                    spawn.room.memory.allowEnergyCollection = false;
+                }
                 break;
             default:
                 console.log("unexpected error when spawning creep: " + spawn.spawnCreep(body, newName, {memory: {role: role, tier: currentTier}}));
