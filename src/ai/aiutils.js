@@ -1,7 +1,9 @@
 const aiutils = {
     setTaskRenewWhenNeededOr(creep, alternativeTask) {
         if (creep.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
-            creep.memory.task = TASK.RENEW_CREEP;
+            if (creep.memory.tier >= Math.floor(creep.room.energyCapacityAvailable / COST_PER_WORKER_TIER)) {
+                creep.memory.task = TASK.RENEW_CREEP;
+            }
         } else {
             creep.memory.task = alternativeTask;
         }
@@ -23,6 +25,16 @@ const aiutils = {
     },
 
     collectEnergy: function (creep, taskWhenFinished) {
+        if (creep.room.energyCapacityAvailable - creep.room.energyAvailable > creep.carryCapacity + ENERGY_COLLECTOR_EXTRA_BUFFER) {
+            creep.say("Buffering");
+            return;
+        }
+
+        if (!creep.room.memory.allowEnergyCollection) {
+            creep.say("Forbidden");
+            return;
+        }
+
         let storage = this.findClosestAvailableEnergyStorage(creep);
 
         if (storage === undefined) {
@@ -58,7 +70,6 @@ const aiutils = {
                 break;
             case ERR_FULL:
                 creep.memory.task = taskWhenFinished;
-                console.log("renew of creep complete!" + creep);
                 break;
             default:
                 console.log("unexpected error when renewing creep: " + spawn.renewCreep(creep));
