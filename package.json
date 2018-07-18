@@ -1,0 +1,28 @@
+{
+  "name": "screeps",
+  "version": "1.0.0",
+  "description": "A bad AI for screeps",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "^1.0.3"
+  },
+  "devDependencies": {
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-rsync": "^2.0.1",
+    "grunt-screeps": "github:cavejay/grunt-screeps"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jacudibu/Screeps-AI.git"
+  },
+  "author": "@Jacudibu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jacudibu/Screeps-AI/issues"
+  },
+  "homepage": "https://github.com/Jacudibu/Screeps-AI#readme"
+}

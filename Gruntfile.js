@@ -5,16 +5,18 @@ module.exports = function(grunt) {
     let email = grunt.option('email') || config.email;
     let token = grunt.option('token') || config.token;
     let ptr = grunt.option('ptr') ? true : config.ptr;
+    let local_dir = grunt.option('local_dir') || config.local_dir;
 
+    // this uses github:cavejay/grunt-screeps since the official version doesn't support auth token... yet
     grunt.loadNpmTasks('grunt-screeps');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-rsync');
 
     grunt.initConfig({
         screeps: {
             options: {
                 email: email,
-                // password: password,
                 token: token,
                 branch: branch,
                 ptr: ptr
@@ -46,7 +48,25 @@ module.exports = function(grunt) {
                 }],
             }
         },
+
+
+        // Copy files to the folder the client uses to sink to the private server.
+        // Use rsync so the client only uploads the changed files.
+        rsync: {
+            options: {
+                args: ["--verbose", "--checksum"],
+                exclude: [".git*"],
+                recursive: true
+            },
+            private: {
+                options: {
+                    src: './dist/',
+                    dest: local_dir,
+                }
+            },
+        },
     });
 
     grunt.registerTask('default',  ['clean', 'copy:screeps', 'screeps']);
+    grunt.registerTask('private',  ['clean', 'copy:screeps', 'rsync:private']);
 };

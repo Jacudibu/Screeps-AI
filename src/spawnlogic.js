@@ -22,18 +22,22 @@ const spawnlogic = {
     },
 
     areHarvestersNeeded: function() {
-        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.HARVESTER);
-        return harvesters.length < HARVESTERS_DESIRED;
+        let harvesters = this.countNumberOfCreepsWithRole(ROLE.HARVESTER);
+        return harvesters < HARVESTERS_DESIRED;
     },
 
     areUpgradersNeeded: function() {
-        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.UPGRADER);
-        return upgraders.length < UPGRADERS_DESIRED;
+        let upgraders = this.countNumberOfCreepsWithRole(ROLE.UPGRADER);
+        return upgraders < UPGRADERS_DESIRED;
     },
 
     areBuildersNeeded: function() {
-        let builders = _.filter(Game.creeps, (creep) => creep.memory.role === ROLE.BUILDER);
-        return builders.length < BUILDERS_DESIRED;
+        let builders = this.countNumberOfCreepsWithRole(ROLE.BUILDER);
+        return builders < BUILDERS_DESIRED;
+    },
+
+    countNumberOfCreepsWithRole(role) {
+        return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
     spawnWorker: function(spawn, role) {
