@@ -1,4 +1,5 @@
 const aiutils = require('ai_aiutils');
+const upgrader = require('ai_upgrader');
 
 const builder = {
     run: function (creep) {
@@ -11,6 +12,9 @@ const builder = {
                 break;
             case TASK.REPAIR_STRUCTURE:
                 this.repairStructures(creep);
+                break;
+            case TASK.UPGRADE_CONTROLLER:
+                upgrader.upgradeController(creep);
                 break;
             case TASK.RENEW_CREEP:
                 aiutils.renewCreep(creep, TASK.COLLECT_ENERGY);
@@ -54,7 +58,7 @@ const builder = {
 
         if(damagedStructures.length === 0) {
             creep.say("No Repairs");
-            creep.memory.task = TASK.BUILD_STRUCTURE;
+            creep.memory.task = TASK.UPGRADE_CONTROLLER;
             return;
         }
 
