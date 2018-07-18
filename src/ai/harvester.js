@@ -66,7 +66,7 @@ const harvester = {
     storeEnergy: function (creep) {
         const structureThatRequiresEnergy = aiutils.findClosestFreeEnergyStorage(creep);
 
-        if (structureThatRequiresEnergy.length === undefined) {
+        if (structureThatRequiresEnergy === undefined) {
             creep.say('No Storage');
             return;
         }
