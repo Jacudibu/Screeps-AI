@@ -12,30 +12,24 @@ const spawnlogic = {
             return;
         }
 
-        if (this.areHarvestersNeeded()) {
+        if (!spawn.room.requestedCreeps) {
+            this.initSpawnMemory(spawn.room);
+        }
+
+        if (this.isRoleNeeded(spawn.room, ROLE.HARVESTER)) {
             this.spawnWorker(spawn, ROLE.HARVESTER, true);
-        } else if (this.areUpgradersNeeded()) {
+        } else if (this.isRoleNeeded(spawn.room, ROLE.UPGRADER)) {
             this.spawnWorker(spawn, ROLE.UPGRADER, true);
-        } else if (this.areBuildersNeeded()) {
+        } else if (this.isRoleNeeded(spawn.room, ROLE.BUILDER)) {
             this.spawnWorker(spawn, ROLE.BUILDER, true);
         } else {
             this.spawnWorker(spawn, ROLE.UPGRADER, false);
         }
     },
 
-    areHarvestersNeeded: function() {
-        let harvesters = this.countNumberOfCreepsWithRole(ROLE.HARVESTER);
-        return harvesters < HARVESTERS_DESIRED;
-    },
-
-    areUpgradersNeeded: function() {
-        let upgraders = this.countNumberOfCreepsWithRole(ROLE.UPGRADER);
-        return upgraders < UPGRADERS_DESIRED;
-    },
-
-    areBuildersNeeded: function() {
-        let builders = this.countNumberOfCreepsWithRole(ROLE.BUILDER);
-        return builders < BUILDERS_DESIRED;
+    isRoleNeeded: function(room, role) {
+        let creepsWithRoleCount = this.countNumberOfCreepsWithRole(role);
+        return creepsWithRoleCount < room.memory.requestedCreeps[role];
     },
 
     countNumberOfCreepsWithRole(role) {
@@ -76,6 +70,13 @@ const spawnlogic = {
                 spawn.room.memory.allowEnergyCollection = true;
                 break;
         }
+    },
+
+    initSpawnMemory: function(room) {
+        room.memory.requestedCreeps = {};
+        room.memory.requestedCreeps[ROLE.HARVESTER] = 9;
+        room.memory.requestedCreeps[ROLE.UPGRADER] = 1;
+        room.memory.requestedCreeps[ROLE.BUILDER] = 1;
     },
 
 };
