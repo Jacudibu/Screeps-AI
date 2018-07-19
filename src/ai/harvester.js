@@ -58,10 +58,8 @@ const harvester = {
         let source = this.getSource(creep);
 
         if (source === ERR_NOT_FOUND) {
-            if (source == null) {
-                creep.say("NO SOURCE");
-                return;
-            }
+            creep.say("NO SOURCE");
+            return;
         }
 
         switch (creep.harvest(source)) {
@@ -71,7 +69,7 @@ const harvester = {
                 creep.moveTo(source);
                 break;
             default:
-                console.log("unexpected error when harvesting energy: " + creep.harvest(source));
+                console.log("unexpected error when harvesting energy: " + creep.harvest(source) + " --> " + source);
                 break;
         }
 

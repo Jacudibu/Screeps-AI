@@ -22,8 +22,18 @@ const spawnlogic = {
             this.spawnWorker(spawn, ROLE.UPGRADER, true);
         } else if (this.isRoleNeeded(spawn.room, ROLE.BUILDER)) {
             this.spawnWorker(spawn, ROLE.BUILDER, true);
-        } else {
-            this.spawnWorker(spawn, ROLE.UPGRADER, false);
+        } else if (spawn.room.energyCapacityAvailable === spawn.room.energyAvailable) {
+            if (spawn.memory.nextAutoSpawn) {
+                if (spawn.memory.nextAutoSpawn === Game.time) {
+                    this.spawnWorker(spawn, ROLE.UPGRADER, false);
+                }
+                else if (spawn.memory.nextAutoSpawn < Game.time) {
+                    spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
+                }
+            } else {
+                spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
+            }
+
         }
     },
 
