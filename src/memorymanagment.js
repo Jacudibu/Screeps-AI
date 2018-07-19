@@ -19,8 +19,10 @@ const memoryManagment = {
 
     deletePotentialHarvester: function (creep) {
         if (creep.role === ROLE.HARVESTER) {
-            let source = Game.getObjectById(creep.targetSourceId);
-            source.room.memory.sources[source.id].assignedWorkers--;
+            if (creep.task === TASK.HARVEST_ENERGY) {
+                let source = Game.getObjectById(creep.taskTargetId);
+                source.room.memory.sources[source.id].assignedWorkers--;
+            }
         }
     }
 };

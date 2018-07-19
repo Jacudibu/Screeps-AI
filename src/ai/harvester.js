@@ -18,15 +18,6 @@ const harvester = {
         }
     },
 
-    findClosestAvailableResource: function (creep) {
-        let room = creep.room;
-        this.initializeSourcesInRoom(room);
-
-        return creep.pos.findClosestByPath(FIND_SOURCES, {filter: function(source) {
-                return room.memory.sources[source.id].assignedWorkers < room.memory.sources[source.id].max_workers;
-            }});
-    },
-
     initializeSourcesInRoom: function (room) {
         if (room.memory.sources == null) {
             room.memory.sources = {};
@@ -38,35 +29,78 @@ const harvester = {
         }
     },
 
+    findClosestAvailableResource: function (creep) {
+        let room = creep.room;
+        this.initializeSourcesInRoom(room);
+
+        return creep.pos.findClosestByPath(FIND_SOURCES, {filter: function(source) {
+                return room.memory.sources[source.id].assignedWorkers < room.memory.sources[source.id].max_workers;
+            }});
+    },
+
+    getSource: function(creep) {
+        if (creep.memory.taskTargetId) {
+            return Game.getObjectById(creep.memory.taskTargetId);
+        }
+
+        let source = this.findClosestAvailableResource(creep);
+
+        if (source == null)  {
+            return ERR_NOT_FOUND;
+        }
+
+        source.room.memory.sources[source.id].assignedWorkers++;
+        creep.memory.taskTargetId = source.id;
+        return source;
+    },
+
     harvestEnergy: function (creep) {
-        if (creep.memory.targetSourceId == null) {
-            let targetSource = this.findClosestAvailableResource(creep);
-            if (targetSource == null) {
+        let source = this.getSource(creep);
+
+        if (source === ERR_NOT_FOUND) {
+            if (source == null) {
                 creep.say("NO SOURCE");
                 return;
             }
-
-            creep.memory.targetSourceId = targetSource.id;
-            creep.room.memory.sources[targetSource.id].assignedWorkers++;
         }
 
-        let targetSource = Game.getObjectById(creep.memory.targetSourceId);
-
-        if (creep.harvest(targetSource) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(targetSource);
+        switch (creep.harvest(source)) {
+            case OK:
+                break;
+            case ERR_NOT_IN_RANGE:
+                creep.moveTo(source);
+                break;
+            default:
+                console.log("unexpected error when harvesting energy: " + creep.harvest(source));
+                break;
         }
 
         if (creep.carry.energy === creep.carryCapacity) {
-            creep.room.memory.sources[creep.memory.targetSourceId].assignedWorkers--;
-            creep.memory.targetSourceId = null;
+            creep.room.memory.sources[creep.memory.taskTargetId].assignedWorkers--;
+            creep.memory.taskTargetId = undefined;
             creep.memory.task = TASK.STORE_ENERGY;
         }
     },
 
-    storeEnergy: function (creep) {
+    getStorage: function(creep) {
+        if (creep.memory.taskTargetId) {
+            return Game.getObjectById(creep.memory.taskTargetId);
+        }
+
         const structureThatRequiresEnergy = aiutils.findClosestFreeEnergyStorage(creep);
 
         if (structureThatRequiresEnergy === undefined) {
+            return ERR_NOT_FOUND;
+        }
+
+        creep.memory.taskTargetId = structureThatRequiresEnergy.id;
+        return structureThatRequiresEnergy;
+    },
+
+    storeEnergy: function (creep) {
+        const structureThatRequiresEnergy = this.getStorage(creep);
+
+        if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
             creep.say('No Storage');
             return;
         }
@@ -78,7 +112,11 @@ const harvester = {
                 creep.moveTo(structureThatRequiresEnergy);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
+                creep.memory.taskTargetId = undefined;
                 creep.memory.task = aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
+                break;
+            case ERR_FULL:
+                creep.memory.taskTargetId = undefined;
                 break;
             default:
                 console.log("unexpected error when transferring energy: " + creep.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));

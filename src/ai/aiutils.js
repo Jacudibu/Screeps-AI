@@ -16,7 +16,7 @@ const aiutils = {
             || structure.structureType === STRUCTURE_STORAGE;
     },
 
-    findClosesFilledEnergyStorage: function (creep) {
+    findClosestFilledEnergyStorage: function (creep) {
         const storages = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return this.doesStructureStoreEnergy(structure) && structure.energy >= creep.carryCapacity;
@@ -55,7 +55,7 @@ const aiutils = {
             return;
         }
 
-        let storage = this.findClosesFilledEnergyStorage(creep);
+        const storage = this.findClosestFilledEnergyStorage(creep);
 
         if (storage === undefined) {
             creep.say("No Energy");

@@ -51,15 +51,12 @@ const spawnlogic = {
             body.push(WORK, CARRY, MOVE);
         }
 
-        let subtier = spawn.room.energyCapacityAvailable % COST_PER_WORKER_TIER;
+        let remaining = spawn.room.energyCapacityAvailable % COST_PER_WORKER_TIER;
 
-        if (subtier >= 150) {
-            body.push(MOVE);
-        }
-        if (subtier >= 100) {
+        if (remaining >= 100) {
             body.push(CARRY);
         }
-        if (subtier >= 50) {
+        if (remaining >= 50) {
             body.push(MOVE);
         }
 

@@ -25,31 +25,55 @@ const builder = {
         }
     },
 
-    buildStructures: function (creep) {
+    getConstructionSite(creep) {
+        if (creep.memory.taskTargetId) {
+            return Game.getObjectById(creep.memory.taskTargetId);
+        }
+
         let constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
         if (constructionSites.length === 0) {
+            return ERR_NOT_FOUND;
+        }
+
+        creep.memory.taskTargetId = constructionSites[0].id;
+        return constructionSites[0];
+    },
+
+    buildStructures: function (creep) {
+        let constructionSite = this.getConstructionSite(creep);
+
+        if (constructionSite === ERR_NOT_FOUND) {
             creep.say('No Build');
             creep.memory.task = TASK.REPAIR_STRUCTURE;
+            this.repairStructures(creep);
             return;
         }
 
-        switch (creep.build(constructionSites[0])) {
+        switch (creep.build(constructionSite)) {
             case OK:
                 break;
             case ERR_NOT_IN_RANGE:
-                creep.moveTo(constructionSites[0]);
+                creep.moveTo(constructionSite);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
+                creep.memory.taskTargetId = undefined;
                 aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
                 break;
+            case ERR_INVALID_TARGET:
+                creep.memory.taskTargetId = undefined;
+                break;
             default:
-                console.log("unexpected error when building object: " + creep.build(constructionSites[0]));
+                console.log("unexpected error when building object: " + creep.build(constructionSite));
                 break;
         }
     },
 
-    repairStructures: function (creep) {
+    getDamagedStructure: function(creep) {
+        if (creep.memory.taskTargetId) {
+            return Game.getObjectById(creep.memory.taskTargetId);
+        }
+
         const damagedStructures = creep.room.find(FIND_STRUCTURES, {
             filter: structure => structure.hits < structure.hitsMax
         });
@@ -57,22 +81,35 @@ const builder = {
         damagedStructures.sort((a,b) => a.hits - b.hits);
 
         if(damagedStructures.length === 0) {
-            creep.say("No Repairs");
+            return ERR_NOT_FOUND;
+        }
+
+        creep.memory.taskTargetId = damagedStructures[0].id;
+        return damagedStructures[0];
+    },
+
+    repairStructures: function (creep) {
+        let damagedStructure = this.getDamagedStructure(creep);
+
+        if (damagedStructure === ERR_NOT_FOUND) {
+            creep.say('No Repair');
             creep.memory.task = TASK.UPGRADE_CONTROLLER;
+            upgrader.upgradeController(creep);
             return;
         }
 
-        switch (creep.repair(damagedStructures[0])) {
+        switch (creep.repair(damagedStructure)) {
             case OK:
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
+                creep.memory.taskTargetId = undefined;
                 aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
                 break;
             case ERR_NOT_IN_RANGE:
-                creep.moveTo(damagedStructures[0]);
+                creep.moveTo(damagedStructure);
                 break;
             default:
-                console.log("unexpected error when repairing object: " + creep.repair(damagedStructures[0]));
+                console.log("unexpected error when repairing object: " + creep.repair(damagedStructure));
                 break;
         }
     },
