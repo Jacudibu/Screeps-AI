@@ -20,7 +20,7 @@ const builder = {
                 aiutils.renewCreep(creep, TASK.COLLECT_ENERGY);
                 break;
             default:
-                creep.memory.setTask(TASK.COLLECT_ENERGY);
+                creep.setTask(TASK.COLLECT_ENERGY);
                 break;
         }
     },
