@@ -21,9 +21,12 @@ const spawnlogic = {
         let currentTier = Math.floor(room.energyCapacityAvailable / COST_PER_WORKER_TIER);
         if (currentTier > room.memory.currentTier) {
             room.memory.currentTier = currentTier;
-            let harverstersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
-            harverstersNeeded = Math.max(harverstersNeeded, room.find(FIND_SOURCES).length);
-            room.memory.requestedCreeps[ROLE.HARVESTER] = harverstersNeeded;
+
+            if (currentTier > 2) { // don't do it on the first tier upgrade since we (probably) are unable to 100% farm the resource yet
+                let harvestersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
+                harvestersNeeded = Math.max(harvestersNeeded, room.find(FIND_SOURCES).length);
+                room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
+            }
         }
 
         if (this.isRoleNeeded(room, ROLE.HARVESTER, currentTier)) {
@@ -35,7 +38,12 @@ const spawnlogic = {
         } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
-                    this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
+                    if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0) {
+                        this.spawnWorker(spawn, ROLE.BUILDER, false, currentTier);
+                    }
+                    else {
+                        this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
+                    }
                 }
                 else if (spawn.memory.nextAutoSpawn < Game.time) {
                     spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
@@ -43,7 +51,6 @@ const spawnlogic = {
             } else {
                 spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
             }
-
         }
     },
 
