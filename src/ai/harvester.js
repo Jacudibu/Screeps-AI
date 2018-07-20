@@ -18,23 +18,9 @@ const harvester = {
         }
     },
 
-    initializeSourcesInRoom: function (room) {
-        if (room.memory.sources == null) {
-            room.memory.sources = {};
-            for (let source of room.find(FIND_SOURCES)) {
-                room.memory.sources[source.id] = {};
-                room.memory.sources[source.id].assignedWorkers = 0;
-                room.memory.sources[source.id].max_workers = 3;
-            }
-        }
-    },
-
     findClosestAvailableResource: function (creep) {
-        let room = creep.room;
-        this.initializeSourcesInRoom(room);
-
         return creep.pos.findClosestByPath(FIND_SOURCES, {filter: function(source) {
-                return room.memory.sources[source.id].assignedWorkers < room.memory.sources[source.id].max_workers;
+                return source.memory.workersAssigned < source.memory.workersMax;
             }});
     },
 
@@ -49,7 +35,7 @@ const harvester = {
             return ERR_NOT_FOUND;
         }
 
-        source.room.memory.sources[source.id].assignedWorkers++;
+        source.memory.workersAssigned++;
         creep.memory.taskTargetId = source.id;
         return source;
     },
@@ -74,7 +60,7 @@ const harvester = {
         }
 
         if (creep.carry.energy === creep.carryCapacity) {
-            creep.room.memory.sources[creep.memory.taskTargetId].assignedWorkers--;
+            source.memory.workersAssigned--;
             creep.setTask(TASK.STORE_ENERGY);
         }
     },

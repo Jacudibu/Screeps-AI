@@ -21,7 +21,9 @@ const memoryManagment = {
         if (creep.role === ROLE.HARVESTER) {
             if (creep.task === TASK.HARVEST_ENERGY) {
                 let source = Game.getObjectById(creep.taskTargetId);
-                source.room.memory.sources[source.id].assignedWorkers--;
+                if (source) {
+                    source.memory.workersAssigned--;
+                }
             }
         }
     }
