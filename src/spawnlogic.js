@@ -12,20 +12,30 @@ const spawnlogic = {
             return;
         }
 
-        if (!spawn.room.requestedCreeps) {
+        const room = spawn.room;
+
+        if (room.memory.requestedCreeps === undefined) {
             this.initSpawnMemory(spawn.room);
         }
 
-        if (this.isRoleNeeded(spawn.room, ROLE.HARVESTER)) {
-            this.spawnWorker(spawn, ROLE.HARVESTER, true);
-        } else if (this.isRoleNeeded(spawn.room, ROLE.UPGRADER)) {
-            this.spawnWorker(spawn, ROLE.UPGRADER, true);
-        } else if (this.isRoleNeeded(spawn.room, ROLE.BUILDER)) {
-            this.spawnWorker(spawn, ROLE.BUILDER, true);
-        } else if (spawn.room.energyCapacityAvailable === spawn.room.energyAvailable) {
+        let currentTier = Math.floor(room.energyCapacityAvailable / COST_PER_WORKER_TIER);
+        if (currentTier > room.memory.currentTier) {
+            room.memory.currentTier = currentTier;
+            let harverstersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
+            harverstersNeeded = Math.max(harverstersNeeded, room.find(FIND_SOURCES).length);
+            room.memory.requestedCreeps[ROLE.HARVESTER] = harverstersNeeded;
+        }
+
+        if (this.isRoleNeeded(room, ROLE.HARVESTER, currentTier)) {
+            this.spawnWorker(spawn, ROLE.HARVESTER, true, currentTier);
+        } else if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
+            this.spawnWorker(spawn, ROLE.UPGRADER, true, currentTier);
+        } else if (this.isRoleNeeded(room, ROLE.BUILDER)) {
+            this.spawnWorker(spawn, ROLE.BUILDER, true, currentTier);
+        } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
-                    this.spawnWorker(spawn, ROLE.UPGRADER, false);
+                    this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
                 }
                 else if (spawn.memory.nextAutoSpawn < Game.time) {
                     spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
@@ -46,9 +56,9 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
-    spawnWorker: function(spawn, role, blockSpawningIfNoRessources) {
+    // TODO: Fails if currentTier > 50/3
+    spawnWorker: function(spawn, role, blockSpawningIfNoRessources, currentTier) {
         let newName = role + ' ' + Game.time;
-        let currentTier = Math.floor(spawn.room.energyCapacityAvailable / COST_PER_WORKER_TIER);
         let body = [];
 
         for (let i = 0; i < currentTier; i++) {
@@ -83,6 +93,7 @@ const spawnlogic = {
     },
 
     initSpawnMemory: function(room) {
+        room.memory.currentTier = 1;
         room.memory.requestedCreeps = {};
         room.memory.requestedCreeps[ROLE.HARVESTER] = 9;
         room.memory.requestedCreeps[ROLE.UPGRADER] = 1;
