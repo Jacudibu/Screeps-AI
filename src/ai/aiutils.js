@@ -1,25 +1,9 @@
 const aiutils = {
-    setTaskRenewWhenNeededOr(creep, alternativeTask) {
-        if (creep.memory.shouldRespawn && creep.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
-            if (creep.memory.tier >= Math.floor(creep.room.energyCapacityAvailable / COST_PER_WORKER_TIER)) {
-                creep.memory.task = TASK.RENEW_CREEP;
-            }
-        } else {
-            creep.memory.task = alternativeTask;
-        }
-    },
-
-    doesStructureStoreEnergy: function (structure) {
-        return structure.structureType === STRUCTURE_EXTENSION
-            || structure.structureType === STRUCTURE_SPAWN
-            || structure.structureType === STRUCTURE_CONTAINER
-            || structure.structureType === STRUCTURE_STORAGE;
-    },
 
     findClosestFilledEnergyStorage: function (creep) {
-        const storages = creep.room.find(FIND_STRUCTURES, {
+        const storages = creep.room.find(FIND_MY_STRUCTURES, {
             filter: (structure) => {
-                return this.doesStructureStoreEnergy(structure) && structure.energy >= creep.carryCapacity;
+                return structure.canReleaseEnergy(creep.carryCapacity);
             }
         });
 
@@ -31,9 +15,9 @@ const aiutils = {
     },
 
     findClosestFreeEnergyStorage: function (creep) {
-        const structuresThatRequireEnergy = creep.room.find(FIND_STRUCTURES, {
+        const structuresThatRequireEnergy = creep.room.find(FIND_MY_STRUCTURES, {
             filter: (structure) => {
-                return this.doesStructureStoreEnergy(structure) && structure.energy < structure.energyCapacity;
+                return structure.canStoreEnergy(1);
             }
         });
 
@@ -64,7 +48,7 @@ const aiutils = {
 
         switch (creep.withdraw(storage, RESOURCE_ENERGY)) {
             case OK:
-                creep.memory.task = taskWhenFinished;
+                creep.setTask(taskWhenFinished);
                 break;
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(storage);

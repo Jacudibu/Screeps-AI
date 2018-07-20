@@ -1,4 +1,6 @@
 require('./constants');
+require('./prototypes_creep');
+require('./prototypes_structure');
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');

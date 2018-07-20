@@ -13,7 +13,7 @@ const upgrader = {
                 aiutils.renewCreep(creep, TASK.HARVEST_ENERGY);
                 break;
             default:
-                creep.memory.task = TASK.COLLECT_ENERGY;
+                creep.setTask(TASK.COLLECT_ENERGY);
                 break;
         }
     },
@@ -26,7 +26,7 @@ const upgrader = {
                 creep.moveTo(creep.room.controller);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
-                aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
+                creep.setTask(creep.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
                 break;
             default:
                 console.log("unexpected error when upgrading controller: " + creep.upgradeController(creep.room.controller));

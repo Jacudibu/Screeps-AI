@@ -56,10 +56,13 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
-    // TODO: Fails if currentTier > 50/3
     spawnWorker: function(spawn, role, blockSpawningIfNoRessources, currentTier) {
         let newName = role + ' ' + Game.time;
         let body = [];
+
+        if (currentTier > 22) {
+            currentTier = 22;
+        }
 
         for (let i = 0; i < currentTier; i++) {
             body.push(WORK, CARRY, MOVE);
@@ -94,6 +97,7 @@ const spawnlogic = {
 
     initSpawnMemory: function(room) {
         room.memory.currentTier = 1;
+
         room.memory.requestedCreeps = {};
         room.memory.requestedCreeps[ROLE.HARVESTER] = 9;
         room.memory.requestedCreeps[ROLE.UPGRADER] = 1;

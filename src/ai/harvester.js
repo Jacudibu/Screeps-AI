@@ -13,7 +13,7 @@ const harvester = {
                 aiutils.renewCreep(creep, TASK.HARVEST_ENERGY);
                 break;
             default:
-                creep.memory.task = TASK.HARVEST_ENERGY;
+                creep.setTask(TASK.HARVEST_ENERGY);
                 break;
         }
     },
@@ -75,8 +75,7 @@ const harvester = {
 
         if (creep.carry.energy === creep.carryCapacity) {
             creep.room.memory.sources[creep.memory.taskTargetId].assignedWorkers--;
-            creep.memory.taskTargetId = undefined;
-            creep.memory.task = TASK.STORE_ENERGY;
+            creep.setTask(TASK.STORE_ENERGY);
         }
     },
 
@@ -110,11 +109,10 @@ const harvester = {
                 creep.moveTo(structureThatRequiresEnergy);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
-                creep.memory.taskTargetId = undefined;
-                creep.memory.task = aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
+                creep.setTask(creep.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
                 break;
             case ERR_FULL:
-                creep.memory.taskTargetId = undefined;
+                creep.resetCurrentTask();
                 break;
             default:
                 console.log("unexpected error when transferring energy: " + creep.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));

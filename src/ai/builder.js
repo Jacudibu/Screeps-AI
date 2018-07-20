@@ -20,7 +20,7 @@ const builder = {
                 aiutils.renewCreep(creep, TASK.COLLECT_ENERGY);
                 break;
             default:
-                creep.memory.task = TASK.COLLECT_ENERGY;
+                creep.memory.setTask(TASK.COLLECT_ENERGY);
                 break;
         }
     },
@@ -45,7 +45,7 @@ const builder = {
 
         if (constructionSite === ERR_NOT_FOUND) {
             creep.say('No Build');
-            creep.memory.task = TASK.REPAIR_STRUCTURE;
+            creep.setTask(TASK.REPAIR_STRUCTURE);
             this.repairStructures(creep);
             return;
         }
@@ -57,11 +57,10 @@ const builder = {
                 creep.moveTo(constructionSite);
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
-                creep.memory.taskTargetId = undefined;
-                aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
+                creep.setTask(creep.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
                 break;
             case ERR_INVALID_TARGET:
-                creep.memory.taskTargetId = undefined;
+                creep.resetCurrentTask();
                 break;
             default:
                 console.log("unexpected error when building object: " + creep.build(constructionSite));
@@ -93,7 +92,7 @@ const builder = {
 
         if (damagedStructure === ERR_NOT_FOUND) {
             creep.say('No Repair');
-            creep.memory.task = TASK.UPGRADE_CONTROLLER;
+            creep.setTask(TASK.UPGRADE_CONTROLLER);
             upgrader.upgradeController(creep);
             return;
         }
@@ -102,8 +101,7 @@ const builder = {
             case OK:
                 break;
             case ERR_NOT_ENOUGH_RESOURCES:
-                creep.memory.taskTargetId = undefined;
-                aiutils.setTaskRenewWhenNeededOr(creep, TASK.COLLECT_ENERGY);
+                creep.setTask(creep.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
                 break;
             case ERR_NOT_IN_RANGE:
                 creep.moveTo(damagedStructure);
