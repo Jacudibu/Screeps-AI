@@ -115,13 +115,13 @@ const spawnlogic = {
             return;
         }
 
-        let harvestersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
+        let harvestersNeeded = Math.floor(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.75);
         harvestersNeeded = Math.max(harvestersNeeded, room.find(FIND_SOURCES).length);
         room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
 
-        for (var sourceName in room.memory.sources) {
+        for (let sourceName in room.memory.sources) {
             if (room.memory.sources[sourceName].workersMax > 0) {
-                room.memory.sources[sourceName].workersMax = Math.max(Math.ceil(room.memory.sources[sourceName].workersMax * 0.5), 1);
+                room.memory.sources[sourceName].workersMax = Math.max(Math.floor(room.memory.sources[sourceName].workersMax * 0.75), 1);
             }
         }
     },
