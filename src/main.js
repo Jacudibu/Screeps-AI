@@ -1,5 +1,6 @@
 require('./constants');
 require('./prototypes_creep');
+require('./prototypes_creeptasks');
 require('./prototypes_structure');
 require('./prototypes_source');
 
