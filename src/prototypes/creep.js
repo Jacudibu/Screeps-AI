@@ -50,7 +50,7 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
 };
 
 Creep.prototype.findClosestAvailableResource = function() {
-    return this.pos.findClosestByPath(FIND_SOURCES, {filter: function(source) {
+    return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
             return source.memory.workersAssigned < source.memory.workersMax;
         }});
 };

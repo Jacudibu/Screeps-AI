@@ -36,12 +36,7 @@ const spawnlogic = {
         } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
-                    if (spawn.room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-                        this.spawnWorker(spawn, ROLE.BUILDER, false, currentTier);
-                    }
-                    else {
-                        this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
-                    }
+                    this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
                 }
                 else if (spawn.memory.nextAutoSpawn < Game.time) {
                     spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
@@ -62,7 +57,6 @@ const spawnlogic = {
     },
 
     spawnWorker: function(spawn, role, blockSpawningIfNoRessources, currentTier) {
-        let newName = role + ' ' + Game.time;
         let body = [];
 
         if (currentTier > 22) {
@@ -84,11 +78,10 @@ const spawnlogic = {
 
         body.sort();
 
-        this.spawnCreep(spawn, blockSpawningIfNoRessources, body, newName, {memory: {role: role, tier: currentTier}});
+        this.spawnCreep(spawn, role, blockSpawningIfNoRessources, body, {memory: {role: role, tier: currentTier}});
     },
 
     spawnHauler: function(spawn, blockSpawningIfNoResources, currentTier) {
-        let newName = ROLE.HAULER + ' ' + Game.time;
         let body = [];
 
         if (currentTier > 25) {
@@ -101,13 +94,16 @@ const spawnlogic = {
 
         body.sort();
 
-        this.spawnCreep(spawn, blockSpawningIfNoResources, body, newName, {memory: {role: ROLE.HAULER, tier: currentTier}});
+        this.spawnCreep(spawn, ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER, tier: currentTier}});
     },
 
-    spawnCreep: function(spawn, blockSpawningIfNoResources, body, name, memory) {
+    spawnCreep: function(spawn, role, blockSpawningIfNoResources, body, memory) {
+        let name = role + '#' + Memory.creepsBuilt;
+
         switch (spawn.spawnCreep(body, name, memory)) {
             case OK:
                 spawn.room.memory.allowEnergyCollection = true;
+                Memory.creepsBuilt = Memory.creepsBuilt + 1;
                 break;
             case ERR_NOT_ENOUGH_ENERGY:
                 if (blockSpawningIfNoResources) {

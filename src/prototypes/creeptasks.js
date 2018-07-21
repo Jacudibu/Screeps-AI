@@ -205,12 +205,14 @@ Creep.prototype.storeEnergy = function(nextTask) {
 };
 
 Creep.prototype.signRoomController = function(nextTask) {
-    let text = "Hello World! New to the game, let's see how long it lasts. :D";
+    let text = "Hello World! Embrace the most inefficient code in the world. ^-^";
 
-    if (this.room.controller.owner.username === this.room.controller.sign.username) {
-        if (this.room.controller.sign.text === text) {
-            this.setTask(nextTask);
-            return;
+    if (this.room.controller.sign !== undefined) {
+        if (this.room.controller.owner.username === this.room.controller.sign.username) {
+            if (this.room.controller.sign.text === text) {
+                this.setTask(nextTask);
+                return;
+            }
         }
     }
 
