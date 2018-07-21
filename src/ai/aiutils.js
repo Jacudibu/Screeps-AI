@@ -29,7 +29,7 @@ const aiutils = {
     },
 
     collectEnergy: function (creep, taskWhenFinished) {
-        if (creep.room.energyCapacityAvailable - creep.room.energyAvailable > creep.carryCapacity + ENERGY_COLLECTOR_EXTRA_BUFFER) {
+        if (creep.room.energyCapacityAvailable - creep.room.energyAvailable >= creep.carryCapacity + ENERGY_COLLECTOR_EXTRA_BUFFER) {
             creep.say("Buffering");
             return;
         }

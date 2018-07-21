@@ -7,7 +7,7 @@ Structure.prototype.doesInGeneralStoreEnergy = function () {
 
 Structure.prototype.canStoreEnergy = function(amount) {
     return this.doesInGeneralStoreEnergy()
-        && this.energyCapacity - this.energy > amount;
+        && this.energyCapacity - this.energy >= amount;
 };
 
 Structure.prototype.canReleaseEnergy = function(amount) {
