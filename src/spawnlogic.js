@@ -120,7 +120,9 @@ const spawnlogic = {
         room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
 
         for (var sourceName in room.memory.sources) {
-            room.memory.sources[sourceName].workersMax = Math.max(Math.ceil(room.memory.sources[sourceName].workersMax * 0.5), 1);
+            if (room.memory.sources[sourceName].workersMax > 0) {
+                room.memory.sources[sourceName].workersMax = Math.max(Math.ceil(room.memory.sources[sourceName].workersMax * 0.5), 1);
+            }
         }
     },
 };
