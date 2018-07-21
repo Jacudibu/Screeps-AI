@@ -205,7 +205,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
 };
 
 Creep.prototype.signRoomController = function(nextTask) {
-    let text = "Hello World! Embrace the most inefficient code in the world. ^-^";
+    let text = "Hello World! Embrace the most inefficient code ever. ^-^";
 
     if (this.room.controller.sign !== undefined) {
         if (this.room.controller.owner.username === this.room.controller.sign.username) {
@@ -228,4 +228,8 @@ Creep.prototype.signRoomController = function(nextTask) {
             console.log("unexpected error when signing controller: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
             break;
     }
+};
+
+Creep.prototype.remoteHarvestEnergy = function(nextTask) {
+    if (this.target)
 };

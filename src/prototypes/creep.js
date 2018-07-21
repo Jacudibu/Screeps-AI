@@ -24,7 +24,7 @@ Creep.prototype.countBodyPartsOfType = function(types) {
 Creep.prototype.findClosestFilledEnergyStorage = function() {
     const storages = this.room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {
-            return structure.canReleaseEnergy(this.carryCapacity);
+            return structure.canReleaseEnergy(50);
         }
     });
 
