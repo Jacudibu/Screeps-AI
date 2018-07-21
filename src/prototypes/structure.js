@@ -2,6 +2,14 @@ Structure.prototype.doesInGeneralStoreEnergy = function () {
     return this.structureType === STRUCTURE_EXTENSION
         || this.structureType === STRUCTURE_SPAWN
         || this.structureType === STRUCTURE_CONTAINER
+        || this.structureType === STRUCTURE_STORAGE
+        || this.structureType === STRUCTURE_TOWER;
+};
+
+Structure.prototype.doesInGeneralReleaseEnergy = function() {
+    return this.structureType === STRUCTURE_EXTENSION
+        || this.structureType === STRUCTURE_SPAWN
+        || this.structureType === STRUCTURE_CONTAINER
         || this.structureType === STRUCTURE_STORAGE;
 };
 
@@ -11,6 +19,6 @@ Structure.prototype.canStoreEnergy = function(amount) {
 };
 
 Structure.prototype.canReleaseEnergy = function(amount) {
-    return this.doesInGeneralStoreEnergy()
+    return this.doesInGeneralReleaseEnergy()
         && this.energy >= amount;
 };
