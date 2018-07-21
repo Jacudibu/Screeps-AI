@@ -7,6 +7,7 @@ global.AUTO_SPAWN_TIMER = 10;
 global.CRITICAL_TICKS_TO_LIVE_VALUE = 350;
 global.ENERGY_COLLECTOR_EXTRA_BUFFER = 30;
 global.COST_PER_WORKER_TIER = 200;
+global.MINIMUM_HAUL_RESOURCE_AMOUNT = 200;
 
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
@@ -14,6 +15,7 @@ global.TASK.HAUL_ENERGY = 'haul_energy';
 global.TASK.STORE_ENERGY = 'store_energy';
 global.TASK.COLLECT_ENERGY = 'collect_energy';
 global.TASK.UPGRADE_CONTROLLER = 'upgrade_controller';
+global.TASK.SIGN_CONTROLLER = 'sign_controller';
 global.TASK.RENEW_CREEP = 'renew_creep';
 global.TASK.BUILD_STRUCTURE = 'build_structure';
 global.TASK.REPAIR_STRUCTURE = 'repair_structure';

@@ -11,7 +11,7 @@ const builder = {
                 creep.repairStructures(TASK.UPGRADE_CONTROLLER);
                 break;
             case TASK.UPGRADE_CONTROLLER:
-                creep.upgradeRoomController();
+                creep.upgradeRoomController(TASK.COLLECT_ENERGY);
                 break;
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.COLLECT_ENERGY);

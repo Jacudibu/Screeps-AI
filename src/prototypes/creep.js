@@ -17,6 +17,10 @@ Creep.prototype.isRenewNeeded = function() {
     }
 };
 
+Creep.prototype.countBodyPartsOfType = function(types) {
+    return _.filter(this.body, function(bodyPart) {return bodyPart.type === types}).length;
+};
+
 Creep.prototype.findClosestFilledEnergyStorage = function() {
     const storages = this.room.find(FIND_MY_STRUCTURES, {
         filter: (structure) => {

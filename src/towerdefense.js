@@ -29,8 +29,8 @@ const towerDefense = {
         }
 
         hostiles.sort(function(creepA, creepB) {
-            let healsA = this.countBodyParts(creepA.body, HEAL);
-            let healsB = this.countBodyParts(creepB.body, HEAL);
+            let healsA = creepA.countBodyPartsOfType(HEAL);
+            let healsB = creepB.countBodyPartsOfType(HEAL);
 
             if (healsA > 0 && healsB === 0) {
                 return -1;
@@ -58,10 +58,6 @@ const towerDefense = {
             towers[i].heal(damagedCreeps[i]);
         }
     },
-
-    countBodyParts : function(body, part) {
-        return _.filter(body, function(bodyPart) {return bodyPart === part}).length;
-    }
 };
 
 module.exports = towerDefense;

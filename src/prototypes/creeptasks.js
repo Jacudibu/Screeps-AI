@@ -26,17 +26,24 @@ Creep.prototype.harvestEnergy = function(taskWhenFinished) {
 };
 
 Creep.prototype.haulEnergy = function(taskWhenFinished) {
-    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES);
+    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
+        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
+    });
 
     if (droppedEnergy.length === 0) {
+        this.say("No haul");
+        this.setTask(taskWhenFinished);
         return;
     }
 
-    _.sortBy(droppedEnergy, drop => this.pos.getRangeTo(drop));
+    _.sortByOrder(droppedEnergy, drop => drop.amount, 'desc');
     let target = droppedEnergy[0];
 
     switch (this.pickup(target)) {
         case OK:
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.setTask(taskWhenFinished);
+            }
             break;
         case ERR_NOT_IN_RANGE:
             this.moveTo(target);
@@ -102,7 +109,7 @@ Creep.prototype.renew = function(taskWhenFinished) {
     }
 };
 
-Creep.prototype.upgradeRoomController = function() {
+Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
     switch (this.upgradeController(this.room.controller)) {
         case OK:
             break;
@@ -110,7 +117,7 @@ Creep.prototype.upgradeRoomController = function() {
             this.moveTo(this.room.controller);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
+            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : taskWhenFinished);
             break;
         default:
             console.log("unexpected error when upgrading controller: " + this.upgradeController(this.room.controller));
@@ -193,6 +200,30 @@ Creep.prototype.storeEnergy = function(nextTask) {
             break;
         default:
             console.log("unexpected error when transferring energy: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
+            break;
+    }
+};
+
+Creep.prototype.signRoomController = function(nextTask) {
+    let text = "Hello World! New to the game, let's see how long it lasts. :D";
+
+    if (this.room.controller.owner.username === this.room.controller.sign.username) {
+        if (this.room.controller.sign.text === text) {
+            this.setTask(nextTask);
+            return;
+        }
+    }
+
+    switch (this.signController(this.room.controller, text)) {
+        case OK:
+            this.setTask(nextTask);
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(this.room.controller);
+            break;
+        default:
+            this.setTask(nextTask);
+            console.log("unexpected error when signing controller: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
             break;
     }
 };
