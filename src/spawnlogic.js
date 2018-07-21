@@ -31,6 +31,8 @@ const spawnlogic = {
             this.spawnWorker(spawn, ROLE.BUILDER, true, currentTier);
         } else if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
             this.spawnWorker(spawn, ROLE.REPAIRER, true, currentTier);
+        } else if (this.isRoleNeeded(room, ROLE.HAULER)) {
+            this.spawnHauler(spawn, true, currentTier);
         } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
@@ -82,17 +84,39 @@ const spawnlogic = {
 
         body.sort();
 
-        switch (spawn.spawnCreep(body, newName, {memory: {role: role, tier: currentTier}})) {
+        this.spawnCreep(spawn, blockSpawningIfNoRessources, body, newName, {memory: {role: role, tier: currentTier}});
+    },
+
+    spawnHauler: function(spawn, blockSpawningIfNoResources, currentTier) {
+        let newName = ROLE.HAULER + ' ' + Game.time;
+        let body = [];
+
+        if (currentTier > 25) {
+            currentTier = 25;
+        }
+
+        for (let i = 0; i < currentTier * 2; i++) {
+            body.push(CARRY, MOVE);
+        }
+
+        body.sort();
+
+        this.spawnCreep(spawn, blockSpawningIfNoResources, body, newName, {memory: {role: ROLE.HAULER, tier: currentTier}});
+    },
+
+    spawnCreep: function(spawn, blockSpawningIfNoResources, body, name, memory) {
+        switch (spawn.spawnCreep(body, name, memory)) {
             case OK:
                 spawn.room.memory.allowEnergyCollection = true;
                 break;
             case ERR_NOT_ENOUGH_ENERGY:
-                if (blockSpawningIfNoRessources) {
+                if (blockSpawningIfNoResources) {
                     spawn.room.memory.allowEnergyCollection = false;
                 }
                 break;
             default:
-                console.log("unexpected error when spawning creep: " + spawn.spawnCreep(body, newName, {memory: {role: role, tier: currentTier}}));
+                console.log("unexpected error when spawning creep: " + spawn.spawnCreep(body, name, memory)
+                    + "\nBody: " + body + " name:" + name + "memory:" + memory);
                 spawn.room.memory.allowEnergyCollection = true;
                 break;
         }

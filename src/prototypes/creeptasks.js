@@ -9,6 +9,8 @@ Creep.prototype.harvestEnergy = function(taskWhenFinished) {
     switch (this.harvest(source)) {
         case OK:
             break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            break;
         case ERR_NOT_IN_RANGE:
             this.moveTo(source);
             break;
@@ -20,6 +22,31 @@ Creep.prototype.harvestEnergy = function(taskWhenFinished) {
     if (this.carry.energy === this.carryCapacity) {
         source.memory.workersAssigned--;
         this.setTask(taskWhenFinished);
+    }
+};
+
+Creep.prototype.haulEnergy = function(taskWhenFinished) {
+    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES);
+
+    if (droppedEnergy.length === 0) {
+        return;
+    }
+
+    _.sortBy(droppedEnergy, drop => this.pos.getRangeTo(drop));
+    let target = droppedEnergy[0];
+
+    switch (this.pickup(target)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(target);
+            break;
+        case ERR_FULL:
+            this.setTask(taskWhenFinished);
+            break;
+        default:
+            console.log("Picking up Energy resulted in unhandled error: " + this.pickup(target));
+            break;
     }
 };
 

@@ -10,6 +10,7 @@ global.COST_PER_WORKER_TIER = 200;
 
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
+global.TASK.HAUL_ENERGY = 'haul_energy';
 global.TASK.STORE_ENERGY = 'store_energy';
 global.TASK.COLLECT_ENERGY = 'collect_energy';
 global.TASK.UPGRADE_CONTROLLER = 'upgrade_controller';
@@ -19,6 +20,7 @@ global.TASK.REPAIR_STRUCTURE = 'repair_structure';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
+global.ROLE.HAULER ='hauler';
 global.ROLE.BUILDER = 'builder';
 global.ROLE.UPGRADER = 'upgrader';
 global.ROLE.REPAIRER = 'repairer';

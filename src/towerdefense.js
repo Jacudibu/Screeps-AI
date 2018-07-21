@@ -4,35 +4,58 @@ const towerDefense = {
             let room = Game.rooms[roomName];
 
             let hostiles = room.find(FIND_HOSTILE_CREEPS);
-            if (hostiles.length === 0) {
+            if (hostiles.length > 0) {
+                this.attackHostiles(room, hostiles);
                 return;
             }
 
-            let towers = _.filter(room.find(FIND_MY_STRUCTURES), function (structure) {
-                return structure.structureType === STRUCTURE_TOWER;
+            let damagedCreeps = _.filter(room.find(FIND_MY_CREEPS), function (creep) {
+                return creep.hits < creep.hitsMax;
             });
 
-            if (towers.length === 0) {
-                return;
+            if (damagedCreeps.length > 0) {
+                this.repairCreeps(room, damagedCreeps);
+            }
+        }
+    },
+
+    attackHostiles: function(room, hostiles) {
+        let towers = _.filter(room.find(FIND_MY_STRUCTURES), function (structure) {
+            return structure.structureType === STRUCTURE_TOWER;
+        });
+
+        if (towers.length === 0) {
+            return;
+        }
+
+        hostiles.sort(function(creepA, creepB) {
+            let healsA = this.countBodyParts(creepA.body, HEAL);
+            let healsB = this.countBodyParts(creepB.body, HEAL);
+
+            if (healsA > 0 && healsB === 0) {
+                return -1;
+            }
+            if (healsB > 0 && healsA === 0) {
+                return 1;
             }
 
-            hostiles.sort(function(creepA, creepB) {
-                healsA = this.countBodyParts(creepA.body, HEAL);
-                healsB = this.countBodyParts(creepB.body, HEAL);
+            return creepA.hits - creepB.hits;
+        });
 
-                if (healsA > 0 && healsB === 0) {
-                    return -1;
-                }
-                if (healsB > 0 && healsA === 0) {
-                    return 1;
-                }
+        for (let i = 0; i < towers.length; i++) {
+            towers[i].attack(hostiles[0]);
+        }
+    },
 
-                return creepA.hits - creepB.hits;
-            });
+    repairCreeps: function(room, damagedCreeps) {
+        let towers = _.filter(room.find(FIND_MY_STRUCTURES), function (structure) {
+            return structure.structureType === STRUCTURE_TOWER;
+        });
 
-            for (let i = 0; i < towers.length; i++) {
-                towers[i].attack(hostiles[0]);
-            }
+        damagedCreeps.sort(function(a, b) {return a.hits - b.hits;});
+
+        for (let i = 0; i < towers.length; i++) {
+            towers[i].heal(damagedCreeps[i]);
         }
     },
 

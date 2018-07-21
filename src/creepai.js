@@ -1,5 +1,6 @@
 const builderAI = require('ai_builder');
 const harvesterAI = require('ai_harvester');
+const haulerAI = require('ai_hauler');
 const upgraderAI = require('ai_upgrader');
 const repairerAI = require('ai_repairer');
 
@@ -25,6 +26,8 @@ const creepAi = {
                 case ROLE.UPGRADER:
                     upgraderAI.run(creep);
                     break;
+                case ROLE.HAULER:
+                    haulerAI.run(creep);
             }
         }
     }
