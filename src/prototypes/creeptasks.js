@@ -1,5 +1,5 @@
-Creep.prototype.harvestEnergy = function(taskWhenFinished) {
-    let source = this._getSource();
+Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
+    let source = this._getSource(false);
 
     if (source === ERR_NOT_FOUND) {
         this.say("NO SOURCE");
@@ -25,13 +25,38 @@ Creep.prototype.harvestEnergy = function(taskWhenFinished) {
     }
 };
 
+Creep.prototype.harvestEnergy = function() {
+    let source = this._getSource(true);
+
+    if (source === ERR_NOT_FOUND) {
+        this.say("NO SOURCE");
+        return;
+    }
+
+    switch (this.harvest(source)) {
+        case OK:
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(source);
+            break;
+        default:
+            console.log("unexpected error when harvesting energy: " + this.harvest(source) + " --> " + source);
+            break;
+    }
+    if (this.carry.energy === this.carryCapacity) {
+        this.drop(RESOURCE_ENERGY);
+    }
+};
+
 Creep.prototype.haulEnergy = function(taskWhenFinished) {
     let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
         filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
     });
 
     if (droppedEnergy.length === 0) {
-        this.say("No haul");
+        this.say("No drops");
         this.setTask(taskWhenFinished);
         return;
     }
@@ -58,11 +83,6 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 };
 
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
-    if (this.room.energyCapacityAvailable - this.room.energyAvailable >= this.carryCapacity + ENERGY_COLLECTOR_EXTRA_BUFFER) {
-        this.say("Buffering");
-        return;
-    }
-
     if (!this.room.memory.allowEnergyCollection) {
         this.say("Forbidden");
         return;
@@ -77,10 +97,16 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
 
     switch (this.withdraw(storage, RESOURCE_ENERGY)) {
         case OK:
-            this.setTask(taskWhenFinished);
+            this.say("nom");
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.setTask(taskWhenFinished);
+            }
             break;
         case ERR_NOT_IN_RANGE:
             this.moveTo(storage);
+            break;
+        case ERR_FULL:
+            this.setTask(taskWhenFinished);
             break;
         default:
             console.log("Collecting Energy resulted in unhandled error: " + this.withdraw(storage, RESOURCE_ENERGY));

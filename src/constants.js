@@ -11,6 +11,7 @@ global.MINIMUM_HAUL_RESOURCE_AMOUNT = 100;
 
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
+global.TASK.HARVEST_ENERGY_FETCH = 'harvest_energy_fetch';
 global.TASK.HAUL_ENERGY = 'haul_energy';
 global.TASK.STORE_ENERGY = 'store_energy';
 global.TASK.COLLECT_ENERGY = 'collect_energy';
@@ -22,6 +23,7 @@ global.TASK.REPAIR_STRUCTURE = 'repair_structure';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
+global.ROLE.STRIP_HARVESTER = 'strip_harvester';
 global.ROLE.HAULER ='hauler';
 global.ROLE.BUILDER = 'builder';
 global.ROLE.UPGRADER = 'upgrader';

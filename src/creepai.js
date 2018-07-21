@@ -28,6 +28,7 @@ const creepAi = {
                     break;
                 case ROLE.HAULER:
                     haulerAI.run(creep);
+                    break;
             }
         }
     }
