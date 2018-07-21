@@ -18,25 +18,20 @@ const spawnlogic = {
             this.initSpawnMemory(spawn.room);
         }
 
-        let currentTier = Math.floor(room.energyCapacityAvailable / COST_PER_WORKER_TIER);
-        if (currentTier > room.memory.currentTier) {
-            this.increaseTier(room, currentTier);
-        }
-
-        if (this.isRoleNeeded(room, ROLE.HARVESTER, currentTier)) {
-            this.spawnHarvester(spawn, true, currentTier);
+        if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
+            this.spawnHarvester(spawn, true);
         } else if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
-            this.spawnWorker(spawn, ROLE.UPGRADER, true, currentTier);
+            this.spawnWorker(spawn, ROLE.UPGRADER, true);
         } else if (this.isRoleNeeded(room, ROLE.BUILDER)) {
-            this.spawnWorker(spawn, ROLE.BUILDER, true, currentTier);
+            this.spawnWorker(spawn, ROLE.BUILDER, true);
         } else if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
-            this.spawnWorker(spawn, ROLE.REPAIRER, true, currentTier);
+            this.spawnWorker(spawn, ROLE.REPAIRER, true);
         } else if (this.isRoleNeeded(room, ROLE.HAULER)) {
-            this.spawnHauler(spawn, true, currentTier);
+            this.spawnHauler(spawn, true);
         } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
-                    this.spawnWorker(spawn, ROLE.UPGRADER, false, currentTier);
+                    this.spawnWorker(spawn, ROLE.UPGRADER, false);
                 }
                 else if (spawn.memory.nextAutoSpawn < Game.time) {
                     spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
@@ -56,39 +51,29 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
-    spawnWorker: function(spawn, role, blockSpawningIfNoRessources, currentTier) {
+    spawnWorker: function(spawn, role, blockSpawningIfNoResources) {
         let body = [];
 
-        if (currentTier > 22) {
-            currentTier = 22;
+        let energy = spawn.room.energyCapacityAvailable;
+
+        if (energy > 200 * 16) {
+            energy = 200 * 16;
         }
 
-        for (let i = 0; i < currentTier; i++) {
+        while (energy > 200) {
             body.push(WORK, CARRY, MOVE);
-        }
-
-        let remaining = spawn.room.energyCapacityAvailable % COST_PER_WORKER_TIER;
-
-        if (remaining >= 100) {
-            body.push(CARRY);
-        }
-        if (remaining >= 50) {
-            body.push(MOVE);
+            energy -= 200;
         }
 
         body.sort();
 
-        this.spawnCreep(spawn, role, blockSpawningIfNoRessources, body, {memory: {role: role, tier: currentTier}});
+        this.spawnCreep(spawn, role, blockSpawningIfNoResources, body, {memory: {role: role}});
     },
 
-    spawnHauler: function(spawn, blockSpawningIfNoResources, currentTier) {
+    spawnHauler: function(spawn, blockSpawningIfNoResources) {
         let body = [];
 
-        if (currentTier > 25) {
-            currentTier = 25;
-        }
-
-        let energy = spawn.room.energyAvailable;
+        let energy = spawn.room.energyCapacityAvailable;
 
         if (energy > 5000) {
             energy = 5000;
@@ -101,13 +86,13 @@ const spawnlogic = {
 
         body.sort();
 
-        this.spawnCreep(spawn, ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER, tier: currentTier}});
+        this.spawnCreep(spawn, ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER}});
     },
 
-    spawnHarvester: function(spawn, blockSpawningIfNoResources, currentTier) {
+    spawnHarvester: function(spawn, blockSpawningIfNoResources) {
         let body = [];
 
-        let energy = spawn.room.energyAvailable;
+        let energy = spawn.room.energyCapacityAvailable;
 
         if (energy > 650) {
             energy = 650;
@@ -123,7 +108,7 @@ const spawnlogic = {
 
         body.sort();
 
-        this.spawnCreep(spawn, ROLE.STRIP_HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.STRIP_HARVESTER, tier: currentTier}});
+        this.spawnCreep(spawn, ROLE.STRIP_HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.STRIP_HARVESTER}});
     },
 
     spawnCreep: function(spawn, role, blockSpawningIfNoResources, body, memory) {
@@ -155,24 +140,6 @@ const spawnlogic = {
         room.memory.requestedCreeps[ROLE.UPGRADER] = 1;
         room.memory.requestedCreeps[ROLE.BUILDER] = 1;
         room.memory.requestedCreeps[ROLE.REPAIRER] = 1;
-    },
-
-    increaseTier: function(room, currentTier) {
-        room.memory.currentTier = currentTier;
-
-        if (currentTier < 3 || currentTier > 8) {
-            return;
-        }
-
-        let harvestersNeeded = Math.floor(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.75);
-        harvestersNeeded = Math.max(harvestersNeeded, room.find(FIND_SOURCES).length);
-        room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
-
-        for (let sourceName in room.memory.sources) {
-            if (room.memory.sources[sourceName].workersMax > 0) {
-                room.memory.sources[sourceName].workersMax = Math.max(Math.floor(room.memory.sources[sourceName].workersMax * 0.75), 1);
-            }
-        }
     },
 };
 
