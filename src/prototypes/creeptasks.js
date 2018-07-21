@@ -230,6 +230,8 @@ Creep.prototype.signRoomController = function(nextTask) {
     }
 };
 
-Creep.prototype.remoteHarvestEnergy = function(nextTask) {
-    if (this.target)
+/*
+Creep.prototype.moveToTargetRoom = function(nextTask) {
+    source = this._getRemoteSource();
 };
+*/

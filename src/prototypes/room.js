@@ -2,6 +2,25 @@ Room.prototype.setRequestedCreepRole = function(role, count) {
     this.memory.requestedCreeps[role] = count;
 };
 
+Room.prototype.addRemoteMiningRoom = function (roomName) {
+    if (!this.memory.remoteMiningRooms) {
+        this.memory.remoteMiningRooms = [];
+    }
+
+    this.memory.remoteMiningRooms.push(roomName);
+};
+
+Room.prototype.removeRemoteMiningRoom = function(roomName) {
+    if (!this.memory.remoteMiningRooms) {
+        return;
+    }
+
+    let index = this.memory.remoteMiningRooms.indexOf(roomName);
+    if (index > -1) {
+        this.memory.remoteMiningRooms.splice(index, 1);
+    }
+};
+
 Room.prototype._findTowers = function() {
     return _.filter(this.find(FIND_MY_STRUCTURES), function (structure) {
         return structure.structureType === STRUCTURE_TOWER;

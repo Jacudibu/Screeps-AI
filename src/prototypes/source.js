@@ -21,6 +21,10 @@ Object.defineProperty(Source.prototype, 'memory', {
     }
 });
 
+Source.prototype.setWorkersMax = function(amount) {
+    this.memory.workersMax = amount;
+};
+
 Source.prototype._initializeMemoryForAllSourcesInRoom = function() {
     this.room.memory.sources = {};
     const sources = this.room.find(FIND_SOURCES);

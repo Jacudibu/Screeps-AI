@@ -49,7 +49,7 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestAvailableResource = function() {
+Creep.prototype.findClosestAvailableSource = function() {
     return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
             return source.memory.workersAssigned < source.memory.workersMax;
         }});
@@ -64,7 +64,7 @@ Creep.prototype._getSource = function() {
         return Game.getObjectById(this.memory.taskTargetId);
     }
 
-    let source = this.findClosestAvailableResource();
+    let source = this.findClosestAvailableSource();
 
     if (source == null)  {
         return ERR_NOT_FOUND;
