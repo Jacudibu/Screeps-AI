@@ -63,28 +63,22 @@ Creep.prototype.findClosestContainer = function() {
     return _.sortBy(container, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestAvailableSource = function(isStripHarvester) {
-    if (isStripHarvester) {
-        return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
-                return source.memory.workersAssigned === 0 && source.memory.workersMax === 1;
-            }});
-    } else {
-        return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
-                return source.memory.workersAssigned < source.memory.workersMax;
-            }});
-    }
+Creep.prototype.findClosestAvailableSource = function() {
+    return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
+            return source.memory.workersAssigned < source.memory.workersMax;
+        }});
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~ private getters used by tasks ~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Creep.prototype._getSource = function(isStripHarvester) {
+Creep.prototype._getSource = function() {
     if (this.memory.taskTargetId) {
         return Game.getObjectById(this.memory.taskTargetId);
     }
 
-    let source = this.findClosestAvailableSource(isStripHarvester);
+    let source = this.findClosestAvailableSource();
 
     if (source == null)  {
         return ERR_NOT_FOUND;

@@ -1,5 +1,5 @@
 Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
-    let source = this._getSource(false);
+    let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
         this.say("NO SOURCE");
@@ -26,7 +26,7 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
 };
 
 Creep.prototype.harvestEnergy = function() {
-    let source = this._getSource(true);
+    let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
         this.say("NO SOURCE");

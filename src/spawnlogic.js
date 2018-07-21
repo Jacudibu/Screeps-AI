@@ -60,7 +60,7 @@ const spawnlogic = {
             energy = 200 * 16;
         }
 
-        while (energy > 200) {
+        while (energy >= 200) {
             body.push(WORK, CARRY, MOVE);
             energy -= 200;
         }
@@ -79,7 +79,7 @@ const spawnlogic = {
             energy = 5000;
         }
 
-        while(energy > 100) {
+        while(energy >= 100) {
             body.push(CARRY, MOVE);
             energy -= 100;
         }
@@ -101,14 +101,14 @@ const spawnlogic = {
         body.push(MOVE);
         energy -= 50;
 
-        while (energy > 100) {
+        while (energy >= 100) {
             body.push(WORK);
             energy -= BODYPART_COST.work;
         }
 
         body.sort();
 
-        this.spawnCreep(spawn, ROLE.STRIP_HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.STRIP_HARVESTER}});
+        this.spawnCreep(spawn, ROLE.HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HARVESTER}});
     },
 
     spawnCreep: function(spawn, role, blockSpawningIfNoResources, body, memory) {
