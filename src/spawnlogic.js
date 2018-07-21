@@ -20,13 +20,7 @@ const spawnlogic = {
 
         let currentTier = Math.floor(room.energyCapacityAvailable / COST_PER_WORKER_TIER);
         if (currentTier > room.memory.currentTier) {
-            room.memory.currentTier = currentTier;
-
-            if (currentTier > 2) { // don't do it on the first tier upgrade since we (probably) are unable to 100% farm the resource yet
-                let harvestersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
-                harvestersNeeded = Math.max(harvestersNeeded, room.find(FIND_SOURCES).length);
-                room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
-            }
+            this.increaseTier(room, currentTier);
         }
 
         if (this.isRoleNeeded(room, ROLE.HARVESTER, currentTier)) {
@@ -35,6 +29,8 @@ const spawnlogic = {
             this.spawnWorker(spawn, ROLE.UPGRADER, true, currentTier);
         } else if (this.isRoleNeeded(room, ROLE.BUILDER)) {
             this.spawnWorker(spawn, ROLE.BUILDER, true, currentTier);
+        } else if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
+            this.spawnWorker(spawn, ROLE.REPAIRER, true, currentTier);
         } else if (room.energyCapacityAvailable === room.energyAvailable) {
             if (spawn.memory.nextAutoSpawn) {
                 if (spawn.memory.nextAutoSpawn === Game.time) {
@@ -109,8 +105,24 @@ const spawnlogic = {
         room.memory.requestedCreeps[ROLE.HARVESTER] = 9;
         room.memory.requestedCreeps[ROLE.UPGRADER] = 1;
         room.memory.requestedCreeps[ROLE.BUILDER] = 1;
+        room.memory.requestedCreeps[ROLE.REPAIRER] = 1;
     },
 
+    increaseTier: function(room, currentTier) {
+        room.memory.currentTier = currentTier;
+
+        if (currentTier < 3 || currentTier > 8) {
+            return;
+        }
+
+        let harvestersNeeded = Math.ceil(room.memory.requestedCreeps[ROLE.HARVESTER] * 0.5);
+        harvestersNeeded = Math.max(harvestersNeeded, room.find(FIND_SOURCES).length);
+        room.memory.requestedCreeps[ROLE.HARVESTER] = harvestersNeeded;
+
+        for (let i = 0; i < room.memory.sources.length; i++) {
+            room.memory.sources[i].workersMax = Math.max(room.memory.sources[i].workersMax * 0.5, 1);
+        }
+    },
 };
 
 module.exports = spawnlogic;

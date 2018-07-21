@@ -1,6 +1,7 @@
 const builderAI = require('ai_builder');
 const harvesterAI = require('ai_harvester');
 const upgraderAI = require('ai_upgrader');
+const repairerAI = require('ai_repairer');
 
 const creepAi = {
     run: function() {
@@ -17,6 +18,9 @@ const creepAi = {
                     break;
                 case ROLE.BUILDER:
                     builderAI.run(creep);
+                    break;
+                case ROLE.REPAIRER:
+                    repairerAI.run(creep);
                     break;
                 case ROLE.UPGRADER:
                     upgraderAI.run(creep);

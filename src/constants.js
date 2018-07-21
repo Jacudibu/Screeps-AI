@@ -21,3 +21,4 @@ global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
 global.ROLE.BUILDER = 'builder';
 global.ROLE.UPGRADER = 'upgrader';
+global.ROLE.REPAIRER = 'repairer';

@@ -91,12 +91,12 @@ Creep.prototype.upgradeRoomController = function() {
     }
 };
 
-Creep.prototype.buildStructures = function() {
+Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
     let constructionSite = this._getConstructionSite(this);
 
     if (constructionSite === ERR_NOT_FOUND) {
         this.say('No Build');
-        this.setTask(TASK.REPAIR_STRUCTURE);
+        this.setTask(taskIfNothingToBuild);
         this.repairStructures();
         return;
     }
@@ -119,12 +119,12 @@ Creep.prototype.buildStructures = function() {
     }
 };
 
-Creep.prototype.repairStructures = function() {
+Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
     let damagedStructure = this._getDamagedStructure(this);
 
     if (damagedStructure === ERR_NOT_FOUND) {
         this.say('No Repair');
-        this.setTask(TASK.UPGRADE_CONTROLLER);
+        this.setTask(taskIfNothingToRepair);
         this.upgradeRoomController();
         return;
     }

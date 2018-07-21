@@ -1,14 +1,14 @@
-const builder = {
+const repairer = {
     run: function (creep) {
         switch (creep.memory.task) {
             case TASK.COLLECT_ENERGY:
-                creep.collectEnergy(TASK.BUILD_STRUCTURE);
-                break;
-            case TASK.BUILD_STRUCTURE:
-                creep.buildStructures(TASK.REPAIR_STRUCTURE);
+                creep.collectEnergy(TASK.REPAIR_STRUCTURE);
                 break;
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.UPGRADE_CONTROLLER);
+                creep.repairStructures(TASK.BUILD_STRUCTURE);
+                break;
+            case TASK.BUILD_STRUCTURE:
+                creep.buildStructures(TASK.UPGRADE_CONTROLLER);
                 break;
             case TASK.UPGRADE_CONTROLLER:
                 creep.upgradeRoomController();
@@ -23,4 +23,4 @@ const builder = {
     },
 };
 
-module.exports = builder;
+module.exports = repairer;
