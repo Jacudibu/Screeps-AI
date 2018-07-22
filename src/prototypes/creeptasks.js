@@ -2,7 +2,7 @@ Creep.prototype.harvestEnergy = function() {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
-        this.say("NO SOURCE");
+        this.say("x~x");
         return;
     }
 
@@ -27,7 +27,7 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
-        this.say("NO SOURCE");
+        this.say("x~x");
         return;
     }
 
@@ -73,7 +73,7 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
     const storage = this.findClosestFilledEnergyStorage(this);
 
     if (storage === undefined) {
-        this.say("No Energy");
+        this.say("q-q");
         return;
     }
 
@@ -121,7 +121,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
     let constructionSite = this._getConstructionSite(this);
 
     if (constructionSite === ERR_NOT_FOUND) {
-        this.say('No Build');
+        this.say('x~x');
         this.setTask(taskIfNothingToBuild);
         this.repairStructures();
         return;
@@ -149,7 +149,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
     let damagedStructure = this._getDamagedStructure(this);
 
     if (damagedStructure === ERR_NOT_FOUND) {
-        this.say('No Repair');
+        this.say('x~x');
         this.setTask(taskIfNothingToRepair);
         this.upgradeRoomController();
         return;
@@ -174,7 +174,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
     const structureThatRequiresEnergy = this._getStorage();
 
     if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
-        this.say('No Storage');
+        this.say('x~x');
         return;
     }
 
@@ -249,7 +249,7 @@ Creep.prototype.moveToContainerForMiningSource = function(taskWhenFinished) {
     let moveTarget = this._getHarvesterMoveTarget();
 
     if (moveTarget === ERR_NOT_FOUND) {
-        this.say("NO SOURCE");
+        this.say("x~x");
         return;
     }
 

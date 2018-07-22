@@ -26,7 +26,8 @@ const spawnlogic = {
             spawn.spawnHauler(energy, true);
         } else if (this.isRoleNeeded(room, ROLE.UPGRADER, energy)) {
             spawn.spawnWorker(ROLE.UPGRADER, energy, true);
-        } else if (this.isRoleNeeded(room, ROLE.BUILDER, energy)) {
+        } else if (this.isRoleNeeded(room, ROLE.BUILDER, energy)
+                && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
             spawn.spawnWorker(ROLE.BUILDER, energy, true);
         } else if (this.isRoleNeeded(room, ROLE.REPAIRER, energy)) {
             spawn.spawnWorker(ROLE.REPAIRER, energy, true);

@@ -54,7 +54,8 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     const container = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return structure.structureType === STRUCTURE_CONTAINER && _.sum(structure.store) > MINIMUM_HAUL_RESOURCE_AMOUNT;
+            return structure.structureType === STRUCTURE_CONTAINER
+                && _.sum(structure.store) > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT;
         }
     });
 
