@@ -1,3 +1,28 @@
+Creep.prototype.harvestEnergy = function() {
+    let source = this._getSource();
+
+    if (source === ERR_NOT_FOUND) {
+        this.say("NO SOURCE");
+        return;
+    }
+
+    switch (this.harvest(source)) {
+        case OK:
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(source);
+            break;
+        default:
+            console.log("unexpected error when harvesting energy: " + this.harvest(source) + " --> " + source);
+            break;
+    }
+    if (this.carry.energy === this.carryCapacity) {
+        this.drop(RESOURCE_ENERGY);
+    }
+};
+
 Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
     let source = this._getSource();
 
@@ -22,31 +47,6 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
     if (this.carry.energy === this.carryCapacity) {
         source.memory.workersAssigned--;
         this.setTask(taskWhenFinished);
-    }
-};
-
-Creep.prototype.harvestEnergy = function() {
-    let source = this._getSource();
-
-    if (source === ERR_NOT_FOUND) {
-        this.say("NO SOURCE");
-        return;
-    }
-
-    switch (this.harvest(source)) {
-        case OK:
-            break;
-        case ERR_NOT_ENOUGH_RESOURCES:
-            break;
-        case ERR_NOT_IN_RANGE:
-            this.moveTo(source);
-            break;
-        default:
-            console.log("unexpected error when harvesting energy: " + this.harvest(source) + " --> " + source);
-            break;
-    }
-    if (this.carry.energy === this.carryCapacity) {
-        this.drop(RESOURCE_ENERGY);
     }
 };
 
@@ -222,8 +222,45 @@ Creep.prototype.signRoomController = function(nextTask) {
     }
 };
 
-/*
-Creep.prototype.moveToTargetRoom = function(nextTask) {
-    source = this._getRemoteSource();
+Creep.prototype._getHarvesterMoveTarget = function() {
+    if (this.memory.moveTarget) {
+        return Game.getObjectById(this.memory.moveTarget);
+    }
+
+    let source = this._getSource();
+
+    if (source === ERR_NOT_FOUND) {
+        return ERR_NOT_FOUND;
+    }
+
+    let containers = source.pos.findInRange(FIND_STRUCTURES, 1, {filter: s => s.structureType === STRUCTURE_CONTAINER });
+
+    if (containers.length === 0) {
+        this.memory.moveTarget = source.id;
+        return source;
+    }
+
+    let container = containers[0];
+    this.memory.moveTarget = container.id;
+    return container;
 };
-*/
+
+Creep.prototype.moveToContainerForMiningSource = function(taskWhenFinished) {
+    let moveTarget = this._getHarvesterMoveTarget();
+
+    if (moveTarget === ERR_NOT_FOUND) {
+        this.say("NO SOURCE");
+        return;
+    }
+
+    if (moveTarget instanceof Source) {
+        this.moveTo = undefined;
+        this.setTask(taskWhenFinished)
+    }
+
+    this.moveTo(moveTarget);
+    if (this.pos.isEqualTo(moveTarget.pos)) {
+        this.moveTo = undefined;
+        this.setTask(taskWhenFinished);
+    }
+};

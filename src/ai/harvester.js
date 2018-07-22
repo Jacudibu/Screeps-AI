@@ -4,6 +4,9 @@ const harvester = {
             case TASK.HARVEST_ENERGY:
                 creep.harvestEnergy();
                 break;
+            case TASK.MOVE_ONTO_CONTAINER:
+                creep.moveToContainerForMiningSource(TASK.HARVEST_ENERGY);
+                break;
             case TASK.HARVEST_ENERGY_FETCH:
                 creep.harvestEnergyAndFetch(TASK.STORE_ENERGY);
                 break;
@@ -11,7 +14,7 @@ const harvester = {
                 creep.storeEnergy(TASK.HARVEST_ENERGY_FETCH);
                 break;
             default:
-                creep.setTask(TASK.HARVEST_ENERGY);
+                creep.setTask(TASK.MOVE_ONTO_CONTAINER);
                 break;
         }
     },

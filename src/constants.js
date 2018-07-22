@@ -7,12 +7,13 @@ global.AUTO_SPAWN_TIMER = 10;
 global.CRITICAL_TICKS_TO_LIVE_VALUE = 350;
 global.ENERGY_COLLECTOR_EXTRA_BUFFER = 0;
 global.COST_PER_WORKER_TIER = 200;
-global.MINIMUM_HAUL_RESOURCE_AMOUNT = 750;
+global.MINIMUM_HAUL_RESOURCE_AMOUNT = 450;
 
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
 global.TASK.HARVEST_ENERGY_FETCH = 'harvest_energy_fetch';
 global.TASK.HAUL_ENERGY = 'haul_energy';
+global.TASK.MOVE_ONTO_CONTAINER = 'move_onto_container';
 global.TASK.STORE_ENERGY = 'store_energy';
 global.TASK.COLLECT_ENERGY = 'collect_energy';
 global.TASK.UPGRADE_CONTROLLER = 'upgrade_controller';
