@@ -220,46 +220,32 @@ Creep.prototype.signRoomController = function(nextTask) {
     }
 };
 
-Creep.prototype._getHarvesterMoveTarget = function() {
-    if (this.memory.moveTarget) {
-        return Game.getObjectById(this.memory.moveTarget);
-    }
+Creep.prototype.moveOntoContainer = function() {
+    let targetPos = this._getSource().getContainerPosition();
 
-    let source = this._getSource();
-
-    if (source === ERR_NOT_FOUND) {
-        return ERR_NOT_FOUND;
-    }
-
-    let containers = source.pos.findInRange(FIND_STRUCTURES, 1, {filter: s => s.structureType === STRUCTURE_CONTAINER });
-
-    if (containers.length === 0) {
-        this.memory.moveTarget = source.id;
-        return source;
-    }
-
-    let container = containers[0];
-    this.memory.moveTarget = container.id;
-    return container;
-};
-
-Creep.prototype.moveToContainerForMiningSource = function(taskWhenFinished) {
-    let moveTarget = this._getHarvesterMoveTarget();
-
-    if (moveTarget === ERR_NOT_FOUND) {
+    if (targetPos === ERR_NOT_FOUND) {
         this.say("x~x");
         return;
     }
 
-    if (moveTarget instanceof Source) {
-        this.memory.moveTarget = undefined;
-        this.setTask(taskWhenFinished, true)
+    this.moveTo(targetPos);
+    if(this.pos.isEqualTo(targetPos)) {
+        this.memory.task = TASK.HARVEST_ENERGY;
+    }
+};
+
+Creep.prototype.determineHarvesterStartTask = function() {
+    let source = this._getSource();
+    if (source === ERR_NOT_FOUND) {
+        this.say("*zZz*");
         return;
     }
 
-    this.moveTo(moveTarget);
-    if (this.pos.isEqualTo(moveTarget.pos)) {
-        this.moveTo = undefined;
-        this.setTask(taskWhenFinished, true);
+    let container = source.getContainerPosition();
+    if (container === ERR_NOT_FOUND) {
+        this.memory.task = TASK.HARVEST_ENERGY;
+    } else {
+        this.memory.task = TASK.MOVE_ONTO_CONTAINER;
     }
+
 };

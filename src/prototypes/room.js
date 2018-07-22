@@ -1,6 +1,7 @@
 Room.prototype.initSpawnMemory = function() {
     this.memory.requestedCreeps = {};
-    this.memory.requestedCreeps[ROLE.HARVESTER] = 9;
+    this.memory.requestedCreeps[ROLE.HARVESTER] = 4;
+    this.memory.requestedCreeps[ROLE.HAULER] = 3;
     this.memory.requestedCreeps[ROLE.UPGRADER] = 1;
     this.memory.requestedCreeps[ROLE.BUILDER] = 1;
     this.memory.requestedCreeps[ROLE.REPAIRER] = 1;
@@ -26,6 +27,25 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
     let index = this.memory.remoteMiningRooms.indexOf(roomName);
     if (index > -1) {
         this.memory.remoteMiningRooms.splice(index, 1);
+    }
+};
+
+Room.prototype.addPublicEnergyContainer = function (containerId) {
+    if (!this.memory.publicEnergyContainers) {
+        this.memory.publicEnergyContainers = [];
+    }
+
+    this.memory.publicEnergyContainers.push(containerId);
+};
+
+Room.prototype.removePublicEnergyController = function(containerId) {
+    if (!this.memory.publicEnergyContainers) {
+        return;
+    }
+
+    let index = this.memory.publicEnergyContainers.indexOf(containerId);
+    if (index > -1) {
+        this.memory.publicEnergyContainers.splice(index, 1);
     }
 };
 
