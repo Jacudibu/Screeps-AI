@@ -35,10 +35,12 @@ Room.prototype.addPublicEnergyContainer = function (containerId) {
         this.memory.publicEnergyContainers = [];
     }
 
-    this.memory.publicEnergyContainers.push(containerId);
+    if (containerId != null) {
+        this.memory.publicEnergyContainers.push(containerId);
+    }
 };
 
-Room.prototype.removePublicEnergyController = function(containerId) {
+Room.prototype.removePublicEnergyContainer = function(containerId) {
     if (!this.memory.publicEnergyContainers) {
         return;
     }
@@ -47,6 +49,10 @@ Room.prototype.removePublicEnergyController = function(containerId) {
     if (index > -1) {
         this.memory.publicEnergyContainers.splice(index, 1);
     }
+};
+
+Room.prototype.getPublicEnergyContainers = function() {
+    return this.memory.publicEnergyContainers;
 };
 
 Room.prototype.isSpawnQueueEmpty = function() {

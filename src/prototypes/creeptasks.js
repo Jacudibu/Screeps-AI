@@ -189,7 +189,8 @@ Creep.prototype.storeEnergy = function(nextTask) {
             this.resetCurrentTask();
             break;
         default:
-            console.log("unexpected error when transferring energy: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
+            console.log("unexpected error when transferring energy: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY),
+                        + "\n----" + structureThatRequiresEnergy + " ==> " + JSON.stringify(structureThatRequiresEnergy));
             break;
     }
 };

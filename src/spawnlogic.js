@@ -47,7 +47,6 @@ const spawnlogic = {
             room.initSpawnMemory(room);
         }
 
-        console.log(this.countNumberOfCreepsWithRole(ROLE.HARVESTER) + " <<<<< " + this.countNumberOfCreepsWithRole(ROLE.HAULER));
         if (this.countNumberOfCreepsWithRole(ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(ROLE.HAULER) === 0) {
             if (this.isRoleNeeded(room, ROLE.HAULER)) {
                 room.addToSpawnQueue(ROLE.HAULER);

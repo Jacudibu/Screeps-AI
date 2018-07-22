@@ -59,16 +59,48 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     });
 
     if (structuresThatRequireEnergy.length === 0) {
-        return undefined;
+        let closestPublicRoomContainer = this.findClosestPublicRoomContainer();
+        if (closestPublicRoomContainer !== ERR_NOT_FOUND) {
+            return closestPublicRoomContainer;
+        }
+
+        let storage = this.room.storage;
+        if (storage) {
+            if (_.sum(storage.store) < storage.storeCapacity) {
+                return storage;
+            }
+        }
+
+        return ERR_NOT_FOUND;
     }
 
     return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
 };
 
+Creep.prototype.findClosestPublicRoomContainer = function() {
+    const publicEnergyContainer = this.room.getPublicEnergyContainers();
+
+    const container = this.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType === STRUCTURE_CONTAINER
+                && publicEnergyContainer && publicEnergyContainer.includes(structure.id)
+                && _.sum(structure.store) < structure.storeCapacity);
+        }
+    });
+
+    if (container.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return _.sortBy(container, c => this.pos.getRangeTo(c))[0];
+};
+
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
+    const publicEnergyContainer = this.room.publicEnergyContainers;
     const container = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType === STRUCTURE_CONTAINER
+                && !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
                 && _.sum(structure.store) > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT;
         }
     });
@@ -137,7 +169,7 @@ Creep.prototype._getStorage = function() {
 
     const structureThatRequiresEnergy = this.findClosestFreeEnergyStorage();
 
-    if (structureThatRequiresEnergy === undefined) {
+    if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
         return ERR_NOT_FOUND;
     }
 
