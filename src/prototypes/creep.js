@@ -1,5 +1,8 @@
-Creep.prototype.setTask = function(task) {
-    this.memory.taskTargetId = undefined;
+Creep.prototype.setTask = function(task, keepTaskTargetId) {
+    if (!keepTaskTargetId) {
+        this.memory.taskTargetId = undefined;
+    }
+
     this.memory.task = task;
 };
 
@@ -21,7 +24,7 @@ Creep.prototype.countBodyPartsOfType = function(types) {
 };
 
 Creep.prototype.findClosestFilledEnergyStorage = function() {
-    const storages = this.room.find(FIND_MY_STRUCTURES, {
+    const storages = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.canReleaseEnergy(50);
         }
@@ -48,10 +51,10 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestContainerAboveHaulThreshhold = function() {
+Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     const container = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return structure.structureType === STRUCTURE_CONTAINER;
+            return structure.structureType === STRUCTURE_CONTAINER && _.sum(structure.store) > MINIMUM_HAUL_RESOURCE_AMOUNT;
         }
     });
 
@@ -112,12 +115,8 @@ Creep.prototype._getSource = function() {
     return source;
 };
 
-Creep.prototype._getHaul = function() {
-
-};
-
 Creep.prototype._getStorage = function() {
-    // TODO: right now we are waaay above cpu limit, so don't care
+    // TODO: right now we are waaay below cpu limit, so don't care
     // if (this.memory.taskTargetId) {
     //     return Game.getObjectById(this.memory.taskTargetId);
     // }
@@ -186,10 +185,28 @@ Creep.prototype._getDamagedStructure = function() {
     }
 
     const damagedStructures = this.room.find(FIND_STRUCTURES, {
-        filter: structure => structure.hits < structure.hitsMax / 3
+        filter: structure => {
+
+            if (structure.structureType === STRUCTURE_WALL) {
+                if (this.room.controller.level === 1) {
+                    return structure.hits < RAMPART_HITS_MAX[2] * 0.25;
+                }
+
+                return structure.hits < RAMPART_HITS_MAX[this.room.controller.level];
+            }
+
+            return structure.hits < structure.hitsMax / 3
+        }
     });
 
-    damagedStructures.sort((a,b) => a.hits - b.hits);
+    damagedStructures.sort((a,b) => {
+        let diff = a.hits - b.hits;
+        if (diff === 0) {
+            return this.pos.getRangeTo(a) - this.pos.getRangeTo(b);
+        }
+
+        return a.hits - b.hits
+    });
 
     if(damagedStructures.length === 0) {
         return ERR_NOT_FOUND;
@@ -210,7 +227,7 @@ Creep.prototype._getHaulTarget = function() {
         return potentialTarget;
     }
 
-    potentialTarget = this.findClosestContainerAboveHaulThreshhold();
+    potentialTarget = this.findClosestContainerAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
         return potentialTarget;

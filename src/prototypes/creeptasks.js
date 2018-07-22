@@ -255,12 +255,12 @@ Creep.prototype.moveToContainerForMiningSource = function(taskWhenFinished) {
 
     if (moveTarget instanceof Source) {
         this.moveTo = undefined;
-        this.setTask(taskWhenFinished)
+        this.setTask(taskWhenFinished, true)
     }
 
     this.moveTo(moveTarget);
     if (this.pos.isEqualTo(moveTarget.pos)) {
         this.moveTo = undefined;
-        this.setTask(taskWhenFinished);
+        this.setTask(taskWhenFinished, true);
     }
 };
