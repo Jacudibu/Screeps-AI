@@ -51,34 +51,16 @@ Creep.prototype.harvestEnergy = function() {
 };
 
 Creep.prototype.haulEnergy = function(taskWhenFinished) {
-    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
-        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
-    });
+    let target = this._getHaulTarget();
 
-    if (droppedEnergy.length === 0) {
-        this.say("No drops");
-        this.setTask(taskWhenFinished);
-        return;
+    if (target === ERR_NOT_FOUND) {
+        this.setTask(TASK.STORE_ENERGY);
     }
 
-    _.sortByOrder(droppedEnergy, drop => drop.amount, 'desc');
-    let target = droppedEnergy[0];
-
-    switch (this.pickup(target)) {
-        case OK:
-            if (_.sum(this.carry) === this.carryCapacity) {
-                this.setTask(taskWhenFinished);
-            }
-            break;
-        case ERR_NOT_IN_RANGE:
-            this.moveTo(target);
-            break;
-        case ERR_FULL:
-            this.setTask(taskWhenFinished);
-            break;
-        default:
-            console.log("Picking up Energy resulted in unhandled error: " + this.pickup(target));
-            break;
+    if (target instanceof Structure) {
+        this._withdrawEnergy(target, taskWhenFinished);
+    } else {
+        this._pickupEnergy(target, taskWhenFinished);
     }
 };
 
@@ -95,23 +77,7 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
         return;
     }
 
-    switch (this.withdraw(storage, RESOURCE_ENERGY)) {
-        case OK:
-            this.say("nom");
-            if (_.sum(this.carry) === this.carryCapacity) {
-                this.setTask(taskWhenFinished);
-            }
-            break;
-        case ERR_NOT_IN_RANGE:
-            this.moveTo(storage);
-            break;
-        case ERR_FULL:
-            this.setTask(taskWhenFinished);
-            break;
-        default:
-            console.log("Collecting Energy resulted in unhandled error: " + this.withdraw(storage, RESOURCE_ENERGY));
-            break;
-    }
+    this._withdrawEnergy(storage, taskWhenFinished);
 };
 
 Creep.prototype.renew = function(taskWhenFinished) {

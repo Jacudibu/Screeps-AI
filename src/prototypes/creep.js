@@ -9,10 +9,9 @@ Creep.prototype.resetCurrentTask = function() {
 
 Creep.prototype.isRenewNeeded = function() {
     if (this.memory.shouldRespawn && this.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
-        if (this.memory.tier >= Math.floor(this.room.energyCapacityAvailable / COST_PER_WORKER_TIER)) {
             return true;
-        }
-    } else {
+    }
+    else {
         return false;
     }
 };
@@ -49,8 +48,8 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestContainer = function() {
-    const container = this.room.find(FIND_MY_STRUCTURES, {
+Creep.prototype.findClosestContainerAboveHaulThreshhold = function() {
+    const container = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType === STRUCTURE_CONTAINER;
         }
@@ -67,6 +66,31 @@ Creep.prototype.findClosestAvailableSource = function() {
     return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
             return source.memory.workersAssigned < source.memory.workersMax;
         }});
+};
+
+Creep.prototype.findClosestDroppedEnergy = function() {
+    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES);
+
+    if (droppedEnergy.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    droppedEnergy = _.sortBy(droppedEnergy, s => this.pos.getRangeTo(s));
+    console.log(droppedEnergy);
+    return droppedEnergy[0];
+};
+
+Creep.prototype.findHighestDroppedEnergyAboveHaulThreshold = function() {
+    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
+        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
+    });
+
+    if (droppedEnergy.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    droppedEnergy = _.sortBy(droppedEnergy, e => e.amount);
+    return droppedEnergy[droppedEnergy.length - 1];
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,9 +118,10 @@ Creep.prototype._getHaul = function() {
 };
 
 Creep.prototype._getStorage = function() {
-    if (this.memory.taskTargetId) {
-        return Game.getObjectById(this.memory.taskTargetId);
-    }
+    // TODO: right now we are waaay above cpu limit, so don't care
+    // if (this.memory.taskTargetId) {
+    //     return Game.getObjectById(this.memory.taskTargetId);
+    // }
 
     const structureThatRequiresEnergy = this.findClosestFreeEnergyStorage();
 
@@ -173,4 +198,73 @@ Creep.prototype._getDamagedStructure = function() {
 
     this.memory.taskTargetId = damagedStructures[0].id;
     return damagedStructures[0];
+};
+
+Creep.prototype._getHaulTarget = function() {
+    if (this.memory.taskTargetId) {
+        return Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    let droppedEnergyAboveThreshold = this.findHighestDroppedEnergyAboveHaulThreshold();
+    if (droppedEnergyAboveThreshold !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = droppedEnergyAboveThreshold.id;
+        return droppedEnergyAboveThreshold;
+    }
+
+    let containerAboveThreshold = this.findClosestContainerAboveHaulThreshhold();
+    if (containerAboveThreshold !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = containerAboveThreshold.id;
+        return containerAboveThreshold;
+    }
+
+    let droppedEnergyBelowThreshold = this.findClosestDroppedEnergy();
+    if (droppedEnergyBelowThreshold !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = droppedEnergyBelowThreshold.id;
+        return droppedEnergyBelowThreshold;
+    }
+
+    return ERR_NOT_FOUND;
+};
+
+// ~~~~~~~~~~~~~~~~~~
+// ~~ Small Helpers ~~
+// ~~~~~~~~~~~~~~~~~~
+
+Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
+    switch (this.withdraw(storage, RESOURCE_ENERGY)) {
+        case OK:
+            this.say("nom");
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.setTask(taskWhenFinished);
+            }
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(storage);
+            break;
+        case ERR_FULL:
+            this.setTask(taskWhenFinished);
+            break;
+        default:
+            console.log("Collecting Energy resulted in unhandled error: " + this.withdraw(storage, RESOURCE_ENERGY));
+            break;
+    }
+};
+
+Creep.prototype._pickupEnergy = function(pickup, taskWhenFinished) {
+    switch (this.pickup(pickup)) {
+        case OK:
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.setTask(taskWhenFinished);
+            }
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(pickup);
+            break;
+        case ERR_FULL:
+            this.setTask(taskWhenFinished);
+            break;
+        default:
+            console.log("Picking up Energy resulted in unhandled error: " + this.pickup(pickup) + "\n" + pickup + "-->" + JSON.stringify(pickup));
+            break;
+    }
 };
