@@ -23,7 +23,7 @@ Creep.prototype.countBodyPartsOfType = function(types) {
     return _.filter(this.body, function(bodyPart) {return bodyPart.type === types}).length;
 };
 
-Creep.prototype.findClosestFilledEnergyStorage = function() {
+Creep.prototype.findClosestFilledEnergyStructure = function() {
     const storages = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.canReleaseEnergy(50);
@@ -31,7 +31,21 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
     });
 
     if (storages.length === 0) {
-        return undefined;
+        return ERR_NOT_FOUND;
+    }
+
+    return _.sortBy(storages, s => this.pos.getRangeTo(s))[0];
+};
+
+Creep.prototype.findClosestFilledContainerOrStorage = function() {
+    const storages = this.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return structure.isEnergyStorageOrContainer() && structure.canReleaseEnergy(50);
+        }
+    });
+
+    if (storages.length === 0) {
+        return ERR_NOT_FOUND;
     }
 
     return _.sortBy(storages, s => this.pos.getRangeTo(s))[0];
@@ -80,7 +94,6 @@ Creep.prototype.findClosestDroppedEnergy = function() {
     }
 
     droppedEnergy = _.sortBy(droppedEnergy, s => this.pos.getRangeTo(s));
-    console.log(droppedEnergy);
     return droppedEnergy[0];
 };
 
@@ -134,7 +147,10 @@ Creep.prototype._getStorage = function() {
 
 Creep.prototype._getConstructionSite = function() {
     if (this.memory.taskTargetId) {
-        return Game.getObjectById(this.memory.taskTargetId);
+        let previousTarget = Game.getObjectById(this.memory.taskTargetId);
+        if (previousTarget !== null) {
+            return previousTarget;
+        }
     }
 
     let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES);
@@ -180,8 +196,11 @@ Creep.prototype._getDamagedStructure = function() {
     if (this.memory.taskTargetId) {
         let previousTarget = Game.getObjectById(this.memory.taskTargetId);
 
-        if (previousTarget.hits < previousTarget.hitsMax) {
-            return previousTarget;
+        // might have been destroyed by enemies or bulldozing plyers, so check its existence.
+        if (previousTarget !== null) {
+            if (previousTarget.hits < previousTarget.hitsMax) {
+                return previousTarget;
+            }
         }
     }
 

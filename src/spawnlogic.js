@@ -1,47 +1,130 @@
 const spawnlogic = {
     run: function() {
-        for (const i in Game.spawns) {
-            this.spawnCreepsIfNeeded(Game.spawns[i]);
+        for (const i in Game.rooms) {
+            let room = Game.rooms[i];
+
+            const spawns = Game.rooms[i].find(FIND_MY_SPAWNS);
+            if (spawns.length === 0) {
+                continue;
+            }
+
+            let allSpawnsBusy = true;
+            for(let i = 0; i < spawns.length; i++) {
+                let spawn = spawns[i];
+                if (spawn.spawning) {
+                    spawn.drawSpawnInfo();
+                } else {
+                    allSpawnsBusy = false;
+                }
+            }
+
+            if (allSpawnsBusy) {
+                continue;
+            }
+
+            if (room.isSpawnQueueEmpty()) {
+                this.tryAddingNewCreepToSpawnQueue(room);
+            }
+
+            // If something was added the spawnqueue was changed
+            if (room.isSpawnQueueEmpty()) {
+                if (room.energyCapacityAvailable === room.energyAvailable) {
+                    room.memory.autoSpawnTimer = room.memory.autoSpawnTimer - 1;
+                }
+            } else {
+                room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
+                if (this.areThereEnoughResourcesToSpawnRole(room, this.peekFirstElementFromSpawnQueue(room))) {
+                    this.spawnNewCreepWithRole(spawns, this.shiftElementFromSpawnQueue(room));
+                }
+            }
+
+            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty();
         }
     },
 
-    spawnCreepsIfNeeded: function(spawn) {
-        if (spawn.spawning) {
-            spawn.room.visual.text('🛠️' + spawn.spawning.name, spawn.pos.x + 1, spawn.pos.y,
-                {align: 'left', opacity: '0.5'});
+    tryAddingNewCreepToSpawnQueue: function(room) {
+        if (room.memory.requestedCreeps === undefined) {
+            room.initSpawnMemory(room);
+        }
+
+        if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
+            room.addToSpawnQueue(ROLE.HARVESTER);
             return;
         }
 
-        const room = spawn.room;
-
-        if (room.memory.requestedCreeps === undefined) {
-            this.initSpawnMemory(spawn.room);
+        if (this.isRoleNeeded(room, ROLE.HAULER)) {
+            room.addToSpawnQueue(ROLE.HAULER);
+            return;
         }
 
-        let energy = room.energyCapacityAvailable;
+        if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
+            room.addToSpawnQueue(ROLE.UPGRADER);
+            return;
+        }
 
-        if (this.isRoleNeeded(room, ROLE.HARVESTER, energy)) {
-            spawn.spawnHarvester(energy, true);
-        } else if (this.isRoleNeeded(room, ROLE.HAULER, energy)) {
-            spawn.spawnHauler(energy, true);
-        } else if (this.isRoleNeeded(room, ROLE.UPGRADER, energy)) {
-            spawn.spawnWorker(ROLE.UPGRADER, energy, true);
-        } else if (this.isRoleNeeded(room, ROLE.BUILDER, energy)
-                && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-            spawn.spawnWorker(ROLE.BUILDER, energy, true);
-        } else if (this.isRoleNeeded(room, ROLE.REPAIRER, energy)) {
-            spawn.spawnWorker(ROLE.REPAIRER, energy, true);
-        } else if (room.energyCapacityAvailable === room.energyAvailable) {
-            if (spawn.memory.nextAutoSpawn) {
-                if (spawn.memory.nextAutoSpawn === Game.time) {
-                    spawn.spawnWorker(ROLE.UPGRADER, energy, false);
-                }
-                else if (spawn.memory.nextAutoSpawn < Game.time) {
-                    spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
-                }
-            } else {
-                spawn.memory.nextAutoSpawn = Game.time + AUTO_SPAWN_TIMER;
+        if (this.isRoleNeeded(room, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
+            room.addToSpawnQueue(ROLE.BUILDER);
+            return;
+        }
+
+        if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
+            room.addToSpawnQueue(ROLE.REPAIRER);
+            return;
+        }
+
+        if (room.memory.autoSpawnTimer === 0) {
+            room.addToSpawnQueue(ROLE.UPGRADER);
+            room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
+            return;
+        }
+    },
+
+    areThereEnoughResourcesToSpawnRole: function(room, role) {
+        return room.energyCapacityAvailable === room.energyAvailable;
+    },
+
+    shiftElementFromSpawnQueue: function(room) {
+        return room.memory.spawnQueue.shift();
+    },
+
+    peekFirstElementFromSpawnQueue: function(room) {
+        return room.memory.spawnQueue[0];
+    },
+
+    spawnNewCreepWithRole: function(spawns, role) {
+        for(let i = 0; i < spawns.length; i++) {
+            let spawn = spawns[i];
+            if (spawn.spawning) {
+                continue;
             }
+
+            this.spawnRole(spawn, role);
+            return;
+        }
+    },
+
+    spawnRole: function(spawn, role) {
+        const energy = spawn.room.energyCapacityAvailable;
+
+        switch (role) {
+            case ROLE.BUILDER:
+                spawn.spawnWorker(role, energy, true);
+                break;
+            case ROLE.HARVESTER:
+                spawn.spawnHarvester(energy, true);
+                break;
+            case ROLE.HAULER:
+                spawn.spawnHauler(energy, true);
+                break;
+            case ROLE.UPGRADER:
+                spawn.spawnWorker(role, energy, true);
+                break;
+            case ROLE.REPAIRER:
+                spawn.spawnWorker(role, energy, true);
+                break;
+            default:
+                console.log("Unknown role requested to spawn: " + role);
+                break;
         }
     },
 
@@ -54,15 +137,7 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
-    initSpawnMemory: function(room) {
-        room.memory.currentTier = 1;
 
-        room.memory.requestedCreeps = {};
-        room.memory.requestedCreeps[ROLE.HARVESTER] = 9;
-        room.memory.requestedCreeps[ROLE.UPGRADER] = 1;
-        room.memory.requestedCreeps[ROLE.BUILDER] = 1;
-        room.memory.requestedCreeps[ROLE.REPAIRER] = 1;
-    },
 };
 
 module.exports = spawnlogic;

@@ -65,14 +65,14 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 };
 
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
-    if (!this.room.memory.allowEnergyCollection) {
-        this.say(">~<");
-        return;
+    let storage;
+    if (this.room.memory.allowEnergyCollection) {
+        storage = this.findClosestFilledContainerOrStorage();
+    } else {
+        storage = this.findClosestFilledEnergyStructure();
     }
 
-    const storage = this.findClosestFilledEnergyStorage(this);
-
-    if (storage === undefined) {
+    if (storage === ERR_NOT_FOUND) {
         this.say("q-q");
         return;
     }
@@ -123,7 +123,6 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
     if (constructionSite === ERR_NOT_FOUND) {
         this.say('x~x');
         this.setTask(taskIfNothingToBuild);
-        this.repairStructures();
         return;
     }
 
@@ -151,7 +150,6 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
     if (damagedStructure === ERR_NOT_FOUND) {
         this.say('x~x');
         this.setTask(taskIfNothingToRepair);
-        this.upgradeRoomController();
         return;
     }
 
@@ -254,8 +252,9 @@ Creep.prototype.moveToContainerForMiningSource = function(taskWhenFinished) {
     }
 
     if (moveTarget instanceof Source) {
-        this.moveTo = undefined;
+        this.memory.moveTarget = undefined;
         this.setTask(taskWhenFinished, true)
+        return;
     }
 
     this.moveTo(moveTarget);

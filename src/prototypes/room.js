@@ -1,3 +1,11 @@
+Room.prototype.initSpawnMemory = function() {
+    this.memory.requestedCreeps = {};
+    this.memory.requestedCreeps[ROLE.HARVESTER] = 9;
+    this.memory.requestedCreeps[ROLE.UPGRADER] = 1;
+    this.memory.requestedCreeps[ROLE.BUILDER] = 1;
+    this.memory.requestedCreeps[ROLE.REPAIRER] = 1;
+};
+
 Room.prototype.setRequestedCreepRole = function(role, count) {
     this.memory.requestedCreeps[role] = count;
 };
@@ -19,6 +27,18 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
     if (index > -1) {
         this.memory.remoteMiningRooms.splice(index, 1);
     }
+};
+
+Room.prototype.isSpawnQueueEmpty = function() {
+    return this.memory.spawnQueue === undefined || this.memory.spawnQueue.length === 0;
+};
+
+Room.prototype.addToSpawnQueue = function(role) {
+    if (this.memory.spawnQueue === undefined) {
+        this.memory.spawnQueue = [];
+    }
+
+    this.memory.spawnQueue.push(role);
 };
 
 Room.prototype._findTowers = function() {
