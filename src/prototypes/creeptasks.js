@@ -66,7 +66,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
     if (!this.room.memory.allowEnergyCollection) {
-        this.say("Forbidden");
+        this.say(">~<");
         return;
     }
 
