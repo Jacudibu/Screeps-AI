@@ -67,9 +67,9 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
     let storage;
     if (this.room.memory.allowEnergyCollection) {
-        storage = this.findClosestFilledContainerOrStorage();
-    } else {
         storage = this.findClosestFilledEnergyStructure();
+    } else {
+        storage = this.findClosestFilledContainerOrStorage();
     }
 
     if (storage === ERR_NOT_FOUND) {
