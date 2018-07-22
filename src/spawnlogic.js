@@ -124,7 +124,7 @@ const spawnlogic = {
                 spawn.spawnHauler(energy, true);
                 break;
             case ROLE.UPGRADER:
-                spawn.spawnWorker(role, energy, true);
+                spawn.spawnUpgrader(energy, true);
                 break;
             case ROLE.REPAIRER:
                 spawn.spawnWorker(role, energy, true);

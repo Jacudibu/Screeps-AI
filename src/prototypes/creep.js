@@ -193,18 +193,19 @@ Creep.prototype._getConstructionSite = function() {
 
     constructionSites.sort(function(constructionA, constructionB) {
         if (constructionA.structureType !== constructionB.structureType) {
+            if (constructionA.structureType === STRUCTURE_STORAGE) {
+                return -1;
+            }
+
+            if (constructionB.structureType === STRUCTURE_STORAGE) {
+                return 1;
+            }
+
             if (constructionA.structureType === STRUCTURE_EXTENSION) {
                 return -1;
             }
             if (constructionB.structureType === STRUCTURE_EXTENSION) {
                 return 1;
-            }
-
-            if (constructionA.structureType === STRUCTURE_CONTAINER) {
-                return 1;
-            }
-            if (constructionB.structureType === STRUCTURE_CONTAINER) {
-                return -1;
             }
         }
 

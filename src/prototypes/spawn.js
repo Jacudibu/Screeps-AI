@@ -63,6 +63,23 @@ Spawn.prototype.spawnHarvester = function(energy, blockSpawningIfNoResources) {
     this._spawnDefinedCreep(ROLE.HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HARVESTER}});
 };
 
+Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
+    let body = [];
+
+    if (energy > 300 * 16) {
+        energy = 300 * 16;
+    }
+
+    while (energy >= 300) {
+        body.push(WORK, WORK, CARRY, MOVE);
+        energy -= 300;
+    }
+
+    body.sort();
+
+    this._spawnDefinedCreep(ROLE.UPGRADER, blockSpawningIfNoResources, body, {memory: {role: ROLE.UPGRADER}});
+};
+
 Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {
     let name = role + '#' + Memory.creepsBuilt;
 
