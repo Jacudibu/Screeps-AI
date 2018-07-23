@@ -32,6 +32,8 @@ global.TASK.SIGN_CONTROLLER = 'sign_controller';
 global.TASK.RENEW_CREEP = 'renew_creep';
 global.TASK.BUILD_STRUCTURE = 'build_structure';
 global.TASK.REPAIR_STRUCTURE = 'repair_structure';
+global.TASK.DECIDE_WHAT_TO_DO = 'decide_what_to_do';
+global.TASK.MOVE_TO_ROOM = 'move_to_room';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
@@ -40,3 +42,4 @@ global.ROLE.HAULER ='hauler';
 global.ROLE.BUILDER = 'builder';
 global.ROLE.UPGRADER = 'upgrader';
 global.ROLE.REPAIRER = 'repairer';
+global.ROLE.REMOTE_WORKER = 'remote_worker';

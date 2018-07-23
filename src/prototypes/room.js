@@ -51,6 +51,16 @@ Room.prototype.removePublicEnergyContainer = function(containerId) {
     }
 };
 
+Room.prototype.setAutoSpawn = function(shouldSpawn) {
+    this.memory.autoSpawnEnabled = shouldSpawn;
+};
+
+Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
+    if (roomName === 'E57S47') {
+        return new RoomPosition(48, 23, roomName);
+    }
+};
+
 Room.prototype.getPublicEnergyContainers = function() {
     return this.memory.publicEnergyContainers;
 };

@@ -80,6 +80,29 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
     this._spawnDefinedCreep(ROLE.UPGRADER, blockSpawningIfNoResources, body, {memory: {role: ROLE.UPGRADER}});
 };
 
+Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources, targetRoomName) {
+    let body = [];
+
+    if (energy > 200 * 16) {
+        energy = 200 * 16;
+    }
+
+    while (energy >= 200) {
+        body.push(WORK, CARRY, MOVE);
+        energy -= 200;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_WORKER,
+            targetRoomName: targetRoomName
+        }
+    };
+
+    this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
+};
+
 Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {
     let name = role + '#' + Memory.creepsBuilt;
 

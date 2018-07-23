@@ -1,8 +1,21 @@
 const remoteWorker = {
     run: function(creep) {
         switch (creep.memory.task) {
-            case TASK.HARVEST_ENERGY:
-                creep.harvestEnergyAndFetch(TASK.STORE_ENERGY);
+
+            case TASK.DECIDE_WHAT_TO_DO:
+                creep.decideWhatToDo();
+                break;
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.HARVEST_ENERGY_FETCH:
+                creep.harvestEnergyAndFetch(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.BUILD_STRUCTURE:
+                creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.REPAIR_STRUCTURE:
+                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);
@@ -11,10 +24,9 @@ const remoteWorker = {
                 creep.renew(TASK.HARVEST_ENERGY);
                 break;
             default:
-                creep.setTask(TASK.HARVEST_ENERGY);
+                creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
         }
     }
 };
-
-module.export(remoteWorker);
+module.exports =remoteWorker;

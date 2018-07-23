@@ -118,7 +118,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
 };
 
 Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
-    let constructionSite = this._getConstructionSite(this);
+    let constructionSite = this._getConstructionSite();
 
     if (constructionSite === ERR_NOT_FOUND) {
         this.say('x~x');
@@ -145,7 +145,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
 };
 
 Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
-    let damagedStructure = this._getDamagedStructure(this);
+    let damagedStructure = this._getDamagedStructure();
 
     if (damagedStructure === ERR_NOT_FOUND) {
         this.say('x~x');
@@ -221,7 +221,7 @@ Creep.prototype.signRoomController = function(nextTask) {
     }
 };
 
-Creep.prototype.moveOntoContainer = function() {
+Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
     let targetPos = this._getSource().getContainerPosition();
 
     if (targetPos === ERR_NOT_FOUND) {
@@ -231,11 +231,11 @@ Creep.prototype.moveOntoContainer = function() {
 
     this.moveTo(targetPos);
     if(this.pos.isEqualTo(targetPos)) {
-        this.memory.task = TASK.HARVEST_ENERGY;
+        this.memory.task = taskWhenFinished;
     }
 };
 
-Creep.prototype.determineHarvesterStartTask = function() {
+Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvailable) {
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
@@ -244,9 +244,40 @@ Creep.prototype.determineHarvesterStartTask = function() {
 
     let container = source.getContainerPosition();
     if (container === ERR_NOT_FOUND) {
-        this.memory.task = TASK.HARVEST_ENERGY;
+        this.memory.task = taskWhenNoContainerAvailable;
     } else {
         this.memory.task = TASK.MOVE_ONTO_CONTAINER;
     }
 
+};
+
+Creep.prototype.decideWhatToDo = function() {
+    if (this.room !== this.memory.targetRoomName) {
+        this.setTask(TASK.MOVE_TO_ROOM);
+    }
+
+    if (this.carry[RESOURCE_ENERGY] === 0) {
+        this.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+    }
+
+    if (this._getConstructionSite() !== ERR_NOT_FOUND) {
+        this.setTask(TASK.BUILD_STRUCTURE);
+    }
+
+    if (this._getDamagedStructure() !== ERR_NOT_FOUND) {
+        this.setTask(TASK.REPAIR_STRUCTURE);
+    }
+
+    this.setTask(TASK.STORE_ENERGY);
+};
+
+Creep.prototype.moveToRoom = function(taskWhenFinished) {
+    const roomName = this.memory.targetRoomName;
+
+    if (this.room.name === roomName) {
+        this.set(TASK.DECIDE_WHAT_TO_DO);
+    }
+
+    const positionInNextRoom = this.room.getRoomPositionForTransferToRoom(roomName);
+    this.moveTo(positionInNextRoom);
 };
