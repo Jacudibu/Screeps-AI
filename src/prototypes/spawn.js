@@ -81,6 +81,11 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
 };
 
 Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources, targetRoomName) {
+    if (targetRoomName === undefined) {
+        console.log("remoteRoomWorkers needs a targetRoomName");
+        return;
+    }
+
     let body = [];
 
     if (energy > 200 * 16) {

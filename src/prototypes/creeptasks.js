@@ -252,30 +252,38 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
 };
 
 Creep.prototype.decideWhatToDo = function() {
-    if (this.room !== this.memory.targetRoomName) {
+    if (this.room.name !== this.memory.targetRoomName) {
         this.setTask(TASK.MOVE_TO_ROOM);
     }
 
-    if (this.carry[RESOURCE_ENERGY] === 0) {
+    if (_.sum(this.carry) < 10) {
         this.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+        return;
     }
 
     if (this._getConstructionSite() !== ERR_NOT_FOUND) {
         this.setTask(TASK.BUILD_STRUCTURE);
+        return;
     }
 
     if (this._getDamagedStructure() !== ERR_NOT_FOUND) {
         this.setTask(TASK.REPAIR_STRUCTURE);
+        return;
     }
 
-    this.setTask(TASK.STORE_ENERGY);
+    if (this.findClosestFreeEnergyStorage() !== ERR_NOT_FOUND) {
+        this.setTask(TASK.STORE_ENERGY);
+        return;
+    }
+
+    this.say('ಥ~ಥ');
 };
 
 Creep.prototype.moveToRoom = function(taskWhenFinished) {
     const roomName = this.memory.targetRoomName;
 
     if (this.room.name === roomName) {
-        this.set(TASK.DECIDE_WHAT_TO_DO);
+        this.setTask(TASK.DECIDE_WHAT_TO_DO);
     }
 
     const positionInNextRoom = this.room.getRoomPositionForTransferToRoom(roomName);

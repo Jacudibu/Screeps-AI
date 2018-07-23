@@ -57,7 +57,7 @@ Room.prototype.setAutoSpawn = function(shouldSpawn) {
 
 Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
     if (roomName === 'E57S47') {
-        return new RoomPosition(48, 23, roomName);
+        return new RoomPosition(47, 23, roomName);
     }
 };
 

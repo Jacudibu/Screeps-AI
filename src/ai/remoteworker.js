@@ -1,7 +1,6 @@
 const remoteWorker = {
     run: function(creep) {
         switch (creep.memory.task) {
-
             case TASK.DECIDE_WHAT_TO_DO:
                 creep.decideWhatToDo();
                 break;
@@ -10,6 +9,9 @@ const remoteWorker = {
                 break;
             case TASK.HARVEST_ENERGY_FETCH:
                 creep.harvestEnergyAndFetch(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.HARVEST_ENERGY:
+                creep.harvestEnergy();
                 break;
             case TASK.BUILD_STRUCTURE:
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);

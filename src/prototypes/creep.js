@@ -212,10 +212,17 @@ Creep.prototype._getConstructionSite = function() {
         let compareProgress = constructionB.progress - constructionA.progress;
 
         if (compareProgress === 0) {
-            // return the one closer to spawn
             // TODO: This is inefficient af, maybe do this only in the first few RCL-Levels? Or store the first 5 in memory?
-            let spawn = constructionA.room.find(FIND_MY_SPAWNS)[0];
-            return constructionA.pos.getRangeTo(spawn) - constructionB.pos.getRangeTo(spawn);
+            let spawns = constructionA.room.find(FIND_MY_SPAWNS);
+
+            if (spawns.length > 0) {
+                // return the one closer to spawn
+                return constructionA.pos.getRangeTo(spawns[0]) - constructionB.pos.getRangeTo(spawns[0]);
+            } else {
+                // return the one closer to the creep
+                // return this.pos.getRangeTo(constructionA) - this.pos.getRangeTo(constructionB);
+                return 1;
+            }
         } else {
             return compareProgress;
         }
