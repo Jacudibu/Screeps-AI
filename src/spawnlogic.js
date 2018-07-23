@@ -41,7 +41,7 @@ const spawnlogic = {
                 }
             }
 
-            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty();
+            room.memory.allowEnergyCollection = false; // room.isSpawnQueueEmpty();
         }
     },
 
@@ -148,15 +148,27 @@ const spawnlogic = {
     },
 
     checkRemoteMiningRoomSpawns(room, spawn) {
-        let remoteRooms = room.memory.remoteMiningRooms;
-        for (let i = 0; i < remoteRooms.length; i++) {
-            if (remoteRooms[i].assignedRemoteWorkers < remoteRooms[i].sources.length) {
-                spawn.spawnRemoteWorker(600, false, remoteRooms[i].name);
-                remoteRooms[i].assignedRemoteWorkers++;
+        let remoteMiningRooms = room.memory.remoteMiningRooms;
+
+        if (remoteMiningRooms.length === 0) {
+            return;
+        }
+
+        for (let i = 0; i < remoteMiningRooms.length; i++) {
+            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+            if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
+                spawn.spawnRemoteWorker(600, true, remoteMiningRooms[i]);
+                Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
+                return;
+            }
+
+            if (remoteMiningRoom.isHaulerRequired) {
+                spawn.spawnRemoteHauler(room.energyAvailable, true, remoteMiningRooms[i]);
+                Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
+                return;
             }
         }
     },
-
 };
 
 module.exports = spawnlogic;

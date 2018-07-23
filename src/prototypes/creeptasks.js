@@ -54,7 +54,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
     let target = this._getHaulTarget();
 
     if (target === ERR_NOT_FOUND) {
-        this.setTask(TASK.STORE_ENERGY);
+        this.setTask(taskWhenFinished);
     }
 
     if (target instanceof Structure) {
@@ -277,6 +277,7 @@ Creep.prototype.decideWhatToDo = function() {
     }
 
     this.say('ಥ~ಥ');
+    this.drop(RESOURCE_ENERGY);
 };
 
 Creep.prototype.moveToRoom = function(taskWhenFinished) {

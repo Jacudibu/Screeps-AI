@@ -35,7 +35,7 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
 
     let index = this.memory.remoteMiningRooms.indexOf(roomName);
     if (index > -1) {
-        Game.rooms[roomName].memory.assignedRemoteWorkers = undefined;
+        Memory.rooms[roomName].assignedRemoteWorkers = undefined;
         this.memory.remoteMiningRooms.splice(index, 1);
     }
 };
@@ -68,6 +68,10 @@ Room.prototype.setAutoSpawn = function(shouldSpawn) {
 Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
     if (roomName === 'E57S47') {
         return new RoomPosition(47, 23, roomName);
+    }
+
+    if (roomName === 'E58S47') {
+        return new RoomPosition(25, 25, roomName);
     }
 
     if (roomName === 'E59S47') {

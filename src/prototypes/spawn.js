@@ -108,6 +108,31 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
     this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
 };
 
+Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources, remoteHaulTargetRoom) {
+    let body = [];
+
+    if (energy > 5000) {
+        energy = 5000;
+    }
+
+    while(energy >= 150) {
+        body.push(CARRY, CARRY, MOVE);
+        energy -= 150;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_HAULER,
+            remoteHaulTargetRoom: remoteHaulTargetRoom,
+            remoteHaulStorageRoom: this.room.name,
+            targetRoomName: remoteHaulTargetRoom,
+        }
+    };
+
+    this._spawnDefinedCreep(ROLE.REMOTE_HAULER, blockSpawningIfNoResources, body, opts);
+};
+
 Spawn.prototype.spawnAttacker = function(energy) {
     let body = [];
 

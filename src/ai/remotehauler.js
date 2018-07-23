@@ -1,0 +1,37 @@
+
+const remoteHauler = {
+    run: function(creep) {
+        switch (creep.memory.task) {
+            case TASK.DECIDE_WHAT_TO_DO:
+                if (_.sum(creep.carry) === 0) {
+                    creep.memory.targetRoomName = creep.memory.remoteHaulTargetRoom;
+                } else if (_.sum(creep.carry) === creep.carryCapacity) {
+                    creep.memory.targetRoomName = creep.memory.remoteHaulStorageRoom;
+                }
+
+                if (creep.memory.targetRoomName === creep.room.name) {
+                    if (_.sum(creep.carry) === 0) {
+                        creep.setTask(TASK.HAUL_ENERGY);
+                    } else {
+                        creep.setTask(TASK.STORE_ENERGY);
+                    }
+                } else {
+                    creep.setTask(TASK.MOVE_TO_ROOM);
+                }
+                break;
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.HAUL_ENERGY:
+                creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.STORE_ENERGY:
+                creep.storeEnergy(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            default:
+                creep.setTask(TASK.DECIDE_WHAT_TO_DO);
+                break;
+        }
+    }
+};
+module.exports = remoteHauler;

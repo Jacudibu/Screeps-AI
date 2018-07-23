@@ -29,7 +29,10 @@ const memoryManagment = {
                 }
                 break;
             case ROLE.REMOTE_WORKER:
-                Game.rooms[creep.targetRoomName].memory.assignedRemoteWorkers--;
+                Memory.rooms[creep.targetRoomName].memory.assignedRemoteWorkers--;
+                break;
+            case ROLE.REMOTE_HAULER:
+                Memory.rooms[creep.remoteHaulTargetRoom].memory.isHaulerRequired = true;
                 break;
         }
     },

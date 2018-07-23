@@ -45,4 +45,5 @@ global.ROLE.BUILDER = 'builder';
 global.ROLE.UPGRADER = 'upgrader';
 global.ROLE.REPAIRER = 'repairer';
 global.ROLE.REMOTE_WORKER = 'remote_worker';
+global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.ATTACKER = 'attacker';

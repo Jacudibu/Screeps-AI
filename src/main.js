@@ -13,7 +13,7 @@ const roomLogic = require('roomlogic');
 
 module.exports.loop = function () {
     memoryManagment.run();
-    spawnlogic.run();
     creepAi.run();
     roomLogic.run();
+    spawnlogic.run();
 };
