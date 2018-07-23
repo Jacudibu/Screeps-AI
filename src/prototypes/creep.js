@@ -247,7 +247,7 @@ Creep.prototype._getDamagedStructure = function() {
     const damagedStructures = this.room.find(FIND_STRUCTURES, {
         filter: structure => {
 
-            if (structure.structureType === STRUCTURE_WALL) {
+            if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
                 return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
             }
 

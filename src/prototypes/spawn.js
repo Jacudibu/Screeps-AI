@@ -88,8 +88,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
 
     let body = [];
 
-    if (energy > 200 * 16) {
-        energy = 200 * 16;
+    if (energy > 600) {
+        energy = 600;
     }
 
     while (energy >= 200) {
@@ -106,6 +106,19 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
     };
 
     this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
+};
+
+Spawn.prototype.spawnAttacker = function(energy) {
+    let body = [];
+
+    while (energy >= 130) {
+        body.push(ATTACK, MOVE);
+        energy -= 130;
+    }
+
+    body.sort();
+
+    this._spawnDefinedCreep(ROLE.ATTACKER, false, body, {memory: {role: ROLE.ATTACKER}});
 };
 
 Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {

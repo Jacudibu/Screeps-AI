@@ -29,7 +29,10 @@ const spawnlogic = {
             // If something was added the spawnqueue was changed
             if (room.isSpawnQueueEmpty()) {
                 if (room.energyCapacityAvailable === room.energyAvailable) {
-                    room.memory.autoSpawnTimer = room.memory.autoSpawnTimer - 1;
+                    // room.memory.autoSpawnTimer = room.memory.autoSpawnTimer - 1;
+
+                    // TODO/HACK : This is a workaround as long as spawn Queue does not support args
+                    this.checkRemoteMiningRoomSpawns(room, spawns[0]);
                 }
             } else {
                 room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
@@ -79,7 +82,7 @@ const spawnlogic = {
             return;
         }
 
-        if (room.memory.autoSpawnTimer === 0) {
+        if (room.memory.autoSpawnEnabled && room.memory.autoSpawnTimer === 0) {
             room.addToSpawnQueue(ROLE.UPGRADER);
             room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
             return;
@@ -144,6 +147,15 @@ const spawnlogic = {
         return _.sum(Game.creeps, creep => creep.memory.role === role);
     },
 
+    checkRemoteMiningRoomSpawns(room, spawn) {
+        let remoteRooms = room.memory.remoteMiningRooms;
+        for (let i = 0; i < remoteRooms.length; i++) {
+            if (remoteRooms[i].assignedRemoteWorkers < remoteRooms[i].sources.length) {
+                spawn.spawnRemoteWorker(600, false, remoteRooms[i].name);
+                remoteRooms[i].assignedRemoteWorkers++;
+            }
+        }
+    },
 
 };
 

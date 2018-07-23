@@ -11,22 +11,30 @@ const memoryManagment = {
             }
 
             let creep = Memory.creeps[creepName];
-            this.deletePotentialHarvester(creep);
+            this.deleteRoleSpecificStuff(creep);
 
             delete Memory.creeps[creepName];
         }
     },
 
-    deletePotentialHarvester: function (creep) {
-        if (creep.role === ROLE.HARVESTER) {
-            if (creep.task === TASK.HARVEST_ENERGY) {
-                let source = Game.getObjectById(creep.taskTargetId);
-                if (source) {
-                    source.memory.workersAssigned--;
+    deleteRoleSpecificStuff: function (creep) {
+        switch (creep.role)
+        {
+            case ROLE.HARVESTER:
+                if (creep.task === TASK.HARVEST_ENERGY) {
+                    let source = Game.getObjectById(creep.taskTargetId);
+                    if (source) {
+                        source.memory.workersAssigned--;
+                    }
                 }
-            }
+                break;
+            case ROLE.REMOTE_WORKER:
+                Game.rooms[creep.targetRoomName].memory.assignedRemoteWorkers--;
+                break;
         }
-    }
+    },
+
+
 };
 
 module.exports = memoryManagment;

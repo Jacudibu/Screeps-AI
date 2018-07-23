@@ -11,12 +11,21 @@ Room.prototype.setRequestedCreepRole = function(role, count) {
     this.memory.requestedCreeps[role] = count;
 };
 
+Room.prototype.wipeConstructionSites = function() {
+    let sites = this.find(FIND_MY_CONSTRUCTION_SITES);
+
+    for (let i = 0; i < sites.length; i++) {
+        sites[i].remove();
+    }
+};
+
 Room.prototype.addRemoteMiningRoom = function (roomName) {
     if (!this.memory.remoteMiningRooms) {
         this.memory.remoteMiningRooms = [];
     }
 
     this.memory.remoteMiningRooms.push(roomName);
+    Game.rooms[roomName].memory.assignedRemoteWorkers = 0;
 };
 
 Room.prototype.removeRemoteMiningRoom = function(roomName) {
@@ -26,6 +35,7 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
 
     let index = this.memory.remoteMiningRooms.indexOf(roomName);
     if (index > -1) {
+        Game.rooms[roomName].memory.assignedRemoteWorkers = undefined;
         this.memory.remoteMiningRooms.splice(index, 1);
     }
 };
@@ -58,6 +68,18 @@ Room.prototype.setAutoSpawn = function(shouldSpawn) {
 Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
     if (roomName === 'E57S47') {
         return new RoomPosition(47, 23, roomName);
+    }
+
+    if (roomName === 'E59S47') {
+        return new RoomPosition(3, 44, roomName);
+    }
+
+    if (roomName === 'E58S48') {
+        return new RoomPosition(28, 18, roomName);
+    }
+
+    if (roomName === 'E59S48') {
+        return new RoomPosition(24, 17, roomName);
     }
 };
 

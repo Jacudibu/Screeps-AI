@@ -283,7 +283,7 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
     const roomName = this.memory.targetRoomName;
 
     if (this.room.name === roomName) {
-        this.setTask(TASK.DECIDE_WHAT_TO_DO);
+        this.setTask(taskWhenFinished);
     }
 
     const positionInNextRoom = this.room.getRoomPositionForTransferToRoom(roomName);
