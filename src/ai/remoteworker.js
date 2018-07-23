@@ -1,4 +1,4 @@
-const remoteharvester = {
+const remoteWorker = {
     run: function(creep) {
         switch (creep.memory.task) {
             case TASK.HARVEST_ENERGY:
@@ -17,4 +17,4 @@ const remoteharvester = {
     }
 };
 
-module.export(remoteharvester);
+module.export(remoteWorker);
