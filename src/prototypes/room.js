@@ -25,7 +25,12 @@ Room.prototype.addRemoteMiningRoom = function (roomName) {
     }
 
     this.memory.remoteMiningRooms.push(roomName);
-    Game.rooms[roomName].memory.assignedRemoteWorkers = 0;
+
+    if (Memory.rooms[roomName] === undefined) {
+        Memory.rooms[roomName] = {};
+    }
+
+    Memory.rooms[roomName].assignedRemoteWorkers = 0;
 };
 
 Room.prototype.removeRemoteMiningRoom = function(roomName) {

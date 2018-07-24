@@ -58,6 +58,8 @@ Source.prototype.getContainerPosition = function() {
         let obj = Game.getObjectById(this.memory.containerId);
         if (obj) {
             return obj.pos;
+        } else {
+            this.memory.containerId = undefined;
         }
     }
 
@@ -68,5 +70,7 @@ Source.prototype.getContainerPosition = function() {
     }
 
     let container = containers[0];
+
     this.memory.containerId = container.id;
+    return container.pos;
 };

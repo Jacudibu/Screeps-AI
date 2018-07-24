@@ -222,7 +222,13 @@ Creep.prototype.signRoomController = function(nextTask) {
 };
 
 Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
-    let targetPos = this._getSource().getContainerPosition();
+    let source = this._getSource();
+    if (!source) {
+        this.say("e~e");
+        return;
+    }
+
+    let targetPos = source.getContainerPosition();
 
     if (targetPos === ERR_NOT_FOUND) {
         this.say("x~x");
