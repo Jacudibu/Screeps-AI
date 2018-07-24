@@ -5,14 +5,14 @@ const remoteHauler = {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === creep.carryCapacity) {
-                        creep.memory.targetRoomName = creep.memory.remoteHaulTargetRoom;
+                        creep.memory.targetRoomName = creep.memory.remoteHaulStorageRoom;
                         creep.setTask(TASK.MOVE_TO_ROOM);
                     } else {
                         creep.setTask(TASK.HAUL_ENERGY);
                     }
                 } else if (creep.room.name === creep.memory.remoteHaulStorageRoom) {
                     if (_.sum(creep.carry) === 0) {
-                        creep.memory.targetRoomName = creep.memory.remoteHaulStorageRoom;
+                        creep.memory.targetRoomName = creep.memory.remoteHaulTargetRoom;
                         creep.setTask(TASK.MOVE_TO_ROOM);
                     } else {
                         creep.setTask(TASK.STORE_ENERGY);

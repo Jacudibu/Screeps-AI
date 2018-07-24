@@ -185,7 +185,9 @@ Creep.prototype._getConstructionSite = function() {
         }
     }
 
-    let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES);
+    let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES, {
+        filter: (c) => c.owner = 'Jacudibu'
+        });
 
     if (constructionSites.length === 0) {
         return ERR_NOT_FOUND;

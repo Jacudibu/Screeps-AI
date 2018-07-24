@@ -138,6 +138,10 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
         case ERR_INVALID_TARGET:
             this.resetCurrentTask();
             break;
+        case ERR_RCL_NOT_ENOUGH:
+            console.log(this.room.name + "insufficient RCL to build " + constructionSite);
+            this.setTask(taskIfNothingToBuild);
+            break;
         default:
             console.log("unexpected error when building object: " + this.build(constructionSite));
             break;
@@ -245,7 +249,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
-        console.error("Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
+        console.log(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
         return;
     }
 
