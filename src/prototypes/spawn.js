@@ -101,7 +101,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
     let opts = {
         memory: {
             role: ROLE.REMOTE_WORKER,
-            targetRoomName: targetRoomName
+            targetRoomName: targetRoomName,
+            task: TASK.MOVE_TO_ROOM,
         }
     };
 
@@ -127,6 +128,7 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
             remoteHaulTargetRoom: remoteHaulTargetRoom,
             remoteHaulStorageRoom: this.room.name,
             targetRoomName: remoteHaulTargetRoom,
+            task: TASK.MOVE_TO_ROOM,
         }
     };
 

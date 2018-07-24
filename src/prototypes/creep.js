@@ -220,8 +220,7 @@ Creep.prototype._getConstructionSite = function() {
                 return constructionA.pos.getRangeTo(spawns[0]) - constructionB.pos.getRangeTo(spawns[0]);
             } else {
                 // return the one closer to the creep
-                // return this.pos.getRangeTo(constructionA) - this.pos.getRangeTo(constructionB);
-                return 1;
+                return constructionA.pos.getRangeTo(this) - constructionB.pos.getRangeTo(this);
             }
         } else {
             return compareProgress;

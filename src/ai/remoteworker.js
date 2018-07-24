@@ -22,6 +22,9 @@ const remoteWorker = {
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);
                 break;
+            case TASK.MOVE_ONTO_CONTAINER:
+                creep.moveOntoContainer(TASK.HARVEST_ENERGY_FETCH);
+                break;
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.HARVEST_ENERGY);
                 break;

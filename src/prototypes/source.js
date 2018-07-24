@@ -55,7 +55,10 @@ Source.prototype._countFreeTilesAroundSource = function() {
 
 Source.prototype.getContainerPosition = function() {
     if (this.memory.containerId) {
-        return Game.getObjectById(this.memory.containerId).pos;
+        let obj = Game.getObjectById(this.memory.containerId);
+        if (obj) {
+            return obj.pos;
+        }
     }
 
     let containers = this.pos.findInRange(FIND_STRUCTURES, 1, {filter: s => s.structureType === STRUCTURE_CONTAINER });

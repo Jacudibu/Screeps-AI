@@ -156,6 +156,8 @@ const spawnlogic = {
 
         for (let i = 0; i < remoteMiningRooms.length; i++) {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+            console.log(remoteMiningRooms[i]);
+
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
                 spawn.spawnRemoteWorker(600, true, remoteMiningRooms[i]);
                 Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;

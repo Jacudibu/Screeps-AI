@@ -85,6 +85,8 @@ Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
     if (roomName === 'E59S48') {
         return new RoomPosition(24, 17, roomName);
     }
+
+    return new RoomPosition(25, 25, roomName);
 };
 
 Room.prototype.getPublicEnergyContainers = function() {

@@ -256,7 +256,7 @@ Creep.prototype.decideWhatToDo = function() {
         this.setTask(TASK.MOVE_TO_ROOM);
     }
 
-    if (_.sum(this.carry) < 10) {
+    if (_.sum(this.carry) < 10 && this.room.name !== 'E58S47') {
         this.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
         return;
     }

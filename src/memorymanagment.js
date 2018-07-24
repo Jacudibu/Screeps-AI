@@ -29,10 +29,15 @@ const memoryManagment = {
                 }
                 break;
             case ROLE.REMOTE_WORKER:
-                Memory.rooms[creep.targetRoomName].memory.assignedRemoteWorkers--;
+                Memory.rooms[creep.targetRoomName].assignedRemoteWorkers--;
+                for (let i = 0; i < Memory.rooms[creep.targetRoomName].sources.length; i++) {
+                    if (Memory.rooms[creep.targetRoomName].sources[i] === creep.taskTargetId) {
+                        Memory.rooms[creep.targetRoomName].sources[i].workersAssigned--;
+                    }
+                }
                 break;
             case ROLE.REMOTE_HAULER:
-                Memory.rooms[creep.remoteHaulTargetRoom].memory.isHaulerRequired = true;
+                Memory.rooms[creep.remoteHaulTargetRoom].isHaulerRequired = true;
                 break;
         }
     },
