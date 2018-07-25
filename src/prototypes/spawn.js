@@ -22,8 +22,8 @@ Spawn.prototype.spawnWorker = function(role, energy, blockSpawningIfNoResources)
 Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
     let body = [];
 
-    if (energy > 5000) {
-        energy = 5000;
+    if (energy > 1200) {
+        energy = 1200;
     }
 
     while(energy >= 150) {
