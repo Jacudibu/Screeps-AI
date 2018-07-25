@@ -36,6 +36,7 @@ global.TASK.DECIDE_WHAT_TO_DO = 'decide_what_to_do';
 global.TASK.MOVE_TO_ROOM = 'move_to_room';
 global.TASK.WAIT_FOR_INPUT = 'wait_for_input';
 global.TASK.ATTACK = 'attack';
+global.TASK.DISMANTLE = 'dismantle';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';

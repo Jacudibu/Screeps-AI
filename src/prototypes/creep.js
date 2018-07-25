@@ -219,10 +219,10 @@ Creep.prototype._getConstructionSite = function() {
 
             if (spawns.length > 0) {
                 // return the one closer to spawn
-                return constructionA.pos.getRangeTo(spawns[0]) - constructionB.pos.getRangeTo(spawns[0]);
+                return _.sortBy(site => site.pos.getRangeTo(spawns[0]))[0];
             } else {
                 // return the one closer to the creep
-                return constructionA.pos.getRangeTo(this) - constructionB.pos.getRangeTo(this);
+                return _.sortBy(site => site.pos.getRangeTo(this))[0];
             }
         } else {
             return compareProgress;

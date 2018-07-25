@@ -28,6 +28,9 @@ const remoteWorker = {
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.HARVEST_ENERGY);
                 break;
+            case TASK.DISMANTLE:
+                creep.dismantleStructure(TASK.DECIDE_WHAT_TO_DO);
+                break;
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;

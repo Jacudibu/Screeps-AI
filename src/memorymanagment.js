@@ -32,7 +32,7 @@ const memoryManagment = {
                 Memory.rooms[creep.targetRoomName].assignedRemoteWorkers--;
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
                     for (let i = 0; i < keys.length; i++) {
-                        if (Memory.rooms[creep.targetRoomName].sources[keys[i]] === creep.taskTargetId) {
+                        if (keys[i] === creep.taskTargetId) {
                             Memory.rooms[creep.targetRoomName].sources[keys[i]].workersAssigned--;
                         }
                 }

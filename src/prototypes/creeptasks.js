@@ -301,3 +301,22 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
     const positionInNextRoom = this.room.getRoomPositionForTransferToRoom(roomName);
     this.moveTo(positionInNextRoom);
 };
+
+Creep.prototype.dismantleStructure = function(taskWhenFinished) {
+    const target = Game.getObjectById(this.memory.taskTargetId);
+
+    if (target) {
+        switch (this.dismantle(target)) {
+            case OK:
+                break;
+            case ERR_NOT_IN_RANGE:
+                this.moveTo(target);
+                break;
+            default:
+                console.log("unexpected error when dismantling object: " + this.dismantle(target));
+                break;
+        }
+    } else {
+        this.setTask(taskWhenFinished);
+    }
+};
