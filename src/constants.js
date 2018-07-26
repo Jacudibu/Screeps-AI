@@ -37,6 +37,8 @@ global.TASK.MOVE_TO_ROOM = 'move_to_room';
 global.TASK.WAIT_FOR_INPUT = 'wait_for_input';
 global.TASK.ATTACK = 'attack';
 global.TASK.DISMANTLE = 'dismantle';
+global.TASK.CLAIM_CONTROLLER = 'claim_controller';
+global.TASK.RESERVE_CONTROLLER = 'reserve_controller';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
@@ -48,3 +50,4 @@ global.ROLE.REPAIRER = 'repairer';
 global.ROLE.REMOTE_WORKER = 'remote_worker';
 global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.ATTACKER = 'attacker';
+global.ROLE.CLAIMER = 'claimer';

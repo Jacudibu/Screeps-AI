@@ -7,14 +7,25 @@ const roomLogic = {
 
     runRoom: function(room) {
         let hostiles = room.find(FIND_HOSTILE_CREEPS);
-        if (hostiles.length > 0) {
-            hostiles = this.sortHostilesByPriority(hostiles);
-            room.commandTowersToAttackTarget(hostiles[0]);
+        if (hostiles.length === 0) {
+            return;
         }
+
+        hostiles = this.sortHostilesByPriority(hostiles);
+        room.commandTowersToAttackTarget(hostiles[0]);
 
         let damagedCreeps = room.findDamagedCreeps();
         if (damagedCreeps.length > 0) {
             room.commandTowersToHealCreep(damagedCreeps[0]);
+        }
+
+        let spawns = room.find(FIND_MY_SPAWNS);
+        for(let i = 0; i < spawns.length; i++) {
+            let spawn = spawns[i];
+
+            if (spawn.hits < 3000 && room.controller.safeModeCooldown === 0) {
+                room.controller.activateSafeMode();
+            }
         }
     },
 

@@ -320,3 +320,32 @@ Creep.prototype.dismantleStructure = function(taskWhenFinished) {
         this.setTask(taskWhenFinished);
     }
 };
+
+Creep.prototype.claimRoomController = function() {
+    switch (this.claimController(this.room.controller)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(this.room.controller);
+            break;
+        case ERR_GCL_NOT_ENOUGH:
+            this.setTask(TASK.RESERVE_CONTROLLER);
+            break;
+        default:
+            console.log("unexpected error when claiming room controller: " + this.claimController(this.room.controller));
+            break;
+    }
+};
+
+Creep.prototype.reserveRoomController = function() {
+    switch (this.reserveController(this.room.controller)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(this.room.controller);
+            break;
+        default:
+            console.log("unexpected error when reserving room controller: " + this.reserveController(this.room.controller));
+            break;
+    }
+};
