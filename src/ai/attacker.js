@@ -1,19 +1,19 @@
 const attacker = {
     run: function (creep) {
         switch (creep.memory.task) {
-            case TASK.MOVE_TO_ROOM:
-                if (creep.room.name === 'E58S47') {
-                    creep.memory.targetRoomName = 'E59S47';
-                } else if (creep.room.name === 'E59S47') {
-                    creep.memory.targetRoomName = 'E59S48';
-                } else if (creep.room.name === 'E59S48') {
+            case TASK.DECIDE_WHAT_TO_DO:
+                if (creep.room.name === creep.memory.targetRoomName) {
+                    creep.setTask(TASK.MOVE_TO_ROOM)
+                } else {
                     creep.setTask(TASK.ATTACK);
-                    creep.memory.taskTargetId = "5b54899f92b4c2424c331027";
                 }
-                creep.moveToRoom(TASK.WAIT_FOR_INPUT);
+                break;
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.ATTACK);
                 break;
             case TASK.WAIT_FOR_INPUT:
                 creep.say("(ノ°Д°）ノ︵┻━┻");
+                creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.ATTACK:
                 let target = undefined;
