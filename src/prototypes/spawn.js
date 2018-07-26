@@ -82,7 +82,7 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
 
 Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources, targetRoomName) {
     if (targetRoomName === undefined) {
-        console.log("remoteRoomWorkers needs a targetRoomName");
+        console.log("remoteRoomWorker needs a targetRoomName");
         return;
     }
 
@@ -109,7 +109,12 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
     this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
 };
 
-Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources, remoteHaulTargetRoom) {
+Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources, targetRoomName) {
+    if (!targetRoomName) {
+        console.log("Unable to Spawn remote hauler, no target room name provided.");
+        return;
+    }
+
     let body = [];
 
     if (energy > 5000) {
@@ -125,9 +130,9 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
     let opts = {
         memory: {
             role: ROLE.REMOTE_HAULER,
-            remoteHaulTargetRoom: remoteHaulTargetRoom,
+            remoteHaulTargetRoom: targetRoomName,
             remoteHaulStorageRoom: this.room.name,
-            targetRoomName: remoteHaulTargetRoom,
+            targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
         }
     };
@@ -136,6 +141,11 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
 };
 
 Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targetRoomName) {
+    if (!targetRoomName) {
+        console.log("Unable to Spawn claimer, no target room name provided.");
+        return;
+    }
+
     let body = [];
 
     if (energy > 1300) {
@@ -171,7 +181,7 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
     let opts = {
         memory: {
             role: ROLE.ATTACKER,
-            targetRoomName: targetRoomName,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
             task: TASK.MOVE_TO_ROOM,
         }
     };

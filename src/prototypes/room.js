@@ -1,10 +1,10 @@
 Room.prototype.initSpawnMemory = function() {
     this.memory.requestedCreeps = {};
-    this.memory.requestedCreeps[ROLE.HARVESTER] = 4;
-    this.memory.requestedCreeps[ROLE.HAULER] = 3;
+    this.memory.requestedCreeps[ROLE.HARVESTER] = 0;
+    this.memory.requestedCreeps[ROLE.HAULER] = 0;
     this.memory.requestedCreeps[ROLE.UPGRADER] = 1;
-    this.memory.requestedCreeps[ROLE.BUILDER] = 1;
-    this.memory.requestedCreeps[ROLE.REPAIRER] = 1;
+    this.memory.requestedCreeps[ROLE.BUILDER] = 0;
+    this.memory.requestedCreeps[ROLE.REPAIRER] = 0;
 };
 
 Room.prototype.setRequestedCreepRole = function(role, count) {
