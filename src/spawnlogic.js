@@ -171,7 +171,7 @@ const spawnlogic = {
             }
         }
 
-        spawn.spawnAttacker(room.energyAvailable, 'E58S47');
+        spawn.spawnAnnoyer(room.energyAvailable, 'E57S48');
     },
 };
 

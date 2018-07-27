@@ -189,6 +189,33 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
     this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
 };
 
+Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
+    let body = [];
+
+    if (energy < 130) {
+        return;
+    }
+
+    body.push(ATTACK, MOVE);
+    energy -= 130;
+
+    while (energy >= 50) {
+        body.push(TOUGH);
+        energy -= 50;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.ATTACKER,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
+};
+
 Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {
     let name = role + '#' + Memory.creepsBuilt;
 

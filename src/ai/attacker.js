@@ -3,9 +3,12 @@ const attacker = {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
-                    creep.setTask(TASK.MOVE_TO_ROOM)
-                } else {
+                    if (creep.memory.targetRoomName === 'E57S48') {
+                        creep.memory.taskTargetId = '5b5a4f8365965e6dc7b2340a';
+                    }
                     creep.setTask(TASK.ATTACK);
+                } else {
+                    creep.setTask(TASK.MOVE_TO_ROOM)
                 }
                 break;
             case TASK.MOVE_TO_ROOM:
@@ -19,6 +22,8 @@ const attacker = {
                 let target = undefined;
                 if (creep.memory.taskTargetId) {
                     target = Game.getObjectById(creep.memory.taskTargetId);
+                } else {
+                    target = Game.getObjectById('5b5a4f8365965e6dc7b2340a');
                 }
 
                 if (target === undefined) {
@@ -31,21 +36,18 @@ const attacker = {
                             return;
                         }
                         */
-                        if (creep.targetRoomName === 'E58S47') {
-                            creep.memory.targetRoomName = 'E58S48';
-                        } else if (creep.targetRoomName === 'E58S48') {
-                            creep.memory.targetRoomName = 'E58S49'
-                        } else if (Creep.targetRoomName === 'E58S49') {
-                            creep.moveTo(new RoomPosition(22, 27, 'E58S49'));
+
                             creep.say("*zZz*");
+                            return;
                         }
                         creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                         return;
-                    }
 
-                    possibleTargets.sort(function(a, b) {
-                        return creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b);
-                    });
+                        /*
+                        possibleTargets.sort(function(a, b) {
+                            return creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b);
+                        });
+                        */
 
                     _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c));
                     target = possibleTargets[0];

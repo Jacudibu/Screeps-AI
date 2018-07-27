@@ -91,6 +91,10 @@ Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
         return new RoomPosition(24, 17, roomName);
     }
 
+    if (roomName === 'E57S48') {
+        return new RoomPosition(46, 44, roomName);
+    }
+
     return new RoomPosition(25, 25, roomName);
 };
 
