@@ -163,7 +163,7 @@ const spawnlogic = {
             }
 
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
-                spawn.spawnRemoteWorker(600, true, remoteMiningRooms[i]);
+                spawn.spawnRemoteWorker(room.energyAvailable, true, remoteMiningRooms[i]);
                 Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
                 return;
             }
@@ -174,8 +174,6 @@ const spawnlogic = {
                 return;
             }
         }
-
-        spawn.spawnAnnoyer(room.energyAvailable, 'E57S48');
     },
 };
 

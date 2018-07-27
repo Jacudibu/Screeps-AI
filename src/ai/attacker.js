@@ -1,10 +1,12 @@
 const attacker = {
     run: function (creep) {
+        creep.memory.targetRoomName = 'E57S49';
+
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
                     if (creep.memory.targetRoomName === 'E57S48') {
-                        creep.memory.taskTargetId = '5b5a4f8365965e6dc7b2340a';
+                        creep.memory.taskTargetId = '5b53a04d0f53d87ca9926fe0';
                     }
                     creep.setTask(TASK.ATTACK);
                 } else {
@@ -22,8 +24,6 @@ const attacker = {
                 let target = undefined;
                 if (creep.memory.taskTargetId) {
                     target = Game.getObjectById(creep.memory.taskTargetId);
-                } else {
-                    target = Game.getObjectById('5b5a4f8365965e6dc7b2340a');
                 }
 
                 if (target === undefined) {
@@ -40,8 +40,6 @@ const attacker = {
                             creep.say("*zZz*");
                             return;
                         }
-                        creep.setTask(TASK.DECIDE_WHAT_TO_DO);
-                        return;
 
                         /*
                         possibleTargets.sort(function(a, b) {

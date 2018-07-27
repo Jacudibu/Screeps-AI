@@ -5,6 +5,7 @@
 (*) RemoteWorkers request haulers on certain container threshold instead of having a hauler assigned (and idling) all the time
 (*) Auto Neighbor-Room Claiming
 (*) Invasion Creeps
+(*) Healers
 (*) Squads
 
 
