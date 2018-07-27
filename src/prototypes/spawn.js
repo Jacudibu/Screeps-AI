@@ -199,12 +199,12 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     body.push(ATTACK, MOVE);
     energy -= 130;
 
-    while (energy >= 50) {
-        body.push(TOUGH);
-        energy -= 50;
+    while (energy >= 150) {
+        body.push(TOUGH, TOUGH, MOVE);
+        energy -= 150;
     }
 
-    body.sort();
+    body.sort().reverse();
     let opts = {
         memory: {
             role: ROLE.ATTACKER,

@@ -145,3 +145,11 @@ Room.prototype.findDamagedCreeps = function() {
         return creep.hits < creep.hitsMax;
     });
 };
+
+Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
+    this.memory.sources = {};
+    const sources = this.find(FIND_SOURCES);
+    for (let i = 0; i < sources.length; i++) {
+        sources[i].initializeMemory();
+    }
+};

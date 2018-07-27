@@ -1,9 +1,9 @@
 ## TODO:
 
-(*) Hauler Rework  - store containerId in Spawn and throw all that code away
-(*) SpawnQueue & AutoRespawn for Harvesters
-(*) Remote Mining operations
-(*) Room Claiming
+(*) Transform SpawnQueue into Object Array
+(*) AutoRespawn for Harvesters & Haulers
+(*) RemoteWorkers request haulers on certain container threshold instead of having a hauler assigned (and idling) all the time
+(*) Auto Neighbor-Room Claiming
 (*) Invasion Creeps
 (*) Squads
 

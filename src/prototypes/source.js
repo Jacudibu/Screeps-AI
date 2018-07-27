@@ -25,20 +25,12 @@ Source.prototype.setWorkersMax = function(amount) {
     this.memory.workersMax = amount;
 };
 
-Source.prototype._initializeMemoryForAllSourcesInRoom = function() {
-    this.room.memory.sources = {};
-    const sources = this.room.find(FIND_SOURCES);
-    for (let i = 0; i < sources.length; i++) {
-        this._initializeMemory(sources[i]);
-    }
-};
-
-Source.prototype._initializeMemory = function(source) {
+Source.prototype.initializeMemory = function() {
     let initialMemory = {};
     initialMemory.workersAssigned = 0;
-    initialMemory.workersMax = source._countFreeTilesAroundSource(source);
+    initialMemory.workersMax = this._countFreeTilesAroundSource();
 
-    this.room.memory.sources[source.id] = initialMemory;
+    this.room.memory.sources[this.id] = initialMemory;
 };
 
 Source.prototype._countFreeTilesAroundSource = function() {
