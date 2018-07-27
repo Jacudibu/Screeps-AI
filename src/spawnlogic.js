@@ -50,7 +50,7 @@ const spawnlogic = {
             room.initSpawnMemory(room);
         }
 
-        if (this.countNumberOfCreepsWithRole(ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(ROLE.HAULER) === 0) {
+        if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
             if (this.isRoleNeeded(room, ROLE.HAULER)) {
                 room.addToSpawnQueue(ROLE.HAULER);
                 return;
@@ -139,18 +139,19 @@ const spawnlogic = {
     },
 
     isRoleNeeded: function(room, role) {
-        let creepsWithRoleCount = this.countNumberOfCreepsWithRole(role);
+        let creepsWithRoleCount = this.countNumberOfCreepsWithRole(room, role);
         return creepsWithRoleCount < room.memory.requestedCreeps[role];
     },
 
-    countNumberOfCreepsWithRole(role) {
-        return _.sum(Game.creeps, creep => creep.memory.role === role);
+    countNumberOfCreepsWithRole(room, role) {
+        let creeps = room.find(FIND_MY_CREEPS);
+        return _.sum(creeps, creep => creep.memory.role === role);
     },
 
     checkRemoteMiningRoomSpawns(room, spawn) {
         let remoteMiningRooms = room.memory.remoteMiningRooms;
 
-        if (remoteMiningRooms.length === 0) {
+        if (!remoteMiningRooms || remoteMiningRooms.length === 0) {
             return;
         }
 
@@ -169,6 +170,8 @@ const spawnlogic = {
                 return;
             }
         }
+
+        spawn.spawnAttacker(room.energyAvailable, 'E58S47');
     },
 };
 

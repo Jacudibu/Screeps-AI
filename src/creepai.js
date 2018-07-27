@@ -17,34 +17,38 @@ const creepAi = {
                 continue;
             }
 
-            switch (creep.memory.role) {
-                case ROLE.HARVESTER:
-                    harvesterAI.run(creep);
-                    break;
-                case ROLE.BUILDER:
-                    builderAI.run(creep);
-                    break;
-                case ROLE.REPAIRER:
-                    repairerAI.run(creep);
-                    break;
-                case ROLE.UPGRADER:
-                    upgraderAI.run(creep);
-                    break;
-                case ROLE.HAULER:
-                    haulerAI.run(creep);
-                    break;
-                case ROLE.REMOTE_WORKER:
-                    remoteWorkerAI.run(creep);
-                    break;
-                case ROLE.REMOTE_HAULER:
-                    remoteHaulerAI.run(creep);
-                    break;
-                case ROLE.ATTACKER:
-                    attackerAI.run(creep);
-                    break;
-                case ROLE.CLAIMER:
-                    claimerAI.run(creep);
-                    break;
+            try {
+                switch (creep.memory.role) {
+                    case ROLE.HARVESTER:
+                        harvesterAI.run(creep);
+                        break;
+                    case ROLE.BUILDER:
+                        builderAI.run(creep);
+                        break;
+                    case ROLE.REPAIRER:
+                        repairerAI.run(creep);
+                        break;
+                    case ROLE.UPGRADER:
+                        upgraderAI.run(creep);
+                        break;
+                    case ROLE.HAULER:
+                        haulerAI.run(creep);
+                        break;
+                    case ROLE.REMOTE_WORKER:
+                        remoteWorkerAI.run(creep);
+                        break;
+                    case ROLE.REMOTE_HAULER:
+                        remoteHaulerAI.run(creep);
+                        break;
+                    case ROLE.ATTACKER:
+                        attackerAI.run(creep);
+                        break;
+                    case ROLE.CLAIMER:
+                        claimerAI.run(creep);
+                        break;
+                }
+            } catch (e) {
+                console.log(creep.room.name + "|" + creep.name + "caught error " + e);
             }
         }
     }

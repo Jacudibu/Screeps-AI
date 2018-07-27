@@ -24,11 +24,23 @@ const attacker = {
                 if (target === undefined) {
                     let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
                     if (possibleTargets.length === 0) {
+                        /*
                         possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES);
                         if (possibleTargets.length === 0) {
                             creep.setTask(TASK.WAIT_FOR_INPUT);
                             return;
                         }
+                        */
+                        if (creep.targetRoomName === 'E58S47') {
+                            creep.memory.targetRoomName = 'E58S48';
+                        } else if (creep.targetRoomName === 'E58S48') {
+                            creep.memory.targetRoomName = 'E58S49'
+                        } else if (Creep.targetRoomName === 'E58S49') {
+                            creep.moveTo(new RoomPosition(22, 27, 'E58S49'));
+                            creep.say("*zZz*");
+                        }
+                        creep.setTask(TASK.DECIDE_WHAT_TO_DO);
+                        return;
                     }
 
                     possibleTargets.sort(function(a, b) {
@@ -39,6 +51,7 @@ const attacker = {
                     target = possibleTargets[0];
                 }
 
+                creep.say("(ノ°Д°）ノ︵┻━┻");
                 switch (creep.attack(target)) {
                     case OK:
                         break;

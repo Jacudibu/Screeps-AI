@@ -23,7 +23,7 @@ const roomLogic = {
         for(let i = 0; i < spawns.length; i++) {
             let spawn = spawns[i];
 
-            if (spawn.hits < 3000 && room.controller.safeModeCooldown === 0) {
+            if (spawn.hits < 5000 && !room.controller.safeMode) {
                 room.controller.activateSafeMode();
             }
         }
