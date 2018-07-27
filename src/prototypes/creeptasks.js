@@ -272,13 +272,13 @@ Creep.prototype.decideWhatToDo = function() {
         return;
     }
 
-    if (this._getConstructionSite() !== ERR_NOT_FOUND) {
-        this.setTask(TASK.BUILD_STRUCTURE);
+    if (this._getDamagedStructure() !== ERR_NOT_FOUND) {
+        this.setTask(TASK.REPAIR_STRUCTURE);
         return;
     }
 
-    if (this._getDamagedStructure() !== ERR_NOT_FOUND) {
-        this.setTask(TASK.REPAIR_STRUCTURE);
+    if (this._getConstructionSite() !== ERR_NOT_FOUND) {
+        this.setTask(TASK.BUILD_STRUCTURE);
         return;
     }
 
