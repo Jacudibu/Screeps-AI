@@ -112,12 +112,6 @@ Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     return _.sortBy(container, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestAvailableSource = function() {
-    return this.pos.findClosestByRange(FIND_SOURCES, {filter: function(source) {
-            return source.memory.workersAssigned < source.memory.workersMax;
-        }});
-};
-
 Creep.prototype.findClosestDroppedEnergy = function() {
     let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES);
 
@@ -151,7 +145,7 @@ Creep.prototype._getSource = function() {
         return Game.getObjectById(this.memory.taskTargetId);
     }
 
-    let source = this.findClosestAvailableSource();
+    let source = this.room.getUnoccupiedSource();
     if (source == null)  {
         return ERR_NOT_FOUND;
     }

@@ -162,8 +162,8 @@ Room.prototype.getUnoccupiedSource = function() {
 
     let keys = Object.keys(this.memory.sources);
     for (let i = 0; i < keys.length; i++) {
-        if (this.memory.sources[i].workersAssigned < this.memory.sources[i].workersMax) {
-            return Game.getObjectById(Object.keys[i]);
+        if (this.memory.sources[keys[i]].workersAssigned < this.memory.sources[keys[i]].workersMax) {
+            return Game.getObjectById(keys[i]);
         }
     }
 

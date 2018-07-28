@@ -34,7 +34,7 @@ const spawnlogic = {
                 }
             }
 
-            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty();
+            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && room.controller.level < 4;
         }
     },
 
@@ -113,28 +113,28 @@ const spawnlogic = {
 
         switch (args.role) {
             case ROLE.BUILDER:
-                spawn.spawnWorker(args.role, energy, true);
+                spawn.spawnWorker(args.role, energy);
                 break;
             case ROLE.HARVESTER:
-                spawn.spawnHarvester(energy, true);
+                spawn.spawnHarvester(energy);
                 break;
             case ROLE.HAULER:
-                spawn.spawnHauler(energy, true);
+                spawn.spawnHauler(energy);
                 break;
             case ROLE.UPGRADER:
-                spawn.spawnUpgrader(energy, true);
+                spawn.spawnUpgrader(energy);
                 break;
             case ROLE.REPAIRER:
-                spawn.spawnWorker(args.role, energy, true);
+                spawn.spawnWorker(args.role, energy);
                 break;
             case ROLE.REMOTE_WORKER:
-                spawn.spawnRemoteWorker(energy, false, args.targetRoomName);
+                spawn.spawnRemoteWorker(energy, args.targetRoomName);
                 break;
             case ROLE.REMOTE_HAULER:
-                spawn.spawnRemoteHauler(energy, false, args.targetRoomName);
+                spawn.spawnRemoteHauler(energy, args.targetRoomName);
                 break;
             case ROLE.RESERVER:
-                spawn.spawnReserver(energy, false, args.targetRoomName);
+                spawn.spawnReserver(energy, args.targetRoomName);
                 break;
             default:
                 console.log("Unknown role requested to spawn: " + args.role);

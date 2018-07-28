@@ -2,7 +2,7 @@ Spawn.prototype.drawSpawnInfo = function() {
     this.room.visual.text('🛠️' + this.spawning.name, this.pos.x + 1, this.pos.y, {align: 'left', opacity: '0.5'});
 };
 
-Spawn.prototype.spawnWorker = function(role, energy, blockSpawningIfNoResources) {
+Spawn.prototype.spawnWorker = function(role, energy) {
     let body = [];
 
     if (energy > 200 * 16) {
@@ -16,7 +16,7 @@ Spawn.prototype.spawnWorker = function(role, energy, blockSpawningIfNoResources)
 
     body.sort();
 
-    return this._spawnDefinedCreep(role, blockSpawningIfNoResources, body, {memory: {role: role}});
+    return this._spawnDefinedCreep(role, body, {memory: {role: role}});
 };
 
 Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
@@ -39,10 +39,10 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.DISMANTLER, false, body, opts);
+    return this._spawnDefinedCreep(ROLE.DISMANTLER, body, opts);
 };
 
-Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
+Spawn.prototype.spawnHauler = function(energy) {
     let body = [];
 
     if (energy > 1200) {
@@ -56,10 +56,10 @@ Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    return this._spawnDefinedCreep(ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER}});
+    return this._spawnDefinedCreep(ROLE.HAULER, body, {memory: {role: ROLE.HAULER}});
 };
 
-Spawn.prototype.spawnHarvester = function(energy, blockSpawningIfNoResources) {
+Spawn.prototype.spawnHarvester = function(energy) {
     let body = [];
 
     let remainder = 0;
@@ -83,10 +83,10 @@ Spawn.prototype.spawnHarvester = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    return this._spawnDefinedCreep(ROLE.HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HARVESTER}});
+    return this._spawnDefinedCreep(ROLE.HARVESTER, body, {memory: {role: ROLE.HARVESTER}});
 };
 
-Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
+Spawn.prototype.spawnUpgrader = function(energy) {
     let body = [];
 
     if (energy > 300 * 16) {
@@ -103,10 +103,10 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    return this._spawnDefinedCreep(ROLE.UPGRADER, blockSpawningIfNoResources, body, {memory: {role: ROLE.UPGRADER}});
+    return this._spawnDefinedCreep(ROLE.UPGRADER, body, {memory: {role: ROLE.UPGRADER}});
 };
 
-Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources, targetRoomName) {
+Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
     if (targetRoomName === undefined) {
         console.log("remoteRoomWorker needs a targetRoomName");
         return;
@@ -145,10 +145,10 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.REMOTE_WORKER, body, opts);
 };
 
-Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources, targetRoomName) {
+Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn remote hauler, no target room name provided.");
         return;
@@ -176,10 +176,10 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, body, opts);
 };
 
-Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targetRoomName) {
+Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn claimer, no target room name provided.");
         return;
@@ -198,10 +198,10 @@ Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targ
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.CLAIMER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.CLAIMER, body, opts);
 };
 
-Spawn.prototype.spawnReserver = function(energy, blockSpawningIfNoResources, targetRoomName) {
+Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn reserver, no target room name provided.");
         return ERR_INVALID_TARGET;
@@ -220,7 +220,7 @@ Spawn.prototype.spawnReserver = function(energy, blockSpawningIfNoResources, tar
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.RESERVER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.RESERVER, body, opts);
 };
 
 Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
@@ -240,7 +240,7 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
+    return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
 };
 
 Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
@@ -267,28 +267,23 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
+    return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
 };
 
-Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, opts) {
+Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
     let name = role + '#' + Memory.creepsBuilt;
 
     let result = this.spawnCreep(body, name, opts);
 
     switch (result) {
         case OK:
-            this.room.memory.allowEnergyCollection = true;
             Memory.creepsBuilt = Memory.creepsBuilt + 1;
             break;
         case ERR_NOT_ENOUGH_ENERGY:
-            if (blockSpawningIfNoResources) {
-                this.room.memory.allowEnergyCollection = false;
-            }
             break;
         default:
             console.log("unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
                 + "\nBody: " + body + " name:" + name + "memory:" + opts);
-            this.room.memory.allowEnergyCollection = true;
             break;
     }
 
