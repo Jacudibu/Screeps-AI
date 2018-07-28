@@ -304,6 +304,7 @@ Creep.prototype.claimRoomController = function() {
             break;
         case ERR_GCL_NOT_ENOUGH:
             this.setTask(TASK.RESERVE_CONTROLLER);
+            this.reserveRoomController();
             break;
         default:
             console.log("unexpected error when claiming room controller: " + this.claimController(this.room.controller));

@@ -193,41 +193,39 @@ Creep.prototype._getConstructionSite = function() {
         return ERR_NOT_FOUND;
     }
 
-    constructionSites.sort(function(constructionA, constructionB) {
-        if (constructionA.structureType !== constructionB.structureType) {
-            if (constructionA.structureType === STRUCTURE_STORAGE) {
-                return -1;
+    let spawns = this.room.find(FIND_MY_SPAWNS);
+    if (spawns.length > 0) {
+        constructionSites.sort(function (constructionA, constructionB) {
+            if (constructionA.structureType !== constructionB.structureType) {
+                if (constructionA.structureType === STRUCTURE_STORAGE) {
+                    return -1;
+                }
+
+                if (constructionB.structureType === STRUCTURE_STORAGE) {
+                    return 1;
+                }
+
+                if (constructionA.structureType === STRUCTURE_EXTENSION) {
+                    return -1;
+                }
+                if (constructionB.structureType === STRUCTURE_EXTENSION) {
+                    return 1;
+                }
             }
 
-            if (constructionB.structureType === STRUCTURE_STORAGE) {
-                return 1;
-            }
+            let compareProgress = constructionB.progress - constructionA.progress;
 
-            if (constructionA.structureType === STRUCTURE_EXTENSION) {
-                return -1;
-            }
-            if (constructionB.structureType === STRUCTURE_EXTENSION) {
-                return 1;
-            }
-        }
-
-        let compareProgress = constructionB.progress - constructionA.progress;
-
-        if (compareProgress === 0) {
-            // TODO: This is inefficient af, maybe do this only in the first few RCL-Levels? Or store the first 5 in memory?
-            let spawns = constructionA.room.find(FIND_MY_SPAWNS);
-
-            if (spawns.length > 0) {
-                // return the one closer to spawn
+            if (compareProgress === 0) {
+                // TODO: This is inefficient af, maybe do this only in the first few RCL-Levels? Or store the first 5 in memory?
                 return constructionA.pos.getRangeTo(spawns[0] - constructionB.pos.getRangeTo(spawns[0]));
             } else {
-                // return the one closer to the creep
-                return constructionA.pos.getRangeTo(this) - constructionB.pos.getRangeTo(this);
+                return compareProgress;
             }
-        } else {
-            return compareProgress;
-        }
-    });
+        });
+    } else {
+        // No spawn, just get the closest structure to our creep
+        constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this))
+    }
 
     this.memory.taskTargetId = constructionSites[0].id;
     return constructionSites[0];
