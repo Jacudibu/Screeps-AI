@@ -137,7 +137,7 @@ const spawnlogic = {
                 spawn.spawnReserver(energy, args.targetRoomName);
                 break;
             case ROLE.ATTACKER:
-                spawn.spawnAttacker(energy, args.targetRoomName);
+                spawn.spawnDefender(energy, args.targetRoomName);
                 break;
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
