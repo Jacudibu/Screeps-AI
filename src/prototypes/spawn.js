@@ -19,6 +19,29 @@ Spawn.prototype.spawnWorker = function(role, energy, blockSpawningIfNoResources)
     return this._spawnDefinedCreep(role, blockSpawningIfNoResources, body, {memory: {role: role}});
 };
 
+Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
+    let body = [];
+
+    if (energy > 200 * 16) {
+        energy = 200 * 16;
+    }
+
+    while (energy >= 150) {
+        body.push(WORK, MOVE);
+        energy -= 150;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.DISMANTLER,
+            targetRoomName: targetRoomName
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.DISMANTLER, false, body, opts);
+};
+
 Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
     let body = [];
 

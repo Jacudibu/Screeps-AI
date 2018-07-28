@@ -320,7 +320,7 @@ Creep.prototype._getDismantleTarget = function() {
         filter: (flag) => this.room.lookForAt(LOOK_STRUCTURES, flag.pos)
         });
     if (flags.length > 0) {
-        let flag = _.sortBy(flags, flag => flag.pos.getRangeTo(this));
+        let flag = _.sortBy(flags, flag => flag.pos.getRangeTo(this))[0];
         let target = this.room.lookForAt(LOOK_STRUCTURES, flag.pos)[0];
         flag.remove();
 
