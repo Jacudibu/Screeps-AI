@@ -163,15 +163,26 @@ const spawnlogic = {
             }
 
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
-                spawn.spawnRemoteWorker(room.energyAvailable, true, remoteMiningRooms[i]);
-                Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
-                return;
+                let result = spawn.spawnRemoteWorker(room.energyAvailable, true, remoteMiningRooms[i]);
+                if (result === OK) {
+                    Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
+                    return;
+                }
             }
 
             if (remoteMiningRoom.isHaulerRequired) {
-                spawn.spawnRemoteHauler(room.energyAvailable, true, remoteMiningRooms[i]);
-                Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
-                return;
+                let result = spawn.spawnRemoteHauler(room.energyAvailable, true, remoteMiningRooms[i]);
+                if (result === OK) {
+                    Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
+                    return;
+                }
+            }
+
+            if (!remoteMiningRoom.isReserverAssigned) {
+                let result = spawn.spawnReserver(room.energyAvailable, true, remoteMiningRooms[i]);
+                if (result === OK) {
+                    Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
+                }
             }
         }
     },

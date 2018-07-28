@@ -51,3 +51,4 @@ global.ROLE.REMOTE_WORKER = 'remote_worker';
 global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.CLAIMER = 'claimer';
+global.ROLE.RESERVER = 'reserver';

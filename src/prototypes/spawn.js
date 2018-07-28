@@ -16,7 +16,7 @@ Spawn.prototype.spawnWorker = function(role, energy, blockSpawningIfNoResources)
 
     body.sort();
 
-    this._spawnDefinedCreep(role, blockSpawningIfNoResources, body, {memory: {role: role}});
+    return this._spawnDefinedCreep(role, blockSpawningIfNoResources, body, {memory: {role: role}});
 };
 
 Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
@@ -33,7 +33,7 @@ Spawn.prototype.spawnHauler = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    this._spawnDefinedCreep(ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER}});
+    return this._spawnDefinedCreep(ROLE.HAULER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HAULER}});
 };
 
 Spawn.prototype.spawnHarvester = function(energy, blockSpawningIfNoResources) {
@@ -60,7 +60,7 @@ Spawn.prototype.spawnHarvester = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    this._spawnDefinedCreep(ROLE.HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HARVESTER}});
+    return this._spawnDefinedCreep(ROLE.HARVESTER, blockSpawningIfNoResources, body, {memory: {role: ROLE.HARVESTER}});
 };
 
 Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
@@ -77,7 +77,7 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
 
     body.sort();
 
-    this._spawnDefinedCreep(ROLE.UPGRADER, blockSpawningIfNoResources, body, {memory: {role: ROLE.UPGRADER}});
+    return this._spawnDefinedCreep(ROLE.UPGRADER, blockSpawningIfNoResources, body, {memory: {role: ROLE.UPGRADER}});
 };
 
 Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources, targetRoomName) {
@@ -88,8 +88,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
 
     let body = [];
 
-    if (energy > 600) {
-        energy = 600;
+    if (energy > 1000) {
+        energy = 1000;
     }
 
     while (energy >= 200) {
@@ -106,7 +106,7 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
         }
     };
 
-    this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.REMOTE_WORKER, blockSpawningIfNoResources, body, opts);
 };
 
 Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources, targetRoomName) {
@@ -137,7 +137,7 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
         }
     };
 
-    this._spawnDefinedCreep(ROLE.REMOTE_HAULER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, blockSpawningIfNoResources, body, opts);
 };
 
 Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targetRoomName) {
@@ -166,7 +166,36 @@ Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targ
         }
     };
 
-    this._spawnDefinedCreep(ROLE.CLAIMER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.CLAIMER, blockSpawningIfNoResources, body, opts);
+};
+
+Spawn.prototype.spawnReserver = function(energy, blockSpawningIfNoResources, targetRoomName) {
+    if (!targetRoomName) {
+        console.log("Unable to Spawn reserver, no target room name provided.");
+        return ERR_INVALID_TARGET;
+    }
+
+    let body = [];
+
+    if (energy > 1300) {
+        energy = 1300;
+    }
+
+    while(energy >= 650) {
+        body.push(CLAIM, MOVE);
+        energy -= 650;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.CLAIMER,
+            targetRoomName: targetRoomName,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.CLAIMER, blockSpawningIfNoResources, body, opts);
 };
 
 Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
@@ -186,7 +215,7 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
         }
     };
 
-    this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
+    return this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
 };
 
 Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
@@ -213,13 +242,15 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
         }
     };
 
-    this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
+    return this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
 };
 
 Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {
     let name = role + '#' + Memory.creepsBuilt;
 
-    switch (this.spawnCreep(body, name, memory)) {
+    let result = this.spawnCreep(body, name, memory);
+
+    switch (result) {
         case OK:
             this.room.memory.allowEnergyCollection = true;
             Memory.creepsBuilt = Memory.creepsBuilt + 1;
@@ -235,4 +266,6 @@ Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, 
             this.room.memory.allowEnergyCollection = true;
             break;
     }
+
+    return result;
 };
