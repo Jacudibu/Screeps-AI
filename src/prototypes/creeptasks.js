@@ -262,35 +262,6 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
 
 };
 
-Creep.prototype.decideWhatToDo = function() {
-    if (this.room.name !== this.memory.targetRoomName) {
-        this.setTask(TASK.MOVE_TO_ROOM);
-    }
-
-    if (_.sum(this.carry) < 10 && this.room.name !== 'E58S47') {
-        this.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
-        return;
-    }
-
-    if (this._getDamagedStructure() !== ERR_NOT_FOUND) {
-        this.setTask(TASK.REPAIR_STRUCTURE);
-        return;
-    }
-
-    if (this._getConstructionSite() !== ERR_NOT_FOUND) {
-        this.setTask(TASK.BUILD_STRUCTURE);
-        return;
-    }
-
-    if (this.findClosestFreeEnergyStorage() !== ERR_NOT_FOUND) {
-        this.setTask(TASK.STORE_ENERGY);
-        return;
-    }
-
-    this.say('ಥ~ಥ');
-    this.drop(RESOURCE_ENERGY);
-};
-
 Creep.prototype.moveToRoom = function(taskWhenFinished) {
     const roomName = this.memory.targetRoomName;
 
@@ -303,11 +274,14 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
 };
 
 Creep.prototype.dismantleStructure = function(taskWhenFinished) {
-    const target = Game.getObjectById(this.memory.taskTargetId);
+    const target = this._getDismantleTarget();
 
     if (target) {
         switch (this.dismantle(target)) {
             case OK:
+                if (_.sum(this.carry) === this.carryCapacity) {
+                    this.drop(RESOURCE_ENERGY);
+                }
                 break;
             case ERR_NOT_IN_RANGE:
                 this.moveTo(target);

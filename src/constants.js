@@ -9,6 +9,7 @@ global.ENERGY_COLLECTOR_EXTRA_BUFFER = 0;
 global.COST_PER_WORKER_TIER = 200;
 global.MINIMUM_HAUL_RESOURCE_AMOUNT = 100;
 global.MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT = 500;
+global.DISMANTLE_FLAG_COLOR = COLOR_RED;
 
 global.WALLS_REPAIR_MAX = [];
 global.WALLS_REPAIR_MAX[1] = 10000;
@@ -52,3 +53,4 @@ global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.CLAIMER = 'claimer';
 global.ROLE.RESERVER = 'reserver';
+global.ROLE.DISMANTLER = 'dismantler';

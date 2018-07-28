@@ -219,10 +219,10 @@ Creep.prototype._getConstructionSite = function() {
 
             if (spawns.length > 0) {
                 // return the one closer to spawn
-                return _.sortBy(site => site.pos.getRangeTo(spawns[0]))[0];
+                return constructionA.pos.getRangeTo(spawns[0] - constructionB.pos.getRangeTo(spawns[0]));
             } else {
                 // return the one closer to the creep
-                return _.sortBy(site => site.pos.getRangeTo(this))[0];
+                return constructionA.pos.getRangeTo(this) - constructionB.pos.getRangeTo(this);
             }
         } else {
             return compareProgress;
@@ -297,6 +297,33 @@ Creep.prototype._getHaulTarget = function() {
     }
 
     return ERR_NOT_FOUND;
+};
+
+Creep.prototype._getDismantleTarget = function() {
+    if (this.memory.taskTargetId) {
+        let target = Game.getObjectById(this.memory.taskTargetId);
+        if (target != null) {
+            return target;
+        }
+    }
+
+    let enemyStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
+    if (enemyStructures.length > 0) {
+        let target = _.sortBy(enemyStructures, site => site.pos.getRangeTo(this))[0];
+        this.memory.taskTargetId = target.id;
+        return target;
+    }
+
+    let flags = this.room.find(FIND_FLAGS, {
+        filter: (flag) => flag.color === COLOR_RED && flag.secondaryColor === COLOR_RED
+        });
+    if (flags.length > 0) {
+        let target = _.sortBy(flags, flag => flag.pos.getRangeTo(this))[0];
+        this.memory.taskTargetId = target.id;
+        return target;
+    }
+
+    return undefined;
 };
 
 // ~~~~~~~~~~~~~~~~~~

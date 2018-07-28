@@ -2,7 +2,32 @@ const remoteWorker = {
     run: function(creep) {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                creep.decideWhatToDo();
+                if (creep.room.name !== creep.memory.targetRoomName) {
+                    creep.setTask(TASK.MOVE_TO_ROOM);
+                }
+
+                if (_.sum(creep.carry) < 10 && creep.room.name !== 'E58S47') {
+                    creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+                    return;
+                }
+
+                if (creep._getDamagedStructure() !== ERR_NOT_FOUND) {
+                    creep.setTask(TASK.REPAIR_STRUCTURE);
+                    return;
+                }
+
+                if (creep._getConstructionSite() !== ERR_NOT_FOUND) {
+                    creep.setTask(TASK.BUILD_STRUCTURE);
+                    return;
+                }
+
+                if (creep.findClosestFreeEnergyStorage() !== ERR_NOT_FOUND) {
+                    creep.setTask(TASK.STORE_ENERGY);
+                    return;
+                }
+
+                creep.say('ಥ~ಥ');
+                creep.drop(RESOURCE_ENERGY);
                 break;
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);

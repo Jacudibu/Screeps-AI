@@ -8,6 +8,7 @@ const remoteHaulerAI = require('ai_remotehauler');
 const reserverAI = require('ai_reserver');
 const attackerAI = require('ai_attacker');
 const claimerAI = require('ai_claimer');
+const dismantlerAI = require('ai_dismantler');
 
 const creepAi = {
     run: function() {
@@ -50,9 +51,12 @@ const creepAi = {
                     case ROLE.RESERVER:
                         reserverAI.run(creep);
                         break;
+                    case ROLE.DISMANTLER:
+                        dismantlerAI.run(creep);
+                        break;
                 }
             } catch (e) {
-                console.log(creep.room.name + "|" + creep.name + "caught error " + e);
+                console.log(creep.room.name + "|" + creep.name + "caught error " + e + "\nTrace:\n" );
             }
         }
     }
