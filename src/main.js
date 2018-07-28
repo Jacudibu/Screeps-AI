@@ -1,5 +1,7 @@
 require('./constants');
 require('./prototypes_creep');
+require('./prototypes_creepgetters');
+require('./prototypes_creepfinders');
 require('./prototypes_creeptasks');
 require('./prototypes_structure');
 require('./prototypes_source');
@@ -15,10 +17,10 @@ const profiler = require('tools_screeps-profiler');
 profiler.enable();
 
 module.exports.loop = function () {
-//    profiler.wrap(function() {
+    profiler.wrap(function() {
         memoryManagment.run();
         creepAi.run();
         roomLogic.run();
         spawnlogic.run();
-//    });
+    });
 };
