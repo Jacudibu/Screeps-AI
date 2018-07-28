@@ -15,10 +15,10 @@ const profiler = require('tools_screeps-profiler');
 profiler.enable();
 
 module.exports.loop = function () {
-    profiler.wrap(function() {
+//    profiler.wrap(function() {
         memoryManagment.run();
         creepAi.run();
         roomLogic.run();
         spawnlogic.run();
-    });
+//    });
 };

@@ -111,8 +111,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
 
     let body = [];
 
-    if (energy > 1000) {
-        energy = 1000;
+    if (energy > 800) {
+        energy = 800;
     }
 
     while (energy >= 200) {

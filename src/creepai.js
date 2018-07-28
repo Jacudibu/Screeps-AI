@@ -56,7 +56,11 @@ const creepAi = {
                         break;
                 }
             } catch (e) {
-                console.log(creep.room.name + "|" + creep.name + "caught error " + e + "\nTrace:\n" );
+                let message = creep.room.name + "|" + creep.name + " -> caught error: " + e;
+                if (e.stack) {
+                    message += "\nTrace:\n" + e.stack;
+                }
+                console.log(message);
             }
         }
     }
