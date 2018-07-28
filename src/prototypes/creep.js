@@ -307,7 +307,9 @@ Creep.prototype._getDismantleTarget = function() {
         }
     }
 
-    let enemyStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
+    let enemyStructures = this.room.find(FIND_HOSTILE_STRUCTURES, {
+        filter: (structure) => structure.structureType !== STRUCTURE_RAMPART
+    });
     if (enemyStructures.length > 0) {
         let target = _.sortBy(enemyStructures, site => site.pos.getRangeTo(this))[0];
         this.memory.taskTargetId = target.id;
@@ -315,10 +317,13 @@ Creep.prototype._getDismantleTarget = function() {
     }
 
     let flags = this.room.find(FIND_FLAGS, {
-        filter: (flag) => flag.color === COLOR_RED && flag.secondaryColor === COLOR_RED
+        filter: (flag) => this.room.lookForAt(LOOK_STRUCTURES, flag.pos)
         });
     if (flags.length > 0) {
-        let target = _.sortBy(flags, flag => flag.pos.getRangeTo(this))[0];
+        let flag = _.sortBy(flags, flag => flag.pos.getRangeTo(this));
+        let target = this.room.lookForAt(LOOK_STRUCTURES, flag.pos)[0];
+        flag.remove();
+
         this.memory.taskTargetId = target.id;
         return target;
     }
