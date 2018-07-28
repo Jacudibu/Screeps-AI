@@ -61,6 +61,7 @@ const creepAi = {
                     message += "\nTrace:\n" + e.stack;
                 }
                 console.log(message);
+                Game.notify(message, 5);
             }
         }
     }

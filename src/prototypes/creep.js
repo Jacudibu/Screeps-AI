@@ -146,7 +146,7 @@ Creep.prototype._getSource = function() {
     }
 
     let source = this.room.getUnoccupiedSource();
-    if (source == null)  {
+    if (source === ERR_NOT_FOUND)  {
         return ERR_NOT_FOUND;
     }
 
