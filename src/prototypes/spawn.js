@@ -111,13 +111,26 @@ Spawn.prototype.spawnRemoteWorker = function(energy, blockSpawningIfNoResources,
 
     let body = [];
 
-    if (energy > 800) {
-        energy = 800;
+    if (energy > 700) {
+        energy = 700;
     }
 
-    while (energy >= 200) {
-        body.push(WORK, CARRY, MOVE);
-        energy -= 200;
+    body.push(CARRY);
+    energy -= 50;
+
+    while (energy >= 250) {
+        body.push(WORK, WORK, MOVE);
+        energy -= 250;
+    }
+
+    if (energy >= 100) {
+        body.push(WORK);
+        energy -= 100;
+    }
+
+    if (energy >= 50) {
+        body.push(MOVE);
+        energy -= 50;
     }
 
     body.sort();

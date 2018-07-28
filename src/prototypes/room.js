@@ -154,3 +154,19 @@ Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
     }
 };
 
+
+Room.prototype.getUnoccupiedSource = function() {
+    if (!this.memory.sources) {
+        this.initializeMemoryForAllSourcesInRoom();
+    }
+
+    let keys = Object.keys(this.memory.sources);
+    for (let i = 0; i < keys.length; i++) {
+        if (this.memory.sources[i].workersAssigned < this.memory.sources[i].workersMax) {
+            return Game.getObjectById(Object.keys[i]);
+        }
+    }
+
+    return ERR_NOT_FOUND;
+};
+
