@@ -140,8 +140,8 @@ Spawn.prototype.spawnRemoteHauler = function(energy, blockSpawningIfNoResources,
 
     let body = [];
 
-    if (energy > 5000) {
-        energy = 5000;
+    if (energy > 1500) {
+        energy = 1500;
     }
 
     while(energy >= 150) {
