@@ -106,12 +106,12 @@ Room.prototype.isSpawnQueueEmpty = function() {
     return this.memory.spawnQueue === undefined || this.memory.spawnQueue.length === 0;
 };
 
-Room.prototype.addToSpawnQueue = function(role) {
+Room.prototype.addToSpawnQueue = function(args) {
     if (this.memory.spawnQueue === undefined) {
         this.memory.spawnQueue = [];
     }
 
-    this.memory.spawnQueue.push(role);
+    this.memory.spawnQueue.push(args);
 };
 
 Room.prototype._findTowers = function() {
@@ -153,3 +153,4 @@ Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
         sources[i].initializeMemory();
     }
 };
+

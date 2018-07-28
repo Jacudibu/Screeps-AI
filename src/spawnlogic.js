@@ -27,21 +27,14 @@ const spawnlogic = {
             }
 
             // If something was added the spawnqueue was changed
-            if (room.isSpawnQueueEmpty()) {
-                if (room.energyCapacityAvailable === room.energyAvailable) {
-                    // room.memory.autoSpawnTimer = room.memory.autoSpawnTimer - 1;
-
-                    // TODO/HACK : This is a workaround as long as spawn Queue does not support args
-                    this.checkRemoteMiningRoomSpawns(room, spawns[0]);
-                }
-            } else {
+            if (!room.isSpawnQueueEmpty()) {
                 room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
                 if (this.areThereEnoughResourcesToSpawnRole(room, this.peekFirstElementFromSpawnQueue(room))) {
-                    this.spawnNewCreepWithRole(spawns, this.shiftElementFromSpawnQueue(room));
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.shiftElementFromSpawnQueue(room));
                 }
             }
 
-            room.memory.allowEnergyCollection = false; // room.isSpawnQueueEmpty();
+            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty();
         }
     },
 
@@ -52,41 +45,43 @@ const spawnlogic = {
 
         if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
             if (this.isRoleNeeded(room, ROLE.HAULER)) {
-                room.addToSpawnQueue(ROLE.HAULER);
+                room.addToSpawnQueue({role: ROLE.HAULER});
                 return;
             }
         }
 
         if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
-            room.addToSpawnQueue(ROLE.HARVESTER);
+            room.addToSpawnQueue({role: ROLE.HARVESTER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.HAULER)) {
-            room.addToSpawnQueue(ROLE.HAULER);
+            room.addToSpawnQueue({role: ROLE.HAULER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
-            room.addToSpawnQueue(ROLE.UPGRADER);
+            room.addToSpawnQueue({role: ROLE.UPGRADER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-            room.addToSpawnQueue(ROLE.BUILDER);
+            room.addToSpawnQueue({role: ROLE.BUILDER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
-            room.addToSpawnQueue(ROLE.REPAIRER);
+            room.addToSpawnQueue({role: ROLE.REPAIRER});
             return;
         }
 
         if (room.memory.autoSpawnEnabled && room.memory.autoSpawnTimer === 0) {
-            room.addToSpawnQueue(ROLE.UPGRADER);
+            room.addToSpawnQueue({role: ROLE.UPGRADER});
             room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
             return;
         }
+
+        this.checkRemoteMiningRooms(room);
     },
 
     areThereEnoughResourcesToSpawnRole: function(room, role) {
@@ -101,24 +96,24 @@ const spawnlogic = {
         return room.memory.spawnQueue[0];
     },
 
-    spawnNewCreepWithRole: function(spawns, role) {
+    searchUnoccupiedSpawnAndSpawnNewCreepWithArgs: function(spawns, args) {
         for(let i = 0; i < spawns.length; i++) {
             let spawn = spawns[i];
             if (spawn.spawning) {
                 continue;
             }
 
-            this.spawnRole(spawn, role);
+            this.spawnCreepWithArgs(spawn, args);
             return;
         }
     },
 
-    spawnRole: function(spawn, role) {
+    spawnCreepWithArgs: function(spawn, args) {
         const energy = spawn.room.energyCapacityAvailable;
 
-        switch (role) {
+        switch (args.role) {
             case ROLE.BUILDER:
-                spawn.spawnWorker(role, energy, true);
+                spawn.spawnWorker(args.role, energy, true);
                 break;
             case ROLE.HARVESTER:
                 spawn.spawnHarvester(energy, true);
@@ -130,10 +125,19 @@ const spawnlogic = {
                 spawn.spawnUpgrader(energy, true);
                 break;
             case ROLE.REPAIRER:
-                spawn.spawnWorker(role, energy, true);
+                spawn.spawnWorker(args.role, energy, true);
+                break;
+            case ROLE.REMOTE_WORKER:
+                spawn.spawnRemoteWorker(energy, false, args.targetRoomName);
+                break;
+            case ROLE.REMOTE_HAULER:
+                spawn.spawnRemoteHauler(energy, false, args.targetRoomName);
+                break;
+            case ROLE.RESERVER:
+                spawn.spawnReserver(energy, false, args.targetRoomName);
                 break;
             default:
-                console.log("Unknown role requested to spawn: " + role);
+                console.log("Unknown role requested to spawn: " + args.role);
                 break;
         }
     },
@@ -148,7 +152,7 @@ const spawnlogic = {
         return _.sum(creeps, creep => creep.memory.role === role);
     },
 
-    checkRemoteMiningRoomSpawns(room, spawn) {
+    checkRemoteMiningRooms(room) {
         let remoteMiningRooms = room.memory.remoteMiningRooms;
 
         if (!remoteMiningRooms || remoteMiningRooms.length === 0) {
@@ -163,26 +167,21 @@ const spawnlogic = {
             }
 
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
-                let result = spawn.spawnRemoteWorker(room.energyAvailable, true, remoteMiningRooms[i]);
-                if (result === OK) {
-                    Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
-                    return;
-                }
+                room.addToSpawnQueue({role: ROLE.REMOTE_WORKER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
+                return;
             }
 
             if (remoteMiningRoom.isHaulerRequired) {
-                let result = spawn.spawnRemoteHauler(room.energyAvailable, true, remoteMiningRooms[i]);
-                if (result === OK) {
-                    Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
-                    return;
-                }
+                room.addToSpawnQueue({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
+                return;
             }
 
-            if (!remoteMiningRoom.isReserverAssigned) {
-                let result = spawn.spawnReserver(room.energyAvailable, true, remoteMiningRooms[i]);
-                if (result === OK) {
-                    Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
-                }
+            if (!remoteMiningRoom.isReserverAssigned && room.controller.level >= 4) {
+                room.addToSpawnQueue({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
+                return;
             }
         }
     },

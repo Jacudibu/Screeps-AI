@@ -189,13 +189,13 @@ Spawn.prototype.spawnReserver = function(energy, blockSpawningIfNoResources, tar
     body.sort();
     let opts = {
         memory: {
-            role: ROLE.CLAIMER,
+            role: ROLE.RESERVER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.CLAIMER, blockSpawningIfNoResources, body, opts);
+    return this._spawnDefinedCreep(ROLE.RESERVER, blockSpawningIfNoResources, body, opts);
 };
 
 Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
@@ -245,10 +245,10 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.ATTACKER, false, body, opts);
 };
 
-Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, memory) {
+Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, body, opts) {
     let name = role + '#' + Memory.creepsBuilt;
 
-    let result = this.spawnCreep(body, name, memory);
+    let result = this.spawnCreep(body, name, opts);
 
     switch (result) {
         case OK:
@@ -261,8 +261,8 @@ Spawn.prototype._spawnDefinedCreep = function(role, blockSpawningIfNoResources, 
             }
             break;
         default:
-            console.log("unexpected error when spawning creep: " + this.spawnCreep(body, name, memory)
-                + "\nBody: " + body + " name:" + name + "memory:" + memory);
+            console.log("unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
+                + "\nBody: " + body + " name:" + name + "memory:" + opts);
             this.room.memory.allowEnergyCollection = true;
             break;
     }

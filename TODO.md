@@ -1,6 +1,5 @@
 ## TODO:
 
-* Transform SpawnQueue into Object Array
 * AutoRespawn for Harvesters & Haulers
 * RemoteWorkers request haulers on certain container threshold instead of having a hauler assigned (and idling) all the time
 * Auto Neighbor-Room Claiming
