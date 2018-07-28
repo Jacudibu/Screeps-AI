@@ -26,9 +26,9 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
         energy = 200 * 16;
     }
 
-    while (energy >= 150) {
-        body.push(WORK, MOVE);
-        energy -= 150;
+    while (energy >= 200) {
+        body.push(WORK, MOVE, CARRY);
+        energy -= 200;
     }
 
     body.sort();
@@ -114,8 +114,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 700) {
-        energy = 700;
+    if (energy > 800) {
+        energy = 800;
     }
 
     body.push(CARRY);
@@ -134,6 +134,14 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
     if (energy >= 50) {
         body.push(MOVE);
         energy -= 50;
+    }
+
+    if (energy >= 50) {
+        body.push(CARRY);
+    }
+
+    if (energy >= 50) {
+        body.push(CARRY);
     }
 
     body.sort();

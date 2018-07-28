@@ -44,7 +44,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(taskWhenFinished);
+            this.memory.taskTargetId = undefined;
             break;
         default:
             console.log("Collecting Energy resulted in unhandled error: " + this.withdraw(storage, RESOURCE_ENERGY));

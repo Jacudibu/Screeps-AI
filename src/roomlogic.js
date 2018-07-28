@@ -8,7 +8,12 @@ const roomLogic = {
     runRoom: function(room) {
         let hostiles = room.find(FIND_HOSTILE_CREEPS);
         if (hostiles.length === 0) {
+            room.memory.requiresHelp = undefined;
             return;
+        }
+
+        if (room.memory.requiresHelp === undefined) {
+            room.memory.requiresHelp = true;
         }
 
         hostiles = this.sortHostilesByPriority(hostiles);

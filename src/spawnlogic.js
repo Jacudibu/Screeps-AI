@@ -136,6 +136,9 @@ const spawnlogic = {
             case ROLE.RESERVER:
                 spawn.spawnReserver(energy, args.targetRoomName);
                 break;
+            case ROLE.ATTACKER:
+                spawn.spawnAttacker(energy, args.targetRoomName);
+                break;
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
                 break;
@@ -161,6 +164,11 @@ const spawnlogic = {
 
         for (let i = 0; i < remoteMiningRooms.length; i++) {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+
+            if (remoteMiningRoom.requiresHelp === true) {
+                room.addToSpawnQueue({role: ROLE.ATTACKER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
+            }
 
             if (!remoteMiningRoom.sources) {
                 Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();

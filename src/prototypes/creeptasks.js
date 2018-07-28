@@ -66,10 +66,19 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
     let storage;
-    if (this.room.memory.allowEnergyCollection) {
-        storage = this.findClosestFilledEnergyStructure();
-    } else {
-        storage = this.findClosestFilledContainerOrStorage();
+
+    if (this.memory.taskTargetId) {
+        storage = Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    if (!storage) {
+        if (this.room.memory.allowEnergyCollection) {
+            storage = this.findClosestFilledEnergyStructure();
+        } else {
+            storage = this.findClosestFilledContainerOrStorage();
+        }
+
+        this.memory.taskTargetId = storage.id;
     }
 
     if (storage === ERR_NOT_FOUND) {
