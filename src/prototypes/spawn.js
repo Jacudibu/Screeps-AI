@@ -93,9 +93,12 @@ Spawn.prototype.spawnUpgrader = function(energy, blockSpawningIfNoResources) {
         energy = 300 * 16;
     }
 
-    while (energy >= 300) {
-        body.push(WORK, WORK, CARRY, MOVE);
-        energy -= 300;
+    body.push(MOVE, MOVE);
+    energy -= 100;
+
+    while (energy >= 250) {
+        body.push(WORK, WORK, CARRY);
+        energy -= 250;
     }
 
     body.sort();
@@ -184,16 +187,9 @@ Spawn.prototype.spawnClaimer = function(energy, blockSpawningIfNoResources, targ
 
     let body = [];
 
-    if (energy > 1300) {
-        energy = 1300;
-    }
-
-    while(energy >= 650) {
-        body.push(CLAIM, MOVE);
-        energy -= 650;
-    }
-
+    body.push(CLAIM, MOVE);
     body.sort();
+
     let opts = {
         memory: {
             role: ROLE.CLAIMER,
@@ -213,16 +209,9 @@ Spawn.prototype.spawnReserver = function(energy, blockSpawningIfNoResources, tar
 
     let body = [];
 
-    if (energy > 1300) {
-        energy = 1300;
-    }
-
-    while(energy >= 650) {
-        body.push(CLAIM, MOVE);
-        energy -= 650;
-    }
-
+    body.push(CLAIM, MOVE);
     body.sort();
+
     let opts = {
         memory: {
             role: ROLE.RESERVER,
