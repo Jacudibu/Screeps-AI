@@ -118,12 +118,9 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
         energy = 800;
     }
 
-    body.push(CARRY);
-    energy -= 50;
-
-    while (energy >= 250) {
-        body.push(WORK, WORK, MOVE);
-        energy -= 250;
+    while (energy >= 300) {
+        body.push(WORK, WORK, MOVE, CARRY);
+        energy -= 300;
     }
 
     if (energy >= 100) {
@@ -132,16 +129,13 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
     }
 
     if (energy >= 50) {
-        body.push(MOVE);
+        body.push(CARRY);
         energy -= 50;
     }
 
     if (energy >= 50) {
-        body.push(CARRY);
-    }
-
-    if (energy >= 50) {
-        body.push(CARRY);
+        body.push(MOVE);
+        energy -= 50;
     }
 
     body.sort();
