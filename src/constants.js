@@ -8,7 +8,7 @@ global.CRITICAL_TICKS_TO_LIVE_VALUE = 350;
 global.ENERGY_COLLECTOR_EXTRA_BUFFER = 0;
 global.COST_PER_WORKER_TIER = 200;
 global.MINIMUM_HAUL_RESOURCE_AMOUNT = 100;
-global.MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT = 500;
+global.MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT = 200;
 
 global.WALLS_REPAIR_MAX = [];
 global.WALLS_REPAIR_MAX[1] = 10000;
@@ -39,6 +39,7 @@ global.TASK.ATTACK = 'attack';
 global.TASK.DISMANTLE = 'dismantle';
 global.TASK.CLAIM_CONTROLLER = 'claim_controller';
 global.TASK.RESERVE_CONTROLLER = 'reserve_controller';
+global.TASK.RECYCLE = 'recycle';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
@@ -53,3 +54,4 @@ global.ROLE.ATTACKER = 'attacker';
 global.ROLE.CLAIMER = 'claimer';
 global.ROLE.RESERVER = 'reserver';
 global.ROLE.DISMANTLER = 'dismantler';
+global.ROLE.DEFENDER = 'defender';

@@ -9,6 +9,7 @@ const reserverAI = require('ai_reserver');
 const attackerAI = require('ai_attacker');
 const claimerAI = require('ai_claimer');
 const dismantlerAI = require('ai_dismantler');
+const defenderAI = require('ai_defender');
 
 const creepAi = {
     run: function() {
@@ -53,6 +54,9 @@ const creepAi = {
                         break;
                     case ROLE.DISMANTLER:
                         dismantlerAI.run(creep);
+                        break;
+                    case ROLE.DEFENDER:
+                        defenderAI.run(creep);
                         break;
                 }
             } catch (e) {

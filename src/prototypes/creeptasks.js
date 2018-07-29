@@ -333,3 +333,24 @@ Creep.prototype.reserveRoomController = function() {
             break;
     }
 };
+
+Creep.prototype.recycle = function() {
+    let spawn;
+    if (this.memory.taskTargetId) {
+        spawn = Game.getObjectById(this.memory.taskTargetId);
+    } else {
+        spawn = this.room.find(FIND_MY_SPAWNS)[0];
+        this.memory.taskTargetId = spawn.id;
+    }
+
+    switch(spawn.recycleCreep(this)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveTo(spawn);
+            break;
+        default:
+            console.log("unexpected error when recycling creep: " + spawn.recycleCreep(this));
+            break;
+    }
+};

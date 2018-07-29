@@ -248,10 +248,6 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let body = [];
 
-    if (energy > 800) {
-        energy = 800;
-    }
-
     while (energy >= 130) {
         body.push(ATTACK, MOVE);
         energy -= 130;
@@ -260,13 +256,14 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     body.sort();
     let opts = {
         memory: {
-            role: ROLE.ATTACKER,
+            role: ROLE.DEFENDER,
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            homeRoomName: this.room.name,
             task: TASK.MOVE_TO_ROOM,
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
+    return this._spawnDefinedCreep(ROLE.DEFENDER, body, opts);
 };
 
 Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {

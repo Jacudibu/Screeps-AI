@@ -185,7 +185,11 @@ const spawnlogic = {
                 Memory.rooms[remoteMiningRooms[i]].assignedHaulers++;
                 return;
             }
+        }
 
+        // Iterate reservers seperately
+        for (let i = 0; i < remoteMiningRooms.length; i++) {
+            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
             if (!remoteMiningRoom.isReserverAssigned && room.controller.level >= 4) {
                 room.addToSpawnQueue({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
