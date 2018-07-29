@@ -180,9 +180,9 @@ const spawnlogic = {
                 return;
             }
 
-            if (remoteMiningRoom.isHaulerRequired) {
+            if (remoteMiningRoom.assignedHaulers < remoteMiningRoom.requiredHaulers) {
                 room.addToSpawnQueue({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].isHaulerRequired = false;
+                Memory.rooms[remoteMiningRooms[i]].assignedHaulers++;
                 return;
             }
 

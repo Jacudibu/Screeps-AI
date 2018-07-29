@@ -30,7 +30,11 @@ Room.prototype.addRemoteMiningRoom = function (roomName) {
         Memory.rooms[roomName] = {};
     }
 
-    Memory.rooms[roomName].assignedRemoteWorkers = 0;
+    if (Memory.rooms[roomName].assignedRemoteWorkers === undefined) {
+        Memory.rooms[roomName].assignedRemoteWorkers = 0;
+        Memory.rooms[roomName].assignedHaulers = 0;
+        Memory.rooms[roomName].requiredHaulers = 0;
+    }
 };
 
 Room.prototype.removeRemoteMiningRoom = function(roomName) {
@@ -169,4 +173,3 @@ Room.prototype.getUnoccupiedSource = function() {
 
     return ERR_NOT_FOUND;
 };
-

@@ -38,7 +38,7 @@ const memoryManagment = {
                 }
                 break;
             case ROLE.REMOTE_HAULER:
-                Memory.rooms[creep.remoteHaulTargetRoom].isHaulerRequired = true;
+                Memory.rooms[creep.remoteHaulTargetRoom].assignedHaulers--;
                 break;
             case ROLE.RESERVER:
                 Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
