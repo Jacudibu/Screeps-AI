@@ -91,7 +91,7 @@ Creep.prototype._getDamagedStructure = function() {
     if (this.memory.taskTargetId) {
         let previousTarget = Game.getObjectById(this.memory.taskTargetId);
 
-        // might have been destroyed by enemies or bulldozing plyers, so check its existence.
+        // might have been destroyed by enemies or bulldozing players, so check its existence.
         if (previousTarget !== null) {
             if (previousTarget.hits < previousTarget.hitsMax) {
                 return previousTarget;
@@ -106,7 +106,7 @@ Creep.prototype._getDamagedStructure = function() {
                 return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
             }
 
-            return structure.hits < structure.hitsMax / 3
+            return structure.hits < structure.hitsMax * 0.75
         }
     });
 
