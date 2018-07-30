@@ -278,7 +278,7 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
         this.setTask(taskWhenFinished);
     }
 
-    const positionInNextRoom = this.room.getRoomPositionForTransferToRoom(roomName);
+    const positionInNextRoom = new RoomPosition(25, 25, roomName);
     this.moveTo(positionInNextRoom);
 };
 
@@ -328,8 +328,11 @@ Creep.prototype.reserveRoomController = function() {
         case ERR_NOT_IN_RANGE:
             this.moveTo(this.room.controller);
             break;
+        case ERR_INVALID_TARGET:
+            this.setTask(TASK.DECIDE_WHAT_TO_DO);
+            break;
         default:
-            console.log("unexpected error when reserving room controller: " + this.reserveController(this.room.controller));
+            console.log(this.room + "|" + this.name + "-- unexpected error when reserving room controller: " + this.reserveController(this.room.controller));
             break;
     }
 };

@@ -1,9 +1,9 @@
 ## TODO:
 
 * AutoRespawn for Harvesters & Haulers
-* RemoteWorkers request haulers on certain container threshold instead of having a hauler assigned (and idling) all the time
+* rooms request haulers on certain energy threshold instead of having a hauler assigned (and idling) all the time
 * Healers
-* Group attack creeps into squads
+* Group attack creeps into squads, sharing the same targets
 * Harvest Minerals & Figure out Labs
 
 

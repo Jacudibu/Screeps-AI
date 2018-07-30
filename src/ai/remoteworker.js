@@ -6,7 +6,7 @@ const remoteWorker = {
                     creep.setTask(TASK.MOVE_TO_ROOM);
                 }
 
-                if (_.sum(creep.carry) < 10 && creep.room.name !== 'E58S47') {
+                if (_.sum(creep.carry) < 10) {
                     creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
                     return;
                 }

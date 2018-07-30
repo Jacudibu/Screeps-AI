@@ -75,7 +75,7 @@ Creep.prototype.findClosestPublicRoomContainer = function() {
 };
 
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
-    const publicEnergyContainer = this.room.publicEnergyContainers;
+    const publicEnergyContainer = this.room.memory.publicEnergyContainers;
     const container = this.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType === STRUCTURE_CONTAINER

@@ -74,34 +74,6 @@ Room.prototype.setAutoSpawn = function(shouldSpawn) {
     this.memory.autoSpawnEnabled = shouldSpawn;
 };
 
-Room.prototype.getRoomPositionForTransferToRoom = function(roomName) {
-    if (roomName === 'E57S47') {
-        return new RoomPosition(47, 23, roomName);
-    }
-
-    if (roomName === 'E58S47') {
-        return new RoomPosition(25, 25, roomName);
-    }
-
-    if (roomName === 'E59S47') {
-        return new RoomPosition(3, 44, roomName);
-    }
-
-    if (roomName === 'E58S48') {
-        return new RoomPosition(28, 18, roomName);
-    }
-
-    if (roomName === 'E59S48') {
-        return new RoomPosition(24, 17, roomName);
-    }
-
-    if (roomName === 'E57S48') {
-        return new RoomPosition(46, 44, roomName);
-    }
-
-    return new RoomPosition(25, 25, roomName);
-};
-
 Room.prototype.getPublicEnergyContainers = function() {
     return this.memory.publicEnergyContainers;
 };
@@ -158,7 +130,6 @@ Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
     }
 };
 
-
 Room.prototype.getUnoccupiedSource = function() {
     if (!this.memory.sources) {
         this.initializeMemoryForAllSourcesInRoom();
@@ -173,3 +144,4 @@ Room.prototype.getUnoccupiedSource = function() {
 
     return ERR_NOT_FOUND;
 };
+
