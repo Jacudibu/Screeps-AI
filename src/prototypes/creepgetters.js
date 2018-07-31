@@ -106,6 +106,10 @@ Creep.prototype._getDamagedStructure = function() {
                 return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
             }
 
+            if (structure.structureType === STRUCTURE_SPAWN) {
+                return structure.hits < structure.hitsMax;
+            }
+
             return structure.hits < structure.hitsMax * 0.75
         }
     });
