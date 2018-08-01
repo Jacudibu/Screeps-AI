@@ -73,7 +73,7 @@ Creep.prototype._getConstructionSite = function() {
             let compareProgress = constructionB.progress - constructionA.progress;
 
             if (compareProgress === 0) {
-                return constructionA.pos.getRangeTo(spawns[0] - constructionB.pos.getRangeTo(spawns[0]));
+                return constructionA.pos.getRangeTo(spawns[0]) - constructionB.pos.getRangeTo(spawns[0]);
             } else {
                 return compareProgress;
             }

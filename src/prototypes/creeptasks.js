@@ -262,11 +262,15 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
         return;
     }
 
-    let container = source.getContainerPosition();
-    if (container === ERR_NOT_FOUND) {
+    let containerPosition = source.getContainerPosition();
+    if (containerPosition === ERR_NOT_FOUND) {
         this.memory.task = taskWhenNoContainerAvailable;
     } else {
-        this.memory.task = TASK.MOVE_ONTO_CONTAINER;
+        if (source.memory.workersMax > 1) {
+            this.memory.task = taskWhenNoContainerAvailable;
+        } else {
+            this.memory.task = TASK.MOVE_ONTO_CONTAINER;
+        }
     }
 
 };

@@ -93,12 +93,16 @@ Spawn.prototype.spawnUpgrader = function(energy) {
         energy = 300 * 16;
     }
 
-    body.push(MOVE, MOVE);
-    energy -= 100;
+    body.push(MOVE);
+    energy -= 50;
 
     while (energy >= 250) {
         body.push(WORK, WORK, CARRY);
         energy -= 250;
+    }
+
+    if (energy >= 50) {
+        body.push(MOVE);
     }
 
     body.sort();

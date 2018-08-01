@@ -26,16 +26,25 @@ const attacker = {
                     if (possibleTargets.length === 0) {
                         possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES);
                         if (possibleTargets.length === 0) {
-                            creep.setTask(TASK.WAIT_FOR_INPUT);
-                            return;
+                            possibleTargets = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
+                            if (possibleTargets.length === 0) {
+                                creep.setTask(TASK.WAIT_FOR_INPUT);
+                                creep.say("*zZz*");
+                                return;
+                            }
                         }
 
-                        creep.say("*zZz*");
-                        return;
+
                     }
 
                     _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c));
                     target = possibleTargets[0];
+                }
+
+                if (target.progress) {
+                    creep.moveTo(target.pos);
+                    creep.say('whoopsie');
+                    return;
                 }
 
                 creep.say("(ノ°Д°）ノ︵┻━┻");
