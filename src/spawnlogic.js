@@ -139,6 +139,9 @@ const spawnlogic = {
             case ROLE.ATTACKER:
                 spawn.spawnDefender(energy, args.targetRoomName);
                 break;
+            case ROLE.DEFENDER:
+                spawn.spawnDefender(energy, args.targetRoomName);
+                break;
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
                 break;
@@ -162,13 +165,17 @@ const spawnlogic = {
             return;
         }
 
+        // Iterate defenders seperately
         for (let i = 0; i < remoteMiningRooms.length; i++) {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
-
             if (remoteMiningRoom.requiresHelp === true) {
-                room.addToSpawnQueue({role: ROLE.ATTACKER, targetRoomName: remoteMiningRooms[i]});
+                room.addToSpawnQueue({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
             }
+        }
+
+        for (let i = 0; i < remoteMiningRooms.length; i++) {
+            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
 
             if (!remoteMiningRoom.sources) {
                 Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();
