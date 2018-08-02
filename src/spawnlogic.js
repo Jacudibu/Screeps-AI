@@ -34,7 +34,7 @@ const spawnlogic = {
                 }
             }
 
-            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && room.controller.level < 4;
+            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
         }
     },
 

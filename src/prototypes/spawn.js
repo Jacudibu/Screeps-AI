@@ -237,7 +237,6 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
         energy -= 130;
     }
 
-    body.sort();
     let opts = {
         memory: {
             role: ROLE.ATTACKER,
@@ -257,7 +256,6 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
         energy -= 130;
     }
 
-    body.sort();
     let opts = {
         memory: {
             role: ROLE.DEFENDER,
