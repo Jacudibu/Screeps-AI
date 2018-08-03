@@ -17,7 +17,7 @@ const attacker = {
                 }
                 break;
             case TASK.MOVE_TO_ROOM:
-                creep.moveToRoom(TASK.DEFEND_MELEE_CHARGE);
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.DEFEND_STAY_ON_RAMPART:
                 creep.defendRoomByStandingOnRamparts();
