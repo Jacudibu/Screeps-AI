@@ -35,7 +35,7 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
     let opts = {
         memory: {
             role: ROLE.DISMANTLER,
-            targetRoomName: targetRoomName
+            targetRoomName: targetRoomName,
         }
     };
 
@@ -55,8 +55,15 @@ Spawn.prototype.spawnHauler = function(energy) {
     }
 
     body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.HAULER,
+            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            spawnRoom: this.room.name,
+        }
+    };
 
-    return this._spawnDefinedCreep(ROLE.HAULER, body, {memory: {role: ROLE.HAULER}});
+    return this._spawnDefinedCreep(ROLE.HAULER, body, opts);
 };
 
 Spawn.prototype.spawnHarvester = function(energy) {
@@ -82,8 +89,15 @@ Spawn.prototype.spawnHarvester = function(energy) {
     }
 
     body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.HARVESTER,
+            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            spawnRoom: this.room.name,
+        }
+    };
 
-    return this._spawnDefinedCreep(ROLE.HARVESTER, body, {memory: {role: ROLE.HARVESTER}});
+    return this._spawnDefinedCreep(ROLE.HARVESTER, body, opts);
 };
 
 Spawn.prototype.spawnUpgrader = function(energy) {
@@ -148,6 +162,8 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
             role: ROLE.REMOTE_WORKER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
+            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            spawnRoom: this.room.name,
         }
     };
 
@@ -179,6 +195,8 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
             remoteHaulStorageRoom: this.room.name,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
+            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            spawnRoom: this.room.name,
         }
     };
 
@@ -293,6 +311,10 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     };
 
     return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
+};
+
+Spawn.prototype.spawnCitizen = function(energy, role, opts) {
+
 };
 
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {

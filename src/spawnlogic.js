@@ -45,44 +45,44 @@ const spawnlogic = {
 
         if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
             if (this.isRoleNeeded(room, ROLE.HAULER)) {
-                room.addToSpawnQueue({role: ROLE.HAULER});
+                room.addToSpawnQueueEnd({role: ROLE.HAULER});
                 return;
             }
         }
 
         if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
-            room.addToSpawnQueue({role: ROLE.HARVESTER});
+            room.addToSpawnQueueEnd({role: ROLE.HARVESTER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.HAULER)) {
-            room.addToSpawnQueue({role: ROLE.HAULER});
+            room.addToSpawnQueueEnd({role: ROLE.HAULER});
             return;
         }
 
         if (room.memory.requiresHelp) {
             room.memory.requiresHelp = false;
-            room.addToSpawnQueue({role: ROLE.DEFENDER, targetRoomName: room.name});
+            room.addToSpawnQueueEnd({role: ROLE.DEFENDER, targetRoomName: room.name});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
-            room.addToSpawnQueue({role: ROLE.UPGRADER});
+            room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-            room.addToSpawnQueue({role: ROLE.BUILDER});
+            room.addToSpawnQueueEnd({role: ROLE.BUILDER});
             return;
         }
 
         if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
-            room.addToSpawnQueue({role: ROLE.REPAIRER});
+            room.addToSpawnQueueEnd({role: ROLE.REPAIRER});
             return;
         }
 
         if (room.memory.autoSpawnEnabled && room.memory.autoSpawnTimer === 0) {
-            room.addToSpawnQueue({role: ROLE.UPGRADER});
+            room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
             room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
             return;
         }
@@ -175,7 +175,7 @@ const spawnlogic = {
         for (let i = 0; i < remoteMiningRooms.length; i++) {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
             if (remoteMiningRoom.requiresHelp === true) {
-                room.addToSpawnQueue({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
+                room.addToSpawnQueueEnd({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
             }
         }
@@ -188,13 +188,13 @@ const spawnlogic = {
             }
 
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
-                room.addToSpawnQueue({role: ROLE.REMOTE_WORKER, targetRoomName: remoteMiningRooms[i]});
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_WORKER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
                 return;
             }
 
             if (remoteMiningRoom.assignedHaulers < remoteMiningRoom.requiredHaulers) {
-                room.addToSpawnQueue({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRooms[i]});
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].assignedHaulers++;
                 return;
             }
@@ -204,7 +204,7 @@ const spawnlogic = {
         for (let i = 0; i < remoteMiningRooms.length; i++) {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
             if (!remoteMiningRoom.isReserverAssigned && room.controller.level >= 4) {
-                room.addToSpawnQueue({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
+                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
                 return;
             }

@@ -20,6 +20,12 @@ const creepAi = {
                 continue;
             }
 
+            if (creep.memory.respawnTime) {
+                if (Game.time >= creep.memory.respawnTime) {
+                    creep.addRespawnEntryToSpawnQueue();
+                }
+            }
+
             try {
                 switch (creep.memory.role) {
                     case ROLE.HARVESTER:

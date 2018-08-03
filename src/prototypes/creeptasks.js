@@ -118,7 +118,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
             this.moveTo(this.room.controller);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : taskWhenFinished);
+            this.setTask(taskWhenFinished);
             break;
         default:
             console.log("unexpected error when upgrading controller: " + this.upgradeController(this.room.controller));
@@ -142,7 +142,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
             this.moveTo(constructionSite);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
+            this.setTask(TASK.COLLECT_ENERGY);
             break;
         case ERR_INVALID_TARGET:
             this.resetCurrentTask();
@@ -170,7 +170,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
         case OK:
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : TASK.COLLECT_ENERGY);
+            this.setTask(TASK.COLLECT_ENERGY);
             break;
         case ERR_NOT_IN_RANGE:
             this.moveTo(damagedStructure);
@@ -196,7 +196,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
             this.moveTo(structureThatRequiresEnergy);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(this.isRenewNeeded() ? TASK.RENEW_CREEP : nextTask);
+            this.setTask(nextTask);
             break;
         case ERR_FULL:
             this.resetCurrentTask();

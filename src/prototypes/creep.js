@@ -10,15 +10,6 @@ Creep.prototype.resetCurrentTask = function() {
     this.memory.taskTargetId = undefined;
 };
 
-Creep.prototype.isRenewNeeded = function() {
-    if (this.memory.shouldRespawn && this.ticksToLive < CRITICAL_TICKS_TO_LIVE_VALUE) {
-            return true;
-    }
-    else {
-        return false;
-    }
-};
-
 Creep.prototype.countBodyPartsOfType = function(types) {
     return _.filter(this.body, function(bodyPart) {return bodyPart.type === types}).length;
 };
@@ -27,6 +18,36 @@ Creep.prototype.logActionError = function(action, errorCode) {
     console.log(this.room.name + " |" + this.name + ": " + action + " resulted in unhandled error code " + errorCode)
 };
 
+Creep.prototype.addRespawnEntryToSpawnQueue = function() {
+    let args = {
+        role: this.memory.role,
+        targetRoomName: this.memory.targetRoomName,
+        remoteHaulTargetRoom: this.memory.remoteHaulTargetRoom,
+        remoteHaulStorageRoom: this.memory.remoteHaulStorageRoom,
+    };
+
+    // Handle special cases with counts in memory
+    switch (args.role) {
+        case ROLE.HAULER:
+            Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
+            break;
+        case ROLE.HARVESTER:
+            Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
+            break;
+        case ROLE.REMOTE_HAULER:
+            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            Game.rooms[args.targetRoomName].memory.assignedHaulers++;
+            break;
+        case ROLE.REMOTE_WORKER:
+            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            Game.rooms[args.targetRoomName].memory.assignedRemoteWorkers++;
+            break;
+        default:
+            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+    }
+
+    this.memory.respawnTime = undefined;
+};
 
 // ~~~~~~~~~~~~~~~~~~
 // ~~ Small Helpers ~~
