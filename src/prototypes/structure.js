@@ -5,8 +5,7 @@ Structure.prototype.doesInGeneralStoreEnergy = function () {
 };
 
 Structure.prototype.doesInGeneralReleaseEnergy = function() {
-    return this.structureType === STRUCTURE_EXTENSION
-        || this.structureType === STRUCTURE_SPAWN
+    return this.structureType === STRUCTURE_SPAWN
 };
 
 Structure.prototype.canStoreEnergy = function(amount) {

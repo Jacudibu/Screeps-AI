@@ -15,7 +15,7 @@ Creep.prototype.harvestEnergy = function() {
             this.moveTo(source);
             break;
         default:
-            console.log("unexpected error when harvesting energy: " + this.harvest(source) + " --> " + source);
+            this.logActionError("harvestyEnergy on source " + source, + this.harvest(source));
             break;
     }
     if (this.carry.energy === this.carryCapacity) {
@@ -40,7 +40,7 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
             this.moveTo(source);
             break;
         default:
-            console.log("unexpected error when harvesting energy: " + this.harvest(source) + " --> " + source);
+            this.logActionError("harvestingEnergyFetch on source " + source, this.harvest(source));
             break;
     }
 

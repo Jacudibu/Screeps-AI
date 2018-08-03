@@ -6,7 +6,14 @@ const roomLogic = {
     },
 
     runRoom: function(room) {
-        let hostiles = room.find(FIND_HOSTILE_CREEPS);
+        let hostiles = room.find(FIND_HOSTILE_CREEPS, {
+            filter: creep =>
+                creep.countBodyPartsOfType(ATTACK) > 0
+             || creep.countBodyPartsOfType(RANGED_ATTACK) > 0
+             || creep.countBodyPartsOfType(HEAL) > 0
+             || creep.countBodyPartsOfType(WORK) > 1
+            });
+
         if (hostiles.length === 0) {
             room.memory.requiresHelp = undefined;
             return;
