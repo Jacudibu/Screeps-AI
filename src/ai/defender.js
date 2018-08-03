@@ -3,54 +3,27 @@ const attacker = {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
-                    if (creep.room.name === creep.memory.homeRoomName) {
+                    if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined) {
                         creep.setTask(TASK.RECYCLE);
                     } else {
-                        creep.setTask(TASK.ATTACK);
+                        if (creep.room.find(FIND_MY_SPAWNS).length > 0) {
+                            creep.setTask(TASK.DEFEND_STAY_ON_RAMPART);
+                        } else {
+                            creep.setTask(TASK.DEFEND_MELEE_CHARGE);
+                        }
                     }
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM)
                 }
                 break;
             case TASK.MOVE_TO_ROOM:
-                creep.moveToRoom(TASK.ATTACK);
+                creep.moveToRoom(TASK.DEFEND_MELEE_CHARGE);
                 break;
-            case TASK.ATTACK:
-                let target = undefined;
-                if (creep.memory.taskTargetId) {
-                    target = Game.getObjectById(creep.memory.taskTargetId);
-                }
-
-                if (target === undefined) {
-                    let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
-                    if (possibleTargets.length === 0) {
-                        possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES);
-                        if (possibleTargets.length === 0) {
-                            creep.say("\\(^-^)/");
-                            creep.memory.targetRoomName = creep.memory.homeRoomName;
-                            creep.setTask(TASK.DECIDE_WHAT_TO_DO);
-                            return;
-                        }
-
-                        creep.say("*zZz*");
-                        return;
-                    }
-
-                    _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c));
-                    target = possibleTargets[0];
-                }
-
-                creep.say("(ノ°Д°）ノ︵┻━┻");
-                switch (creep.attack(target)) {
-                    case OK:
-                        break;
-                    case ERR_NOT_IN_RANGE:
-                        creep.moveTo(target);
-                        break;
-                    case ERR_INVALID_TARGET:
-                        creep.memory.taskTargetId = undefined;
-                        break;
-                }
+            case TASK.DEFEND_STAY_ON_RAMPART:
+                creep.defendRoomByStandingOnRamparts();
+                break;
+            case TASK.DEFEND_MELEE_CHARGE:
+                creep.defendRoomByChargingIntoEnemy();
                 break;
             case TASK.RECYCLE:
                 creep.recycle();

@@ -60,6 +60,12 @@ const spawnlogic = {
             return;
         }
 
+        if (room.memory.requiresHelp) {
+            room.memory.requiresHelp = false;
+            room.addToSpawnQueue({role: ROLE.DEFENDER, targetRoomName: room.name});
+            return;
+        }
+
         if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
             room.addToSpawnQueue({role: ROLE.UPGRADER});
             return;

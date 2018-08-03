@@ -40,6 +40,8 @@ global.TASK.DISMANTLE = 'dismantle';
 global.TASK.CLAIM_CONTROLLER = 'claim_controller';
 global.TASK.RESERVE_CONTROLLER = 'reserve_controller';
 global.TASK.RECYCLE = 'recycle';
+global.TASK.DEFEND_STAY_ON_RAMPART = 'defend_stay_on_rampart';
+global.TASK.DEFEND_MELEE_CHARGE = 'defend_melee_charge';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';

@@ -23,6 +23,9 @@ Creep.prototype.countBodyPartsOfType = function(types) {
     return _.filter(this.body, function(bodyPart) {return bodyPart.type === types}).length;
 };
 
+Creep.prototype.logActionError = function(action, errorCode) {
+    console.log(this.room.name + " |" + this.name + ": " + action + " resulted in unhandled error code " + errorCode)
+};
 
 
 // ~~~~~~~~~~~~~~~~~~

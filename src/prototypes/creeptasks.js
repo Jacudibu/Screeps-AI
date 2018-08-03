@@ -361,3 +361,94 @@ Creep.prototype.recycle = function() {
             break;
     }
 };
+
+Creep.prototype.defendRoomByChargingIntoEnemy = function() {
+    let target = undefined;
+    if (this.memory.taskTargetId) {
+        target = Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    if (target === undefined) {
+        let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
+        if (possibleTargets.length === 0) {
+            this.say("\\(^-^)/");
+            this.memory.targetRoomName = this.memory.homeRoomName;
+            this.setTask(TASK.DECIDE_WHAT_TO_DO);
+            return;
+        }
+
+        _.sortBy(possibleTargets, c => this.pos.getRangeTo(c));
+        target = possibleTargets[0];
+    }
+
+    switch (this.attack(target)) {
+        case OK:
+            this.say("(ノ°Д°）ノ︵┻━┻");
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.say("FOR GLORY!");
+            this.moveTo(target);
+            break;
+        case ERR_INVALID_TARGET:
+            this.memory.taskTargetId = undefined;
+            break;
+        default:
+            this.logActionError("defendRoomByStandingOnRamparts attack command", this.attack(target));
+            break;
+    }
+};
+
+Creep.prototype.defendRoomByStandingOnRamparts = function() {
+    let target = undefined;
+    if (this.memory.taskTargetId) {
+        target = Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    if (target === undefined) {
+        let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
+        if (possibleTargets.length === 0) {
+            this.say("*zZz*");
+            return;
+        }
+
+        _.sortBy(possibleTargets, c => this.pos.getRangeTo(c));
+        target = possibleTargets[0];
+    }
+
+    switch (this.attack(target)) {
+        case OK:
+            this.say("(ノ°Д°）ノ︵┻━┻");
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.moveToRampartClosestToEnemy(target);
+            break;
+        case ERR_INVALID_TARGET:
+            this.memory.taskTargetId = undefined;
+            break;
+        default:
+            this.logActionError("defendRoomByStandingOnRamparts attack command", this.attack(target));
+            break;
+    }
+};
+
+Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
+    let ramparts = this.room.find(FIND_MY_STRUCTURES, {filter: structure => structure.structureType === STRUCTURE_RAMPART});
+
+    if (ramparts.length === 0) {
+        this.say("FOR GLORY");
+        this.moveTo(enemy);
+        this.task = TASK.DEFEND_MELEE_CHARGE;
+        return;
+    }
+
+    ramparts = _.sortBy(ramparts, rampart => rampart.pos.getRangeTo(enemy.pos));
+
+    switch (this.moveTo(ramparts[0])) {
+        case OK:
+            this.say("NOT TODAY!");
+            break;
+        default:
+            this.logActionError("moveToRampartClosestToEnemy moveTo command", this.moveTo(ramparts[0]));
+            break;
+    }
+};
