@@ -1,6 +1,6 @@
 ## TODO:
 
-* AutoRespawn for Harvesters & Haulers
+* Fine-Tune respawn timer. Calculate how long it takes to build a creep and how long it will need to move to its target room.
 * rooms request haulers on certain energy threshold instead of having a hauler assigned (and idling) all the time
 * Healers
 * Group attack creeps into squads, sharing the same targets

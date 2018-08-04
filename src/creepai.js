@@ -20,8 +20,8 @@ const creepAi = {
                 continue;
             }
 
-            if (creep.memory.respawnTime) {
-                if (Game.time >= creep.memory.respawnTime) {
+            if (creep.memory.respawnTTL) {
+                if (creep.ticksToLive < creep.memory.respawnTTL) {
                     creep.addRespawnEntryToSpawnQueue();
                 }
             }

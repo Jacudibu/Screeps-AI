@@ -21,9 +21,6 @@ Creep.prototype.logActionError = function(action, errorCode) {
 Creep.prototype.addRespawnEntryToSpawnQueue = function() {
     let args = {
         role: this.memory.role,
-        targetRoomName: this.memory.targetRoomName,
-        remoteHaulTargetRoom: this.memory.remoteHaulTargetRoom,
-        remoteHaulStorageRoom: this.memory.remoteHaulStorageRoom,
     };
 
     // Handle special cases with counts in memory
@@ -35,10 +32,12 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
             break;
         case ROLE.REMOTE_HAULER:
+            args.targetRoomName = this.memory.remoteHaulTargetRoom;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             Game.rooms[args.targetRoomName].memory.assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
+            args.targetRoomName = this.memory.targetRoomName;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             Game.rooms[args.targetRoomName].memory.assignedRemoteWorkers++;
             break;
@@ -46,7 +45,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
     }
 
-    this.memory.respawnTime = undefined;
+    this.memory.respawnTTL = undefined;
 };
 
 // ~~~~~~~~~~~~~~~~~~

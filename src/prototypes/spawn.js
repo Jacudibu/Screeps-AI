@@ -58,7 +58,7 @@ Spawn.prototype.spawnHauler = function(energy) {
     let opts = {
         memory: {
             role: ROLE.HAULER,
-            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            respawnTTL: 75,
             spawnRoom: this.room.name,
         }
     };
@@ -92,7 +92,7 @@ Spawn.prototype.spawnHarvester = function(energy) {
     let opts = {
         memory: {
             role: ROLE.HARVESTER,
-            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            respawnTTL: 50,
             spawnRoom: this.room.name,
         }
     };
@@ -162,7 +162,7 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
             role: ROLE.REMOTE_WORKER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            respawnTTL: 100,
             spawnRoom: this.room.name,
         }
     };
@@ -195,7 +195,7 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
             remoteHaulStorageRoom: this.room.name,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTime: Game.time + RESPAWN_AFTER_TICKS,
+            respawnTTL: 150,
             spawnRoom: this.room.name,
         }
     };
