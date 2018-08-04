@@ -42,11 +42,12 @@ module.exports = function(grunt) {
                     filter: 'isFile',
                     rename: function (dest, src) {
                         // Change the path name utilize underscores for folders
-                        return dest + src.replace(/\//g,'_');
+                        return dest + src.replace(/\//g, '_');
                     }
                 }],
             }
         },
+    });
 
     grunt.registerTask('default',  ['clean', 'copy:screeps', 'screeps']);
 };
