@@ -58,7 +58,7 @@ Spawn.prototype.spawnHauler = function(energy) {
     let opts = {
         memory: {
             role: ROLE.HAULER,
-            respawnTTL: 75,
+            respawnTTL: body.length * 3,
             spawnRoom: this.room.name,
         }
     };
@@ -92,7 +92,7 @@ Spawn.prototype.spawnHarvester = function(energy) {
     let opts = {
         memory: {
             role: ROLE.HARVESTER,
-            respawnTTL: 50,
+            respawnTTL: body.length * 3,
             spawnRoom: this.room.name,
         }
     };
@@ -270,7 +270,7 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let body = [];
 
-    while (energy >= 130) {
+    while (energy >= 130 && body.length < 50) {
         body.push(ATTACK, MOVE);
         energy -= 130;
     }

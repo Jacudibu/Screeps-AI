@@ -41,7 +41,10 @@ const memoryManagment = {
                 Memory.rooms[creep.remoteHaulTargetRoom].assignedHaulers--;
                 break;
             case ROLE.RESERVER:
-                Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
+                if (creep.respawnTTL !== undefined) {
+                    Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
+                }
+
                 break;
         }
     },

@@ -23,7 +23,7 @@ const creepAi = {
             if (creep.memory.respawnTTL) {
                 if (creep.ticksToLive < creep.memory.respawnTTL) {
                     creep.addRespawnEntryToSpawnQueue();
-                    console.log(creep.room + "|" + creep.name + " - respawn registered");
+                    console.log(creep.room + "|" + creep.name + " - respawn in " + creep.memory.spawnRoom + " registered.");
                 }
             }
 

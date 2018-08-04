@@ -29,8 +29,8 @@ const spawnlogic = {
             // If something was added the spawnqueue was changed
             if (!room.isSpawnQueueEmpty()) {
                 room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
-                if (this.areThereEnoughResourcesToSpawnRole(room, this.peekFirstElementFromSpawnQueue(room))) {
-                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.shiftElementFromSpawnQueue(room));
+                if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
+                    this.shiftElementFromSpawnQueue(room);
                 }
             }
 
@@ -109,9 +109,10 @@ const spawnlogic = {
                 continue;
             }
 
-            this.spawnCreepWithArgs(spawn, args);
-            return;
+            return this.spawnCreepWithArgs(spawn, args);
         }
+
+        return ERR_BUSY;
     },
 
     spawnCreepWithArgs: function(spawn, args) {
@@ -119,43 +120,40 @@ const spawnlogic = {
 
         switch (args.role) {
             case ROLE.BUILDER:
-                spawn.spawnWorker(args.role, energy);
-                break;
+                return spawn.spawnWorker(args.role, energy);
             case ROLE.HARVESTER:
-                spawn.spawnHarvester(energy);
-                break;
+                return spawn.spawnHarvester(energy);
             case ROLE.HAULER:
-                spawn.spawnHauler(energy);
-                break;
+                return spawn.spawnHauler(energy);
             case ROLE.UPGRADER:
-                spawn.spawnUpgrader(energy);
-                break;
+                return spawn.spawnUpgrader(energy);
             case ROLE.REPAIRER:
-                spawn.spawnWorker(args.role, energy);
-                break;
+                return spawn.spawnWorker(args.role, energy);
             case ROLE.REMOTE_WORKER:
-                spawn.spawnRemoteWorker(energy, args.targetRoomName);
-                break;
+                return spawn.spawnRemoteWorker(energy, args.targetRoomName);
             case ROLE.REMOTE_HAULER:
-                spawn.spawnRemoteHauler(energy, args.targetRoomName);
-                break;
+                return spawn.spawnRemoteHauler(energy, args.targetRoomName);
             case ROLE.RESERVER:
-                spawn.spawnReserver(energy, args.targetRoomName);
-                break;
+                return spawn.spawnReserver(energy, args.targetRoomName);
             case ROLE.ATTACKER:
-                spawn.spawnDefender(energy, args.targetRoomName);
-                break;
+                return spawn.spawnDefender(energy, args.targetRoomName);
             case ROLE.DEFENDER:
-                spawn.spawnDefender(energy, args.targetRoomName);
-                break;
+                return spawn.spawnDefender(energy, args.targetRoomName);
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
-                break;
+                return OK; // so it doesn't clog up our spawn queue
         }
     },
 
     isRoleNeeded: function(room, role) {
+        for (let args of room.memory.spawnQueue) {
+            if (args.role === role) {
+                return false;
+            }
+        }
+
         let creepsWithRoleCount = this.countNumberOfCreepsWithRole(room, role);
+
         return creepsWithRoleCount < room.memory.requestedCreeps[role];
     },
 
