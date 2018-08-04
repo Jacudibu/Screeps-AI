@@ -45,13 +45,13 @@ const spawnlogic = {
 
         if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
             if (this.isRoleNeeded(room, ROLE.HAULER)) {
-                room.addToSpawnQueueEnd({role: ROLE.HAULER});
+                room.addToSpawnQueueStart({role: ROLE.HAULER});
                 return;
             }
         }
 
         if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
-            room.addToSpawnQueueEnd({role: ROLE.HARVESTER});
+            room.addToSpawnQueueStart({role: ROLE.HARVESTER});
             return;
         }
 
@@ -147,11 +147,11 @@ const spawnlogic = {
 
     isRoleNeeded: function(room, role) {
         for (let args of room.memory.spawnQueue) {
+            console.log(args.role);
             if (args.role === role) {
                 return false;
             }
         }
-
         let creepsWithRoleCount = this.countNumberOfCreepsWithRole(room, role);
 
         return creepsWithRoleCount < room.memory.requestedCreeps[role];

@@ -1,10 +1,12 @@
 ## TODO:
 
 * Fine-Tune respawn timer. Calculate how long it takes to build a creep and how long it will need to move to its target room.
+                           Alternatively: set respawnTTL when harvester/reserver reaches its destination and starts working
 * rooms request haulers on certain energy threshold instead of having a hauler assigned (and idling) all the time
 * Healers
 * Group attack creeps into squads, sharing the same targets
-* Harvest Minerals & Figure out Labs
+* Make harvesters & remote Haulers use links when one is nearby
+* Harvest Minerals & Figure out how to get labs working
 * Optimize Tower Code - Have it repair ramparts below 1k hits and crippled creeps in general
 * Automated scouts
 * Optimizing RCL <= 2 harvesting
