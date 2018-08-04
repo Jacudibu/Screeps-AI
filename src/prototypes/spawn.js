@@ -240,6 +240,8 @@ Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
             role: ROLE.RESERVER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
+            respawnTTL: 66,
+            spawnRoom: this.room.name,
         }
     };
 

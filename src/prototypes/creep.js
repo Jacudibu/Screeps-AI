@@ -41,8 +41,12 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             Game.rooms[args.targetRoomName].memory.assignedRemoteWorkers++;
             break;
-        default:
+        case ROLE.RESERVER:
+            args.targetRoomName = this.memory.targetRoomName;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            break;
+        default:
+            console.log("undefined role asking for respawn?!" + args.role);
     }
 
     this.memory.respawnTTL = undefined;
