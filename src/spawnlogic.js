@@ -23,7 +23,7 @@ const spawnlogic = {
             }
 
             if (room.isSpawnQueueEmpty()) {
-                this.tryAddingNewCreepToSpawnQueue(room);
+                this.tryAddingNewCreepToSpawnQueue(room, spawns);
             }
 
             // If something was added the spawnqueue was changed
@@ -38,24 +38,24 @@ const spawnlogic = {
         }
     },
 
-    tryAddingNewCreepToSpawnQueue: function(room) {
+    tryAddingNewCreepToSpawnQueue: function(room, spawns) {
         if (room.memory.requestedCreeps === undefined) {
             room.initSpawnMemory(room);
         }
 
         if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
-            if (this.isRoleNeeded(room, ROLE.HAULER)) {
+            if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
                 room.addToSpawnQueueStart({role: ROLE.HAULER});
                 return;
             }
         }
 
-        if (this.isRoleNeeded(room, ROLE.HARVESTER)) {
+        if (this.isRoleNeeded(room, spawns, ROLE.HARVESTER)) {
             room.addToSpawnQueueStart({role: ROLE.HARVESTER});
             return;
         }
 
-        if (this.isRoleNeeded(room, ROLE.HAULER)) {
+        if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
             room.addToSpawnQueueEnd({role: ROLE.HAULER});
             return;
         }
@@ -66,17 +66,17 @@ const spawnlogic = {
             return;
         }
 
-        if (this.isRoleNeeded(room, ROLE.UPGRADER)) {
+        if (this.isRoleNeeded(room, spawns, ROLE.UPGRADER)) {
             room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
             return;
         }
 
-        if (this.isRoleNeeded(room, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
+        if (this.isRoleNeeded(room, spawns, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
             room.addToSpawnQueueEnd({role: ROLE.BUILDER});
             return;
         }
 
-        if (this.isRoleNeeded(room, ROLE.REPAIRER)) {
+        if (this.isRoleNeeded(room, spawns, ROLE.REPAIRER)) {
             room.addToSpawnQueueEnd({role: ROLE.REPAIRER});
             return;
         }
@@ -145,13 +145,22 @@ const spawnlogic = {
         }
     },
 
-    isRoleNeeded: function(room, role) {
+    isRoleNeeded: function(room, spawns, role) {
+        // is said role already being spawned?
+        for (let spawn of spawns) {
+            if (spawn.spawning && Memory.creeps[spawn.spawning.name].role === role) {
+                return false;
+            }
+        }
+
+        // is said role already registered in spawnQueue?
         for (let args of room.memory.spawnQueue) {
             console.log(args.role);
             if (args.role === role) {
                 return false;
             }
         }
+
         let creepsWithRoleCount = this.countNumberOfCreepsWithRole(room, role);
 
         return creepsWithRoleCount < room.memory.requestedCreeps[role];
@@ -182,7 +191,12 @@ const spawnlogic = {
             let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
 
             if (!remoteMiningRoom.sources) {
-                Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();
+                if (Game.rooms[remoteMiningRoom[i]]) {
+                    Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();
+                } else {
+                    console.log(remoteMiningRoom[i] + "|no vision to set up remote mining room source memory");
+                    continue;
+                }
             }
 
             if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {

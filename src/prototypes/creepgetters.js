@@ -154,6 +154,12 @@ Creep.prototype._getHaulTarget = function() {
         return potentialTarget;
     }
 
+    potentialTarget = this.findClosestTombstone();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        return potentialTarget;
+    }
+
     return ERR_NOT_FOUND;
 };
 

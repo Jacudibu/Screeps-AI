@@ -114,3 +114,17 @@ Creep.prototype.findHighestDroppedEnergyAboveHaulThreshold = function() {
     droppedEnergy = _.sortBy(droppedEnergy, e => e.amount);
     return droppedEnergy[droppedEnergy.length - 1];
 };
+
+Creep.prototype.findClosestTombstone = function() {
+    const tombstones = this.room.find(FIND_TOMBSTONES, {
+        filter: (tomb) => {
+            return tomb.store[RESOURCE_ENERGY] > 0;
+        }
+    });
+
+    if (tombstones.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return _.sortBy(tombstones, s => this.pos.getRangeTo(s))[0];
+};
