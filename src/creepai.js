@@ -20,11 +20,11 @@ const creepAi = {
                 continue;
             }
 
-            if (creep.memory.respawnTTL) {
-                if (creep.ticksToLive < creep.memory.respawnTTL) {
-                    creep.addRespawnEntryToSpawnQueue();
-                }
-            }
+//            if (creep.memory.respawnTTL) {
+//                if (creep.ticksToLive < creep.memory.respawnTTL) {
+//                    creep.addRespawnEntryToSpawnQueue();
+//                }
+//            }
 
             try {
                 switch (creep.memory.role) {

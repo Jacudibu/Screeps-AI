@@ -103,20 +103,19 @@ Spawn.prototype.spawnHarvester = function(energy) {
 Spawn.prototype.spawnUpgrader = function(energy) {
     let body = [];
 
-    if (energy > 300 * 16) {
-        energy = 300 * 16;
-    }
+    body.push(MOVE, CARRY);
+    energy -= 100;
 
-    body.push(MOVE);
-    energy -= 50;
+    for (let i = 0; i < 15 && energy > 150; i++) {
+        body.push(WORK);
 
-    while (energy >= 250) {
-        body.push(WORK, WORK, CARRY);
-        energy -= 250;
-    }
+        if (i % 2 === 0) {
+            body.push(CARRY);
+        } else {
+            body.push(MOVE);
+        }
 
-    if (energy >= 50) {
-        body.push(MOVE);
+        energy -= 150;
     }
 
     body.sort();
