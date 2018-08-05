@@ -1,7 +1,14 @@
 const memoryManagment = {
 
     run: function() {
-        this.deleteDeadCreeps()
+        this.deleteDeadCreeps();
+        this.resetRoomCaches();
+    },
+
+    resetRoomCaches: function() {
+        for (let roomName in Game.rooms) {
+            Game.rooms[roomName]._freeSpawnsTowersAndExtensions = undefined;
+        }
     },
 
     deleteDeadCreeps: function() {

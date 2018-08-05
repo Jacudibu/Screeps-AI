@@ -31,29 +31,25 @@ Creep.prototype.findClosestFilledContainerOrStorage = function() {
 };
 
 Creep.prototype.findClosestFreeEnergyStorage = function() {
-    const structuresThatRequireEnergy = this.room.find(FIND_MY_STRUCTURES, {
-        filter: (structure) => {
-            return structure.canStoreEnergy(1);
-        }
-    });
+    let structuresThatRequireEnergy = this.room.getFreeSpawnsTowersOrExtensions();
 
-    if (structuresThatRequireEnergy.length === 0) {
-        let closestPublicRoomContainer = this.findClosestPublicRoomContainer();
-        if (closestPublicRoomContainer !== ERR_NOT_FOUND) {
-            return closestPublicRoomContainer;
-        }
-
-        let storage = this.room.storage;
-        if (storage) {
-            if (_.sum(storage.store) < storage.storeCapacity) {
-                return storage;
-            }
-        }
-
-        return ERR_NOT_FOUND;
+    if (structuresThatRequireEnergy !== ERR_NOT_FOUND) {
+        return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
     }
 
-    return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
+    let closestPublicRoomContainer = this.findClosestPublicRoomContainer();
+    if (closestPublicRoomContainer !== ERR_NOT_FOUND) {
+        return closestPublicRoomContainer;
+    }
+
+    let storage = this.room.storage;
+    if (storage) {
+        if (_.sum(storage.store) < storage.storeCapacity) {
+            return storage;
+        }
+    }
+
+    return ERR_NOT_FOUND;
 };
 
 Creep.prototype.findClosestPublicRoomContainer = function() {

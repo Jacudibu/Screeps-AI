@@ -153,3 +153,30 @@ Room.prototype.getUnoccupiedSource = function() {
     return ERR_NOT_FOUND;
 };
 
+/*
+Object.defineProperty(Room.prototype, 'freeSpawnsTowersAndExtensions'), {
+    get: function() {
+        if (!this._freeSpawnsTowersAndExtensions) {
+            this._freeSpawnsTowersAndExtensions = this.getFreeSpawnsTowersOrExtensions();
+        }
+
+        return this._freeSpawnsTowersAndExtensions;
+    }
+};
+*/
+
+Room.prototype.getFreeSpawnsTowersOrExtensions = function() {
+    if (!this._freeSpawnsTowersAndExtensions) {
+        this._freeSpawnsTowersAndExtensions = this.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return structure.canStoreEnergy(1);
+            }
+        });
+    }
+
+    if (this._freeSpawnsTowersAndExtensions.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return this._freeSpawnsTowersAndExtensions;
+};
