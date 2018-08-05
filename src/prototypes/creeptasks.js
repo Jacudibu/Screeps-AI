@@ -12,7 +12,7 @@ Creep.prototype.harvestEnergy = function() {
         case ERR_NOT_ENOUGH_RESOURCES:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(source);
+            this.travelTo(source);
             break;
         default:
             this.logActionError("harvestyEnergy on source " + source, + this.harvest(source));
@@ -37,7 +37,7 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
         case ERR_NOT_ENOUGH_RESOURCES:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(source);
+            this.travelTo(source);
             break;
         default:
             this.logActionError("harvestingEnergyFetch on source " + source, this.harvest(source));
@@ -100,7 +100,7 @@ Creep.prototype.renew = function(taskWhenFinished) {
         case ERR_NOT_ENOUGH_ENERGY:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(spawn);
+            this.travelTo(spawn);
             break;
         case ERR_FULL:
             this.memory.task = taskWhenFinished;
@@ -115,7 +115,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(this.room.controller);
+            this.travelTo(this.room.controller);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(taskWhenFinished);
@@ -139,7 +139,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(constructionSite);
+            this.travelTo(constructionSite);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(TASK.COLLECT_ENERGY);
@@ -173,7 +173,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
             this.setTask(TASK.COLLECT_ENERGY);
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(damagedStructure);
+            this.travelTo(damagedStructure);
             break;
         default:
             console.log("unexpected error when repairing object: " + this.repair(damagedStructure));
@@ -193,7 +193,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(structureThatRequiresEnergy);
+            this.travelTo(structureThatRequiresEnergy);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(nextTask);
@@ -225,7 +225,7 @@ Creep.prototype.signRoomController = function(nextTask) {
             this.setTask(nextTask);
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(this.room.controller);
+            this.travelTo(this.room.controller);
             break;
         default:
             this.setTask(nextTask);
@@ -248,7 +248,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         return;
     }
 
-    this.moveTo(targetPos);
+    this.travelTo(targetPos);
     if(this.pos.isEqualTo(targetPos)) {
         this.memory.task = taskWhenFinished;
     }
@@ -283,7 +283,7 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
     }
 
     const positionInNextRoom = new RoomPosition(25, 25, roomName);
-    this.moveTo(positionInNextRoom);
+    this.travelTo(positionInNextRoom);
 };
 
 Creep.prototype.dismantleStructure = function(taskWhenFinished) {
@@ -297,7 +297,7 @@ Creep.prototype.dismantleStructure = function(taskWhenFinished) {
                 }
                 break;
             case ERR_NOT_IN_RANGE:
-                this.moveTo(target);
+                this.travelTo(target);
                 break;
             default:
                 console.log("unexpected error when dismantling object: " + this.dismantle(target));
@@ -313,7 +313,7 @@ Creep.prototype.claimRoomController = function() {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(this.room.controller);
+            this.travelTo(this.room.controller);
             break;
         case ERR_GCL_NOT_ENOUGH:
             this.setTask(TASK.RESERVE_CONTROLLER);
@@ -330,7 +330,7 @@ Creep.prototype.reserveRoomController = function() {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(this.room.controller);
+            this.travelTo(this.room.controller);
             break;
         case ERR_INVALID_TARGET:
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
@@ -354,7 +354,7 @@ Creep.prototype.recycle = function() {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(spawn);
+            this.travelTo(spawn);
             break;
         default:
             console.log("unexpected error when recycling creep: " + spawn.recycleCreep(this));
@@ -387,7 +387,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
             break;
         case ERR_NOT_IN_RANGE:
             this.say("FOR GLORY!");
-            this.moveTo(target);
+            this.travelTo(target);
             break;
         case ERR_INVALID_TARGET:
             this.memory.taskTargetId = undefined;
@@ -436,19 +436,19 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
 
     if (ramparts.length === 0) {
         this.say("FOR GLORY");
-        this.moveTo(enemy);
+        this.travelTo(enemy);
         this.task = TASK.DEFEND_MELEE_CHARGE;
         return;
     }
 
     ramparts = _.sortBy(ramparts, rampart => rampart.pos.getRangeTo(enemy.pos));
 
-    switch (this.moveTo(ramparts[0])) {
+    switch (this.travelTo(ramparts[0])) {
         case OK:
             this.say("NOT TODAY!");
             break;
         default:
-            this.logActionError("moveToRampartClosestToEnemy moveTo command", this.moveTo(ramparts[0]));
+            this.logActionError("moveToRampartClosestToEnemy moveTo command", this.travelTo(ramparts[0]));
             break;
     }
 };

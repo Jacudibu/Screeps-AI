@@ -12,6 +12,7 @@ const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
 const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
+const traveler = require('tools_traveler');
 
 const profiler = require('tools_screeps-profiler');
 profiler.enable();

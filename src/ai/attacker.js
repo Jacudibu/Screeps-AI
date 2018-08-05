@@ -42,7 +42,7 @@ const attacker = {
                 }
 
                 if (target.progress) {
-                    creep.moveTo(target.pos);
+                    creep.travelTo(target.pos);
                     creep.say('whoopsie');
                     return;
                 }
@@ -52,7 +52,7 @@ const attacker = {
                     case OK:
                         break;
                     case ERR_NOT_IN_RANGE:
-                        creep.moveTo(target);
+                        creep.travelTo(target);
                         break;
                     case ERR_INVALID_TARGET:
                         creep.setTask(TASK.WAIT_FOR_INPUT);

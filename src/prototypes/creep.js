@@ -65,7 +65,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
             }
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(storage);
+            this.travelTo(storage);
             break;
         case ERR_FULL:
             this.setTask(taskWhenFinished);
@@ -88,7 +88,7 @@ Creep.prototype._pickupEnergy = function(pickup, taskWhenFinished, onlyPickupThi
             }
             break;
         case ERR_NOT_IN_RANGE:
-            this.moveTo(pickup);
+            this.travelTo(pickup);
             break;
         case ERR_FULL:
             this.setTask(taskWhenFinished);
