@@ -34,12 +34,12 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
         case ROLE.REMOTE_HAULER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
-            Game.rooms[args.targetRoomName].memory.assignedHaulers++;
+            Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
             args.targetRoomName = this.memory.targetRoomName;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
-            Game.rooms[args.targetRoomName].memory.assignedRemoteWorkers++;
+            Memory.rooms[args.targetRoomName].assignedRemoteWorkers++;
             break;
         case ROLE.RESERVER:
             args.targetRoomName = this.memory.targetRoomName;
