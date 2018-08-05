@@ -57,7 +57,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
         this.setTask(taskWhenFinished);
     }
 
-    if (target instanceof Structure) {
+    if (target instanceof Structure || target instanceof Tombstone) {
         this._withdrawEnergy(target, taskWhenFinished);
     } else {
         this._pickupEnergy(target, taskWhenFinished);
