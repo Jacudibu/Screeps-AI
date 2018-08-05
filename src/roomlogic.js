@@ -1,43 +1,50 @@
 const roomLogic = {
     run: function() {
         for (let roomName in Game.rooms) {
-            this.runRoom(Game.rooms[roomName]);
+            let room = Game.rooms[roomName];
+
+            this.checkForHostiles(room);
+            if (room._hostiles.length === 0) {
+                room.memory.requiresHelp = undefined;
+            } else {
+                if (room.memory.requiresHelp === undefined) {
+                    room.memory.requiresHelp = true;
+                }
+
+                room._hostiles = this.sortHostilesByPriority(room._hostiles);
+                room.commandTowersToAttackTarget(room._hostiles[0]);
+                this.checkIfSafeModeShouldBeActivated(room);
+            }
+
+            this.repairDamagedCreeps(room);
         }
     },
 
-    runRoom: function(room) {
-        let hostiles = room.find(FIND_HOSTILE_CREEPS, {
+    checkForHostiles: function(room) {
+        room._hostiles = room.find(FIND_HOSTILE_CREEPS, {
             filter: creep =>
                 creep.countBodyPartsOfType(ATTACK) > 0
-             || creep.countBodyPartsOfType(RANGED_ATTACK) > 0
-             || creep.countBodyPartsOfType(HEAL) > 0
-             || creep.countBodyPartsOfType(WORK) > 1
-            });
+                || creep.countBodyPartsOfType(RANGED_ATTACK) > 0
+                || creep.countBodyPartsOfType(HEAL) > 0
+                || creep.countBodyPartsOfType(WORK) > 1
+        });
+    },
 
-        if (hostiles.length === 0) {
-            room.memory.requiresHelp = undefined;
-            return;
-        }
-
-        if (room.memory.requiresHelp === undefined) {
-            room.memory.requiresHelp = true;
-        }
-
-        hostiles = this.sortHostilesByPriority(hostiles);
-        room.commandTowersToAttackTarget(hostiles[0]);
-
-        let damagedCreeps = room.findDamagedCreeps();
-        if (damagedCreeps.length > 0) {
-            room.commandTowersToHealCreep(damagedCreeps[0]);
-        }
-
+    checkIfSafeModeShouldBeActivated: function(room) {
         let spawns = room.find(FIND_MY_SPAWNS);
-        for(let i = 0; i < spawns.length; i++) {
+        for (let i = 0; i < spawns.length; i++) {
             let spawn = spawns[i];
 
             if (spawn.hits < 5000 && !room.controller.safeMode) {
                 room.controller.activateSafeMode();
             }
+        }
+    },
+
+    repairDamagedCreeps(room) {
+        let damagedCreeps = room.findDamagedCreeps();
+        if (damagedCreeps.length > 0) {
+            room.commandTowersToHealCreep(damagedCreeps[0]);
         }
     },
 

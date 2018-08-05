@@ -258,7 +258,9 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
-        console.log(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
+        if (this.ticksToLive < 1300) {
+            console.log(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
+        }
         return;
     }
 
