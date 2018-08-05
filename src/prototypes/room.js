@@ -74,10 +74,6 @@ Room.prototype.setAutoSpawn = function(shouldSpawn) {
     this.memory.autoSpawnEnabled = shouldSpawn;
 };
 
-Room.prototype.getPublicEnergyContainers = function() {
-    return this.memory.publicEnergyContainers;
-};
-
 Room.prototype.isSpawnQueueEmpty = function() {
     return this.memory.spawnQueue === undefined || this.memory.spawnQueue.length === 0;
 };
@@ -153,18 +149,6 @@ Room.prototype.getUnoccupiedSource = function() {
     return ERR_NOT_FOUND;
 };
 
-/*
-Object.defineProperty(Room.prototype, 'freeSpawnsTowersAndExtensions'), {
-    get: function() {
-        if (!this._freeSpawnsTowersAndExtensions) {
-            this._freeSpawnsTowersAndExtensions = this.getFreeSpawnsTowersOrExtensions();
-        }
-
-        return this._freeSpawnsTowersAndExtensions;
-    }
-};
-*/
-
 Room.prototype.getFreeSpawnsTowersOrExtensions = function() {
     if (!this._freeSpawnsTowersAndExtensions) {
         this._freeSpawnsTowersAndExtensions = this.find(FIND_MY_STRUCTURES, {
@@ -179,4 +163,26 @@ Room.prototype.getFreeSpawnsTowersOrExtensions = function() {
     }
 
     return this._freeSpawnsTowersAndExtensions;
+};
+
+Room.prototype.getEmptyPublicEnergyContainers = function() {
+    if (!this._emptyPublicEnergyContainers) {
+        const publicEnergyContainerMemoryEntry = this.memory.publicEnergyContainers;
+        if (!publicEnergyContainerMemoryEntry) {
+            return ERR_NOT_FOUND;
+        }
+
+        this._emptyPublicEnergyContainers = this.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (publicEnergyContainerMemoryEntry.includes(structure.id)
+                    && _.sum(structure.store) < structure.storeCapacity);
+            }
+        });
+    }
+
+    if (this._emptyPublicEnergyContainers.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return this._emptyPublicEnergyContainers;
 };

@@ -37,9 +37,9 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
     }
 
-    let closestPublicRoomContainer = this.findClosestPublicRoomContainer();
-    if (closestPublicRoomContainer !== ERR_NOT_FOUND) {
-        return closestPublicRoomContainer;
+    let publicEnergyContainers = this.room.getEmptyPublicEnergyContainers();
+    if (publicEnergyContainers !== ERR_NOT_FOUND) {
+        return _.sortBy(publicEnergyContainers, c => this.pos.getRangeTo(c))[0]
     }
 
     let storage = this.room.storage;
@@ -50,24 +50,6 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     }
 
     return ERR_NOT_FOUND;
-};
-
-Creep.prototype.findClosestPublicRoomContainer = function() {
-    const publicEnergyContainer = this.room.getPublicEnergyContainers();
-
-    const container = this.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return (structure.structureType === STRUCTURE_CONTAINER
-                && publicEnergyContainer && publicEnergyContainer.includes(structure.id)
-                && _.sum(structure.store) < structure.storeCapacity);
-        }
-    });
-
-    if (container.length === 0) {
-        return ERR_NOT_FOUND;
-    }
-
-    return _.sortBy(container, c => this.pos.getRangeTo(c))[0];
 };
 
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
