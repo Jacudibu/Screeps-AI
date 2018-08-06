@@ -24,6 +24,9 @@ const spawnlogic = {
 
             if (room.isSpawnQueueEmpty()) {
                 this.tryAddingNewCreepToSpawnQueue(room, spawns);
+            } else {
+                this.checkAndSpawnDefenderIfNecessary(room);
+                this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room);
             }
 
             // If something was added the spawnqueue was changed
@@ -36,6 +39,16 @@ const spawnlogic = {
 
             room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
         }
+    },
+
+    checkAndSpawnDefenderIfNecessary: function(room) {
+        if (room.memory.requiresHelp) {
+            room.memory.requiresHelp = false;
+            room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: room.name});
+            return true;
+        }
+
+        return false;
     },
 
     tryAddingNewCreepToSpawnQueue: function(room, spawns) {
@@ -60,9 +73,7 @@ const spawnlogic = {
             return;
         }
 
-        if (room.memory.requiresHelp) {
-            room.memory.requiresHelp = false;
-            room.addToSpawnQueueEnd({role: ROLE.DEFENDER, targetRoomName: room.name});
+        if (this.checkAndSpawnDefenderIfNecessary(room)) {
             return;
         }
 
@@ -178,13 +189,8 @@ const spawnlogic = {
             return;
         }
 
-        // Iterate defenders seperately
-        for (let i = 0; i < remoteMiningRooms.length; i++) {
-            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
-            if (remoteMiningRoom.requiresHelp === true) {
-                room.addToSpawnQueueEnd({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
-            }
+        if (this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room)) {
+            return;
         }
 
         for (let i = 0; i < remoteMiningRooms.length; i++) {
@@ -221,6 +227,25 @@ const spawnlogic = {
                 return;
             }
         }
+    },
+
+    checkRemoteMiningRoomsAndSpawnDefenderIfNecessary: function(room) {
+        let remoteMiningRooms = room.memory.remoteMiningRooms;
+
+        if (!remoteMiningRooms || remoteMiningRooms.length === 0) {
+            return false;
+        }
+
+        for (let i = 0; i < remoteMiningRooms.length; i++) {
+            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+            if (remoteMiningRoom.requiresHelp === true) {
+                room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
+                return true;
+            }
+        }
+
+        return false;
     },
 };
 
