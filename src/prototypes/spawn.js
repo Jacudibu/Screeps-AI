@@ -297,9 +297,9 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     body.push(ATTACK, MOVE);
     energy -= 130;
 
-    while (energy >= 150) {
-        body.push(TOUGH, TOUGH, MOVE);
-        energy -= 150;
+    while (energy >= 60) {
+        body.push(TOUGH, MOVE);
+        energy -= 60;
     }
 
     body.sort().reverse();

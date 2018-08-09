@@ -41,9 +41,9 @@ const attacker = {
                     target = possibleTargets[0];
                 }
 
-                if (target.progress) {
+                if (target && target.progress) {
                     creep.travelTo(target.pos);
-                    creep.say('whoopsie');
+                    //creep.say('whoopsie');
                     return;
                 }
 
