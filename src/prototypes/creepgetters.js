@@ -7,10 +7,12 @@ Creep.prototype._getSource = function() {
         return Game.getObjectById(this.memory.taskTargetId);
     }
 
-    let source = this.room.getUnoccupiedSource();
-    if (source === ERR_NOT_FOUND)  {
+    let sources = this.room.getUnoccupiedSources();
+    if (sources === ERR_NOT_FOUND)  {
         return ERR_NOT_FOUND;
     }
+
+    let source = _.sortBy(sources, source => source.pos.getRangeTo(this))[0];
 
     source.memory.workersAssigned++;
     this.memory.taskTargetId = source.id;
@@ -80,14 +82,14 @@ Creep.prototype._getConstructionSite = function() {
         });
     } else {
         // No spawn, just get the closest structure to our creep
-        constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this))
+        constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this));
     }
 
     this.memory.taskTargetId = constructionSites[0].id;
     return constructionSites[0];
 };
 
-Creep.prototype._getDamagedStructure = function() {
+Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.75, sortByRange = false) {
     if (this.memory.taskTargetId) {
         let previousTarget = Game.getObjectById(this.memory.taskTargetId);
 
@@ -99,7 +101,7 @@ Creep.prototype._getDamagedStructure = function() {
         }
     }
 
-    const damagedStructures = this.room.find(FIND_STRUCTURES, {
+    let damagedStructures = this.room.find(FIND_STRUCTURES, {
         filter: structure => {
 
             if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
@@ -110,18 +112,22 @@ Creep.prototype._getDamagedStructure = function() {
                 return structure.hits < structure.hitsMax;
             }
 
-            return structure.hits < structure.hitsMax * 0.75
+            return structure.hits < structure.hitsMax * percentageToCountAsDamaged;
         }
     });
 
-    damagedStructures.sort((a,b) => {
-        let diff = a.hits - b.hits;
-        if (diff === 0) {
-            return this.pos.getRangeTo(a) - this.pos.getRangeTo(b);
-        }
+    if (sortByRange) {
+        damagedStructures = _.sortBy(damagedStructures, c => c.pos.getRangeTo(this));
+    } else {
+        damagedStructures.sort((a,b) => {
+            let diff = a.hits - b.hits;
+            if (diff === 0) {
+                return this.pos.getRangeTo(a) - this.pos.getRangeTo(b);
+            }
 
-        return a.hits - b.hits
-    });
+            return a.hits - b.hits
+        });
+    }
 
     if(damagedStructures.length === 0) {
         return ERR_NOT_FOUND;

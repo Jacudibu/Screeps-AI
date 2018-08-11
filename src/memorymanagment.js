@@ -36,6 +36,7 @@ const memoryManagment = {
                     }
                 }
                 break;
+
             case ROLE.REMOTE_WORKER:
                 Memory.rooms[creep.targetRoomName].assignedRemoteWorkers--;
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
@@ -45,9 +46,21 @@ const memoryManagment = {
                         }
                 }
                 break;
+
             case ROLE.REMOTE_HAULER:
                 Memory.rooms[creep.remoteHaulTargetRoom].assignedHaulers--;
                 break;
+
+            case ROLE.REMOTE_REPAIRER:
+                if (creep.respawnTTL) {
+                    let args = {
+                        role: ROLE.REMOTE_REPAIRER,
+                        route: creep.route,
+                    };
+                    Memory.rooms[creep.spawnRoom].spawnQueue.add(args);
+                }
+                break;
+
             case ROLE.RESERVER:
                 if (creep.respawnTTL !== undefined) {
                     Memory.rooms[creep.targetRoomName].isReserverAssigned = false;

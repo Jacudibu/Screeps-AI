@@ -144,6 +144,8 @@ const spawnlogic = {
                 return spawn.spawnRemoteWorker(energy, args.targetRoomName);
             case ROLE.REMOTE_HAULER:
                 return spawn.spawnRemoteHauler(energy, args.targetRoomName);
+            case ROLE.REMOTE_REPAIRER:
+                return spawn.spawnRemoteRepairer(energy, args.route);
             case ROLE.RESERVER:
                 return spawn.spawnReserver(energy, args.targetRoomName);
             case ROLE.ATTACKER:

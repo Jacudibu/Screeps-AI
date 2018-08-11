@@ -157,8 +157,8 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
     }
 };
 
-Creep.prototype.repairStructures = function(taskIfNothingToRepair) {
-    let damagedStructure = this._getDamagedStructure();
+Creep.prototype.repairStructures = function(taskIfNothingToRepair, percentageToCountAsDamaged = 0.7, sortByRange = false) {
+    let damagedStructure = this._getDamagedStructure(percentageToCountAsDamaged, sortByRange);
 
     if (damagedStructure === ERR_NOT_FOUND) {
         this.say('x~x');
@@ -246,6 +246,8 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
     if (targetPos === ERR_NOT_FOUND) {
         this.say("x~x");
         return;
+    } else {
+        this.memory.containerId = source.memory.containerId;
     }
 
     this.travelTo(targetPos);

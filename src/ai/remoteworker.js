@@ -11,13 +11,21 @@ const remoteWorker = {
                     return;
                 }
 
-                if (creep._getDamagedStructure() !== ERR_NOT_FOUND) {
-                    creep.setTask(TASK.REPAIR_STRUCTURE);
+                if (creep.memory.containerId) {
+                    let container = Game.getObjectById(creep.memory.containerId);
+                    if (container.hits < container.hitsMax) {
+                        creep.repair(container);
+                        return;
+                    }
+                }
+
+                if (creep._getDamagedStructure(0.5, true) !== ERR_NOT_FOUND) {
+                    creep.memory.task = TASK.REPAIR_STRUCTURE;
                     return;
                 }
 
                 if (creep._getConstructionSite() !== ERR_NOT_FOUND) {
-                    creep.setTask(TASK.BUILD_STRUCTURE);
+                    creep.memory.task = TASK.BUILD_STRUCTURE;
                     return;
                 }
 
@@ -42,7 +50,7 @@ const remoteWorker = {
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO);
+                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, 0.5, true);
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);

@@ -202,6 +202,77 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, body, opts);
 };
 
+Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
+    if (targetRoomName === undefined) {
+        console.log("remoteHauler needs a targetRoomName");
+        return;
+    }
+
+    let body = [];
+
+    if (energy > 800) {
+        energy = 800;
+    }
+
+    body.push(CARRY);
+    energy -= 50;
+
+    while (energy >= 250) {
+        body.push(WORK, WORK, MOVE);
+        energy -= 250;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_HARVESTER,
+            targetRoomName: targetRoomName,
+            task: TASK.MOVE_TO_ROOM,
+            respawnTTL: 100,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.REMOTE_HARVESTER, body, opts);
+};
+
+Spawn.prototype.spawnRemoteRepairer = function(energy, route) {
+    if (!route) {
+        console.log("Room route not provided. Using default queue for room.");
+        if (!this.room.memory.repairRoute) {
+            console.log("Unable to find default repair route for room. Cancelling spawn request...");
+            return;
+        }
+
+        route = this.room.memory.repairRoute;
+    }
+
+    let body = [];
+
+    if (energy > 1750) {
+        energy = 1750;
+    }
+
+    while(energy >= 350) {
+        body.push(WORK, CARRY, CARRY, MOVE, MOVE, MOVE);
+        energy -= 350;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_REPAIRER,
+            targetRoomName: route[0],
+            route: route,
+            task: TASK.COLLECT_ENERGY,
+            respawnTTL: 200,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER, body, opts);
+};
+
 Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn claimer, no target room name provided.");
@@ -270,7 +341,7 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let body = [];
 
-    let maxLength = targetRoomName === this.room.name ? 50 : 20;
+    let maxLength = targetRoomName === this.room.name ? 50 : 30;
 
     while (energy >= 130 && body.length < maxLength) {
         body.push(ATTACK, MOVE);
@@ -321,7 +392,7 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 };
 
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
-    let name = role + '#' + Memory.creepsBuilt;
+    let name = role + Memory.creepsBuilt;
 
     let result = this.spawnCreep(body, name, opts);
 

@@ -136,19 +136,26 @@ Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
     }
 };
 
-Room.prototype.getUnoccupiedSource = function() {
+Room.prototype.getUnoccupiedSources = function() {
     if (!this.memory.sources) {
         this.initializeMemoryForAllSourcesInRoom();
     }
 
+    let sources = [];
+
     let keys = Object.keys(this.memory.sources);
     for (let i = 0; i < keys.length; i++) {
         if (this.memory.sources[keys[i]].workersAssigned < this.memory.sources[keys[i]].workersMax) {
-            return Game.getObjectById(keys[i]);
+            sources.push(Game.getObjectById(keys[i]));
         }
     }
 
-    return ERR_NOT_FOUND;
+    if (sources.length === 0) {
+        return ERR_NOT_FOUND;
+    } else {
+        return sources;
+    }
+
 };
 
 Room.prototype.getFreeSpawnsTowersOrExtensions = function() {
