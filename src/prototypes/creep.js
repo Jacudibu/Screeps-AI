@@ -62,7 +62,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
 // ~~~~~~~~~~~~~~~~~~
 
 Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
-    this.say("o~o");
+    this.say("o~o", true);
     switch (this.withdraw(storage, RESOURCE_ENERGY)) {
         case OK:
             if (_.sum(this.carry) === this.carryCapacity) {
@@ -85,7 +85,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
 };
 
 Creep.prototype._pickupEnergy = function(pickup, taskWhenFinished, onlyPickupThisOne) {
-    this.say("°^°");
+    this.say("°^°", true);
     switch (this.pickup(pickup)) {
         case OK:
             if (_.sum(this.carry) === this.carryCapacity || onlyPickupThisOne) {

@@ -12,7 +12,7 @@ const attacker = {
                 creep.moveToRoom(TASK.ATTACK);
                 break;
             case TASK.WAIT_FOR_INPUT:
-                creep.say("(ノ°Д°）ノ︵┻━┻");
+                creep.say("(ノ°Д°）ノ︵┻━┻", true);
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.ATTACK:
@@ -47,7 +47,7 @@ const attacker = {
                     return;
                 }
 
-                creep.say("(ノ°Д°）ノ︵┻━┻");
+                creep.say("(ノ°Д°）ノ︵┻━┻", true);
                 switch (creep.attack(target)) {
                     case OK:
                         break;

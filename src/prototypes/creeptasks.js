@@ -260,7 +260,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
-        if (this.ticksToLive < 1300) {
+        if (this.ticksToLive < 1200) {
             console.log(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
         }
         return;
@@ -375,7 +375,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
     if (target === undefined) {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
-            this.say("\\(^-^)/");
+            this.say("\\(^-^)/", true);
             this.memory.targetRoomName = this.memory.homeRoomName;
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
             return;
@@ -387,10 +387,10 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
 
     switch (this.attack(target)) {
         case OK:
-            this.say("(ノ°Д°）ノ︵┻━┻");
+            this.say("(ノ°Д°）ノ︵┻━┻", true);
             break;
         case ERR_NOT_IN_RANGE:
-            this.say("FOR GLORY!");
+            this.say("FOR GLORY!", true);
             this.travelTo(target);
             break;
         case ERR_INVALID_TARGET:
@@ -421,7 +421,7 @@ Creep.prototype.defendRoomByStandingOnRamparts = function() {
 
     switch (this.attack(target)) {
         case OK:
-            this.say("(ノ°Д°）ノ︵┻━┻");
+            this.say("(ノ°Д°）ノ︵┻━┻", true);
             break;
         case ERR_NOT_IN_RANGE:
             this.moveToRampartClosestToEnemy(target);
@@ -439,7 +439,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
     let ramparts = this.room.find(FIND_MY_STRUCTURES, {filter: structure => structure.structureType === STRUCTURE_RAMPART});
 
     if (ramparts.length === 0) {
-        this.say("FOR GLORY");
+        this.say("FOR GLORY", true);
         this.travelTo(enemy);
         this.task = TASK.DEFEND_MELEE_CHARGE;
         return;
@@ -449,7 +449,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
 
     switch (this.travelTo(ramparts[0])) {
         case OK:
-            this.say("NOT TODAY!");
+            this.say("NOT TODAY!", true);
             break;
         default:
             this.logActionError("moveToRampartClosestToEnemy moveTo command", this.travelTo(ramparts[0]));

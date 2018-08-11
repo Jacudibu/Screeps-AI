@@ -14,7 +14,10 @@ const remoteWorker = {
                 if (creep.memory.containerId) {
                     let container = Game.getObjectById(creep.memory.containerId);
                     if (container.hits < container.hitsMax) {
-                        creep.repair(container);
+                        if (creep.repair(container) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(container);
+                        }
+                        creep.say("ò.ó", true);
                         return;
                     }
                 }
@@ -34,7 +37,7 @@ const remoteWorker = {
                     return;
                 }
 
-                creep.say('ಥ~ಥ');
+                creep.say('ಥ~ಥ', true);
                 creep.drop(RESOURCE_ENERGY);
                 break;
             case TASK.MOVE_TO_ROOM:
