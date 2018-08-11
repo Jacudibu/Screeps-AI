@@ -126,7 +126,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
     }
 };
 
-Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
+Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnoughEnergy = TASK.COLLECT_ENERGY) {
     let constructionSite = this._getConstructionSite();
 
     if (constructionSite === ERR_NOT_FOUND) {
@@ -142,7 +142,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
             this.travelTo(constructionSite);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(TASK.COLLECT_ENERGY);
+            this.setTask(taskWhenNotEnoughEnergy);
             break;
         case ERR_INVALID_TARGET:
             this.resetCurrentTask();

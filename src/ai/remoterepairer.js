@@ -18,12 +18,17 @@ const remoteRepairer = {
                 if (creep.carry[RESOURCE_ENERGY] > 0) {
                     let damagedStructure = creep._getDamagedStructure(0.9, true);
                     if (damagedStructure === ERR_NOT_FOUND) {
-                        let nextRoom = creep.memory.route.shift();
-                        creep.memory.route.push(nextRoom);
-                        creep.memory.targetRoomName = nextRoom;
-                        creep.setTask(TASK.MOVE_TO_ROOM);
-                        return;
-
+                        let constructionSite = creep._getConstructionSite();
+                        if (constructionSite === ERR_NOT_FOUND) {
+                            let nextRoom = creep.memory.route.shift();
+                            creep.memory.route.push(nextRoom);
+                            creep.memory.targetRoomName = nextRoom;
+                            creep.setTask(TASK.MOVE_TO_ROOM);
+                            return;
+                        } else {
+                            creep.memory.task = TASK.BUILD_STRUCTURE;
+                            return;
+                        }
                     } else {
                         creep.memory.task = TASK.REPAIR_STRUCTURE;
                         return;
@@ -47,6 +52,10 @@ const remoteRepairer = {
 
             case TASK.REPAIR_STRUCTURE:
                 creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HAUL_ENERGY, 0.9, true);
+                break;
+
+            case TASK.BUILD_STRUCTURE:
+                creep.buildStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HAUL_ENERGY);
                 break;
 
             default:
