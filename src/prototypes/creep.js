@@ -42,6 +42,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Memory.rooms[args.targetRoomName].assignedRemoteWorkers++;
             break;
         case ROLE.REMOTE_REPAIRER:
+            args.targetRoomName = this.memory.targetRoomName;
             args.route = this.memory.route;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;

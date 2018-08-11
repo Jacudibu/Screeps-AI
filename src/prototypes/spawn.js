@@ -236,7 +236,7 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.REMOTE_HARVESTER, body, opts);
 };
 
-Spawn.prototype.spawnRemoteRepairer = function(energy, route) {
+Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
     if (!route) {
         console.log("Room route not provided. Using default queue for room.");
         if (!this.room.memory.repairRoute) {
@@ -245,6 +245,10 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, route) {
         }
 
         route = this.room.memory.repairRoute;
+    }
+
+    if (!targetRoomName) {
+        targetRoomName = route[0];
     }
 
     let body = [];
@@ -262,10 +266,10 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, route) {
     let opts = {
         memory: {
             role: ROLE.REMOTE_REPAIRER,
-            targetRoomName: route[0],
+            targetRoomName: targetRoomName,
             route: route,
             task: TASK.COLLECT_ENERGY,
-            respawnTTL: 200,
+            respawnTTL: 50,
             spawnRoom: this.room.name,
         }
     };

@@ -46,7 +46,7 @@ const remoteRepairer = {
                 break;
 
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, 0.9, true);
+                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HAUL_ENERGY, 0.9, true);
                 break;
 
             default:

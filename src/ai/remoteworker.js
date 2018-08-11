@@ -50,7 +50,7 @@ const remoteWorker = {
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, 0.5, true);
+                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HARVEST_ENERGY_FETCH, 0.5, true);
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);

@@ -157,7 +157,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild) {
     }
 };
 
-Creep.prototype.repairStructures = function(taskIfNothingToRepair, percentageToCountAsDamaged = 0.7, sortByRange = false) {
+Creep.prototype.repairStructures = function(taskIfNothingToRepair, taskIfNoRessources = TASK.COLLECT_ENERGY, percentageToCountAsDamaged = 0.7, sortByRange = false) {
     let damagedStructure = this._getDamagedStructure(percentageToCountAsDamaged, sortByRange);
 
     if (damagedStructure === ERR_NOT_FOUND) {
@@ -170,7 +170,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair, percentageToC
         case OK:
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(TASK.COLLECT_ENERGY);
+            this.setTask(taskIfNoRessources);
             break;
         case ERR_NOT_IN_RANGE:
             this.travelTo(damagedStructure);
