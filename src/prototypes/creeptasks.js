@@ -121,7 +121,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
             this.setTask(taskWhenFinished);
             break;
         default:
-            console.log("unexpected error when upgrading controller: " + this.upgradeController(this.room.controller));
+            this.logActionError("upgrading controller", this.upgradeController(this.room.controller));
             break;
     }
 };

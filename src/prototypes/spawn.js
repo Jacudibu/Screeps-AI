@@ -270,7 +270,9 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let body = [];
 
-    while (energy >= 130 && body.length < 50) {
+    let maxLength = targetRoomName === this.room.name ? 50 : 20;
+
+    while (energy >= 130 && body.length < maxLength) {
         body.push(ATTACK, MOVE);
         energy -= 130;
     }
