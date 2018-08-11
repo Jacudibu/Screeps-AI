@@ -142,6 +142,8 @@ const spawnlogic = {
                 return spawn.spawnWorker(args.role, energy);
             case ROLE.REMOTE_WORKER:
                 return spawn.spawnRemoteWorker(energy, args.targetRoomName);
+            case ROLE.REMOTE_HARVESTER:
+                return spawn.spawnRemoteHarvester(energy, args.targetRoomName);
             case ROLE.REMOTE_HAULER:
                 return spawn.spawnRemoteHauler(energy, args.targetRoomName);
             case ROLE.REMOTE_REPAIRER:
@@ -207,9 +209,9 @@ const spawnlogic = {
                 }
             }
 
-            if (remoteMiningRoom.assignedRemoteWorkers < Object.keys(remoteMiningRoom.sources).length) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_WORKER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].assignedRemoteWorkers++;
+            if (remoteMiningRoom.assignedHarvesters < Object.keys(remoteMiningRoom.sources).length) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRooms[i]});
+                Memory.rooms[remoteMiningRooms[i]].assignedHarvesters++;
                 return;
             }
 

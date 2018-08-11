@@ -38,7 +38,7 @@ const memoryManagment = {
                 break;
 
             case ROLE.REMOTE_WORKER:
-                Memory.rooms[creep.targetRoomName].assignedRemoteWorkers--;
+                Memory.rooms[creep.targetRoomName].assignedHarvesters--;
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
                     for (let i = 0; i < keys.length; i++) {
                         if (keys[i] === creep.taskTargetId) {
@@ -46,6 +46,17 @@ const memoryManagment = {
                         }
                 }
                 break;
+
+            case ROLE.REMOTE_HARVESTER:
+                Memory.rooms[creep.targetRoomName].assignedHarvesters--;
+                let keys2 = Object.keys(Memory.rooms[creep.targetRoomName].sources);
+                for (let i = 0; i < keys2.length; i++) {
+                    if (keys2[i] === creep.taskTargetId) {
+                        Memory.rooms[creep.targetRoomName].sources[keys2[i]].workersAssigned--;
+                    }
+                }
+                break;
+
 
             case ROLE.REMOTE_HAULER:
                 Memory.rooms[creep.remoteHaulTargetRoom].assignedHaulers--;

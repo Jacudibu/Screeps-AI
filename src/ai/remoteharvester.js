@@ -12,17 +12,19 @@ const remoteWorker = {
                 }
 
                 if (creep.memory.containerId) {
-                    let repairResult = creep.repair(Game.getObjectById(creep.memory.containerId));
-                    switch (repairResult) {
-                        case OK:
-                            return;
-                        default:
-                            break;
+                    let container = Game.getObjectById(creep.memory.containerId);
+                    if (container.hits < container.hitsMax) {
+                        if (creep.repair(container) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(container);
+                        }
+                        creep.say("ò.ó", true);
+                        return;
                     }
                 }
 
                 creep.say('ಥ~ಥ');
                 creep.drop(RESOURCE_ENERGY);
+                creep.setTask(TASK.HARVEST_ENERGY_FETCH);
                 break;
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);

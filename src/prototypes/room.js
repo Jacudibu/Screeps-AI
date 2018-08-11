@@ -30,8 +30,8 @@ Room.prototype.addRemoteMiningRoom = function (roomName) {
         Memory.rooms[roomName] = {};
     }
 
-    if (Memory.rooms[roomName].assignedRemoteWorkers === undefined) {
-        Memory.rooms[roomName].assignedRemoteWorkers = 0;
+    if (Memory.rooms[roomName].assignedHarvesters === undefined) {
+        Memory.rooms[roomName].assignedHarvesters = 0;
         Memory.rooms[roomName].assignedHaulers = 0;
         Memory.rooms[roomName].requiredHaulers = 0;
     }
@@ -44,7 +44,7 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
 
     let index = this.memory.remoteMiningRooms.indexOf(roomName);
     if (index > -1) {
-        Memory.rooms[roomName].assignedRemoteWorkers = undefined;
+        Memory.rooms[roomName].assignedHarvesters = undefined;
         this.memory.remoteMiningRooms.splice(index, 1);
     }
 };

@@ -5,6 +5,7 @@ const upgraderAI = require('ai_upgrader');
 const repairerAI = require('ai_repairer');
 const remoteWorkerAI = require('ai_remoteworker');
 const remoteHaulerAI = require('ai_remotehauler');
+const remoteHarvesterAI = require('ai_remoteharvester');
 const remoteRepairerAI = require('ai_remoterepairer');
 const reserverAI = require('ai_reserver');
 const attackerAI = require('ai_attacker');
@@ -46,10 +47,15 @@ const creepAi = {
                         haulerAI.run(creep);
                         break;
                     case ROLE.REMOTE_WORKER:
-                        remoteWorkerAI.run(creep);
+                        // TODO: FIXME, this is a hack in order to transition from workers to harvesters
+                        //remoteWorkerAI.run(creep);
+                        remoteHarvesterAI.run(creep);
                         break;
                     case ROLE.REMOTE_HAULER:
                         remoteHaulerAI.run(creep);
+                        break;
+                    case ROLE.REMOTE_HARVESTER:
+                        remoteHarvesterAI.run(creep);
                         break;
                     case ROLE.REMOTE_REPAIRER:
                         remoteRepairerAI.run(creep);
