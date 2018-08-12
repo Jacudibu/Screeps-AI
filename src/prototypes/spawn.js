@@ -312,8 +312,14 @@ Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
 
     let body = [];
 
-    body.push(CLAIM, MOVE);
-    body.sort();
+    if (energy > 650 * 4) {
+        energy = 650 * 4;
+    }
+
+    while(energy >= 650) {
+        body.push(MOVE, CLAIM);
+        energy -= 650;
+    }
 
     let opts = {
         memory: {
