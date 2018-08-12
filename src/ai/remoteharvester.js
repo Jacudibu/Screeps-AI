@@ -11,7 +11,7 @@ const remoteWorker = {
                     return;
                 }
 
-                if (creep.memory.containerId) {
+                if (creep.memory.containerId !== undefined) {
                     let container = Game.getObjectById(creep.memory.containerId);
                     if (container.hits < container.hitsMax) {
                         if (creep.repair(container) === ERR_NOT_IN_RANGE) {
