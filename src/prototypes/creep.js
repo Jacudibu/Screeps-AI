@@ -51,10 +51,6 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             args.route = this.memory.route;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;
-        case ROLE.RESERVER:
-            args.targetRoomName = this.memory.targetRoomName;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
-            break;
         default:
             console.log("undefined role asking for respawn?!" + args.role);
     }

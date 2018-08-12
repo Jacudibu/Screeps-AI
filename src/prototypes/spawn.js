@@ -199,6 +199,11 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
         }
     };
 
+    // TODO / HACK: prioritizing harvesters over idling haulers
+    if (this.room.name === "E58S49") {
+        opts.respawnTTL = undefined;
+    }
+
     return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, body, opts);
 };
 
@@ -315,7 +320,6 @@ Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
             role: ROLE.RESERVER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTTL: 66,
             spawnRoom: this.room.name,
         }
     };

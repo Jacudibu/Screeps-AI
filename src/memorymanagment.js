@@ -68,7 +68,7 @@ const memoryManagment = {
                         role: ROLE.REMOTE_REPAIRER,
                         route: creep.route,
                     };
-                    Memory.rooms[creep.spawnRoom].spawnQueue.add(args);
+                    Memory.rooms[creep.spawnRoom].spawnQueue.push(args);
                 }
                 break;
 
