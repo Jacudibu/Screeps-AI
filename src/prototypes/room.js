@@ -119,7 +119,7 @@ Room.prototype.commandTowersToHealCreep = function(target) {
         towers[i].heal(target);
     }
 
-    target.say("=^~^=");
+    target.say("=^~^=", true);
 };
 
 Room.prototype.findDamagedCreeps = function() {

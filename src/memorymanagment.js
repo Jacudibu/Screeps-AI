@@ -73,10 +73,7 @@ const memoryManagment = {
                 break;
 
             case ROLE.RESERVER:
-                if (creep.respawnTTL !== undefined) {
-                    Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
-                }
-
+                Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
                 break;
         }
     },

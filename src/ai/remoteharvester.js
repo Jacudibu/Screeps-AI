@@ -20,6 +20,13 @@ const remoteWorker = {
                         creep.say("ò.ó", true);
                         return;
                     }
+                } else {
+                    let constructionSites = creep.room.lookForAt(LOOK_CONSTRUCTION_SITES, creep.pos);
+                    if (constructionSites.length > 0) {
+                        creep.build(constructionSites[0]);
+                        creep.say("ô.o");
+                        return;
+                    }
                 }
 
                 creep.say('ಥ~ಥ');

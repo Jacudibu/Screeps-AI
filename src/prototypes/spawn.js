@@ -120,7 +120,14 @@ Spawn.prototype.spawnUpgrader = function(energy) {
 
     body.sort();
 
-    return this._spawnDefinedCreep(ROLE.UPGRADER, body, {memory: {role: ROLE.UPGRADER}});
+    let opts = {
+        memory: {
+            role: ROLE.UPGRADER,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.UPGRADER, body, opts);
 };
 
 Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
