@@ -47,9 +47,7 @@ const creepAi = {
                         haulerAI.run(creep);
                         break;
                     case ROLE.REMOTE_WORKER:
-                        // TODO: FIXME, this is a hack in order to transition from workers to harvesters
-                        //remoteWorkerAI.run(creep);
-                        remoteHarvesterAI.run(creep);
+                        remoteWorkerAI.run(creep);
                         break;
                     case ROLE.REMOTE_HAULER:
                         remoteHaulerAI.run(creep);

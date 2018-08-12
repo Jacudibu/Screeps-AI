@@ -39,7 +39,6 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
         case ROLE.REMOTE_WORKER:
             args.targetRoomName = this.memory.targetRoomName;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
-            Memory.rooms[args.targetRoomName].assignedHarvesters++;
             break;
         case ROLE.REMOTE_HARVESTER:
             args.targetRoomName = this.memory.targetRoomName;

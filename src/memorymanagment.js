@@ -38,7 +38,6 @@ const memoryManagment = {
                 break;
 
             case ROLE.REMOTE_WORKER:
-                Memory.rooms[creep.targetRoomName].assignedHarvesters--;
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
                     for (let i = 0; i < keys.length; i++) {
                         if (keys[i] === creep.taskTargetId) {

@@ -54,7 +54,6 @@ Spawn.prototype.spawnHauler = function(energy) {
         energy -= 150;
     }
 
-    body.sort();
     let opts = {
         memory: {
             role: ROLE.HAULER,
@@ -130,7 +129,7 @@ Spawn.prototype.spawnUpgrader = function(energy) {
     return this._spawnDefinedCreep(ROLE.UPGRADER, body, opts);
 };
 
-Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
+Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawn = false) {
     if (targetRoomName === undefined) {
         console.log("remoteRoomWorker needs a targetRoomName");
         return;
@@ -138,28 +137,13 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 800) {
-        energy = 800;
+    if (energy > 1500) {
+        energy = 1500;
     }
 
-    while (energy >= 300) {
-        body.push(WORK, WORK, MOVE, CARRY);
-        energy -= 300;
-    }
-
-    if (energy >= 100) {
-        body.push(WORK);
-        energy -= 100;
-    }
-
-    if (energy >= 50) {
-        body.push(CARRY);
-        energy -= 50;
-    }
-
-    if (energy >= 50) {
-        body.push(MOVE);
-        energy -= 50;
+    while (energy >= 150) {
+        body.push(WORK, MOVE, CARRY);
+        energy -= 150;
     }
 
     body.sort();
@@ -168,7 +152,7 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName) {
             role: ROLE.REMOTE_WORKER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTTL: 100,
+            respawnTTL: respawn ? 100 : undefined,
             spawnRoom: this.room.name,
         }
     };
@@ -184,8 +168,8 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 1500) {
-        energy = 1500;
+    if (energy > 150 * 12) {
+        energy = 150 * 12;
     }
 
     while(energy >= 150) {
@@ -193,7 +177,6 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
         energy -= 150;
     }
 
-    body.sort();
     let opts = {
         memory: {
             role: ROLE.REMOTE_HAULER,
@@ -208,7 +191,7 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
 
     // TODO / HACK: prioritizing harvesters over idling haulers
     if (this.room.name === "E58S49") {
-        opts.respawnTTL = undefined;
+        opts.memory.respawnTTL = undefined;
     }
 
     return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, body, opts);

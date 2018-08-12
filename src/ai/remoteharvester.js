@@ -24,7 +24,7 @@ const remoteWorker = {
                     let constructionSites = creep.room.lookForAt(LOOK_CONSTRUCTION_SITES, creep.pos);
                     if (constructionSites.length > 0) {
                         creep.build(constructionSites[0]);
-                        creep.say("ô.o");
+                        creep.say("ô.o", true);
                         return;
                     }
                 }
