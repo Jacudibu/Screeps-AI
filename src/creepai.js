@@ -7,6 +7,7 @@ const remoteWorkerAI = require('ai_remoteworker');
 const remoteHaulerAI = require('ai_remotehauler');
 const remoteHarvesterAI = require('ai_remoteharvester');
 const remoteRepairerAI = require('ai_remoterepairer');
+const remoteUpgraderAI = require('ai_remoteupgrader');
 const reserverAI = require('ai_reserver');
 const attackerAI = require('ai_attacker');
 const claimerAI = require('ai_claimer');
@@ -57,6 +58,9 @@ const creepAi = {
                         break;
                     case ROLE.REMOTE_REPAIRER:
                         remoteRepairerAI.run(creep);
+                        break;
+                    case ROLE.REMOTE_UPGRADER:
+                        remoteUpgraderAI.run(creep);
                         break;
                     case ROLE.ATTACKER:
                         attackerAI.run(creep);

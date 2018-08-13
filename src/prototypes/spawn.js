@@ -272,6 +272,37 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
     return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER, body, opts);
 };
 
+Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTTL) {
+    if (!targetRoomName) {
+        console.log("spawnRemoteUpgrader: no TargetRoomName provided");
+        return;
+    }
+
+    let body = [];
+
+    if (energy > 1500) {
+        energy = 1500;
+    }
+
+    while (energy >= 150) {
+        body.push(WORK, MOVE, CARRY);
+        energy -= 150;
+    }
+    body.sort();
+
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_UPGRADER,
+            targetRoomName: targetRoomName,
+            respawnTTL: respawnTTL,
+            spawnRoom: this.room.name,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.REMOTE_UPGRADER, body, opts);
+};
+
 Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn claimer, no target room name provided.");
