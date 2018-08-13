@@ -17,6 +17,7 @@ const defenderAI = require('ai_defender');
 const creepAi = {
     run: function() {
         for (let name in Game.creeps) {
+            // noinspection JSUnfilteredForInLoop
             let creep = Game.creeps[name];
 
             if (creep.spawning) {

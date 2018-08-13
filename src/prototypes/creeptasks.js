@@ -120,6 +120,13 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(taskWhenFinished);
             break;
+        case ERR_NOT_OWNER:
+            if (!this.memory.targetRoomName) {
+                this.memory.targetRoomName = this.memory.spawnRoom;
+            }
+
+            this.setTask(TASK.MOVE_TO_ROOM);
+            break;
         default:
             this.logActionError("upgrading controller", this.upgradeController(this.room.controller));
             break;

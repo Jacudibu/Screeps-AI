@@ -13,6 +13,9 @@ const upgrader = {
             case TASK.SIGN_CONTROLLER:
                 creep.signRoomController(TASK.COLLECT_ENERGY);
                 break;
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.UPGRADE_CONTROLLER);
+                break;
             default:
                 creep.setTask(TASK.COLLECT_ENERGY);
                 break;
