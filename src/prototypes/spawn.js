@@ -108,7 +108,7 @@ Spawn.prototype.spawnUpgrader = function(energy) {
     for (let i = 0; i < 15 && energy > 150; i++) {
         body.push(WORK);
 
-        if (i % 2 === 0) {
+        if (i % 3 === 0) {
             body.push(CARRY);
         } else {
             body.push(MOVE);
@@ -168,8 +168,8 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 150 * 12) {
-        energy = 150 * 12;
+    if (energy > 150 * 15) {
+        energy = 150 * 15;
     }
 
     while(energy >= 150) {
