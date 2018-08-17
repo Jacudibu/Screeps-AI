@@ -3,7 +3,7 @@ const spawnlogic = {
         for (const i in Game.rooms) {
             let room = Game.rooms[i];
 
-            const spawns = Game.rooms[i].find(FIND_MY_SPAWNS);
+            const spawns = room.mySpawns;
             if (spawns.length === 0) {
                 continue;
             }
@@ -162,8 +162,8 @@ const spawnlogic = {
 
     isRoleNeeded: function(room, spawns, role) {
         // is said role already being spawned?
-        for (let spawn of spawns) {
-            if (spawn.spawning && Memory.creeps[spawn.spawning.name].role === role) {
+        for (let i = 0; i < spawns.length; i++) {
+            if (spawns[i].spawning && Memory.creeps[spawns[i].spawning.name].role === role) {
                 return false;
             }
         }

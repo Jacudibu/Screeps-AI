@@ -31,7 +31,7 @@ const roomLogic = {
     },
 
     checkIfSafeModeShouldBeActivated: function(room) {
-        let spawns = room.find(FIND_MY_SPAWNS);
+        let spawns = room.spawns;
         for (let i = 0; i < spawns.length; i++) {
             let spawn = spawns[i];
 

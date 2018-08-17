@@ -7,6 +7,7 @@ require('./prototypes_structure');
 require('./prototypes_source');
 require('./prototypes_spawn');
 require('./prototypes_room');
+require('./prototypes_room.structure_properties');
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
