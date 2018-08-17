@@ -1,21 +1,21 @@
 require('./constants');
-require('./prototypes_creep');
-require('./prototypes_creepgetters');
-require('./prototypes_creepfinders');
-require('./prototypes_creeptasks');
-require('./prototypes_structure');
-require('./prototypes_source');
-require('./prototypes_spawn');
-require('./prototypes_room');
-require('./prototypes_room.structure_properties');
+require('./prototypes.creep');
+require('./prototypes.creepgetters');
+require('./prototypes.creepfinders');
+require('./prototypes.creeptasks');
+require('./prototypes.structure');
+require('./prototypes.source');
+require('./prototypes.spawn');
+require('./prototypes.room');
+require('./prototypes.room.structure.properties');
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
 const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
-const traveler = require('tools_traveler');
+const traveler = require('tools.traveler');
 
-const profiler = require('tools_screeps-profiler');
+const profiler = require('tools.screeps-profiler');
 profiler.enable();
 
 module.exports.loop = function () {

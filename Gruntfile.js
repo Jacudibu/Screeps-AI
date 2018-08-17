@@ -41,8 +41,8 @@ module.exports = function(grunt) {
                     dest: 'dist/',
                     filter: 'isFile',
                     rename: function (dest, src) {
-                        // Change the path name utilize underscores for folders
-                        return dest + src.replace(/\//g, '_');
+                        // Change the path name utilize dots for folders
+                        return dest + src.replace(/\//g, '.');
                     }
                 }],
             }
