@@ -63,3 +63,4 @@ global.ROLE.CLAIMER = 'claimer';
 global.ROLE.RESERVER = 'reserver';
 global.ROLE.DISMANTLER = 'dismantler';
 global.ROLE.DEFENDER = 'defender';
+global.ROLE.CARRIER = 'carrier';

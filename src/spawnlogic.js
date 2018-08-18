@@ -154,6 +154,8 @@ const spawnlogic = {
                 return spawn.spawnDefender(energy, args.targetRoomName);
             case ROLE.DEFENDER:
                 return spawn.spawnDefender(energy, args.targetRoomName);
+            case ROLE.CARRIER:
+                return spawn.spawnCarrier(energy, args.targetRoomName, args.storageRoomName, args.respawnTTL);
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
                 return OK; // so it doesn't clog up our spawn queue

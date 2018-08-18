@@ -189,17 +189,12 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
         }
     };
 
-    // TODO / HACK: prioritizing harvesters over idling haulers
-    if (this.room.name === "E58S49") {
-        opts.memory.respawnTTL = undefined;
-    }
-
     return this._spawnDefinedCreep(ROLE.REMOTE_HAULER, body, opts);
 };
 
 Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
     if (targetRoomName === undefined) {
-        console.log("remoteHauler needs a targetRoomName");
+        console.log("remoteHarvester needs a targetRoomName");
         return;
     }
 
@@ -420,6 +415,38 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     };
 
     return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
+};
+
+Spawn.prototype.spawnCarrier = function(energy, targetRoomName, storageRoomName, respawnTTL) {
+    if (!targetRoomName) {
+        console.log("Unable to Spawn carrier, no target room name provided.");
+        return;
+    }
+
+    let body = [];
+
+    if (energy > 100 * 25) {
+        energy = 100 * 25;
+    }
+
+    while(energy >= 100) {
+        body.push(CARRY, MOVE);
+        energy -= 100;
+    }
+
+    let opts = {
+        memory: {
+            role: ROLE.CARRIER,
+            remoteHaulTargetRoom: targetRoomName,
+            remoteHaulStorageRoom: storageRoomName ? storageRoomName : this.room.name,
+            targetRoomName: storageRoomName ? storageRoomName : this.room.name,
+            task: storageRoomName ? TASK.MOVE_TO_ROOM : TASK.COLLECT_ENERGY,
+            respawnTTL: respawnTTL,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.CARRIER, body, opts);
 };
 
 Spawn.prototype.spawnCitizen = function(energy, role, opts) {
