@@ -1,5 +1,6 @@
 const attacker = {
     run: function (creep) {
+        creep.heal(creep);
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
@@ -26,28 +27,17 @@ const attacker = {
                     if (possibleTargets.length === 0) {
                         possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES);
                         if (possibleTargets.length === 0) {
-                            possibleTargets = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
-                            if (possibleTargets.length === 0) {
-                                creep.setTask(TASK.WAIT_FOR_INPUT);
-                                creep.say("*zZz*");
-                                return;
-                            }
+                            creep.say("*zZz*");
+                            return;
                         }
 
 
                     }
 
-                    _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c));
-                    target = possibleTargets[0];
+                    target = _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c))[0];
                 }
 
-                if (target && target.progress) {
-                    creep.travelTo(target.pos);
-                    //creep.say('whoopsie');
-                    return;
-                }
-
-                creep.say("(ノ°Д°）ノ︵┻━┻", true);
+                creep.say(":<", true);
                 switch (creep.attack(target)) {
                     case OK:
                         break;

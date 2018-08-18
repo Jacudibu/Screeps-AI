@@ -137,13 +137,13 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawnTTL)
 
     let body = [];
 
-    if (energy > 200 * 10) {
-        energy = 200 * 10;
+    if (energy > 250 * 10) {
+        energy = 250 * 10;
     }
 
-    while (energy >= 200) {
+    while (energy >= 250) {
         body.push(WORK, MOVE, CARRY, MOVE);
-        energy -= 200;
+        energy -= 250;
     }
 
     body.sort();
