@@ -129,7 +129,7 @@ Spawn.prototype.spawnUpgrader = function(energy) {
     return this._spawnDefinedCreep(ROLE.UPGRADER, body, opts);
 };
 
-Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawn = false) {
+Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawnTTL) {
     if (targetRoomName === undefined) {
         console.log("remoteRoomWorker needs a targetRoomName");
         return;
@@ -137,13 +137,13 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawn = f
 
     let body = [];
 
-    if (energy > 1500) {
-        energy = 1500;
+    if (energy > 200 * 10) {
+        energy = 200 * 10;
     }
 
-    while (energy >= 150) {
-        body.push(WORK, MOVE, CARRY);
-        energy -= 150;
+    while (energy >= 200) {
+        body.push(WORK, MOVE, CARRY, MOVE);
+        energy -= 200;
     }
 
     body.sort();
@@ -152,7 +152,7 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawn = f
             role: ROLE.REMOTE_WORKER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTTL: respawn ? 100 : undefined,
+            respawnTTL: respawnTTL,
             spawnRoom: this.room.name,
         }
     };

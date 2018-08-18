@@ -7,13 +7,15 @@ require('./prototypes.structure');
 require('./prototypes.source');
 require('./prototypes.spawn');
 require('./prototypes.room');
-require('./prototypes.room.structure.properties');
+require('./prototypes.room.structures');
+
+require('tools.traveler');
+
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
 const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
-const traveler = require('tools.traveler');
 
 const profiler = require('tools.screeps-profiler');
 profiler.enable();

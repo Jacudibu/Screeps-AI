@@ -141,13 +141,15 @@ const spawnlogic = {
             case ROLE.REPAIRER:
                 return spawn.spawnWorker(args.role, energy);
             case ROLE.REMOTE_WORKER:
-                return spawn.spawnRemoteWorker(energy, args.targetRoomName);
+                return spawn.spawnRemoteWorker(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.REMOTE_HARVESTER:
                 return spawn.spawnRemoteHarvester(energy, args.targetRoomName);
             case ROLE.REMOTE_HAULER:
                 return spawn.spawnRemoteHauler(energy, args.targetRoomName);
             case ROLE.REMOTE_REPAIRER:
                 return spawn.spawnRemoteRepairer(energy, args.targetRoomName, args.route);
+            case ROLE.REMOTE_UPGRADER:
+                return spawn.spawnRemoteUpgrader(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.RESERVER:
                 return spawn.spawnReserver(energy, args.targetRoomName);
             case ROLE.ATTACKER:
@@ -158,7 +160,7 @@ const spawnlogic = {
                 return spawn.spawnCarrier(energy, args.targetRoomName, args.storageRoomName, args.respawnTTL);
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
-                return OK; // so it doesn't clog up our spawn queue
+                return OK; // so it gets removed from our spawn queue
         }
     },
 

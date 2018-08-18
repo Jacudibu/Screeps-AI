@@ -38,6 +38,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             break;
         case ROLE.REMOTE_WORKER:
             args.targetRoomName = this.memory.targetRoomName;
+            args.respawnTTL = this.memory.respawnTTL;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;
         case ROLE.REMOTE_HARVESTER:
@@ -52,6 +53,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             break;
         case ROLE.REMOTE_UPGRADER:
             args.targetRoomName = this.memory.targetRoomName;
+            args.respawnTTL = this.memory.respawnTTL;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;
         case ROLE.CARRIER:

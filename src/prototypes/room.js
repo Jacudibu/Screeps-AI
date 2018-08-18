@@ -101,7 +101,7 @@ Room.prototype._findTowers = function() {
 };
 
 Room.prototype.commandTowersToAttackTarget = function(target) {
-    const towers = this._findTowers();
+    const towers = this.myTowers;
 
     if (towers.length === 0) {
         return;
@@ -113,7 +113,7 @@ Room.prototype.commandTowersToAttackTarget = function(target) {
 };
 
 Room.prototype.commandTowersToHealCreep = function(target) {
-    const towers = this._findTowers();
+    const towers = this.myTowers;
 
     for (let i = 0; i < towers.length; i++) {
         towers[i].heal(target);
