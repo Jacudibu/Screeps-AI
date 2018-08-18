@@ -161,6 +161,13 @@ Creep.prototype._getHaulTarget = function() {
         return potentialTarget;
     }
 
+    if (this.room.terminal) {
+        if (this.room.terminal.store[RESOURCE_ENERGY] > TERMINAL_MIN_ENERGY_STORAGE_FOR_HAULER_RETRIEVAL) {
+            this.memory.taskTargetId = this.room.terminal.id;
+            return this.room.terminal;
+        }
+    }
+
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
