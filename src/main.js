@@ -1,12 +1,13 @@
 require('./constants');
 require('./prototypes.creep');
-require('./prototypes.creepgetters');
-require('./prototypes.creepfinders');
-require('./prototypes.creeptasks');
+require('./prototypes.creep.getters');
+require('./prototypes.creep.finders');
+require('./prototypes.creep.tasks');
 require('./prototypes.structure');
 require('./prototypes.source');
 require('./prototypes.spawn');
 require('./prototypes.room');
+require('./prototypes.room.mineral');
 require('./prototypes.room.structures');
 
 require('tools.traveler');

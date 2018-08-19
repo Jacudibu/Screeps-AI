@@ -173,6 +173,10 @@ const spawnlogic = {
         }
 
         // is said role already registered in spawnQueue?
+        if (!room.memory.spawnQueue) {
+            room.memory.spawnQueue = [];
+        }
+
         for (let args of room.memory.spawnQueue) {
             console.log(args.role);
             if (args.role === role) {
@@ -235,7 +239,7 @@ const spawnlogic = {
             }
 
             let remoteMiningRoomMemory = Memory.rooms[remoteMiningRooms[i]];
-            if (!remoteMiningRoomMemory.isReserverAssigned && room.controller.level >= 4) {
+            if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
                 room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
                 Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
                 return;

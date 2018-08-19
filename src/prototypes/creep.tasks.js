@@ -18,8 +18,24 @@ Creep.prototype.harvestEnergy = function() {
             this.logActionError("harvestyEnergy on source " + source, + this.harvest(source));
             break;
     }
-    if (this.carry.energy === this.carryCapacity) {
-        this.drop(RESOURCE_ENERGY);
+};
+
+Creep.prototype.harvestMineral = function() {
+    let mineral = this.room.mineral;
+
+    if (mineral === ERR_NOT_FOUND) {
+        this.say("no mineral");
+    }
+
+    switch (this.harvest(mineral)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(mineral);
+            break;
+        default:
+            this.logActionError("harvestMineral on mineral " + mineral, this.harvest(mineral));
+            break;
     }
 };
 
