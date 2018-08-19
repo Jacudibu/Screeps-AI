@@ -2,7 +2,7 @@ Spawn.prototype.drawSpawnInfo = function() {
     this.room.visual.text('>' + this.spawning.name, this.pos.x + 1, this.pos.y, {align: 'left', opacity: '0.5'});
 };
 
-Spawn.prototype.spawnWorker = function(role, energy) {
+Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
     let body = [];
 
     if (energy > 200 * 16) {
@@ -16,7 +16,15 @@ Spawn.prototype.spawnWorker = function(role, energy) {
 
     body.sort();
 
-    return this._spawnDefinedCreep(role, body, {memory: {role: role}});
+    let opts = {
+        memory: {
+            role: role,
+            targetRoomName: targetRoomName,
+            task: targetRoomName ? TASK.MOVE_TO_ROOM : undefined,
+        }
+    };
+
+    return this._spawnDefinedCreep(role, body, opts);
 };
 
 Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {

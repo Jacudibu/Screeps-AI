@@ -16,6 +16,9 @@ const builder = {
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.COLLECT_ENERGY);
                 break;
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.BUILD_STRUCTURE);
+                break;
             default:
                 creep.setTask(TASK.COLLECT_ENERGY);
                 break;
