@@ -14,6 +14,8 @@ Object.defineProperty(Room.prototype, 'mineral', {
             } else {
                 return this._mineral = Game.getObjectById(roomMineralIds[this.name]);
             }
+        } else {
+            return this._mineral;
         }
     },
     enumerable: false,

@@ -238,13 +238,15 @@ Creep.prototype.storeEnergy = function(nextTask) {
 };
 
 Creep.prototype.storeMineral = function(nextTask) {
-    const terminal = this.room.terminal;
+    let targetStructure = this.room.terminal ? this.room.terminal :
+                          this.room.storage  ? this.room.storage :
+                          this.room.getEmptyPublicEnergyContainers()[0];
 
-    switch (this.transfer(terminal, this.memory.hauledResourceType)) {
+    switch (this.transfer(targetStructure, this.memory.hauledResourceType)) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(terminal);
+            this.travelTo(targetStructure);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             if (_.sum(this.carry) === 0) {
@@ -257,9 +259,16 @@ Creep.prototype.storeMineral = function(nextTask) {
             this.logActionError("TERMINAL FULL", "ERR_FULL");
             this.drop(this.memory.hauledResourceType);
             break;
+        case ERR_INVALID_ARGS:
+            if (_.sum(this.carry) === 0) {
+                this.setTask(nextTask);
+            } else {
+                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== this.memory.hauledResourceType)[0];
+            }
+            break;
         default:
-            console.log("unexpected error when storing resource " + this.transfer(terminal, this.memory.hauledResourceType),
-                + "\n----" + terminal + " ==> " + JSON.stringify(terminal));
+            console.log("unexpected error when storing resource " + this.transfer(targetStructure, this.memory.hauledResourceType),
+                + "\n----" + targetStructure + " ==> " + JSON.stringify(targetStructure));
             break;
     }
 };

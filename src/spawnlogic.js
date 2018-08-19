@@ -92,7 +92,7 @@ const spawnlogic = {
             return;
         }
 
-        if (room.extractor && room.mineral && room.mineral.mineralAmount > 0 && !room.memory.isMineralHarvesterAssigned) {
+        if (room.extractor && room.mineral &&room.mineral.mineralAmount > 1000 && !room.memory.isMineralHarvesterAssigned) {
             room.addToSpawnQueueEnd({role: ROLE.MINERAL_HARVESTER});
             room.memory.isMineralHarvesterAssigned = true;
             return;
