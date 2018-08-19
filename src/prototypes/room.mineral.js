@@ -4,7 +4,6 @@ Object.defineProperty(Room.prototype, 'mineral', {
     get: function() {
         if (!this._mineral) {
             if (roomMineralIds[this.name] === undefined) {
-                console.log("allocating global mineral memory");
                 let [mineral] = this.find(FIND_MINERALS);
                 if (!mineral) {
                     roomMineralIds[this.name] = null;
