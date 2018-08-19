@@ -110,23 +110,13 @@ Spawn.prototype.spawnHarvester = function(energy) {
 Spawn.prototype.spawnMineralHarvester = function(energy) {
     let body = [];
 
-    let remainder = 0;
-    if (energy >= 550) {
-        remainder = energy - 550;
-        energy = 550;
+    if (energy >= 250 * 16) {
+        energy = 250 * 16;
     }
 
-    body.push(MOVE);
-    energy -= 50;
-
-    while (energy >= 100) {
-        body.push(WORK);
-        energy -= BODYPART_COST.work;
-    }
-
-    if (remainder >= 100) {
-        body.push(MOVE);
-        body.push(MOVE);
+    while (energy >= 250) {
+        body.push(WORK, WORK, MOVE);
+        energy -= 250;
     }
 
     body.sort();
@@ -134,7 +124,6 @@ Spawn.prototype.spawnMineralHarvester = function(energy) {
         memory: {
             role: ROLE.MINERAL_HARVESTER,
             task: TASK.HARVEST_MINERAL,
-            respawnTTL: body.length * 3,
             spawnRoom: this.room.name,
         }
     };

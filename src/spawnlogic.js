@@ -92,6 +92,12 @@ const spawnlogic = {
             return;
         }
 
+        if (room.extractor && room.mineral.mineralAmount > 0 && !room.memory.isMineralHarvesterAssigned) {
+            room.addToSpawnQueueEnd({role: ROLE.MINERAL_HARVESTER});
+            room.memory.isMineralHarvesterAssigned = true;
+            return;
+        }
+
         if (room.memory.autoSpawnEnabled && room.memory.autoSpawnTimer === 0) {
             room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
             room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
@@ -101,7 +107,7 @@ const spawnlogic = {
         this.checkRemoteMiningRooms(room);
     },
 
-    areThereEnoughResourcesToSpawnRole: function(room, role) {
+    areThereEnoughResourcesToSpawnRole: function(room) {
         return room.energyCapacityAvailable === room.energyAvailable;
     },
 
@@ -158,6 +164,8 @@ const spawnlogic = {
                 return spawn.spawnDefender(energy, args.targetRoomName);
             case ROLE.CARRIER:
                 return spawn.spawnCarrier(energy, args.targetRoomName, args.storageRoomName, args.respawnTTL);
+            case ROLE.MINERAL_HARVESTER:
+                return spawn.spawnMineralHarvester(energy);
             default:
                 console.log("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue

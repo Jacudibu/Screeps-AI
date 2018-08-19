@@ -74,6 +74,10 @@ const memoryManagment = {
             case ROLE.RESERVER:
                 Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
                 break;
+
+            case ROLE.MINERAL_HARVESTER:
+                Memory.rooms[creep.spawnRoom].isMineralHarvesterAssigned = false;
+                break;
         }
     },
 
