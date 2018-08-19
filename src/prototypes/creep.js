@@ -96,6 +96,34 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
     }
 };
 
+Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {
+    this.say("o~o'", true);
+
+    switch (this.withdraw(storage, this.memory.hauledResourceType)) {
+        case OK:
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.setTask(taskWhenFinished);
+            }
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(storage);
+            break;
+        case ERR_FULL:
+            this.setTask(taskWhenFinished);
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            this.memory.taskTargetId = undefined;
+            if (this.memory.hauledResourceType !== RESOURCE_ENERGY) {
+                this.setTask(taskWhenFinished);
+            }
+            break;
+        default:
+            console.log("Withdrawing " + this.memory.hauledResourceType + " resulted in unhandled error: "
+                        + this.withdraw(storage, this.memory.hauledResourceType));
+            break;
+    }
+};
+
 Creep.prototype._pickupEnergy = function(pickup, taskWhenFinished, onlyPickupThisOne) {
     this.say("°^°", true);
     switch (this.pickup(pickup)) {

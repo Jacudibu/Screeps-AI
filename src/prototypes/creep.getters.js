@@ -20,7 +20,7 @@ Creep.prototype._getSource = function() {
     return source;
 };
 
-Creep.prototype._getStorage = function() {
+Creep.prototype._getEnergyStorage = function() {
     // TODO: right now we are waaay below cpu limit, so don't care
     // if (this.memory.taskTargetId) {
     //     return Game.getObjectById(this.memory.taskTargetId);
@@ -146,24 +146,35 @@ Creep.prototype._getHaulTarget = function() {
     let potentialTarget = this.findHighestDroppedEnergyAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
         return potentialTarget;
     }
 
     potentialTarget = this.findClosestContainerAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
-        return potentialTarget;
+        if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return potentialTarget;
+        } else {
+            if (this.carry[RESOURCE_ENERGY] === 0) {
+                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                return potentialTarget;
+            }
+        }
     }
 
     potentialTarget = this.findClosestDroppedEnergy();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
         return potentialTarget;
     }
 
     if (this.room.terminal) {
         if (this.room.terminal.store[RESOURCE_ENERGY] > TERMINAL_MIN_ENERGY_STORAGE_FOR_HAULER_RETRIEVAL) {
             this.memory.taskTargetId = this.room.terminal.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
             return this.room.terminal;
         }
     }
@@ -171,6 +182,7 @@ Creep.prototype._getHaulTarget = function() {
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
         return potentialTarget;
     }
 

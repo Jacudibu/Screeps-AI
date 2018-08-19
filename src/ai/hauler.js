@@ -5,7 +5,11 @@ const hauler = {
                 creep.haulEnergy(TASK.STORE_ENERGY);
                 break;
             case TASK.STORE_ENERGY:
-                creep.storeEnergy(TASK.HAUL_ENERGY);
+                if (creep.memory.hauledResourceType === RESOURCE_ENERGY) {
+                    creep.storeEnergy(TASK.HAUL_ENERGY);
+                } else {
+                    creep.storeMineral(TASK.HAUL_ENERGY);
+                }
                 break;
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.HAUL_ENERGY);

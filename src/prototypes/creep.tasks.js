@@ -76,7 +76,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
     }
 
     if (target instanceof Structure || target instanceof Tombstone) {
-        this._withdrawEnergy(target, taskWhenFinished);
+        this._withdrawResource(target, taskWhenFinished);
     } else {
         this._pickupEnergy(target, taskWhenFinished);
     }
@@ -207,7 +207,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair, taskIfNoResso
 };
 
 Creep.prototype.storeEnergy = function(nextTask) {
-    const structureThatRequiresEnergy = this._getStorage();
+    const structureThatRequiresEnergy = this._getEnergyStorage();
 
     if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
         this.say('x~x');
@@ -229,6 +229,29 @@ Creep.prototype.storeEnergy = function(nextTask) {
         default:
             console.log("unexpected error when transferring energy: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY),
                         + "\n----" + structureThatRequiresEnergy + " ==> " + JSON.stringify(structureThatRequiresEnergy));
+            break;
+    }
+};
+
+Creep.prototype.storeMineral = function(nextTask) {
+    const terminal = this.room.terminal;
+
+    switch (this.transfer(terminal, this.memory.hauledResourceType)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(terminal);
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            this.setTask(nextTask);
+            break;
+        case ERR_FULL:
+            this.logActionError("TERMINAL FULL", "ERR_FULL");
+            this.drop(this.memory.hauledResourceType);
+            break;
+        default:
+            console.log("unexpected error when storing resource " + this.transfer(terminal, this.memory.hauledResourceType),
+                + "\n----" + terminal + " ==> " + JSON.stringify(terminal));
             break;
     }
 };
