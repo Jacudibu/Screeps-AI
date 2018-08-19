@@ -221,7 +221,11 @@ Creep.prototype.storeEnergy = function(nextTask) {
             this.travelTo(structureThatRequiresEnergy);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(nextTask);
+            if (_.sum(this.carry) === 0) {
+                this.setTask(nextTask);
+            } else {
+                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== RESOURCE_ENERGY)[0];
+            }
             break;
         case ERR_FULL:
             this.resetCurrentTask();
@@ -243,7 +247,11 @@ Creep.prototype.storeMineral = function(nextTask) {
             this.travelTo(terminal);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.setTask(nextTask);
+            if (_.sum(this.carry) === 0) {
+                this.setTask(nextTask);
+            } else {
+                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== this.memory.hauledResourceType)[0];
+            }
             break;
         case ERR_FULL:
             this.logActionError("TERMINAL FULL", "ERR_FULL");

@@ -113,9 +113,6 @@ Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.memory.taskTargetId = undefined;
-            if (this.memory.hauledResourceType !== RESOURCE_ENERGY) {
-                this.setTask(taskWhenFinished);
-            }
             break;
         default:
             console.log("Withdrawing " + this.memory.hauledResourceType + " resulted in unhandled error: "

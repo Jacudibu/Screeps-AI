@@ -146,7 +146,7 @@ Creep.prototype._getHaulTarget = function() {
     let potentialTarget = this.findHighestDroppedEnergyAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
@@ -167,7 +167,7 @@ Creep.prototype._getHaulTarget = function() {
     potentialTarget = this.findClosestDroppedEnergy();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
