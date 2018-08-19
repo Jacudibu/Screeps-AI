@@ -33,6 +33,8 @@ Creep.prototype.harvestMineral = function() {
         case ERR_NOT_IN_RANGE:
             this.travelTo(mineral);
             break;
+        case ERR_TIRED:
+            break;
         default:
             this.logActionError("harvestMineral on mineral " + mineral, this.harvest(mineral));
             break;

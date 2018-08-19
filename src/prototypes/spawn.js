@@ -107,6 +107,41 @@ Spawn.prototype.spawnHarvester = function(energy) {
     return this._spawnDefinedCreep(ROLE.HARVESTER, body, opts);
 };
 
+Spawn.prototype.spawnMineralHarvester = function(energy) {
+    let body = [];
+
+    let remainder = 0;
+    if (energy >= 550) {
+        remainder = energy - 550;
+        energy = 550;
+    }
+
+    body.push(MOVE);
+    energy -= 50;
+
+    while (energy >= 100) {
+        body.push(WORK);
+        energy -= BODYPART_COST.work;
+    }
+
+    if (remainder >= 100) {
+        body.push(MOVE);
+        body.push(MOVE);
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.MINERAL_HARVESTER,
+            task: TASK.HARVEST_MINERAL,
+            respawnTTL: body.length * 3,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.MINERAL_HARVESTER, body, opts);
+};
+
 Spawn.prototype.spawnUpgrader = function(energy) {
     let body = [];
 

@@ -1,19 +1,20 @@
-const builderAI         = require('ai.builder');
-const harvesterAI       = require('ai.harvester');
-const haulerAI          = require('ai.hauler');
-const upgraderAI        = require('ai.upgrader');
-const repairerAI        = require('ai.repairer');
-const remoteWorkerAI    = require('ai.remoteworker');
-const remoteHaulerAI    = require('ai.remotehauler');
-const remoteHarvesterAI = require('ai.remoteharvester');
-const remoteRepairerAI  = require('ai.remoterepairer');
-const remoteUpgraderAI  = require('ai.remoteupgrader');
-const reserverAI        = require('ai.reserver');
-const attackerAI        = require('ai.attacker');
-const claimerAI         = require('ai.claimer');
-const dismantlerAI      = require('ai.dismantler');
-const defenderAI        = require('ai.defender');
-const carrierAI         = require('ai.carrier');
+const builderAI             = require('ai.builder');
+const harvesterAI           = require('ai.harvester');
+const haulerAI              = require('ai.hauler');
+const upgraderAI            = require('ai.upgrader');
+const repairerAI            = require('ai.repairer');
+const mineralHarvesterAI    = require('ai.mineralharvester');
+const remoteWorkerAI        = require('ai.remoteworker');
+const remoteHaulerAI        = require('ai.remotehauler');
+const remoteHarvesterAI     = require('ai.remoteharvester');
+const remoteRepairerAI      = require('ai.remoterepairer');
+const remoteUpgraderAI      = require('ai.remoteupgrader');
+const reserverAI            = require('ai.reserver');
+const attackerAI            = require('ai.attacker');
+const claimerAI             = require('ai.claimer');
+const dismantlerAI          = require('ai.dismantler');
+const defenderAI            = require('ai.defender');
+const carrierAI             = require('ai.carrier');
 
 const creepAi = {
     run: function() {
@@ -48,6 +49,9 @@ const creepAi = {
                         break;
                     case ROLE.HAULER:
                         haulerAI.run(creep);
+                        break;
+                    case ROLE.MINERAL_HARVESTER:
+                        mineralHarvesterAI.run(creep);
                         break;
                     case ROLE.REMOTE_WORKER:
                         remoteWorkerAI.run(creep);
