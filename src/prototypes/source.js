@@ -28,7 +28,7 @@ Source.prototype.setWorkersMax = function(amount) {
 Source.prototype.initializeMemory = function() {
     let initialMemory = {};
     initialMemory.workersAssigned = 0;
-    initialMemory.workersMax = this._countFreeTilesAroundSource();
+    initialMemory.workersMax = 1; // this._countFreeTilesAroundSource();
 
     this.room.memory.sources[this.id] = initialMemory;
 };
