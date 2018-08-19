@@ -9,6 +9,10 @@ const roomLogic = {
             } else {
                 if (room.memory.requiresHelp === undefined) {
                     room.memory.requiresHelp = true;
+                    if (room._hostiles[0].owner && room._hostiles[0].owner.username && room._hostiles[0].owner.username !== "Invader") {
+                        Game.notify(room.name + " is being attacked by " + room._hostiles[0].owner.username +
+                            "First creep detected has the following body: " + JSON.stringify(room._hostiles[0].body, null, 2));
+                    }
                 }
 
                 room._hostiles = this.sortHostilesByPriority(room._hostiles);

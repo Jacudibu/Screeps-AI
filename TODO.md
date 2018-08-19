@@ -5,7 +5,6 @@
  2  |   Refactor Mineral Harvesting / Storing
  5  |   Terminal resource balancing
  2  |   Make Harvesters use Links
- 1  |   If owned hostile creeps enter my room, send email with attacker name so attacks while being offline are revenged
  ?  |   Lab code
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
  3  |   Memory cleanup method to fix memory fuckups
