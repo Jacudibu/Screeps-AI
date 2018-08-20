@@ -7,11 +7,16 @@ const roomLogic = {
             if (room._hostiles.length === 0) {
                 room.memory.requiresHelp = undefined;
             } else {
+                if (room.memory.length < 2) {
+                    room.memory.requiresHelp = undefined;
+                    return;
+                }
+
                 if (room.memory.requiresHelp === undefined) {
                     room.memory.requiresHelp = true;
                     if (room._hostiles[0].owner && room._hostiles[0].owner.username && room._hostiles[0].owner.username !== "Invader") {
                         Game.notify(room.name + " is being attacked by " + room._hostiles[0].owner.username +
-                            "First creep detected has the following body: " + JSON.stringify(room._hostiles[0].body, null, 2));
+                            "   First creep detected has the following body: " + JSON.stringify(room._hostiles[0].body, null, 2));
                     }
                 }
 

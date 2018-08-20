@@ -307,13 +307,13 @@ Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTT
 
     let body = [];
 
-    if (energy > 1500) {
-        energy = 1500;
+    if (energy > 200 * 16) {
+        energy = 200 * 16;
     }
 
-    while (energy >= 150) {
+    while (energy >= 200) {
         body.push(WORK, MOVE, CARRY);
-        energy -= 150;
+        energy -= 200;
     }
     body.sort();
 
