@@ -67,6 +67,14 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         }
     }
 
+    let labs = this.room.labs;
+    if (labs && labs.length > 0) {
+        let labsThatNeedEnergy = labs.filter(lab => lab.energy < lab.energyCapacity);
+        if (labsThatNeedEnergy && labsThatNeedEnergy.length > 0) {
+            return labsThatNeedEnergy[0];
+        }
+    }
+
     return ERR_NOT_FOUND;
 };
 
