@@ -91,7 +91,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
             this.memory.taskTargetId = undefined;
             break;
         default:
-            console.log("Collecting Energy resulted in unhandled error: " + this.withdraw(storage, RESOURCE_ENERGY));
+            this.logActionError("Collecting Energy", this.withdraw(storage, RESOURCE_ENERGY));
             break;
     }
 };
@@ -115,8 +115,8 @@ Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {
             this.memory.taskTargetId = undefined;
             break;
         default:
-            console.log("Withdrawing " + this.memory.hauledResourceType + " resulted in unhandled error: "
-                        + this.withdraw(storage, this.memory.hauledResourceType));
+            this.logActionError("Withdrawing " + this.memory.hauledResourceType,
+                                this.withdraw(storage, this.memory.hauledResourceType));
             break;
     }
 };
@@ -139,7 +139,7 @@ Creep.prototype._pickupEnergy = function(pickup, taskWhenFinished, onlyPickupThi
             this.resetCurrentTask();
             break;
         default:
-            console.log("Picking up Energy resulted in unhandled error: " + this.pickup(pickup) + "\n" + pickup + "-->" + JSON.stringify(pickup));
+            this.logActionError("Picking up Energy ", this.pickup(pickup));
             break;
     }
 };

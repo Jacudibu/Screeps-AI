@@ -15,7 +15,7 @@ Creep.prototype.harvestEnergy = function() {
             this.travelTo(source);
             break;
         default:
-            this.logActionError("harvestyEnergy on source " + source, + this.harvest(source));
+            this.logActionError("harvestEnergy on source " + source, + this.harvest(source));
             break;
     }
 };
@@ -124,7 +124,7 @@ Creep.prototype.renew = function(taskWhenFinished) {
             this.memory.task = taskWhenFinished;
             break;
         default:
-            console.log("unexpected error when renewing creep: " + spawn.renewCreep(creep));
+            this.logActionError("renewing creep", spawn.renewCreep(this));
     }
 };
 
@@ -174,11 +174,11 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnou
             this.resetCurrentTask();
             break;
         case ERR_RCL_NOT_ENOUGH:
-            console.log(this.room.name + "insufficient RCL to build " + constructionSite);
+            this.logActionError("Insufficient RCL to build " + constructionSite, ERR_RCL_NOT_ENOUGH);
             this.setTask(taskIfNothingToBuild);
             break;
         default:
-            console.log("unexpected error when building object: " + this.build(constructionSite));
+            this.logActionError("building object", this.build(constructionSite));
             break;
     }
 };
@@ -202,7 +202,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair, taskIfNoResso
             this.travelTo(damagedStructure);
             break;
         default:
-            console.log("unexpected error when repairing object: " + this.repair(damagedStructure));
+            this.logActionError("repairing object", this.repair(damagedStructure));
             break;
     }
 };
@@ -232,8 +232,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
             this.resetCurrentTask();
             break;
         default:
-            console.log("unexpected error when transferring energy: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY),
-                        + "\n----" + structureThatRequiresEnergy + " ==> " + JSON.stringify(structureThatRequiresEnergy));
+            this.logActionError("transferring energy: ", this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
             break;
     }
 };
@@ -268,8 +267,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             }
             break;
         default:
-            console.log("unexpected error when storing resource " + this.transfer(targetStructure, this.memory.hauledResourceType),
-                + "\n----" + targetStructure + " ==> " + JSON.stringify(targetStructure));
+            this.logActionError("storing resource", this.transfer(targetStructure, this.memory.hauledResourceType));
             break;
     }
 };
@@ -295,7 +293,7 @@ Creep.prototype.signRoomController = function(nextTask) {
             break;
         default:
             this.setTask(nextTask);
-            console.log("unexpected error when signing controller: " + this.transfer(structureThatRequiresEnergy, RESOURCE_ENERGY));
+            this.logActionError("signing controller", this.signController(this.room.controller, text));
             break;
     }
 };
@@ -370,7 +368,7 @@ Creep.prototype.dismantleStructure = function(taskWhenFinished) {
                 this.travelTo(target);
                 break;
             default:
-                console.log("unexpected error when dismantling object: " + this.dismantle(target));
+                this.logActionError("dismantling object", this.dismantle(target));
                 break;
         }
     } else {
@@ -390,7 +388,7 @@ Creep.prototype.claimRoomController = function() {
             this.reserveRoomController();
             break;
         default:
-            console.log("unexpected error when claiming room controller: " + this.claimController(this.room.controller));
+            this.logActionError("claiming room controller", this.claimController(this.room.controller));
             break;
     }
 };
@@ -406,7 +404,7 @@ Creep.prototype.reserveRoomController = function() {
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
             break;
         default:
-            console.log(this.room + "|" + this.name + "-- unexpected error when reserving room controller: " + this.reserveController(this.room.controller));
+            this.logActionError("reserving room controller", this.reserveController(this.room.controller));
             break;
     }
 };
@@ -427,7 +425,7 @@ Creep.prototype.recycle = function() {
             this.travelTo(spawn);
             break;
         default:
-            console.log("unexpected error when recycling creep: " + spawn.recycleCreep(this));
+            this.logActionError("recycling creep", spawn.recycleCreep(this));
             break;
     }
 };
