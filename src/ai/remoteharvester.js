@@ -7,7 +7,10 @@ const remoteWorker = {
                 }
 
                 if (_.sum(creep.carry) < 10) {
-                    creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+                    let startTask = creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+                    if (startTask === TASK.HARVEST_ENERGY_FETCH || startTask === TASK.MOVE_ONTO_CONTAINER) {
+                        this.run(creep);
+                    }
                     return;
                 }
 
@@ -15,7 +18,7 @@ const remoteWorker = {
                     let container = Game.getObjectById(creep.memory.containerId);
                     if (container.hits < container.hitsMax) {
                         if (creep.repair(container) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(container);
+                            creep.travelTo(container);
                         }
                         creep.say("ò.ó", true);
                         return;

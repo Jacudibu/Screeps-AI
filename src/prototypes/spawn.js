@@ -21,6 +21,7 @@ Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
             role: role,
             targetRoomName: targetRoomName,
             task: targetRoomName ? TASK.MOVE_TO_ROOM : undefined,
+            spawnRoom: this.room.name,
         }
     };
 

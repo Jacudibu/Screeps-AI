@@ -139,6 +139,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_OWNER:
+        case ERR_INVALID_TARGET:
             if (!this.memory.targetRoomName) {
                 this.memory.targetRoomName = this.memory.spawnRoom;
             }
@@ -336,9 +337,9 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
         this.memory.task = taskWhenNoContainerAvailable;
     } else {
         if (source.memory.workersMax > 1) {
-            this.memory.task = taskWhenNoContainerAvailable;
+            return this.memory.task = taskWhenNoContainerAvailable;
         } else {
-            this.memory.task = TASK.MOVE_ONTO_CONTAINER;
+            return this.memory.task = TASK.MOVE_ONTO_CONTAINER;
         }
     }
 
