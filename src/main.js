@@ -19,6 +19,7 @@ const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
 
 const profiler = require('tools.screeps-profiler');
+const screepsplus = require('tools.screepsplus');
 profiler.enable();
 
 module.exports.loop = function () {
@@ -27,5 +28,8 @@ module.exports.loop = function () {
         creepAi.run();
         roomLogic.run();
         spawnlogic.run();
+
+        screepsplus.collect_stats();
+        Memory.stats.cpu.used = Game.cpu.getUsed();
     });
 };
