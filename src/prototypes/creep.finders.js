@@ -54,8 +54,16 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         return _.sortBy(publicEnergyContainers, c => this.pos.getRangeTo(c))[0]
     }
 
+    let labs = this.room.labs;
+    if (labs && labs.length > 0) {
+        let labsThatNeedEnergy = labs.filter(lab => lab.energy < lab.energyCapacity);
+        if (labsThatNeedEnergy && labsThatNeedEnergy.length > 0) {
+            return labsThatNeedEnergy[0];
+        }
+    }
+
     if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] < TERMINAL_MAX_ENERGY_STORAGE) {
+        if (_.sum(this.room.terminal.store) < TERMINAL_MAX_ENERGY_STORAGE) {
             return this.room.terminal;
         }
     }
@@ -64,14 +72,6 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     if (storage) {
         if (_.sum(storage.store) < storage.storeCapacity) {
             return storage;
-        }
-    }
-
-    let labs = this.room.labs;
-    if (labs && labs.length > 0) {
-        let labsThatNeedEnergy = labs.filter(lab => lab.energy < lab.energyCapacity);
-        if (labsThatNeedEnergy && labsThatNeedEnergy.length > 0) {
-            return labsThatNeedEnergy[0];
         }
     }
 
