@@ -29,7 +29,6 @@ module.exports.loop = function () {
         roomLogic.run();
         spawnlogic.run();
 
-        screepsplus.collect_stats();
-        Memory.stats.cpu.used = Game.cpu.getUsed();
+        screepsplus.run();
     });
 };
