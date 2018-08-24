@@ -13,6 +13,12 @@ const harvester = {
             case TASK.STORE_ENERGY:
                 creep.storeEnergy(TASK.HARVEST_ENERGY_FETCH);
                 break;
+            case TASK.MOVE_TO_ROOM:
+                if (!creep.memory.targetRoomName) {
+                    creep.memory.targetRoomName = creep.memory.spawnRoom;
+                }
+                creep.moveToRoom(TASK.HARVEST_ENERGY);
+                break;
             default:
                 creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
                 break;
