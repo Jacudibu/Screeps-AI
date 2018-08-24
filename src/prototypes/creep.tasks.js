@@ -321,6 +321,11 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
 };
 
 Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvailable) {
+    if (this.room.name !== this.memory.targetRoomName) {
+        this.setTask(TASK.MOVE_TO_ROOM);
+        return;
+    }
+
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
