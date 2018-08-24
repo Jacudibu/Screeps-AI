@@ -28,7 +28,7 @@ const remoteHauler = {
                 creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.STORE_ENERGY:
-                if (creep.memory.hauledResourceType === RESOURCE_ENERGY) {
+                if (creep.carry[RESOURCE_ENERGY] > 0) {
                     creep.storeEnergy(TASK.DECIDE_WHAT_TO_DO);
                 } else {
                     creep.storeMineral(TASK.DECIDE_WHAT_TO_DO);

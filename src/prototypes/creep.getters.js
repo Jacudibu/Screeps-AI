@@ -138,12 +138,12 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
     return damagedStructures[0];
 };
 
-Creep.prototype._getHaulTarget = function() {
+Creep.prototype._getEnergyHaulTarget = function() {
     if (this.memory.taskTargetId) {
         return Game.getObjectById(this.memory.taskTargetId);
     }
 
-    let potentialTarget = this.findHighestDroppedEnergyAboveHaulThreshold();
+    let potentialTarget = this.findClosestDroppedEnergy();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
         this.memory.hauledResourceType = potentialTarget.resourceType;
@@ -164,7 +164,36 @@ Creep.prototype._getHaulTarget = function() {
         }
     }
 
-    potentialTarget = this.findClosestDroppedEnergy();
+    return ERR_NOT_FOUND;
+};
+
+Creep.prototype._getAnyResourceHaulTarget = function() {
+    if (this.memory.taskTargetId) {
+        return Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    let potentialTarget = this.findHighestDroppedResourceAboveHaulThreshold();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
+        return potentialTarget;
+    }
+
+    potentialTarget = this.findClosestContainerAboveHaulThreshold();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return potentialTarget;
+        } else {
+            if (this.carry[RESOURCE_ENERGY] === 0) {
+                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                return potentialTarget;
+            }
+        }
+    }
+
+    potentialTarget = this.findClosestDroppedResource();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
         this.memory.hauledResourceType = potentialTarget.resourceType;

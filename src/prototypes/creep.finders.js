@@ -95,7 +95,7 @@ Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     return _.sortBy(container, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestDroppedEnergy = function() {
+Creep.prototype.findClosestDroppedResource = function() {
     let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES);
 
     if (droppedEnergy.length === 0) {
@@ -106,9 +106,21 @@ Creep.prototype.findClosestDroppedEnergy = function() {
     return droppedEnergy[0];
 };
 
-Creep.prototype.findHighestDroppedEnergyAboveHaulThreshold = function() {
-    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
+Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
+    let droppedResources = this.room.find(FIND_DROPPED_RESOURCES, {
         filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
+    });
+
+    if (droppedResources.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return _.sortBy(droppedResources, e => e.amount)[droppedResources.length - 1];
+};
+
+Creep.prototype.findClosestDroppedEnergy = function() {
+    let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
+        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT && drop.resourceType === RESOURCE_ENERGY;}
     });
 
     if (droppedEnergy.length === 0) {

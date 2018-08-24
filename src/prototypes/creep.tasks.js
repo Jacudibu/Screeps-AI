@@ -69,7 +69,21 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
 };
 
 Creep.prototype.haulEnergy = function(taskWhenFinished) {
-    let target = this._getHaulTarget();
+    let target = this._getEnergyHaulTarget();
+
+    if (target === ERR_NOT_FOUND) {
+        this.setTask(taskWhenFinished);
+    }
+
+    if (target instanceof Structure || target instanceof Tombstone) {
+        this._withdrawResource(target, taskWhenFinished);
+    } else {
+        this._pickupEnergy(target, taskWhenFinished);
+    }
+};
+
+Creep.prototype.haulAnyResource = function(taskWhenFinished) {
+    let target = this._getAnyResourceHaulTarget();
 
     if (target === ERR_NOT_FOUND) {
         this.setTask(taskWhenFinished);

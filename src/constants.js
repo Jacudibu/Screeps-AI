@@ -47,7 +47,9 @@ global.TASK.RECYCLE = 'recycle';
 global.TASK.DEFEND_STAY_ON_RAMPART = 'defend_stay_on_rampart';
 global.TASK.DEFEND_MELEE_CHARGE = 'defend_melee_charge';
 global.TASK.HARVEST_MINERAL = 'harvest_mineral';
+global.TASK.HAUL_RESOURCE = 'haul_resource';
 global.TASK.STORE_MINERAL = 'store_mineral';
+global.TASK.STORE_RESOURCE = 'store_resource';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
