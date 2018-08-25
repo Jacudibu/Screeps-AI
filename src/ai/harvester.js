@@ -15,6 +15,10 @@ const harvester = {
                 break;
             case TASK.MOVE_TO_ROOM:
                 if (!creep.memory.targetRoomName) {
+                    if (creep.memory.respawnTTL) {
+                        delete creep.memory.respawnTTL;
+                    }
+
                     creep.memory.targetRoomName = creep.memory.spawnRoom;
                 }
                 creep.moveToRoom(TASK.HARVEST_ENERGY);

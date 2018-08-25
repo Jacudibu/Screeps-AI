@@ -283,6 +283,10 @@ Creep.prototype.storeMineral = function(nextTask) {
                 this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== this.memory.hauledResourceType)[0];
             }
             break;
+        case ERR_INVALID_TARGET:
+            this.say("WAT");
+            this.setTask(TASK.MOVE_TO_ROOM);
+            break;
         default:
             this.logActionError("storing resource", this.transfer(targetStructure, this.memory.hauledResourceType));
             break;
