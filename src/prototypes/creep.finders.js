@@ -3,43 +3,71 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Creep.prototype.findClosestFilledEnergyStructure = function() {
-    const storages = this.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return structure.canReleaseEnergy(50);
-        }
-    });
+    const energyStorages = [];
 
-    if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] > TERMINAL_MIN_ENERGY_STORAGE) {
-            storages.push(this.room.terminal);
+    if (this.room.spawns) {
+        this.room.spawns.map(spawn => {
+            if (spawn.energy === 300) {
+                energyStorages.push(spawn);
+            }
+        })
+    }
+
+    if (this.room.containers) {
+        this.room.containers.map(container => {
+            if (container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+                energyStorages.push(container);
+            }
+        })
+    }
+
+    if (this.room.storage) {
+        if (this.room.storage.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+            energyStorages.push(this.room.storage);
         }
     }
 
-    if (storages.length === 0) {
+    if (this.room.terminal) {
+        if (this.room.terminal.store[RESOURCE_ENERGY] >= TERMINAL_MIN_ENERGY_STORAGE) {
+            energyStorages.push(this.room.terminal);
+        }
+    }
+
+    if (energyStorages.length === 0) {
         return ERR_NOT_FOUND;
     }
 
-    return _.sortBy(storages, s => this.pos.getRangeTo(s))[0];
+    return _.sortBy(energyStorages, s => this.pos.getRangeTo(s))[0];
 };
 
-Creep.prototype.findClosestFilledContainerOrStorage = function() {
-    const storages = this.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return structure.isEnergyStorageOrContainer() && structure.canReleaseEnergy(50);
-        }
-    });
+Creep.prototype.findClosestFilledEnergyStorage = function() {
+    const filledEnergyStorages = [];
 
-    if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] > TERMINAL_MIN_ENERGY_STORAGE) {
-            storages.push(this.room.terminal);
+    if (this.room.containers) {
+        this.room.containers.map(container => {
+            if (container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+                filledEnergyStorages.push(container);
+            }
+        })
+    }
+
+    if (this.room.storage) {
+        if (this.room.storage.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+            filledEnergyStorages.push(this.room.storage);
         }
     }
 
-    if (storages.length === 0) {
+    if (this.room.terminal) {
+        if (this.room.terminal.store[RESOURCE_ENERGY] >= TERMINAL_MIN_ENERGY_STORAGE) {
+            filledEnergyStorages.push(this.room.terminal);
+        }
+    }
+
+    if (filledEnergyStorages.length === 0) {
         return ERR_NOT_FOUND;
     }
 
-    return _.sortBy(storages, s => this.pos.getRangeTo(s))[0];
+    return _.sortBy(filledEnergyStorages, s => this.pos.getRangeTo(s))[0];
 };
 
 Creep.prototype.findClosestFreeEnergyStorage = function() {
