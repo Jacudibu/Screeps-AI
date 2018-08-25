@@ -130,7 +130,7 @@ Room.prototype.findDamagedCreeps = function() {
 
 Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
     this.memory.sources = {};
-    const sources = this.find(FIND_SOURCES);
+    const sources = this.sources;
     for (let i = 0; i < sources.length; i++) {
         sources[i].initializeMemory();
     }

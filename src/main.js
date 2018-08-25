@@ -8,6 +8,7 @@ require('./prototypes.source');
 require('./prototypes.spawn');
 require('./prototypes.room');
 require('./prototypes.room.mineral');
+require('./prototypes.room.sources');
 require('./prototypes.room.structures');
 
 require('tools.traveler');
