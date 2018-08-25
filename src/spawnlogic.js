@@ -11,7 +11,7 @@ const spawnlogic = {
             let allSpawnsBusy = true;
             for(let i = 0; i < spawns.length; i++) {
                 let spawn = spawns[i];
-                if (spawn.spawning) {
+                if (spawn && spawn.spawning) {
                     spawn.drawSpawnInfo();
                 } else {
                     allSpawnsBusy = false;

@@ -35,6 +35,9 @@ Creep.prototype.harvestMineral = function() {
             break;
         case ERR_TIRED:
             break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            this.suicide();
+            break;
         default:
             this.logActionError("harvestMineral on mineral " + mineral, this.harvest(mineral));
             break;
