@@ -23,7 +23,7 @@ Room.prototype.respondToHostiles = function() {
         }
     }
 
-    this._hostiles = this.sortHostilesByPriority(this._hostiles);
+    this.sortHostilesByPriority();
     this.commandTowersToAttackTarget(this._hostiles[0]);
     this.checkIfSafeModeShouldBeActivated();
 };
@@ -57,7 +57,7 @@ Room.prototype.repairDamagedCreeps = function() {
 };
 
 Room.prototype.sortHostilesByPriority = function() {
-    this._hostiles.sort(function(creepA, creepB) {
+    this._hostiles = this._hostiles.sort(function(creepA, creepB) {
         let healsA = creepA.countBodyPartsOfType(HEAL);
         let healsB = creepB.countBodyPartsOfType(HEAL);
 
