@@ -1,28 +1,30 @@
-require('constants');
+global.profiler = require('tools.screeps-profiler');
+
+require('constants.globalvariables');
 
 require('prototypes.creep');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
 require('prototypes.creep.tasks');
-require('prototypes.structure');
-require('prototypes.source');
-require('prototypes.spawn');
 require('prototypes.room');
 require('prototypes.room.mineral');
 require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.update');
+require('prototypes.source');
+require('prototypes.spawn');
+require('prototypes.structure');
+const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
 require('tools.traveler');
-
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
 const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
 
-const profiler = require('tools.screeps-profiler');
 const screepsplus = require('tools.screepsplus');
+
 profiler.enable();
 
 module.exports.loop = function () {
@@ -31,6 +33,8 @@ module.exports.loop = function () {
         creepAi.run();
         roomLogic.run();
         spawnlogic.run();
+
+        terminalResourceDistribution.run();
 
         screepsplus.run();
     });
