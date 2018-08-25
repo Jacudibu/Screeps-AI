@@ -1,21 +1,14 @@
 "use strict";
 // Module to format data in memory for use with the https://screepspl.us
 // Grafana utility run by ags131.
-// taken from https://github.com/LispEngineer/screeps/blob/master/screepsplus.js
 
 let lastGlobalReset;
-const callback = require('tools.callback');
-
-global.statsCallback = new callback.Callback();
 
 function run() {
     collectStats();
-    global.statsCallback.fire(Memory.stats);
     Memory.stats.cpu.used = Game.cpu.getUsed();
 }
 
-// Update the Memory.stats with useful information for trend analysis and graphing.
-// Also calls all registered stats callback functions before returning.
 function collectStats() {
     if (Memory.stats == null) {
         Memory.stats = {};
@@ -41,6 +34,29 @@ function collectStats() {
         credits: Game.market.credits,
         num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
     };
+
+    Memory.stats.rooms = {};
+    _.forEach(Object.keys(Game.rooms), function(roomName){
+        let room = Game.rooms[roomName];
+
+        if(room.controller && room.controller.my){
+            Memory.stats.rooms[roomName] = {};
+
+            Memory.stats.rooms[roomName].rcl = {};
+
+            Memory.stats.rooms[roomName].rcl.level = room.controller.level;
+            Memory.stats.rooms[roomName].rcl.progress = room.controller.progress;
+            Memory.stats.rooms[roomName].rcl.progressTotal = room.controller.progressTotal;
+
+            Memory.stats.rooms[roomName].energyAvailable = room.energyAvailable;
+            Memory.stats.rooms[roomName].energyCapacityAvailable = room.energyCapacityAvailable;
+
+            if(room.storage){
+                Memory.stats.rooms[roomName].storage = {};
+                Memory.stats.rooms[roomName].storage.energy = room.storage.store.energy;
+            }
+        }
+    });
 }
 
 module.exports = {
