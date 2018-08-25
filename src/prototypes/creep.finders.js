@@ -91,7 +91,7 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     }
 
     if (this.room.terminal) {
-        if (_.sum(this.room.terminal.store) < TERMINAL_MAX_ENERGY_STORAGE) {
+        if (_.sum(this.room.terminal.store) < TERMINAL_CAPACITY) {
             return this.room.terminal;
         }
     }
