@@ -12,6 +12,7 @@ const remoteUpgraderAI      = require('ai.remoteupgrader');
 const reserverAI            = require('ai.reserver');
 const attackerAI            = require('ai.attacker');
 const claimerAI             = require('ai.claimer');
+const claimerAttackerAI     = require('ai.claimerattacker');
 const dismantlerAI          = require('ai.dismantler');
 const defenderAI            = require('ai.defender');
 const carrierAI             = require('ai.carrier');
@@ -85,6 +86,9 @@ const creepAi = {
                         break;
                     case ROLE.CARRIER:
                         carrierAI.run(creep);
+                        break;
+                    case ROLE.CLAIMER_ATTACKER:
+                        claimerAttackerAI.run(creep);
                         break;
                 }
             } catch (e) {

@@ -50,6 +50,7 @@ global.TASK.HARVEST_MINERAL = 'harvest_mineral';
 global.TASK.HAUL_RESOURCE = 'haul_resource';
 global.TASK.STORE_MINERAL = 'store_mineral';
 global.TASK.STORE_RESOURCE = 'store_resource';
+global.TASK.ATTACK_CONTROLLER = 'attack_controller';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
@@ -70,3 +71,4 @@ global.ROLE.DISMANTLER = 'dismantler';
 global.ROLE.DEFENDER = 'defender';
 global.ROLE.CARRIER = 'carrier';
 global.ROLE.MINERAL_HARVESTER = 'mineral_harvester';
+global.ROLE.CLAIMER_ATTACKER = 'claimer_attacker';

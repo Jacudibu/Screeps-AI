@@ -419,6 +419,26 @@ Creep.prototype.claimRoomController = function() {
     }
 };
 
+Creep.prototype.attackRoomController = function() {
+    switch (this.attackController(this.room.controller)) {
+        case OK:
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(this.room.controller);
+            break;
+        case ERR_GCL_NOT_ENOUGH:
+            this.setTask(TASK.RESERVE_CONTROLLER);
+            this.reserveRoomController();
+            break;
+        case ERR_TIRED:
+            this.suicide();
+            break;
+        default:
+            this.logActionError("attaclomg room controller", this.attackController(this.room.controller));
+            break;
+    }
+};
+
 Creep.prototype.reserveRoomController = function() {
     switch (this.reserveController(this.room.controller)) {
         case OK:

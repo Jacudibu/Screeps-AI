@@ -353,6 +353,31 @@ Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.CLAIMER, body, opts);
 };
 
+Spawn.prototype.spawnClaimerAttacker = function(energy, targetRoomName) {
+    if (!targetRoomName) {
+        console.log("Unable to Spawn claimerattacker, no target room name provided.");
+        return;
+    }
+
+    let body = [];
+
+    while(energy > 650) {
+        body.push(CLAIM, MOVE);
+        body.sort();
+        energy -= 650;
+    }
+
+    let opts = {
+        memory: {
+            role: ROLE.CLAIMER_ATTACKER,
+            targetRoomName: targetRoomName,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.CLAIMER_ATTACKER, body, opts);
+};
+
 Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
     if (!targetRoomName) {
         console.log("Unable to Spawn reserver, no target room name provided.");

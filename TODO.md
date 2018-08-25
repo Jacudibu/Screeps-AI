@@ -2,8 +2,6 @@
 :---:|  ----
  1  |   Threat meter
  1  |   Threat response
- 1  |   Refactor Mineral Harvesting / Storing
- 5  |   Terminal resource balancing
  2  |   Make Harvesters use Links
  ?  |   Lab code
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
