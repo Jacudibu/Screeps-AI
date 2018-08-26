@@ -1,7 +1,8 @@
 const TERMINAL_DISTRIBUTION_CONSTANTS = require('constants.terminaldistributionconstants');
 const DEAL = true;
 const NO_DEAL = false;
-const DISTRIBUTION_INTERVAL = 50;
+const DISTRIBUTION_INTERVAL = 15;
+const TRANSACTION_ENERGY_COST_FACTOR = 0.05;
 
 const terminalResourceDistribution = {
     resourceSupply: {},
@@ -30,6 +31,7 @@ const terminalResourceDistribution = {
         });
 
         this.matchSupplyAndDemand();
+        this.sellRemainingSupplyOnMarket(terminals);
     },
 
     addToDemandList: function(roomName, resourceType, amount) {
@@ -73,7 +75,7 @@ const terminalResourceDistribution = {
             for (let demanderRoomName of demandKeys) {
                 let currentDemand = this.resourceDemand[demanderRoomName];
 
-                result = this.makeDeal(supplierRoomName, currentSupply, demanderRoomName, currentDemand);
+                result = this.makeInternalTransactions(supplierRoomName, currentSupply, demanderRoomName, currentDemand);
                 if (result === DEAL) {
                     break;
                 }
@@ -81,7 +83,7 @@ const terminalResourceDistribution = {
         }
     },
 
-    makeDeal: function(supplierRoomName, supply, demanderRoomName, demand) {
+    makeInternalTransactions: function(supplierRoomName, supply, demanderRoomName, demand) {
         for (let supplyData of supply) {
             for (let demandData of demand) {
                 if (supplyData.resourceType === demandData.resourceType) {
@@ -117,6 +119,73 @@ const terminalResourceDistribution = {
         return NO_DEAL;
     },
 
+    sellRemainingSupplyOnMarket: function(terminals) {
+        if (this.resourceSupply.length === 0) {
+            return;
+        }
+
+        let supplyResourceTypes = [];
+
+        for (const terminal of terminals) {
+            if (terminal.cooldown > 0) {
+                continue;
+            }
+
+            if (!this.resourceSupply[terminal.room.name]) {
+                continue;
+            }
+
+            for (const supplyData of this.resourceSupply[terminal.room.name]) {
+                if (!supplyResourceTypes.includes(supplyData.resourceType)) {
+                    supplyResourceTypes.push(supplyData.resourceType);
+                }
+            }
+        }
+
+        const orders = Game.market.getAllOrders(order => order.type === ORDER_BUY && supplyResourceTypes.includes(order.resourceType));
+
+        for (const terminal of terminals) {
+            if (terminal.cooldown > 0) {
+                continue;
+            }
+
+            if (!this.resourceSupply[terminal.room.name]) {
+                continue;
+            }
+
+            for (const supplyData of this.resourceSupply[terminal.room.name]) {
+                const matchingOrders = orders.filter(order => order.resourceType === supplyData.resourceType);
+
+                const bestDeal = _.sortBy(matchingOrders, order => {
+                    let transactionCostFactor = Game.market.calcTransactionCost(1000, terminal.room.name, order.roomName) * 0.0001;
+                    let price = order.price;
+
+                    return price - (transactionCostFactor * TRANSACTION_ENERGY_COST_FACTOR);
+                })[matchingOrders.length - 1];
+
+                if (!bestDeal) {
+                    continue;
+                }
+
+                let amount = bestDeal.remainingAmount - supplyData.amount;
+                if (amount < 0) {
+                    amount = bestDeal.remainingAmount;
+                } else {
+                    amount = bestDeal.remainingAmount - amount;
+                }
+
+                let result = Game.market.deal(bestDeal.id, amount, terminal.room.name);
+                // for debugging
+                // console.log(terminal.room.name + " would have sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                // result = OK;
+                if (result === OK) {
+                    // console.log(terminal.room.name + " sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                    break;
+                }
+            }
+        }
+
+    },
 };
 
 profiler.registerObject(terminalResourceDistribution, "terminalResourceDistribution");
