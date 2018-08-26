@@ -57,6 +57,10 @@ function collectStats() {
             }
         }
     });
+
+    Memory.stats.creeps = {};
+    Memory.stats.creeps.total = Memory.creepsBuilt;
+    Memory.stats.creeps.current = Game.creeps.length;
 }
 
 module.exports = {

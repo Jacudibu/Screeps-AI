@@ -54,8 +54,8 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
 Spawn.prototype.spawnHauler = function(energy) {
     let body = [];
 
-    if (energy > 1200) {
-        energy = 1200;
+    if (energy > 150 * 10) {
+        energy = 150 * 10;
     }
 
     while(energy >= 150) {

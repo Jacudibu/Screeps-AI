@@ -154,6 +154,10 @@ const terminalResourceDistribution = {
             }
 
             for (const supplyData of this.resourceSupply[terminal.room.name]) {
+                if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
+                    continue;
+                }
+
                 const matchingOrders = orders.filter(order => order.resourceType === supplyData.resourceType);
 
                 const bestDeal = _.sortBy(matchingOrders, order => {

@@ -1,5 +1,6 @@
  h  |   Task 
 :---:|  ----
+ 1  |   Don't sell stuff to people at ridiculous low prices
  1  |   Threat meter
  1  |   Threat response
  2  |   Make Harvesters use Links
