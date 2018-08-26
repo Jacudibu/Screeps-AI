@@ -124,7 +124,7 @@ Spawn.prototype.spawnMineralHarvester = function(energy) {
     let opts = {
         memory: {
             role: ROLE.MINERAL_HARVESTER,
-            task: TASK.HARVEST_MINERAL,
+            task: TASK.MOVE_ONTO_CONTAINER,
             spawnRoom: this.room.name,
         }
     };

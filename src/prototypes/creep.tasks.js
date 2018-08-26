@@ -341,6 +341,26 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
     }
 };
 
+Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
+    let mineral = this.room.mineral;
+    if (!mineral) {
+        this.say("e~e");
+        return;
+    }
+
+    let targetPos = mineral.getContainerPosition();
+
+    if (targetPos === ERR_NOT_FOUND) {
+        this.memory.task = taskWhenFinished;
+        return;
+    }
+
+    this.travelTo(targetPos);
+    if(this.pos.isEqualTo(targetPos)) {
+        this.memory.task = taskWhenFinished;
+    }
+};
+
 Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvailable) {
     if (this.memory.targetRoomName && this.room.name !== this.memory.targetRoomName) {
         this.setTask(TASK.MOVE_TO_ROOM);

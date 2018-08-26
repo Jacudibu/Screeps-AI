@@ -22,4 +22,4 @@
  5  |   Automatically expand to new rooms using flags
  ?  |   Automatically create base construction sites
  ?  |   Automatically create the flags for room expansion
- ?  |   Automate Market orders 
+ ?  |   Automate Market buy orders 
