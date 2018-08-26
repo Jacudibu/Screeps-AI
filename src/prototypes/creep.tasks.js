@@ -451,7 +451,9 @@ Creep.prototype.attackRoomController = function() {
             this.reserveRoomController();
             break;
         case ERR_TIRED:
-            this.suicide();
+            break;
+        case ERR_INVALID_TARGET:
+            this.reserveController(this.room.controller);
             break;
         default:
             this.logActionError("attaclomg room controller", this.attackController(this.room.controller));
