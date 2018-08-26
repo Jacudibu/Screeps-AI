@@ -96,6 +96,18 @@ const terminalResourceDistribution = {
                     if (result !== OK) {
                         console.log("Unexpected Error when distributing " + amount + " " + supplyData.resourceType + " from "
                             + supplierRoomName + " to " + demanderRoomName + ": " + result);
+
+                        return NO_DEAL;
+                    }
+
+                    // store changes due to this transaction
+                    supplyData.amount -= amount;
+                    if (supplyData.amount <= 0) {
+                        _.remove(supply, data => data.resourceType === supplyData.resourceType);
+                    }
+                    demandData.amount -= amount;
+                    if (demandData.amount <= 0) {
+                        _.remove(demand, data => data.resourceType === demandData.resourceType);
                     }
 
                     return DEAL;
