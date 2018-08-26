@@ -215,6 +215,14 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         return potentialTarget;
     }
 
+    if (this.room.storage) {
+        if (this.room.storage.store[RESOURCE_ENERGY] > 0) {
+            this.memory.taskTargetId = this.room.storage.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.storage;
+        }
+    }
+
     return ERR_NOT_FOUND;
 };
 
