@@ -98,7 +98,7 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
 
     let storage = this.room.storage;
     if (storage) {
-        if (_.sum(storage.store) < storage.storeCapacity) {
+        if (storage.store[RESOURCE_ENERGY] < STORAGE_MAX_ENERGY) {
             return storage;
         }
     }

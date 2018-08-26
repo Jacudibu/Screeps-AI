@@ -1,7 +1,7 @@
 const TERMINAL_DISTRIBUTION_CONSTANTS = require('constants.terminaldistributionconstants');
 const DEAL = true;
 const NO_DEAL = false;
-const DISTRIBUTION_INTERVAL = 15;
+const DISTRIBUTION_INTERVAL = 17;
 const TRANSACTION_ENERGY_COST_FACTOR = 0.05;
 
 const terminalResourceDistribution = {
@@ -180,6 +180,7 @@ const terminalResourceDistribution = {
                 // result = OK;
                 if (result === OK) {
                     // console.log(terminal.room.name + " sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                    _.remove(orders, bestDeal);
                     break;
                 }
             }
