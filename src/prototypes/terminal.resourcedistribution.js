@@ -65,8 +65,8 @@ const terminalResourceDistribution = {
     },
 
     matchSupplyAndDemand: function() {
-        let supplyKeys = Object.keys(this.resourceSupply);
-        let demandKeys = Object.keys(this.resourceDemand);
+        let supplyKeys = _.shuffle(Object.keys(this.resourceSupply));
+        let demandKeys = _.shuffle(Object.keys(this.resourceDemand));
 
         for (let supplierRoomName of supplyKeys) {
             let currentSupply = this.resourceSupply[supplierRoomName];

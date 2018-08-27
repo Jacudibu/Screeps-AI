@@ -10,11 +10,6 @@ Room.prototype.respondToHostiles = function() {
         return;
     }
 
-    if (this.memory.length < 2) {
-        this.memory.requiresHelp = undefined;
-        return;
-    }
-
     if (this.memory.requiresHelp === undefined) {
         this.memory.requiresHelp = true;
         if (this._hostiles[0].owner && this._hostiles[0].owner.username && this._hostiles[0].owner.username !== "Invader") {
