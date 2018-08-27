@@ -60,7 +60,7 @@ function collectStats() {
 
     Memory.stats.creeps = {};
     Memory.stats.creeps.total = Memory.creepsBuilt;
-    Memory.stats.creeps.current = Game.creeps.length;
+    Memory.stats.creeps.current = Object.keys(Game.creeps).length
 }
 
 module.exports = {
