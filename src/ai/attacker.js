@@ -1,16 +1,19 @@
 const attacker = {
     run: function (creep) {
-        creep.heal(creep);
+        if (creep.hits < creep.hitsMax) {
+            creep.heal(creep);
+        }
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
-                    creep.setTask(TASK.ATTACK);
+                    creep.setTask(TASK.WAIT);
+                    //creep.setTask(TASK.ATTACK);
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM)
                 }
                 break;
             case TASK.MOVE_TO_ROOM:
-                creep.moveToRoom(TASK.ATTACK);
+                creep.moveToRoom(TASK.WAIT);
                 break;
             case TASK.WAIT_FOR_INPUT:
                 creep.say("(ノ°Д°）ノ︵┻━┻", true);
@@ -47,7 +50,13 @@ const attacker = {
                     case ERR_INVALID_TARGET:
                         creep.setTask(TASK.WAIT_FOR_INPUT);
                         break;
+                    default:
+                        console.log("??");
+                        break;
                 }
+                break;
+            case TASK.WAIT:
+                creep.say('lalala', true);
                 break;
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);

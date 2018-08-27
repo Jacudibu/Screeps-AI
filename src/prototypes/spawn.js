@@ -433,6 +433,43 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
 };
 
+Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
+    let body = [];
+
+    if (energy < 4 * 10 + 25 * 50 + 7 * 80 + 14 * 250) {
+        console.log("not enough energy. Need at least 5350 for that monstrosity..");
+        return;
+    }
+
+    for (let i = 0; i < 4; i++) {
+        body.push(TOUGH);
+    }
+
+    for (let i = 0; i < 24; i++) {
+        body.push(MOVE);
+    }
+
+    for (let i = 0; i < 7; i++) {
+        body.push(ATTACK);
+    }
+
+    for (let i = 0; i < 14; i++) {
+        body.push(HEAL);
+    }
+
+    body.push(MOVE);
+
+    let opts = {
+        memory: {
+            role: ROLE.ATTACKER,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
+};
+
 Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let body = [];
 

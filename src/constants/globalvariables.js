@@ -52,6 +52,7 @@ global.TASK.HAUL_RESOURCE = 'haul_resource';
 global.TASK.STORE_MINERAL = 'store_mineral';
 global.TASK.STORE_RESOURCE = 'store_resource';
 global.TASK.ATTACK_CONTROLLER = 'attack_controller';
+global.TASK.WAIT = 'wait';
 
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
