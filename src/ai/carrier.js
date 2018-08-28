@@ -10,8 +10,8 @@ const carrier = {
                         creep.setTask(TASK.STORE_ENERGY);
                     }
                 } else if (creep.room.name === creep.memory.remoteHaulStorageRoom) {
-                    if (!this.memory.respawnTTL) {
-                        this.setTask(TASK.RECYCLE);
+                    if (!creep.memory.respawnTTL) {
+                        creep.setTask(TASK.RECYCLE);
                     }
 
                     if (_.sum(creep.carry) === creep.carryCapacity) {

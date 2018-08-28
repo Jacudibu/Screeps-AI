@@ -14,6 +14,9 @@ Creep.prototype.harvestEnergy = function() {
         case ERR_NOT_IN_RANGE:
             this.travelTo(source);
             break;
+        case ERR_NO_BODYPART:
+            this.suicide();
+            break;
         default:
             this.logActionError("harvestEnergy on source " + source, + this.harvest(source));
             break;
@@ -59,6 +62,9 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
             break;
         case ERR_NOT_IN_RANGE:
             this.travelTo(source);
+            break;
+        case ERR_NO_BODYPART:
+            this.suicide();
             break;
         default:
             this.logActionError("harvestingEnergyFetch on source " + source, this.harvest(source));
