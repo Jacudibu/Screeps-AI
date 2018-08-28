@@ -104,11 +104,11 @@ const terminalResourceDistribution = {
 
                     // store changes due to this transaction
                     supplyData.amount -= amount;
-                    if (supplyData.amount <= 0) {
+                    if (supplyData.amount - TERMINAL_MIN_SEND <= 0) {
                         _.remove(supply, data => data.resourceType === supplyData.resourceType);
                     }
                     demandData.amount -= amount;
-                    if (demandData.amount <= 0) {
+                    if (demandData.amount - TERMINAL_MIN_SEND <= 0) {
                         _.remove(demand, data => data.resourceType === demandData.resourceType);
                     }
 
@@ -193,8 +193,6 @@ const terminalResourceDistribution = {
     },
 };
 
-profiler.registerObject(terminalResourceDistribution, "terminalResourceDistribution");
-
 StructureTerminal.prototype.calculateDemand = function() {
     RESOURCES_ALL.forEach(resource => {
         if (!this.store[resource]) {
@@ -213,4 +211,5 @@ StructureTerminal.prototype.calculateSupply = function() {
     });
 };
 
+profiler.registerObject(terminalResourceDistribution, "TerminalResourceDistribution");
 module.exports = terminalResourceDistribution;
