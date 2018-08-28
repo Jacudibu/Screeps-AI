@@ -21,12 +21,15 @@ Creep.prototype._getSource = function() {
 };
 
 Creep.prototype._getEnergyStorage = function() {
-    // TODO: right now we are waaay below cpu limit, so don't care
-    // if (this.memory.taskTargetId) {
-    //     return Game.getObjectById(this.memory.taskTargetId);
-    // }
+    let structureThatRequiresEnergy;
+    if (this.memory.taskTargetId) {
+        structureThatRequiresEnergy = Game.getObjectById(this.memory.taskTargetId);
+        if (structureThatRequiresEnergy.canStillStoreEnergy()) {
+            return structureThatRequiresEnergy;
+        }
+    }
 
-    const structureThatRequiresEnergy = this.findClosestFreeEnergyStorage();
+    structureThatRequiresEnergy = this.findClosestFreeEnergyStorage();
 
     if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
         return ERR_NOT_FOUND;
