@@ -26,10 +26,11 @@ Room.prototype.respondToHostiles = function() {
 Room.prototype.checkForHostiles = function() {
     this._hostiles = this.find(FIND_HOSTILE_CREEPS, {
         filter: creep =>
-            creep.countBodyPartsOfType(ATTACK) > 0
+            creep.pos.x !== 0 && creep.pos.x !== 49 && creep.pos.y !== 0 && creep.pos.y !== 49
+            &&(creep.countBodyPartsOfType(ATTACK) > 0
             || creep.countBodyPartsOfType(RANGED_ATTACK) > 0
             || creep.countBodyPartsOfType(HEAL) > 0
-            || creep.countBodyPartsOfType(WORK) > 1
+            || creep.countBodyPartsOfType(WORK) > 1)
     });
 };
 

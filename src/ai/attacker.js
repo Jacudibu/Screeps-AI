@@ -1,8 +1,9 @@
 const attacker = {
     run: function (creep) {
-        if (creep.hits < creep.hitsMax) {
+        if (creep.hits < creep.hitsMax && !creep.memory.taskTargetId) {
             creep.heal(creep);
         }
+
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {

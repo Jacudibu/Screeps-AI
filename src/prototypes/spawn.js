@@ -237,15 +237,14 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
         energy = 800;
     }
 
-    body.push(CARRY);
-    energy -= 50;
-
-    while (energy >= 250) {
+    while (energy >= 300) {
         body.push(WORK, WORK, MOVE);
         energy -= 250;
     }
 
-    body.sort();
+    body.push(CARRY);
+    energy -= 50;
+
     let opts = {
         memory: {
             role: ROLE.REMOTE_HARVESTER,
