@@ -555,7 +555,7 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 };
 
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
-    let name = role + Memory.creepsBuilt;
+    let name = role + (Memory.creepsBuilt % 1000);
 
     let result = this.spawnCreep(body, name, opts);
 

@@ -3,6 +3,8 @@ const DEAL = true;
 const NO_DEAL = false;
 const DISTRIBUTION_INTERVAL = 17;
 const TRANSACTION_ENERGY_COST_FACTOR = 0.05;
+const MIN_DEMAND_AMOUNT = 1500;
+const MIN_SUPPLY_AMOUNT = 1500;
 
 const terminalResourceDistribution = {
     resourceSupply: {},
@@ -35,7 +37,7 @@ const terminalResourceDistribution = {
     },
 
     addToDemandList: function(roomName, resourceType, amount) {
-        if (amount < TERMINAL_MIN_SEND) {
+        if (amount < MIN_DEMAND_AMOUNT) {
             return;
         }
 
@@ -50,7 +52,7 @@ const terminalResourceDistribution = {
     },
 
     addToSupplyList: function(roomName, resourceType, amount) {
-        if (amount < TERMINAL_MIN_SEND) {
+        if (amount < MIN_SUPPLY_AMOUNT) {
             return;
         }
 
@@ -104,11 +106,11 @@ const terminalResourceDistribution = {
 
                     // store changes due to this transaction
                     supplyData.amount -= amount;
-                    if (supplyData.amount - TERMINAL_MIN_SEND <= 0) {
+                    if (supplyData.amount - MIN_SUPPLY_AMOUNT <= 0) {
                         _.remove(supply, data => data.resourceType === supplyData.resourceType);
                     }
                     demandData.amount -= amount;
-                    if (demandData.amount - TERMINAL_MIN_SEND <= 0) {
+                    if (demandData.amount - MIN_DEMAND_AMOUNT <= 0) {
                         _.remove(demand, data => data.resourceType === demandData.resourceType);
                     }
 
