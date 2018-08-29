@@ -300,14 +300,13 @@ Creep.prototype.storeMineral = function(nextTask) {
 };
 
 Creep.prototype.signRoomController = function(nextTask) {
-    let text = "Hello World! Embrace the most inefficient code ever. ^-^";
+    let text = this.room.controller.level > 1 ? "Hello World! Embrace the most inefficient code ever. ^-^"
+                                              : "🍪";
 
     if (this.room.controller.sign !== undefined) {
-        if (this.room.controller.owner.username === this.room.controller.sign.username) {
-            if (this.room.controller.sign.text === text) {
-                this.setTask(nextTask);
-                return;
-            }
+        if (this.room.controller.sign.text === text) {
+            this.setTask(nextTask);
+            return;
         }
     }
 
