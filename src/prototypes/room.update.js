@@ -79,10 +79,13 @@ Room.prototype._runLabCode = function() {
             this._doLabReactions();
             break;
         case LABTASK.DECIDE_WHAT_TO_DO:
-            this._determineNextReactionMaterials();
+            this._decideWhatToDo();
             break;
         case LABTASK.MAKE_EMPTY:
+            this._makeEmpty();
+            break;
         case LABTASK.BOOST_CREEP:
+            // TODO: Empty labs & ship needed minerals to labs.
         default:
             this.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
             break;
@@ -96,12 +99,52 @@ Room.prototype._doLabReactions = function() {
 
     if (this.inputLabs[0].mineralAmount === 0 || this.inputLabs[1].mineralAmount === 0) {
         this.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+    } else {
+        // TODO: set nextLabTick to Game.time + lab.cooldown
     }
 };
 
-Room.prototype._determineNextReactionMaterials = function() {
-    this.inputLabs[0].requestedMineral = "K";
-    this.inputLabs[1].requestedMineral = "Z";
+Room.prototype._decideWhatToDo = function() {
+    let keepCurrentReaction = true;
+
+    for (let lab of this.outputLabs) {
+        // TODO: check if required material is in store and if the end product of the reaction is still needed
+    }
+
+    if (keepCurrentReaction) {
+        this.memory.labtask = LABTASK.RUN_REACTION;
+        // TODO: Add some cooldown before checking again
+    } else {
+        if (this._areLabsEmpty()) {
+            this.memory.labtask = LABTASK.RUN_REACTION;
+        }
+
+        this._determineReactionMaterials();
+    }
+};
+
+Room.prototype._determineReactionMaterials = function() {
+    // TODO: Automation
+    this.inputLabs[0].requestedMineral = "U";
+    this.inputLabs[1].requestedMineral = "H";
 
     this.memory.labtask = LABTASK.RUN_REACTION;
+};
+
+Room.prototype._makeEmpty = function() {
+    if (this._areLabsEmpty()) {
+        this.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO
+    } else {
+        // TODO: Increase nextLabTick by 50-100 ticks
+    }
+};
+
+Room.prototype._areLabsEmpty = function() {
+    for (let lab of this.labs) {
+        if (lab.mineralAmount > 0) {
+            return false;
+        }
+    }
+
+    return true;
 };
