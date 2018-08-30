@@ -26,6 +26,7 @@ const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
 const creepAi = require('creepai');
 const roomLogic = require('roomlogic');
+const labReactionRunner = require('labreactionrunner');
 
 const screepsplus = require('tools.screepsplus');
 
@@ -39,6 +40,7 @@ module.exports.loop = function () {
         spawnlogic.run();
 
         terminalResourceDistribution.run();
+        labReactionRunner.run();
 
         screepsplus.run();
     });
