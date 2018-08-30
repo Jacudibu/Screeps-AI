@@ -1,4 +1,5 @@
-
+let nextLabTick = {};
+const IDLE_TIME_BEFORE_CHECKING_AGAIN = 50;
 
 const labReactionRunner = {
     run: function() {
@@ -9,11 +10,12 @@ const labReactionRunner = {
                 continue;
             }
 
+            if (!nextLabTick[roomName] || nextLabTick[roomName] <= Game.time)
+            {
+                this.runLabCodeForRoom(room);
+            }
+
             this.drawLabVisuals(room);
-
-            // TODO: Check if lab code should tick
-
-            this.runLabCodeForRoom(room);
         }
     },
 
@@ -41,7 +43,7 @@ const labReactionRunner = {
                 this.makeEmpty(room);
                 break;
             case LABTASK.BOOST_CREEP:
-            // TODO: Empty labs & ship needed minerals to labs.
+            // TODO: Ship needed minerals to labs.
 
             default:
                 room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
@@ -56,21 +58,27 @@ const labReactionRunner = {
 
         if (room.inputLabs[0].mineralAmount === 0 || room.inputLabs[1].mineralAmount === 0) {
             room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
-        } else {
-            // TODO: set nextLabTick to Game.time + lab.cooldown
         }
+
+        nextLabTick[room.name] = Game.time + room.outputLabs[0].cooldown;
     },
 
     decideWhatToDo: function(room) {
         let keepCurrentReaction = true;
 
         for (let lab of room.outputLabs) {
-            // TODO: check if required material is in store and if the end product of the reaction is still needed
+            if (lab.requestedMineral == null || (room.terminal.store[lab.requestedMineral] <= MINIMUM_HAUL_RESOURCE_AMOUNT
+                                              && room.storage.store[lab.requestedMineral] <= MINIMUM_HAUL_RESOURCE_AMOUNT)) {
+                keepCurrentReaction = false;
+                break;
+            }
+
+            // TODO: check if required materials are in store and if the end product of the reaction is still needed
         }
 
         if (keepCurrentReaction) {
             room.memory.labtask = LABTASK.RUN_REACTION;
-            // TODO: Add some cooldown before checking again
+            nextLabTick[room.name] = Game.time + IDLE_TIME_BEFORE_CHECKING_AGAIN;
         } else {
             if (this.areLabsEmpty(room)) {
                 room.memory.labtask = LABTASK.RUN_REACTION;
@@ -92,7 +100,7 @@ const labReactionRunner = {
         if (this.areLabsEmpty()) {
             room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO
         } else {
-            // TODO: Increase nextLabTick by 50-100 ticks
+            nextLabTick[room.name] = Game.time + IDLE_TIME_BEFORE_CHECKING_AGAIN;
         }
     },
 
