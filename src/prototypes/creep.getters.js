@@ -40,7 +40,7 @@ Creep.prototype._getEnergyStorage = function() {
 };
 
 Creep.prototype._getMineralStorage = function() {
-    let mineralStorage;
+    let mineralStorage = ERR_NOT_FOUND;
     if (this.memory.taskTargetId) {
         mineralStorage = Game.getObjectById(this.memory.taskTargetId);
         if (mineralStorage) {
