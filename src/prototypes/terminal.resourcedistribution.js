@@ -6,9 +6,10 @@ const TRANSACTION_ENERGY_COST_FACTOR = 0.05;
 const MIN_DEMAND_AMOUNT = 1500;
 const MIN_SUPPLY_AMOUNT = 1500;
 
+global.resourceDemand = {};
+global.resourceSupply = {};
+
 const terminalResourceDistribution = {
-    resourceSupply: {},
-    resourceDemand: {},
 
     run: function() {
         if (Game.time % DISTRIBUTION_INTERVAL !== 0) {
@@ -17,8 +18,8 @@ const terminalResourceDistribution = {
 
         let terminals = [];
 
-        this.resourceSupply = {};
-        this.resourceDemand = {};
+        global.resourceSupply = {};
+        global.resourceDemand = {};
 
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
@@ -41,11 +42,11 @@ const terminalResourceDistribution = {
             return;
         }
 
-        if (!this.resourceDemand[roomName]) {
-            this.resourceDemand[roomName] = [];
+        if (!resourceDemand[roomName]) {
+            resourceDemand[roomName] = [];
         }
 
-        this.resourceDemand[roomName].push({
+        resourceDemand[roomName].push({
             resourceType: resourceType,
             amount: amount,
         });
@@ -56,26 +57,26 @@ const terminalResourceDistribution = {
             return;
         }
 
-        if (!this.resourceSupply[roomName]) {
-            this.resourceSupply[roomName] = [];
+        if (!resourceSupply[roomName]) {
+            resourceSupply[roomName] = [];
         }
 
-        this.resourceSupply[roomName].push({
+        resourceSupply[roomName].push({
             resourceType: resourceType,
             amount: amount,
         });
     },
 
     matchSupplyAndDemand: function() {
-        let supplyKeys = _.shuffle(Object.keys(this.resourceSupply));
-        let demandKeys = _.shuffle(Object.keys(this.resourceDemand));
+        let supplyKeys = _.shuffle(Object.keys(resourceSupply));
+        let demandKeys = _.shuffle(Object.keys(resourceDemand));
 
         for (let supplierRoomName of supplyKeys) {
-            let currentSupply = this.resourceSupply[supplierRoomName];
+            let currentSupply = resourceSupply[supplierRoomName];
 
             let result = NO_DEAL;
             for (let demanderRoomName of demandKeys) {
-                let currentDemand = this.resourceDemand[demanderRoomName];
+                let currentDemand = resourceDemand[demanderRoomName];
 
                 result = this.makeInternalTransactions(supplierRoomName, currentSupply, demanderRoomName, currentDemand);
                 if (result === DEAL) {
@@ -122,7 +123,7 @@ const terminalResourceDistribution = {
     },
 
     sellRemainingSupplyOnMarket: function(terminals) {
-        if (this.resourceSupply.length === 0) {
+        if (resourceSupply.length === 0) {
             return;
         }
 
@@ -133,12 +134,12 @@ const terminalResourceDistribution = {
                 continue;
             }
 
-            if (!this.resourceSupply[terminal.room.name]) {
+            if (!resourceSupply[terminal.room.name]) {
                 continue;
             }
 
             // Get all supplied resources so that we can initially filter all orders
-            for (const supplyData of this.resourceSupply[terminal.room.name]) {
+            for (const supplyData of resourceSupply[terminal.room.name]) {
                 if (!supplyResourceTypes.includes(supplyData.resourceType)) {
                     if (TERMINAL_DISTRIBUTION_CONSTANTS.AUTOSELL_RESOURCES.includes(supplyData.resourceType)) {
                         supplyResourceTypes.push(supplyData.resourceType);
@@ -155,11 +156,11 @@ const terminalResourceDistribution = {
                 continue;
             }
 
-            if (!this.resourceSupply[terminal.room.name]) {
+            if (!resourceSupply[terminal.room.name]) {
                 continue;
             }
 
-            for (const supplyData of this.resourceSupply[terminal.room.name]) {
+            for (const supplyData of resourceSupply[terminal.room.name]) {
                 if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
                     continue;
                 }

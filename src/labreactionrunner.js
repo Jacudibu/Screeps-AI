@@ -116,4 +116,5 @@ const labReactionRunner = {
 
 };
 
+profiler.registerObject(labReactionRunner, "LabReactionRunner");
 module.exports = labReactionRunner;
