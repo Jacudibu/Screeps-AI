@@ -265,6 +265,15 @@ Creep.prototype.storeMineral = function(nextTask) {
                           this.room.storage  ? this.room.storage :
                           this.room.getEmptyPublicEnergyContainers()[0];
 
+    if (this.room.inputLabs.length > 0) {
+        for (let lab of this.room.inputLabs) {
+            if (lab.requestedMineral === this.memory.hauledResourceType && lab.mineralAmount < lab.mineralCapacity) {
+                targetStructure = lab;
+                break;
+            }
+        }
+    }
+
     switch (this.transfer(targetStructure, this.memory.hauledResourceType)) {
         case OK:
             break;

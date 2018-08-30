@@ -16,7 +16,7 @@ require('prototypes.room.update');
 require('prototypes.source');
 require('prototypes.spawn');
 require('prototypes.structure');
-require('prototypes.structurelab.requestedresource');
+require('prototypes.structurelab.requestedmineral');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 

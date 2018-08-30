@@ -100,8 +100,8 @@ Room.prototype._doLabReactions = function() {
 };
 
 Room.prototype._determineNextReactionMaterials = function() {
-    this.inputLabs[0].requestedResource = "K";
-    this.inputLabs[1].requestedResource = "Z";
+    this.inputLabs[0].requestedMineral = "K";
+    this.inputLabs[1].requestedMineral = "Z";
 
     this.memory.labtask = LABTASK.RUN_REACTION;
 };

@@ -196,6 +196,35 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
+    if (this.room.memory.labtask && this.room.memory.labtask === LABTASK.MAKE_EMPTY) {
+        // Empty all of them
+        for (let lab of this.room.labs) {
+            if (lab.mineralType && lab.mineralAmount > 0) {
+                this.memory.taskTargetId = lab.id;
+                this.memory.hauledResourceType = lab.mineralType;
+                return lab;
+            }
+        }
+    } else {
+        // Fill Input
+        for (let lab of this.room.inputLabs) {
+            if (lab.requestedMineral != null && lab.mineralAmount < 500 && this.room.terminal.store[lab.requestedMineral] > 0) {
+                this.memory.taskTargetId = this.room.terminal;
+                this.memory.hauledResourceType = lab.requestedMineral;
+                return this.room.terminal;
+            }
+        }
+
+        // Empty Output
+        for (let lab of this.room.outputLabs) {
+            if (lab.mineralType && (lab.mineralAmount > MINIMUM_HAUL_RESOURCE_AMOUNT)) {
+                this.memory.taskTargetId = lab.id;
+                this.memory.hauledResourceType = lab.mineralType;
+                return lab;
+            }
+        }
+    }
+
     potentialTarget = this.findClosestDroppedResource();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
