@@ -137,13 +137,17 @@ const terminalResourceDistribution = {
                 continue;
             }
 
+            // Get all supplied resources so that we can initially filter all orders
             for (const supplyData of this.resourceSupply[terminal.room.name]) {
                 if (!supplyResourceTypes.includes(supplyData.resourceType)) {
-                    supplyResourceTypes.push(supplyData.resourceType);
+                    if (TERMINAL_DISTRIBUTION_CONSTANTS.AUTOSELL_RESOURCES.includes(supplyData.resourceType)) {
+                        supplyResourceTypes.push(supplyData.resourceType);
+                    }
                 }
             }
         }
 
+        // initially filter orders
         const orders = Game.market.getAllOrders(order => order.type === ORDER_BUY && supplyResourceTypes.includes(order.resourceType));
 
         for (const terminal of terminals) {
