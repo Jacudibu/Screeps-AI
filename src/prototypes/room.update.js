@@ -2,6 +2,7 @@ Room.prototype.update = function() {
     this.checkForHostiles();
     this.respondToHostiles();
     this.repairDamagedCreeps();
+    this._runLabCode();
 };
 
 Room.prototype.respondToHostiles = function() {
@@ -66,4 +67,41 @@ Room.prototype.sortHostilesByPriority = function() {
 
         return creepA.hits - creepB.hits;
     });
+};
+
+Room.prototype._runLabCode = function() {
+    if (this.inputLabs.length < 2) {
+        return;
+    }
+
+    switch (this.memory.labtask) {
+        case LABTASK.RUN_REACTION:
+            this._doLabReactions();
+            break;
+        case LABTASK.DECIDE_WHAT_TO_DO:
+            this._determineNextReactionMaterials();
+            break;
+        case LABTASK.MAKE_EMPTY:
+        case LABTASK.BOOST_CREEP:
+        default:
+            this.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+            break;
+    }
+};
+
+Room.prototype._doLabReactions = function() {
+    for (let lab of this.outputLabs) {
+        lab.runReaction(this.inputLabs[0], this.inputLabs[1]);
+    }
+
+    if (this.inputLabs[0].mineralAmount === 0 || this.inputLabs[1].mineralAmount === 0) {
+        this.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+    }
+};
+
+Room.prototype._determineNextReactionMaterials = function() {
+    this.inputLabs[0].requestedResource = "K";
+    this.inputLabs[1].requestedResource = "Z";
+
+    this.memory.labtask = LABTASK.RUN_REACTION;
 };

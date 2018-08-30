@@ -16,6 +16,8 @@ require('prototypes.room.update');
 require('prototypes.source');
 require('prototypes.spawn');
 require('prototypes.structure');
+require('prototypes.structurelab.requestedresource');
+
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
 require('tools.traveler');
