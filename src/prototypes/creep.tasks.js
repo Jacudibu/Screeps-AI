@@ -261,24 +261,13 @@ Creep.prototype.storeEnergy = function(nextTask) {
 };
 
 Creep.prototype.storeMineral = function(nextTask) {
-    let targetStructure = this.room.terminal ? this.room.terminal :
-                          this.room.storage  ? this.room.storage :
-                          this.room.getEmptyPublicEnergyContainers()[0];
+    const mineralStorage = this._getMineralStorage();
 
-    if (this.room.inputLabs.length > 0) {
-        for (let lab of this.room.inputLabs) {
-            if (lab.requestedMineral === this.memory.hauledResourceType && lab.mineralAmount < lab.mineralCapacity) {
-                targetStructure = lab;
-                break;
-            }
-        }
-    }
-
-    switch (this.transfer(targetStructure, this.memory.hauledResourceType)) {
+    switch (this.transfer(mineralStorage, this.memory.hauledResourceType)) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(targetStructure);
+            this.travelTo(mineralStorage);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             if (_.sum(this.carry) === 0) {
@@ -303,7 +292,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
         default:
-            this.logActionError("storing resource", this.transfer(targetStructure, this.memory.hauledResourceType));
+            this.logActionError("storing resource", this.transfer(mineralStorage, this.memory.hauledResourceType));
             break;
     }
 };

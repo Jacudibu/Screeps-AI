@@ -39,6 +39,40 @@ Creep.prototype._getEnergyStorage = function() {
     return structureThatRequiresEnergy;
 };
 
+Creep.prototype._getMineralStorage = function() {
+    let mineralStorage;
+    if (this.memory.taskTargetId) {
+        mineralStorage = Game.getObjectById(this.memory.taskTargetId);
+        if (mineralStorage) {
+            return mineralStorage;
+        }
+    }
+
+    if (this.room.inputLabs.length > 0) {
+        for (let lab of this.room.inputLabs) {
+            if (lab.requestedMineral === this.memory.hauledResourceType && lab.mineralAmount < lab.mineralCapacity) {
+                mineralStorage = lab;
+                break;
+            }
+        }
+    } else if (this.room.storage) {
+        if (this.room.storage[this.memory.hauledResourceType] < STORAGE_MAX_MINERAL) {
+            mineralStorage = this.room.storage;
+        }
+    } else if (this.room.terminal) {
+        mineralStorage = this.room.terminal;
+    } else {
+        mineralStorage = this.room.getEmptyPublicEnergyContainers()[0];
+    }
+
+    if (mineralStorage === ERR_NOT_FOUND) {
+        return ERR_NOT_FOUND;
+    }
+
+    this.memory.taskTargetId = mineralStorage.id;
+    return mineralStorage;
+};
+
 Creep.prototype._getConstructionSite = function() {
     if (this.memory.taskTargetId) {
         let previousTarget = Game.getObjectById(this.memory.taskTargetId);
@@ -208,10 +242,16 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
     } else {
         // Fill Input
         for (let lab of this.room.inputLabs) {
-            if (lab.requestedMineral != null && lab.mineralAmount < 500 && this.room.terminal.store[lab.requestedMineral] > 0) {
-                this.memory.taskTargetId = this.room.terminal;
-                this.memory.hauledResourceType = lab.requestedMineral;
-                return this.room.terminal;
+            if (lab.requestedMineral != null && lab.mineralAmount < 500) {
+                if (this.room.terminal.store[lab.requestedMineral] > 0) {
+                    this.memory.taskTargetId = this.room.terminal;
+                    this.memory.hauledResourceType = lab.requestedMineral;
+                    return this.room.terminal;
+                } else if (this.room.storage.store[lab.requestedMineral] > 0) {
+                    this.memory.taskTargetId = this.room.storage;
+                    this.memory.hauledResourceType = lab.requestedMineral;
+                    return this.room.storage;
+                }
             }
         }
 
