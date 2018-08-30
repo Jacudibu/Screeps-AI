@@ -112,6 +112,28 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     return ERR_NOT_FOUND;
 };
 
+Creep.prototype.findMineralStorage = function() {
+    if (this.room.inputLabs.length > 0) {
+        for (let lab of this.room.inputLabs) {
+            if (lab.requestedMineral === this.memory.hauledResourceType && lab.mineralAmount < lab.mineralCapacity) {
+                return lab;
+            }
+        }
+    }
+
+    if (this.room.storage) {
+        if (!this.room.storage[this.memory.hauledResourceType] || this.room.storage[this.memory.hauledResourceType] < STORAGE_MAX_MINERAL) {
+            return this.room.storage;
+        }
+    }
+
+    if (this.room.terminal) {
+        return this.room.terminal;
+    }
+
+    return this.room.getEmptyPublicEnergyContainers()[0];
+};
+
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     const publicEnergyContainer = this.room.memory.publicEnergyContainers;
     const container = this.room.find(FIND_STRUCTURES, {
