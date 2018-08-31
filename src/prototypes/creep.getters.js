@@ -215,7 +215,7 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
-    if (this.room.memory.labtask && this.room.memory.labtask === LABTASK.MAKE_EMPTY) {
+    if (this.room.labTask && this.room.memory.labTask === LABTASK.MAKE_EMPTY) {
         // Empty all of them
         for (let lab of this.room.labs) {
             if (lab.mineralType && lab.mineralAmount > 0) {
