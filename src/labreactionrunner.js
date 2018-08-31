@@ -1,8 +1,10 @@
 let nextLabTick = {};
-const IDLE_TIME_IF_WAITING_FOR_RESOURCES = 50;
+const IDLE_TIME_IF_WAITING_FOR_HAULERS = 200;
 const IDLE_TIME_IF_NO_MATCH = 1000;
 const IDLE_TIME_ON_GLOBAL_RESET = 20;
 const IDLE_TIME_IF_NO_DEMAND = 250;
+
+const MIN_MINERAL_COUNT_FOR_REACTION = 2000;
 
 global.REACTIONS_INVERTED = {};
 for (let mineralA in REACTIONS) {
@@ -38,15 +40,14 @@ const labReactionRunner = {
         for (let lab of room.inputLabs) {
             room.visual.text(lab.mineralType != null ? lab.mineralType :
                              lab.requestedMineral != null ? lab.requestedMineral : "-", lab.pos, {color: "orange", font: 0.2});
-
         }
 
         room.visual.text("next labTick: " + nextLabTick[room.name], 0, 0, {align: 'left'});
-        room.visual.text("current labtask: " + Memory.rooms[room.name].labtask, 0, 1, {align: 'left'});
+        room.visual.text("current labtask: " + room.labTask, 0, 1, {align: 'left'});
     },
 
     runLabCodeForRoom: function(room) {
-        switch (room.memory.labtask) {
+        switch (room.labTask) {
             case LABTASK.RUN_REACTION:
                 this.doLabReactions(room);
                 break;
@@ -60,7 +61,7 @@ const labReactionRunner = {
             // TODO: Ship needed minerals to labs if something is in boostQueue
 
             default:
-                room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+                room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
                 break;
         }
     },
@@ -72,7 +73,7 @@ const labReactionRunner = {
         }
 
         if (result !== OK && result !== ERR_FULL) {
-            room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+            room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
             return;
         }
 
@@ -99,7 +100,7 @@ const labReactionRunner = {
 
         if (!resourceDemand[room.name]) {
             nextLabTick[room.name] = Game.time + IDLE_TIME_IF_NO_DEMAND;
-            room.memory.labtask = LABTASK.MAKE_EMPTY;
+            room.labTask = LABTASK.MAKE_EMPTY;
             room.inputLabs[0].requestedMineral = null;
             room.inputLabs[1].requestedMineral = null;
             return;
@@ -118,13 +119,13 @@ const labReactionRunner = {
         }
 
         if (keepCurrentReaction) {
-            room.memory.labtask = LABTASK.RUN_REACTION;
-            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_RESOURCES;
+            room.labTask = LABTASK.RUN_REACTION;
+            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_HAULERS;
         } else {
             if (this.areLabsEmpty(room)) {
                 this.determineReactionMaterials(room);
             } else {
-                room.memory.labtask = LABTASK.MAKE_EMPTY;
+                room.labTask = LABTASK.MAKE_EMPTY;
                 room.inputLabs[0].requestedMineral = null;
                 room.inputLabs[1].requestedMineral = null;
             }
@@ -136,20 +137,22 @@ const labReactionRunner = {
 
         for (let demand of demandWithoutBaseMinerals) {
             let mineralA = REACTIONS_INVERTED[demand.resourceType][0];
-            if (!room.storage.store[mineralA] && !room.terminal.store[mineralA]) {
+            if (   (!room.storage.store[mineralA]  || room.storage.store[mineralA]  < MIN_MINERAL_COUNT_FOR_REACTION)
+                && (!room.terminal.store[mineralA] || room.terminal.store[mineralA] < MIN_MINERAL_COUNT_FOR_REACTION)) {
                 continue;
             }
 
             let mineralB = REACTIONS_INVERTED[demand.resourceType][1];
-            if (!room.storage.store[mineralB] && !room.terminal.store[mineralB]) {
+            if (   (!room.storage.store[mineralB]  || room.storage.store[mineralB]  < MIN_MINERAL_COUNT_FOR_REACTION)
+                && (!room.terminal.store[mineralB] || room.terminal.store[mineralB] < MIN_MINERAL_COUNT_FOR_REACTION)) {
                 continue;
             }
 
             // Found something we can produce!
             room.inputLabs[0].requestedMineral = mineralA;
             room.inputLabs[1].requestedMineral = mineralB;
-            room.memory.labtask = LABTASK.RUN_REACTION;
-            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_RESOURCES;
+            room.labTask = LABTASK.RUN_REACTION;
+            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_HAULERS;
             return;
         }
 
@@ -159,9 +162,9 @@ const labReactionRunner = {
 
     makeEmpty: function(room) {
         if (this.areLabsEmpty(room)) {
-            room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO
+            room.labTask = LABTASK.DECIDE_WHAT_TO_DO
         } else {
-            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_RESOURCES;
+            nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_HAULERS;
         }
     },
 

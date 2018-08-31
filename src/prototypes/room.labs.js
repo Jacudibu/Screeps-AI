@@ -1,16 +1,56 @@
+let roomLabTasks = {};
+let roomLabReactions = {};
+
 let roomInputLabs = {};
 let roomOutputLabs = {};
-let cacheExpiration = {};
+let roomInputOutExpiration = {};
+
 const CACHE_EXPIRATION_TIME = 1000;
 const CACHE_EXPIRATION_OFFSET = 20;
 const LAB_RANGE = 2;
+
+Object.defineProperty(Room.prototype, "labTask", {
+    get: function() {
+        if (roomLabTasks[this.name]) {
+            return roomLabTasks[this.name];
+        } else {
+            this._setupLabMemoryIfNeeded();
+            return roomLabTasks[this.name] = Memory.rooms[this.name].lab.task;
+        }
+    },
+    set: function(value) {
+        this._setupLabMemoryIfNeeded();
+        roomLabTasks[this.name] = value;
+        Memory.rooms[this.name].lab.task = value;
+    },
+    enumerable: false,
+    configurable: true,
+});
+
+Object.defineProperty(Room.prototype, "labReaction", {
+    get: function() {
+        if (roomLabReactions[this.name]) {
+            return roomLabReactions[this.name];
+        } else {
+            this._setupLabMemoryIfNeeded();
+            return roomLabReactions[this.name] = Memory.rooms[this.name].lab.reaction;
+        }
+    },
+    set: function(value) {
+        this._setupLabMemoryIfNeeded();
+        roomLabReactions[this.name] = value;
+        Memory.rooms[this.name].lab.reaction = value;
+    },
+    enumerable: false,
+    configurable: true,
+});
 
 Object.defineProperty(Room.prototype, "inputLabs", {
     get: function() {
         if(this._inputLabs) {
             return this._inputLabs;
         } else {
-            this._checkLabCache();
+            this._checkInputOutputLabCache();
             if (roomInputLabs[this.name]) {
                 return this._inputLabs = roomInputLabs[this.name].map(Game.getObjectById);
             } else {
@@ -28,7 +68,7 @@ Object.defineProperty(Room.prototype, "outputLabs", {
         if(this._outputLabs) {
             return this._outputLabs;
         } else {
-            this._checkLabCache();
+            this._checkInputOutputLabCache();
             if (roomOutputLabs[this.name]) {
                 return this._outputLabs = roomOutputLabs[this.name].map(Game.getObjectById);
             } else {
@@ -41,8 +81,14 @@ Object.defineProperty(Room.prototype, "outputLabs", {
     configurable: true,
 });
 
-Room.prototype._checkLabCache = function() {
-    if(cacheExpiration[this.name] && cacheExpiration[this.name] < Game.time) {
+Room.prototype._setupLabMemoryIfNeeded = function() {
+    if (!Memory.rooms[this.name].lab) {
+        Memory.rooms[this.name].lab = {};
+    }
+};
+
+Room.prototype._checkInputOutputLabCache = function() {
+    if(roomInputOutExpiration[this.name] && roomInputOutExpiration[this.name] < Game.time) {
         return;
     }
 
@@ -50,10 +96,10 @@ Room.prototype._checkLabCache = function() {
         return;
     }
 
-    this._initializeLabCache();
+    this._initializeInputOutputLabCache();
 };
 
-Room.prototype._initializeLabCache = function() {
+Room.prototype._initializeInputOutputLabCache = function() {
     roomInputLabs[this.name] = [];
     roomOutputLabs[this.name] = [];
 
@@ -88,6 +134,6 @@ Room.prototype._initializeLabCache = function() {
         }
     }
 
-    cacheExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
+    roomInputOutExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
 };
 
