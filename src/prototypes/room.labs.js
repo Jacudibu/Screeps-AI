@@ -66,7 +66,7 @@ Room.prototype._initializeLabCache = function() {
     }
 
     for (let currentLabIndex = 0; currentLabIndex < labs.length - 1; currentLabIndex++) {
-        for (let checkedLabIndex = currentLabIndex + 1; checkedLabIndex < labs.length - 1; checkedLabIndex++) {
+        for (let checkedLabIndex = currentLabIndex + 1; checkedLabIndex < labs.length; checkedLabIndex++) {
             if (labs[currentLabIndex].pos.inRangeTo(labs[checkedLabIndex].pos, LAB_RANGE)) {
                 labsInRange[labs[currentLabIndex].id]++;
                 labsInRange[labs[checkedLabIndex].id]++;

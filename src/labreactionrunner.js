@@ -71,18 +71,9 @@ const labReactionRunner = {
             result = lab.runReaction(room.inputLabs[0], room.inputLabs[1]);
         }
 
-        if (result !== OK) {
-            switch (result) {
-                case ERR_NOT_ENOUGH_RESOURCES:
-                case ERR_NOT_IN_RANGE:
-                    room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
-                    return;
-                case ERR_INVALID_ARGS:
-                    room.memory.labtask = LABTASK.MAKE_EMPTY;
-                    return;
-            }
-
-            console.log(room.name + "|unhandled lab error: " + result);
+        if (result !== OK && result !== ERR_FULL) {
+            room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+            return;
         }
 
         let produce = REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral];
