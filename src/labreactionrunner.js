@@ -94,7 +94,7 @@ const labReactionRunner = {
             }
         }
 
-        nextLabTick[room.name] = Game.time + REACTION_TIME[this.room.labReaction];
+        nextLabTick[room.name] = Game.time + REACTION_TIME[room.labReaction];
     },
 
     decideWhatToDo: function(room) {

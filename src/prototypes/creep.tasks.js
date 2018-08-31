@@ -249,6 +249,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
                 this.setTask(nextTask);
             } else {
                 this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== RESOURCE_ENERGY)[0];
+                this.memory.taskTargetId = undefined;
             }
             break;
         case ERR_FULL:
@@ -277,7 +278,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             }
             break;
         case ERR_FULL:
-            this.logActionError("TERMINAL FULL", "ERR_FULL");
+            this.logActionError("storing resource", "ERR_FULL");
             this.drop(this.memory.hauledResourceType);
             break;
         case ERR_INVALID_ARGS:
@@ -289,6 +290,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             break;
         case ERR_INVALID_TARGET:
             this.say("WAT");
+            console.log(this.room.name + "|Invalid target on store mineral?! " + mineralStorage);
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
         default:

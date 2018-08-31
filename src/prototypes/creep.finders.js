@@ -131,7 +131,8 @@ Creep.prototype.findMineralStorage = function() {
         return this.room.terminal;
     }
 
-    return this.room.getEmptyPublicEnergyContainers()[0];
+    console.log(this.room.name + "|?!?!?!?!?! terminal " + this.room.terminal);
+    return ERR_NOT_FOUND;
 };
 
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
