@@ -122,7 +122,7 @@ Creep.prototype.findMineralStorage = function() {
     }
 
     if (this.room.storage) {
-        if (!this.room.storage[this.memory.hauledResourceType] || this.room.storage[this.memory.hauledResourceType] < STORAGE_MAX_MINERAL) {
+        if (!this.room.storage.store[this.memory.hauledResourceType] || this.room.storage.store[this.memory.hauledResourceType] < STORAGE_MAX_MINERAL) {
             return this.room.storage;
         }
     }
