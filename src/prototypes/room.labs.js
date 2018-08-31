@@ -29,7 +29,7 @@ Object.defineProperty(Room.prototype, "labTask", {
 
 Object.defineProperty(Room.prototype, "labReaction", {
     get: function() {
-        if (roomLabReactions[this.name]) {
+        if (roomLabReactions[this.name] !== undefined) {
             return roomLabReactions[this.name];
         } else {
             this._setupLabMemoryIfNeeded();

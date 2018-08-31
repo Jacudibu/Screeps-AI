@@ -1,7 +1,7 @@
 let nextLabTick = {};
 const IDLE_TIME_IF_WAITING_FOR_HAULERS = 200;
 const IDLE_TIME_IF_NO_MATCH = 1000;
-const IDLE_TIME_ON_GLOBAL_RESET = 20;
+const IDLE_TIME_ON_GLOBAL_RESET = 50;
 const IDLE_TIME_IF_NO_DEMAND = 250;
 
 const MIN_MINERAL_COUNT_FOR_REACTION = 2000;
@@ -34,16 +34,16 @@ const labReactionRunner = {
 
     drawLabVisuals: function(room) {
         for (let lab of room.outputLabs) {
-            room.visual.text(lab.mineralType != null ? lab.mineralType : "-", lab.pos, {color: "yellow", font: 0.2});
+            room.visual.text(lab.mineralType != null ? lab.mineralType : "-", lab.pos, {color: "green", font: 0.2});
         }
 
         for (let lab of room.inputLabs) {
             room.visual.text(lab.mineralType != null ? lab.mineralType :
-                             lab.requestedMineral != null ? lab.requestedMineral : "-", lab.pos, {color: "orange", font: 0.2});
+                             lab.requestedMineral != null ? lab.requestedMineral : "-", lab.pos, {color: "green", font: 0.2});
         }
 
         room.visual.text("next labTick: " + nextLabTick[room.name], 0, 0, {align: 'left'});
-        room.visual.text("current labtask: " + room.labTask, 0, 1, {align: 'left'});
+        room.visual.text("current labtask: " + room.labTask + (room.labReaction ? " > " + room.labReaction : ""), 0, 1, {align: 'left'});
     },
 
     runLabCodeForRoom: function(room) {
@@ -73,12 +73,28 @@ const labReactionRunner = {
         }
 
         if (result !== OK && result !== ERR_FULL) {
-            room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
-            return;
+            if (room.inputLabs[0].requestedMineral) {
+                // Lab just went empty.
+                room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
+                return;
+            } else {
+                if (room.labReaction) {
+                    // Global reset and labs have been empty, bleh.
+                    // Just set values and wait for good measure.
+                    room.inputLabs[0].requestedMineral = REACTIONS_INVERTED[room.labReaction][0];
+                    room.inputLabs[1].requestedMineral = REACTIONS_INVERTED[room.labReaction][1];
+                    nextLabTick[room.name] = Game.time + IDLE_TIME_ON_GLOBAL_RESET;
+                    return;
+                }
+
+                // Something has gone wrong, I guess.
+                console.log(room.name + "|Reactions have not been set up, but current lab state is runReactions");
+                room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
+                return;
+            }
         }
 
-        let produce = REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral];
-        nextLabTick[room.name] = Game.time + REACTION_TIME[produce];
+        nextLabTick[room.name] = Game.time + REACTION_TIME[this.room.labReaction];
     },
 
     decideWhatToDo: function(room) {
@@ -101,19 +117,19 @@ const labReactionRunner = {
         if (!resourceDemand[room.name]) {
             nextLabTick[room.name] = Game.time + IDLE_TIME_IF_NO_DEMAND;
             room.labTask = LABTASK.MAKE_EMPTY;
+            room.labReaction = null;
             room.inputLabs[0].requestedMineral = null;
             room.inputLabs[1].requestedMineral = null;
             return;
         }
 
-        // Check if current mineral data is valid & product is still needed
+        // Check if current mineral data is valid & reaction is still relevant
         if (room.inputLabs[0].requestedMineral == null || room.inputLabs[1].requestedMineral == null) {
             keepCurrentReaction = false;
         } else {
-            let product = REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral];
-            if (!product) { // some garbage is loaded in our labs
+            if (!room.labReaction) { // some garbage is loaded in our labs
                 keepCurrentReaction = false;
-            } else if (resourceDemand[room.name].filter(demand => demand.resourceType === product).length === 0) {
+            } else if (resourceDemand[room.name].filter(demand => demand.resourceType === room.labReaction).length === 0) {
                 keepCurrentReaction = false;
             }
         }
@@ -126,6 +142,7 @@ const labReactionRunner = {
                 this.determineReactionMaterials(room);
             } else {
                 room.labTask = LABTASK.MAKE_EMPTY;
+                room.labReaction = null;
                 room.inputLabs[0].requestedMineral = null;
                 room.inputLabs[1].requestedMineral = null;
             }
@@ -151,7 +168,10 @@ const labReactionRunner = {
             // Found something we can produce!
             room.inputLabs[0].requestedMineral = mineralA;
             room.inputLabs[1].requestedMineral = mineralB;
+
             room.labTask = LABTASK.RUN_REACTION;
+            room.labReaction = demand.resourceType;
+
             nextLabTick[room.name] = Game.time + IDLE_TIME_IF_WAITING_FOR_HAULERS;
             return;
         }
