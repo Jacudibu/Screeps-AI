@@ -229,11 +229,11 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         for (let lab of this.room.inputLabs) {
             if (lab.requestedMineral != null && lab.mineralAmount < 500) {
                 if (this.room.terminal.store[lab.requestedMineral] > 0) {
-                    this.memory.taskTargetId = this.room.terminal;
+                    this.memory.taskTargetId = this.room.terminal.id;
                     this.memory.hauledResourceType = lab.requestedMineral;
                     return this.room.terminal;
                 } else if (this.room.storage.store[lab.requestedMineral] > 0) {
-                    this.memory.taskTargetId = this.room.storage;
+                    this.memory.taskTargetId = this.room.storage.id;
                     this.memory.hauledResourceType = lab.requestedMineral;
                     return this.room.storage;
                 }
