@@ -186,6 +186,11 @@ Creep.prototype._getEnergyHaulTarget = function() {
         }
     }
 
+    if(this.room.hostileStorage) {
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        return this.room.hostileStorage;
+    }
+
     return ERR_NOT_FOUND;
 };
 
@@ -215,7 +220,7 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
-    if (this.room.labTask && this.room.memory.labTask === LABTASK.MAKE_EMPTY) {
+    if (this.room.labTask && this.room.labTask === LABTASK.MAKE_EMPTY) {
         // Empty all of them
         for (let lab of this.room.labs) {
             if (lab.mineralType && lab.mineralAmount > 0) {
