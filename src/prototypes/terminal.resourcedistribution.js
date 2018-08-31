@@ -1,4 +1,4 @@
-const TERMINAL_DISTRIBUTION_CONSTANTS = require('constants.terminaldistributionconstants');
+const TERMINAL_DISTRIBUTION_CONSTANTS = require('globals.terminaldistributionconstants');
 const DEAL = true;
 const NO_DEAL = false;
 const DISTRIBUTION_INTERVAL = 17;

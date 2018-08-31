@@ -4,7 +4,7 @@
  1  |   Threat meter
  1  |   Threat response
  2  |   Make Harvesters use Links
- ?  |   Lab code
+ ?  |   Boost code
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
  3  |   Memory cleanup method to fix memory fuckups
  1  |   Detect if remote builder is needed and spawn one automatically

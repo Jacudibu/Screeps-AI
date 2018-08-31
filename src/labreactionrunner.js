@@ -71,16 +71,22 @@ const labReactionRunner = {
             result = lab.runReaction(room.inputLabs[0], room.inputLabs[1]);
         }
 
-        switch (result) {
-            case ERR_NOT_ENOUGH_RESOURCES:
-                room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
-                break;
-            case ERR_INVALID_ARGS:
-                room.memory.labtask = LABTASK.MAKE_EMPTY;
-                break;
+        if (result !== OK) {
+            switch (result) {
+                case ERR_NOT_ENOUGH_RESOURCES:
+                case ERR_NOT_IN_RANGE:
+                    room.memory.labtask = LABTASK.DECIDE_WHAT_TO_DO;
+                    return;
+                case ERR_INVALID_ARGS:
+                    room.memory.labtask = LABTASK.MAKE_EMPTY;
+                    return;
+            }
+
+            console.log(room.name + "|unhandled lab error: " + result);
         }
 
-        nextLabTick[room.name] = Game.time + REACTION_TIME[REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral[1]]];
+        let produce = REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral];
+        nextLabTick[room.name] = Game.time + REACTION_TIME[produce];
     },
 
     decideWhatToDo: function(room) {
@@ -100,8 +106,7 @@ const labReactionRunner = {
             return;
         }
 
-        // Is product still in demand?
-        if (resourceDemand[room.name] === undefined) {
+        if (!resourceDemand[room.name]) {
             nextLabTick[room.name] = Game.time + IDLE_TIME_IF_NO_DEMAND;
             room.memory.labtask = LABTASK.MAKE_EMPTY;
             room.inputLabs[0].requestedMineral = null;
@@ -109,11 +114,12 @@ const labReactionRunner = {
             return;
         }
 
+        // Check if current mineral data is valid & product is still needed
         if (room.inputLabs[0].requestedMineral == null || room.inputLabs[1].requestedMineral == null) {
             keepCurrentReaction = false;
         } else {
             let product = REACTIONS[room.inputLabs[0].requestedMineral][room.inputLabs[1].requestedMineral];
-            if (!product) { // some garbage loaded
+            if (!product) { // some garbage is loaded in our labs
                 keepCurrentReaction = false;
             } else if (resourceDemand[room.name].filter(demand => demand.resourceType === product).length === 0) {
                 keepCurrentReaction = false;

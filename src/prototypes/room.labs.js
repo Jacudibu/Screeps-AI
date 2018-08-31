@@ -41,10 +41,6 @@ Object.defineProperty(Room.prototype, "outputLabs", {
     configurable: true,
 });
 
-getRandomizedCacheExpirationOffset = function() {
-    return CACHE_EXPIRATION_TIME + Math.round((Math.random() * CACHE_EXPIRATION_OFFSET * 2) - CACHE_EXPIRATION_OFFSET);
-};
-
 Room.prototype._checkLabCache = function() {
     if(cacheExpiration[this.name] && cacheExpiration[this.name] < Game.time) {
         return;
@@ -92,6 +88,6 @@ Room.prototype._initializeLabCache = function() {
         }
     }
 
-    cacheExpiration[this.name] = Game.time + getRandomizedCacheExpirationOffset();
+    cacheExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
 };
 
