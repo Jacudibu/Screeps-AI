@@ -8,9 +8,15 @@ const hauler = {
             case TASK.STORE_RESOURCE:
                 if (creep.carry[RESOURCE_ENERGY] > 0) {
                     creep.storeEnergy(TASK.HAUL_RESOURCE);
-                } else {
-                    creep.storeMineral(TASK.HAUL_RESOURCE);
+                    break;
                 }
+
+                if (_.sum(creep.carry) > 0) {
+                    creep.storeMineral(TASK.HAUL_RESOURCE);
+                    break;
+                }
+
+                creep.setTask(TASK.HAUL_RESOURCE);
                 break;
 
             case TASK.RENEW_CREEP:

@@ -264,6 +264,12 @@ Creep.prototype.storeEnergy = function(nextTask) {
 Creep.prototype.storeMineral = function(nextTask) {
     const mineralStorage = this._getMineralStorage();
 
+    if (mineralStorage === ERR_NOT_FOUND) {
+        this.say("x~x'''");
+        this.setTask(nextTask);
+        return;
+    }
+
     switch (this.transfer(mineralStorage, this.memory.hauledResourceType)) {
         case OK:
             break;
