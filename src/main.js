@@ -22,6 +22,7 @@ require('prototypes.structurelab.requestedmineral');
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
 require('tools.traveler');
+require('tools.logger');
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
