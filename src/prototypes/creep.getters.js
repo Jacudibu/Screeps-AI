@@ -44,7 +44,12 @@ Creep.prototype._getMineralStorage = function() {
     if (this.memory.taskTargetId) {
         mineralStorage = Game.getObjectById(this.memory.taskTargetId);
         if (mineralStorage) {
-            return mineralStorage;
+            switch(mineralStorage.structureType) {
+                case STRUCTURE_STORAGE:
+                case STRUCTURE_TERMINAL:
+                case STRUCTURE_LAB:
+                    return mineralStorage;
+            }
         }
     }
 
@@ -74,7 +79,7 @@ Creep.prototype._getConstructionSite = function() {
         return ERR_NOT_FOUND;
     }
 
-    let spawns = this.room.find(FIND_MY_SPAWNS);
+    let spawns = this.room.mySpawns;
     if (spawns.length > 0) {
         // TODO: This is inefficient af, maybe do this only in the first few RCL-Levels? Or store the first 5 in memory?
         constructionSites.sort(function (constructionA, constructionB) {
