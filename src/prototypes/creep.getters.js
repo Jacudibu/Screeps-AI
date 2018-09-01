@@ -167,7 +167,22 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
 
 Creep.prototype._getEnergyHaulTarget = function() {
     if (this.memory.taskTargetId) {
-        return Game.getObjectById(this.memory.taskTargetId);
+        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+
+        if (potentialTarget) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.energy) {
+                // only happens below RCL 4 where creeps can haul energy from spawn.
+                return potentialTarget;
+            }
+        }
     }
 
     let potentialTarget = this.findClosestDroppedEnergy();
@@ -216,7 +231,22 @@ Creep.prototype._getEnergyHaulTarget = function() {
 
 Creep.prototype._getAnyResourceHaulTarget = function() {
     if (this.memory.taskTargetId) {
-        return Game.getObjectById(this.memory.taskTargetId);
+        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+
+        if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.energy) {
+                // only happens below RCL 4 where creeps can haul energy from spawn.
+                return potentialTarget;
+            }
+        }
     }
 
     let potentialTarget = this.findHighestDroppedResourceAboveHaulThreshold();

@@ -131,7 +131,6 @@ Creep.prototype.findMineralStorage = function() {
         return this.room.terminal;
     }
 
-    console.log(this.room.name + "|?!?!?!?!?! terminal " + this.room.terminal);
     return ERR_NOT_FOUND;
 };
 
