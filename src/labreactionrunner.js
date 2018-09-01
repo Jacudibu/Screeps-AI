@@ -4,7 +4,7 @@ const IDLE_TIME_IF_NO_MATCH = 1000;
 const IDLE_TIME_ON_GLOBAL_RESET = 50;
 const IDLE_TIME_IF_NO_DEMAND = 250;
 
-const MIN_MINERAL_COUNT_FOR_REACTION = 2000;
+const MIN_MINERAL_COUNT_FOR_REACTION = 1500;
 
 global.REACTIONS_INVERTED = {};
 for (let mineralA in REACTIONS) {
@@ -15,7 +15,7 @@ for (let mineralA in REACTIONS) {
 }
 
 const labReactionRunner = {
-    run: function() {
+    run() {
         for (let roomName in Game.rooms) {
             const room = Game.rooms[roomName];
 
@@ -32,7 +32,7 @@ const labReactionRunner = {
         }
     },
 
-    drawLabVisuals: function(room) {
+    drawLabVisuals(room) {
         for (let lab of room.outputLabs) {
             room.visual.text(lab.mineralType != null ? lab.mineralType : "-", lab.pos, {color: "orange", font: 0.2});
         }
@@ -46,7 +46,7 @@ const labReactionRunner = {
         room.visual.text("current labtask: " + room.labTask + (room.labReaction ? " > " + room.labReaction : ""), 0, 1, {align: 'left'});
     },
 
-    runLabCodeForRoom: function(room) {
+    runLabCodeForRoom(room) {
         switch (room.labTask) {
             case LABTASK.RUN_REACTION:
                 this.doLabReactions(room);
@@ -66,7 +66,7 @@ const labReactionRunner = {
         }
     },
 
-    doLabReactions: function(room) {
+    doLabReactions(room) {
         let result;
         for (let lab of room.outputLabs) {
             result = lab.runReaction(room.inputLabs[0], room.inputLabs[1]);
@@ -97,7 +97,7 @@ const labReactionRunner = {
         room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
     },
 
-    decideWhatToDo: function(room) {
+    decideWhatToDo(room) {
         // Check if demand is empty due to global reset
         if (Object.keys(resourceDemand).length === 0) {
             nextLabTick[room.name] = Game.time + IDLE_TIME_ON_GLOBAL_RESET;
@@ -130,7 +130,7 @@ const labReactionRunner = {
         this.determineReactionMaterials(room);
     },
 
-    shouldKeepCurrentReaction: function(room) {
+    shouldKeepCurrentReaction(room) {
         // Is mineral still in store?
         for (let lab of room.inputLabs) {
             if (lab.requestedMineral == null || (!room.terminal.store[lab.requestedMineral] && !room.storage.store[lab.requestedMineral])) {
@@ -152,7 +152,7 @@ const labReactionRunner = {
         return resourceDemand[room.name].filter(demand => demand.resourceType === room.labReaction).length !== 0;
     },
 
-    determineReactionMaterials: function(room) {
+    determineReactionMaterials(room) {
         const demandWithoutBaseMinerals = resourceDemand[room.name].filter(demand => !BASE_MINERALS.includes(demand.resourceType));
 
         for (let demand of demandWithoutBaseMinerals) {
@@ -183,7 +183,7 @@ const labReactionRunner = {
         nextLabTick[room.name] = Game.time + IDLE_TIME_IF_NO_MATCH;
     },
 
-    makeEmpty: function(room) {
+    makeEmpty(room) {
         if (this.areLabsEmpty(room)) {
             room.labTask = LABTASK.DECIDE_WHAT_TO_DO
         } else {
@@ -191,7 +191,7 @@ const labReactionRunner = {
         }
     },
 
-    areLabsEmpty: function(room) {
+    areLabsEmpty(room) {
         for (let lab of room.myLabs) {
             if (lab.mineralAmount > 0) {
                 return false;
