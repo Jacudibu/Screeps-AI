@@ -1,5 +1,5 @@
 const reserver = {
-    run: function(creep) {
+    run(creep) {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
@@ -23,4 +23,5 @@ const reserver = {
         }
     }
 };
+
 module.exports = reserver;

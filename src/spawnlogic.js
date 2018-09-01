@@ -1,5 +1,5 @@
 const spawnlogic = {
-    run: function() {
+    run() {
         for (const i in Game.rooms) {
             let room = Game.rooms[i];
 
@@ -41,7 +41,7 @@ const spawnlogic = {
         }
     },
 
-    checkAndSpawnDefenderIfNecessary: function(room) {
+    checkAndSpawnDefenderIfNecessary(room) {
         if (room.memory.requiresHelp) {
             room.memory.requiresHelp = false;
             room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: room.name});
@@ -51,7 +51,7 @@ const spawnlogic = {
         return false;
     },
 
-    tryAddingNewCreepToSpawnQueue: function(room, spawns) {
+    tryAddingNewCreepToSpawnQueue(room, spawns) {
         if (room.memory.requestedCreeps === undefined) {
             room.initSpawnMemory(room);
         }
@@ -107,19 +107,19 @@ const spawnlogic = {
         this.checkRemoteMiningRooms(room);
     },
 
-    areThereEnoughResourcesToSpawnRole: function(room) {
+    areThereEnoughResourcesToSpawnRole(room) {
         return room.energyCapacityAvailable === room.energyAvailable;
     },
 
-    shiftElementFromSpawnQueue: function(room) {
+    shiftElementFromSpawnQueue(room) {
         return room.memory.spawnQueue.shift();
     },
 
-    peekFirstElementFromSpawnQueue: function(room) {
+    peekFirstElementFromSpawnQueue(room) {
         return room.memory.spawnQueue[0];
     },
 
-    searchUnoccupiedSpawnAndSpawnNewCreepWithArgs: function(spawns, args) {
+    searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, args) {
         for(let i = 0; i < spawns.length; i++) {
             let spawn = spawns[i];
             if (spawn.spawning) {
@@ -132,7 +132,7 @@ const spawnlogic = {
         return ERR_BUSY;
     },
 
-    spawnCreepWithArgs: function(spawn, args) {
+    spawnCreepWithArgs(spawn, args) {
         const energy = spawn.room.energyCapacityAvailable;
 
         switch (args.role) {
@@ -172,7 +172,7 @@ const spawnlogic = {
         }
     },
 
-    isRoleNeeded: function(room, spawns, role) {
+    isRoleNeeded(room, spawns, role) {
         // is said role already being spawned?
         for (let i = 0; i < spawns.length; i++) {
             if (spawns[i].spawning && Memory.creeps[spawns[i].spawning.name].role === role) {
@@ -255,7 +255,7 @@ const spawnlogic = {
         }
     },
 
-    checkRemoteMiningRoomsAndSpawnDefenderIfNecessary: function(room) {
+    checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room) {
         let remoteMiningRooms = room.memory.remoteMiningRooms;
 
         if (!remoteMiningRooms || remoteMiningRooms.length === 0) {

@@ -10,8 +10,7 @@ global.resourceDemand = {};
 global.resourceSupply = {};
 
 const terminalResourceDistribution = {
-
-    run: function() {
+    run() {
         if (Game.time % DISTRIBUTION_INTERVAL !== 0) {
             return;
         }
@@ -37,7 +36,7 @@ const terminalResourceDistribution = {
         this.sellRemainingSupplyOnMarket(terminals);
     },
 
-    addToDemandList: function(roomName, resourceType, amount) {
+    addToDemandList(roomName, resourceType, amount) {
         if (amount < MIN_DEMAND_AMOUNT) {
             return;
         }
@@ -52,7 +51,7 @@ const terminalResourceDistribution = {
         });
     },
 
-    addToSupplyList: function(roomName, resourceType, amount) {
+    addToSupplyList(roomName, resourceType, amount) {
         if (amount < MIN_SUPPLY_AMOUNT) {
             return;
         }
@@ -67,7 +66,7 @@ const terminalResourceDistribution = {
         });
     },
 
-    matchSupplyAndDemand: function() {
+    matchSupplyAndDemand() {
         let supplyKeys = _.shuffle(Object.keys(resourceSupply));
         let demandKeys = _.shuffle(Object.keys(resourceDemand));
 
@@ -86,7 +85,7 @@ const terminalResourceDistribution = {
         }
     },
 
-    makeInternalTransactions: function(supplierRoomName, supply, demanderRoomName, demand) {
+    makeInternalTransactions(supplierRoomName, supply, demanderRoomName, demand) {
         for (let supplyData of supply) {
             for (let demandData of demand) {
                 if (supplyData.resourceType === demandData.resourceType) {
@@ -122,7 +121,7 @@ const terminalResourceDistribution = {
         return NO_DEAL;
     },
 
-    sellRemainingSupplyOnMarket: function(terminals) {
+    sellRemainingSupplyOnMarket(terminals) {
         if (resourceSupply.length === 0) {
             return;
         }

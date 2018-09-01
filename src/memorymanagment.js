@@ -1,18 +1,18 @@
 const memoryManagment = {
 
-    run: function() {
+    run() {
         this.deleteDeadCreeps();
         this.resetRoomCaches();
     },
 
-    resetRoomCaches: function() {
+    resetRoomCaches() {
         for (let roomName in Game.rooms) {
             Game.rooms[roomName]._freeSpawnsTowersAndExtensions = undefined;
             Game.rooms[roomName]._emptyPublicEnergyContainers = undefined;
         }
     },
 
-    deleteDeadCreeps: function() {
+    deleteDeadCreeps() {
         for(let creepName in Memory.creeps) {
             if(Game.creeps[creepName]) {
                 continue;
@@ -25,7 +25,7 @@ const memoryManagment = {
         }
     },
 
-    deleteRoleSpecificStuff: function (creep) {
+    deleteRoleSpecificStuff(creep) {
         switch (creep.role)
         {
             case ROLE.HARVESTER:

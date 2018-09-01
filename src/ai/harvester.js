@@ -1,5 +1,5 @@
 const harvester = {
-    run: function (creep) {
+    run(creep) {
         switch (creep.memory.task) {
             case TASK.HARVEST_ENERGY:
                 creep.harvestEnergy();

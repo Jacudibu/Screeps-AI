@@ -1,5 +1,5 @@
 const roomLogic = {
-    run: function () {
+    run() {
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
             room.update();

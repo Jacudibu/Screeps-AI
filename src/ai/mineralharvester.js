@@ -1,5 +1,5 @@
 const mineralHarvester = {
-    run: function (creep) {
+    run(creep) {
         switch (creep.memory.task) {
             case TASK.HARVEST_MINERAL:
                 creep.harvestMineral();

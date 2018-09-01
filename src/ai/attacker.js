@@ -1,5 +1,5 @@
 const attacker = {
-    run: function (creep) {
+    run(creep) {
         if (creep.hits < creep.hitsMax && !creep.memory.taskTargetId) {
             creep.heal(creep);
         }

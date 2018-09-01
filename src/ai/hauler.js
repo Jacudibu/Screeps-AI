@@ -1,5 +1,5 @@
 const hauler = {
-    run: function (creep) {
+    run(creep) {
         switch (creep.memory.task) {
             case TASK.HAUL_RESOURCE:
                 creep.haulAnyResource(TASK.STORE_RESOURCE);

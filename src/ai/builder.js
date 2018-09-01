@@ -1,5 +1,5 @@
 const builder = {
-    run: function (creep) {
+    run(creep) {
         switch (creep.memory.task) {
             case TASK.COLLECT_ENERGY:
                 creep.collectEnergy(TASK.BUILD_STRUCTURE);

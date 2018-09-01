@@ -18,7 +18,7 @@ const defenderAI            = require('ai.defender');
 const carrierAI             = require('ai.carrier');
 
 const creepAi = {
-    run: function() {
+    run() {
         for (let name in Game.creeps) {
             // noinspection JSUnfilteredForInLoop
             let creep = Game.creeps[name];
@@ -31,7 +31,7 @@ const creepAi = {
         }
     },
 
-    _tryRunCreepLogic: function(creep) {
+    _tryRunCreepLogic(creep) {
         try {
             this._runCreepLogic(creep);
         } catch (e) {
