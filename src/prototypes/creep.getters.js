@@ -191,9 +191,24 @@ Creep.prototype._getEnergyHaulTarget = function() {
         }
     }
 
-    if(this.room.hostileStorage) {
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
-        return this.room.hostileStorage;
+    if (this.room.controller.my) {
+        return ERR_NOT_FOUND;
+    }
+
+    // Hostile structure looting!
+    let hostileStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
+    for (let structure of hostileStructures) {
+        if (structure.energy) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
+
+        if (structure.store && structure.store[RESOURCE_ENERGY]) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
     }
 
     return ERR_NOT_FOUND;
