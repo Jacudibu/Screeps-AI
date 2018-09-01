@@ -72,12 +72,12 @@ const labReactionRunner = {
             result = lab.runReaction(room.inputLabs[0], room.inputLabs[1]);
         }
 
-        if (result !== OK || result !== ERR_FULL || result !== ERR_TIRED) {
+        if (result === OK || result === ERR_FULL || result === ERR_TIRED) {
             nextLabTick[room.name] = Game.time + REACTION_TIME[room.labReaction];
             return;
         }
 
-        if (room.inputLabs[0].requestedMineral) {
+        if (room.inputLabs[0].requestedMineral && room.inputLabs[1].requestedMineral) {
             // Lab just went empty.
             room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
             return;

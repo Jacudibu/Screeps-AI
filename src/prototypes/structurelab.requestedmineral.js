@@ -8,7 +8,7 @@ Object.defineProperty(StructureLab.prototype, "requestedMineral", {
             if (labRequests[this.id]) {
                 return this._requestedMineral = labRequests[this.id];
             } else {
-                return this._requestedMineral = this.mineralType;
+                return this._requestedMineral = null;
             }
         }
     },
