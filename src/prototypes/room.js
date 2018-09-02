@@ -64,10 +64,7 @@ Room.prototype.removePublicEnergyContainer = function(containerId) {
         return;
     }
 
-    let index = this.memory.publicEnergyContainers.indexOf(containerId);
-    if (index > -1) {
-        this.memory.publicEnergyContainers.splice(index, 1);
-    }
+    _.remove(this.memory.publicEnergyContainers, id => id ===containerId);
 };
 
 Room.prototype.setAutoSpawn = function(shouldSpawn) {
@@ -181,12 +178,9 @@ Room.prototype.getEmptyPublicEnergyContainers = function() {
             return ERR_NOT_FOUND;
         }
 
-        this._emptyPublicEnergyContainers = this.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (publicEnergyContainerMemoryEntry.includes(structure.id)
-                    && _.sum(structure.store) < structure.storeCapacity);
-            }
-        });
+        this._emptyPublicEnergyContainers = this.memory.publicEnergyContainers
+            .map(id => Game.getObjectById(id))
+            .filter(container => container && (_.sum(container.store) < container.storeCapacity));
     }
 
     if (this._emptyPublicEnergyContainers.length === 0) {

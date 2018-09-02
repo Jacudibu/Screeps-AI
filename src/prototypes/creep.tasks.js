@@ -71,9 +71,29 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
             break;
     }
 
-    if (this.carry.energy === this.carryCapacity) {
-        source.memory.workersAssigned--;
-        this.setTask(taskWhenFinished);
+    if (_.sum(this.carry) === this.carryCapacity) {
+        if (source.nearbyContainer) {
+            if (source.nearbyContainer.hits < source.nearbyContainer.hitsMax) {
+                if (this.repair(source.nearbyContainer)) {
+                    this.travelTo(source.nearbyContainer);
+                }
+                this.say("ò.ó", true);
+            } else {
+                if (this.task !== TASK.HARVEST_ENERGY_FETCH) {
+                    source.memory.workersAssigned--;
+                    this.setTask(taskWhenFinished);
+                } else {
+                    this.say('ಥ~ಥ');
+                    this.drop(RESOURCE_ENERGY);
+                }
+            }
+        } else {
+            let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
+            if (constructionSites.length > 0) {
+                this.build(constructionSites[0]);
+                this.say("ô.o", true);
+            }
+        }
     }
 };
 
@@ -337,13 +357,16 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         return;
     }
 
-    let targetPos = source.getContainerPosition();
+    let targetPos = source.getNearbyContainerPosition();
 
     if (targetPos === ERR_NOT_FOUND) {
-        this.say("x~x");
-        return;
-    } else {
-        this.memory.containerId = source.memory.containerId;
+        source.forceNearbyContainerReload();
+        targetPos = source.getNearbyContainerPosition();
+        if (targetPos === ERR_NOT_FOUND) {
+            console.warning(this.room.name + "|Container was apparently destroyed or has decayed! OH NOEZ!");
+            this.say("x~x");
+            return;
+        }
     }
 
     this.travelTo(targetPos);
@@ -359,7 +382,7 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
         return;
     }
 
-    let targetPos = mineral.getContainerPosition();
+    let targetPos = mineral.getNearbyContainerPosition();
 
     if (targetPos === ERR_NOT_FOUND) {
         this.memory.task = taskWhenFinished;
@@ -387,7 +410,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
         return;
     }
 
-    let containerPosition = source.getContainerPosition();
+    let containerPosition = source.getNearbyContainerPosition();
     if (containerPosition === ERR_NOT_FOUND) {
         this.memory.task = taskWhenNoContainerAvailable;
     } else {

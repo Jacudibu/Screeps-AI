@@ -15,6 +15,7 @@ require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.update');
 require('prototypes.source');
+require('prototypes.source.container');
 require('prototypes.spawn');
 require('prototypes.structure');
 require('prototypes.structurelab.requestedmineral');

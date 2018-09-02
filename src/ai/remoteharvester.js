@@ -13,34 +13,13 @@ const remoteWorker = {
                     }
                     return;
                 }
-
-                if (creep.memory.containerId !== undefined) {
-                    let container = Game.getObjectById(creep.memory.containerId);
-                    if (container.hits < container.hitsMax) {
-                        if (creep.repair(container) === ERR_NOT_IN_RANGE) {
-                            creep.travelTo(container);
-                        }
-                        creep.say("ò.ó", true);
-                        return;
-                    }
-                } else {
-                    let constructionSites = creep.room.lookForAt(LOOK_CONSTRUCTION_SITES, creep.pos);
-                    if (constructionSites.length > 0) {
-                        creep.build(constructionSites[0]);
-                        creep.say("ô.o", true);
-                        return;
-                    }
-                }
-
-                creep.say('ಥ~ಥ');
-                creep.drop(RESOURCE_ENERGY);
                 creep.setTask(TASK.HARVEST_ENERGY_FETCH);
                 break;
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.HARVEST_ENERGY_FETCH:
-                creep.harvestEnergyAndFetch(TASK.DECIDE_WHAT_TO_DO);
+                creep.harvestEnergyAndFetch(TASK.HARVEST_ENERGY_FETCH);
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);

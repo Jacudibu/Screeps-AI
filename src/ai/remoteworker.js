@@ -11,17 +11,6 @@ const remoteWorker = {
                     return;
                 }
 
-                if (creep.memory.containerId) {
-                    let container = Game.getObjectById(creep.memory.containerId);
-                    if (container.hits < container.hitsMax) {
-                        if (creep.repair(container) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(container);
-                        }
-                        creep.say("ò.ó", true);
-                        return;
-                    }
-                }
-
                 if (creep._getDamagedStructure(0.5, true) !== ERR_NOT_FOUND) {
                     creep.memory.task = TASK.REPAIR_STRUCTURE;
                     return;

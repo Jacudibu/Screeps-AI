@@ -16,7 +16,6 @@ Creep.prototype._getSource = function() {
 
     source.memory.workersAssigned++;
     this.memory.taskTargetId = source.id;
-    this.memory.containerId = source.memory.containerId;
     return source;
 };
 
