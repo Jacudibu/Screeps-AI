@@ -269,10 +269,10 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
         route = this.room.memory.repairRoute;
     }
 
-    if (Memory[this.memory.spawnRoom].repairRoute) {
-        if (route.length < Memory[this.memory.spawnRoom].repairRoute) {
+    if (this.room.memory.repairRoute) {
+        if (route.length < this.room.memory.repairRoute.length) {
             log.info("Found a longer (and therefore probably newer) repair route. Overriding...");
-            route = Memory[this.memory.spawnRoom].repairRoute;
+            route = this.room.memory.repairRoute;
         }
     }
 
