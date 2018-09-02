@@ -31,7 +31,11 @@ const carrier = {
                 creep.collectEnergy(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.STORE_ENERGY:
-                creep.storeEnergy(TASK.DECIDE_WHAT_TO_DO);
+                if (creep.carry[RESOURCE_ENERGY] > 0) {
+                    creep.storeEnergy(TASK.DECIDE_WHAT_TO_DO);
+                } else {
+                    creep.setTask(TASK.DECIDE_WHAT_TO_DO);
+                }
                 break;
             case TASK.RECYCLE:
                 creep.recycle();

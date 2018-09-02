@@ -79,7 +79,7 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
                 }
                 this.say("ò.ó", true);
             } else {
-                if (this.task !== TASK.HARVEST_ENERGY_FETCH) {
+                if (taskWhenFinished !== TASK.HARVEST_ENERGY_FETCH) {
                     source.memory.workersAssigned--;
                     this.setTask(taskWhenFinished);
                 } else {
@@ -88,10 +88,15 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
                 }
             }
         } else {
-            let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
-            if (constructionSites.length > 0) {
-                this.build(constructionSites[0]);
-                this.say("ô.o", true);
+            if (taskWhenFinished !== TASK.HARVEST_ENERGY_FETCH) {
+                source.memory.workersAssigned--;
+                this.setTask(taskWhenFinished);
+            } else {
+                let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
+                if (constructionSites.length > 0) {
+                    this.build(constructionSites[0]);
+                    this.say("ô.o", true);
+                }
             }
         }
     }
@@ -363,8 +368,9 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         source.forceNearbyContainerReload();
         targetPos = source.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
-            console.warning(this.room.name + "|Container was apparently destroyed or has decayed! OH NOEZ!");
+            log.warning(this.room.name + "|Container was apparently destroyed or has decayed! OH NOEZ!");
             this.say("x~x");
+            this.memory.task = taskWhenFinished;
             return;
         }
     }

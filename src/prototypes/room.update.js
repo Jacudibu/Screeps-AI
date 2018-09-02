@@ -48,7 +48,7 @@ Room.prototype.respondToThreat = function() {
 
     if (this.memory.requiresHelp === undefined) {
         this.memory.requiresHelp = true;
-        if (this._threat.players[0] !== "Invader" && this._threat.players[0] !== "Source Keeper") {
+        if (this._threat.players[0] !== "Invader" && this._threat.players[0] !== "Source Keeper" && this.controller && this.controller.my) {
             const message = this.name + " is being attacked by " + JSON.stringify(this._threat.players) + "<br>" +
                                         "Threat info: " + JSON.stringify(this._threat, null, 2);
             log.warning(message);

@@ -9,8 +9,12 @@ Object.defineProperty(Source.prototype, "nearbyContainer", {
             return this._nearbyContainer = Game.getObjectById(containerIds[this.id]);
         } else {
             const container = this._findNearbyContainer();
-            containerIds[this.id] = container.id;
-            return this._nearbyContainer = container;
+            if (container) {
+                containerIds[this.id] = container.id;
+                return this._nearbyContainer = container;
+            } else {
+                return undefined;
+            }
         }
     },
     set: function() {},
@@ -37,5 +41,8 @@ Source.prototype.getNearbyContainerPosition = function() {
 };
 
 Source.prototype.forceNearbyContainerReload = function() {
-    containerIds[this.id] = this._findNearbyContainer().id;
+    const container = this._findNearbyContainer();
+    if (container) {
+        containerIds[this.id] = container.id;
+    }
 };

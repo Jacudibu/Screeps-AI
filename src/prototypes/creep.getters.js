@@ -71,7 +71,7 @@ Creep.prototype._getConstructionSite = function() {
     }
 
     let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES, {
-        filter: (c) => c.owner = 'Jacudibu'
+        filter: (c) => c.my
     });
 
     if (constructionSites.length === 0) {
@@ -108,8 +108,16 @@ Creep.prototype._getConstructionSite = function() {
             }
         });
     } else {
-        // No spawn, just get the closest structure to our creep
-        constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this));
+        // No spawn, so check if we can build one!
+        let spawnSites = constructionSites.filter(site => site.structureType === STRUCTURE_SPAWN);
+        if (spawnSites.length > 0) {
+            // yippieeeh!
+            constructionSites = spawnSites;
+        } else {
+            // :(
+            // just get the closest structure to our creep then, lol.
+            constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this));
+        }
     }
 
     this.memory.taskTargetId = constructionSites[0].id;
