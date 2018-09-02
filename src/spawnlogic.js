@@ -2,43 +2,58 @@ const spawnlogic = {
     run() {
         for (const i in Game.rooms) {
             let room = Game.rooms[i];
-
-            const spawns = room.mySpawns;
-            if (spawns.length === 0) {
-                continue;
-            }
-
-            let allSpawnsBusy = true;
-            for(let i = 0; i < spawns.length; i++) {
-                let spawn = spawns[i];
-                if (spawn && spawn.spawning) {
-                    spawn.drawSpawnInfo();
-                } else {
-                    allSpawnsBusy = false;
-                }
-            }
-
-            if (allSpawnsBusy) {
-                continue;
-            }
-
-            if (room.isSpawnQueueEmpty()) {
-                this.tryAddingNewCreepToSpawnQueue(room, spawns);
-            } else {
-                this.checkAndSpawnDefenderIfNecessary(room);
-                this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room);
-            }
-
-            // If something was added the spawnqueue was changed
-            if (!room.isSpawnQueueEmpty()) {
-                room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
-                if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
-                    this.shiftElementFromSpawnQueue(room);
-                }
-            }
-
-            room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
+            this.tryRunSpawnLogic(room);
         }
+    },
+
+    tryRunSpawnLogic(room) {
+        try {
+            this.runSpawnLogic(room);
+        } catch (e) {
+            let message = room.name + "|RunSpawnLogic -> caught error: " + e;
+            if (e.stack) {
+                message += "\nTrace:\n" + e.stack;
+            }
+            log.error(message);
+        }
+    },
+
+    runSpawnLogic(room) {
+        const spawns = room.mySpawns;
+        if (spawns.length === 0) {
+            return;
+        }
+
+        let allSpawnsBusy = true;
+        for(let i = 0; i < spawns.length; i++) {
+            let spawn = spawns[i];
+            if (spawn && spawn.spawning) {
+                spawn.drawSpawnInfo();
+            } else {
+                allSpawnsBusy = false;
+            }
+        }
+
+        if (allSpawnsBusy) {
+            return;
+        }
+
+        if (room.isSpawnQueueEmpty()) {
+            this.tryAddingNewCreepToSpawnQueue(room, spawns);
+        } else {
+            this.checkAndSpawnDefenderIfNecessary(room);
+            this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room);
+        }
+
+        // If something was added the spawnqueue was changed
+        if (!room.isSpawnQueueEmpty()) {
+            room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
+            if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
+                this.shiftElementFromSpawnQueue(room);
+            }
+        }
+
+        room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
     },
 
     checkAndSpawnDefenderIfNecessary(room) {

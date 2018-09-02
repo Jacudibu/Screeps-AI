@@ -1,21 +1,60 @@
 Room.prototype.update = function() {
     this.checkForHostiles();
-    this.respondToHostiles();
+    this.updateThreat();
+    this.respondToThreat();
     this.repairDamagedCreeps();
 };
 
-Room.prototype.respondToHostiles = function() {
+Room.prototype.updateThreat = function() {
     if (this._hostiles.length === 0) {
+        this._threat = null;
+        this.memory.threat = undefined; // TODO: Remove
+        return;
+    }
+
+    let threat = {
+        players: [],
+        attack: 0,
+        ranged: 0,
+        heal: 0,
+        tough: 0,
+        claim: 0,
+        other: 0,
+        total: 0,
+    };
+
+    for (let creep of this._hostiles) {
+        if (!threat.players.includes(creep.owner.username)) {
+            threat.players.push(creep.owner.username);
+        }
+
+        threat.attack += creep.countBodyPartsOfType(ATTACK);
+        threat.ranged += creep.countBodyPartsOfType(RANGED_ATTACK);
+        threat.heal   += creep.countBodyPartsOfType(HEAL);
+        threat.tough  += creep.countBodyPartsOfType(TOUGH);
+        threat.claim  += creep.countBodyPartsOfType(CLAIM);
+        threat.other  += creep.countBodyPartsOfType(MOVE) + creep.countBodyPartsOfType(CARRY);
+        threat.total  += creep.body.length;
+    }
+
+    JSON.stringify(threat);
+    this._threat = threat;
+};
+
+Room.prototype.respondToThreat = function() {
+    if (!this._threat) {
         this.memory.requiresHelp = undefined;
         return;
     }
 
     if (this.memory.requiresHelp === undefined) {
         this.memory.requiresHelp = true;
-        if (this._hostiles[0].owner && this._hostiles[0].owner.username && this._hostiles[0].owner.username !== "Invader") {
-            Game.notify(this.name + " is being attacked by " + this._hostiles[0].owner.username +
-                "   First creep detected has the following body: " + JSON.stringify(this._hostiles[0].body, null, 2));
-        }
+//        if (this._threat.players[0] !== "Invader") {
+            const message = this.name + " is being attacked by " + JSON.stringify(this._threat.players) + "<br>" +
+                                        "Threat info: " + JSON.stringify(this._threat, null, 2);
+            log.warning(message);
+            Game.notify(message);
+//        }
     }
 
     this.sortHostilesByPriority();

@@ -1,15 +1,16 @@
  h  |   Task 
 :---:|  ----
- 1  |   Threat meter
  1  |   Threat response
- 2  |   Make Harvesters use Links
+ 1  |   Remote Repairer -> Use route index instead of copying route
+ 4  |   Grouping Creeps into Squads
  ?  |   Boost code
+ 1  |   Increse threat if a creep has boosted bodyparts
+ 2  |   Make Harvesters use Links
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
  3  |   Memory cleanup method to fix memory fuckups
  1  |   Detect if remote builder is needed and spawn one automatically
  1  |   Extract Creeptalk Strings into seperate file for fast editing
  3  |   Adjust Upgrader count depending on total energy storage
- 4  |   Grouping Creeps into Squads
  4  |   Proper Healer AI
  2  |   Respawn Timer fine-tuning
  3  |   Nice looking Room Visuals hinting at rooms with problems / fights etc.
