@@ -15,7 +15,7 @@ function collectStats() {
     }
 
     if (!lastGlobalReset) {
-        console.log("Global reset registered!");
+        log.info("Global reset registered!");
         lastGlobalReset = Game.time;
         Memory.stats.lastGlobalReset = lastGlobalReset;
     }

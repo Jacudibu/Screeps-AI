@@ -39,8 +39,7 @@ const creepAi = {
             if (e.stack) {
                 message += "\nTrace:\n" + e.stack;
             }
-            console.log(message);
-            Game.notify(message, 5);
+            log.error(message);
         }
     },
 
@@ -48,7 +47,6 @@ const creepAi = {
         if (creep.memory.respawnTTL) {
             if (creep.ticksToLive < creep.memory.respawnTTL) {
                 creep.addRespawnEntryToSpawnQueue();
-                // console.log(creep.room + "|" + creep.name + " - respawn in " + creep.memory.spawnRoom + " registered.");
             }
         }
 

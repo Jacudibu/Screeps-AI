@@ -164,7 +164,7 @@ Spawn.prototype.spawnUpgrader = function(energy) {
 
 Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawnTTL) {
     if (targetRoomName === undefined) {
-        console.log("remoteRoomWorker needs a targetRoomName");
+        log.info("remoteRoomWorker needs a targetRoomName");
         return;
     }
 
@@ -195,7 +195,7 @@ Spawn.prototype.spawnRemoteWorker = function(energy, targetRoomName, respawnTTL)
 
 Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
     if (!targetRoomName) {
-        console.log("Unable to Spawn remote hauler, no target room name provided.");
+        log.info("Unable to Spawn remote hauler, no target room name provided.");
         return;
     }
 
@@ -227,7 +227,7 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
 
 Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
     if (targetRoomName === undefined) {
-        console.log("remoteHarvester needs a targetRoomName");
+        log.info("remoteHarvester needs a targetRoomName");
         return;
     }
 
@@ -260,19 +260,19 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
 
 Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
     if (!route) {
-        console.log("Room route not provided. Using default queue for room.");
+        log.info("Room route not provided. Using default queue for room.");
         if (!this.room.memory.repairRoute) {
-            console.log("Unable to find default repair route for room. Cancelling spawn request...");
+            log.info("Unable to find default repair route for room. Cancelling spawn request...");
             return;
         }
 
         route = this.room.memory.repairRoute;
     }
 
-    if (this.room.memory.repairRoute) {
-        if (route.length < this.room.memory.repairRoute) {
-            console.log("Found a longer (and therefore probably newer) repair route. Overriding...");
-            route = this.room.memory.repairRoute;
+    if (Memory[this.memory.spawnRoom].repairRoute) {
+        if (route.length < Memory[this.memory.spawnRoom].repairRoute) {
+            log.info("Found a longer (and therefore probably newer) repair route. Overriding...");
+            route = Memory[this.memory.spawnRoom].repairRoute;
         }
     }
 
@@ -308,7 +308,7 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
 
 Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTTL) {
     if (!targetRoomName) {
-        console.log("spawnRemoteUpgrader: no TargetRoomName provided");
+        log.info("spawnRemoteUpgrader: no TargetRoomName provided");
         return;
     }
 
@@ -339,7 +339,7 @@ Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTT
 
 Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
     if (!targetRoomName) {
-        console.log("Unable to Spawn claimer, no target room name provided.");
+        log.info("Unable to Spawn claimer, no target room name provided.");
         return;
     }
 
@@ -361,7 +361,7 @@ Spawn.prototype.spawnClaimer = function(energy, targetRoomName) {
 
 Spawn.prototype.spawnClaimerAttacker = function(energy, targetRoomName) {
     if (!targetRoomName) {
-        console.log("Unable to Spawn claimerattacker, no target room name provided.");
+        log.info("Unable to Spawn claimerattacker, no target room name provided.");
         return;
     }
 
@@ -386,7 +386,7 @@ Spawn.prototype.spawnClaimerAttacker = function(energy, targetRoomName) {
 
 Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
     if (!targetRoomName) {
-        console.log("Unable to Spawn reserver, no target room name provided.");
+        log.info("Unable to Spawn reserver, no target room name provided.");
         return ERR_INVALID_TARGET;
     }
 
@@ -436,7 +436,7 @@ Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     let body = [];
 
     if (energy < 4 * 10 + 25 * 50 + 7 * 80 + 14 * 250) {
-        console.log("not enough energy. Need at least 5350 for that monstrosity..");
+        log.info("not enough energy. Need at least 5350 for that monstrosity..");
         return;
     }
 
@@ -520,7 +520,7 @@ Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
 
 Spawn.prototype.spawnCarrier = function(energy, targetRoomName, storageRoomName, respawnTTL) {
     if (!targetRoomName) {
-        console.log("Unable to Spawn carrier, no target room name provided.");
+        log.info("Unable to Spawn carrier, no target room name provided.");
         return;
     }
 
@@ -566,7 +566,7 @@ Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
         case ERR_NOT_ENOUGH_ENERGY:
             break;
         default:
-            console.log("unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
+            log.warning("unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
                 + "\nBody: " + body + " name:" + name + "memory:" + opts);
             break;
     }

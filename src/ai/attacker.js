@@ -52,7 +52,6 @@ const attacker = {
                         creep.setTask(TASK.WAIT_FOR_INPUT);
                         break;
                     default:
-                        console.log("??");
                         break;
                 }
                 break;

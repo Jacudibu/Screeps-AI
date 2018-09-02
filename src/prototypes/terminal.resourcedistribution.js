@@ -98,7 +98,7 @@ const terminalResourceDistribution = {
 
                     let result = Game.rooms[supplierRoomName].terminal.send(supplyData.resourceType, amount, demanderRoomName);
                     if (result !== OK) {
-                        console.log("Unexpected Error when distributing " + amount + " " + supplyData.resourceType + " from "
+                        log.warning("Unexpected Error when distributing " + amount + " " + supplyData.resourceType + " from "
                             + supplierRoomName + " to " + demanderRoomName + ": " + result);
 
                         return NO_DEAL;

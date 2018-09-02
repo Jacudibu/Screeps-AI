@@ -173,8 +173,8 @@ function profileObjectFunctions(object, label) {
 function profileFunction(fn, functionName) {
     const fnName = functionName || fn.name;
     if (!fnName) {
-        console.log('Couldn\'t find a function name for - ', fn);
-        console.log('Will not profile this function.');
+        log.warning('Couldn\'t find a function name for - ', fn);
+        log.warning('Will not profile this function.');
         return fn;
     }
 

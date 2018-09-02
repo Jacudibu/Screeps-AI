@@ -15,7 +15,7 @@ Creep.prototype.countBodyPartsOfType = function(types) {
 };
 
 Creep.prototype.logActionError = function(action, errorCode) {
-    console.log(this.room.name + " |" + this.name + ": " + action + " resulted in unhandled error code " + errorCode)
+    log.warning(this.room.name + " |" + this.name + ": " + action + " resulted in unhandled error code " + errorCode)
 };
 
 Creep.prototype.addRespawnEntryToSpawnQueue = function() {
@@ -63,7 +63,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;
         default:
-            console.log("undefined role asking for respawn?!" + args.role);
+            log.warning("undefined role asking for respawn?!" + args.role);
     }
 
     this.memory.respawnTTL = undefined;

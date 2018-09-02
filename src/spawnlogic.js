@@ -167,7 +167,7 @@ const spawnlogic = {
             case ROLE.MINERAL_HARVESTER:
                 return spawn.spawnMineralHarvester(energy);
             default:
-                console.log("Unknown role requested to spawn: " + args.role);
+                log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue
         }
     },
@@ -186,7 +186,7 @@ const spawnlogic = {
         }
 
         for (let args of room.memory.spawnQueue) {
-            console.log(args.role);
+            // TODO: This part seems to be never reached, check why
             if (args.role === role) {
                 return false;
             }
@@ -220,7 +220,7 @@ const spawnlogic = {
                 if (Game.rooms[remoteMiningRoom[i]]) {
                     Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
-                    console.log(room.name + " ---> " + remoteMiningRooms[i] + "|no vision to set up remote mining room source memory at index " + i);
+                    log.info(room.name + " ---> " + remoteMiningRooms[i] + "|no vision to set up remote mining room source memory at index " + i);
                     continue;
                 }
             }

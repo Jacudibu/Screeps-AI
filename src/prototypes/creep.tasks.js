@@ -296,7 +296,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             break;
         case ERR_INVALID_TARGET:
             this.say("WAT");
-            console.log(this.room.name + "|Invalid target on store mineral?! " + mineralStorage);
+            this.logActionError("invalid target store mineral: " + mineralStorage, this.transfer(mineralStorage, this.memory.hauledResourceType));
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
         default:
@@ -382,7 +382,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
         if (this.ticksToLive < 1200) {
-            console.log(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
+            log.info(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
         }
         return;
     }

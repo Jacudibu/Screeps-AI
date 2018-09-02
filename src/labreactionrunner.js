@@ -93,7 +93,7 @@ const labReactionRunner = {
         }
 
         // Something has gone wrong, I guess.
-        console.log(room.name + "|Reactions have not been set up, but current lab state is runReactions");
+        log.warning(room.name + "|Reactions have not been set up, but current lab state is runReactions");
         room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
     },
 
