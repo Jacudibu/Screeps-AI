@@ -119,6 +119,14 @@ Room.prototype.commandTowersToHealCreep = function(target) {
     target.say("=^~^=", true);
 };
 
+Room.prototype.commandTowersToRepairStructure = function(target) {
+    const towers = this.myTowers;
+
+    for (let i = 0; i < towers.length; i++) {
+        towers[i].repair(target);
+    }
+};
+
 Room.prototype.findDamagedCreeps = function() {
     return _.filter(this.find(FIND_MY_CREEPS), function (creep) {
         return creep.hits < creep.hitsMax;

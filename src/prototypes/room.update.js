@@ -3,6 +3,7 @@ Room.prototype.update = function() {
     this.updateThreat();
     this.respondToThreat();
     this.repairDamagedCreeps();
+    this.repairAlmostBrokenRamparts();
 };
 
 Room.prototype.updateThreat = function() {
@@ -87,6 +88,15 @@ Room.prototype.repairDamagedCreeps = function() {
     let damagedCreeps = this.findDamagedCreeps();
     if (damagedCreeps.length > 0) {
         this.commandTowersToHealCreep(damagedCreeps[0]);
+    }
+};
+
+Room.prototype.repairAlmostBrokenRamparts = function() {
+    for(let rampart of this.ramparts) {
+        if (rampart.hits < 1500) {
+            this.commandTowersToRepairStructure(rampart);
+            return;
+        }
     }
 };
 
