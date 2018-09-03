@@ -5,15 +5,15 @@ Object.defineProperty(Room.prototype, "controllerLink", {
         if (this._controllerLink) {
             return this._controllerLink;
         }
-        if (controllerLinkIds[this.id]) {
-            return this._controllerLink = Game.getObjectById(controllerLinkIds[this.id]);
+        if (controllerLinkIds[this.name]) {
+            return this._controllerLink = Game.getObjectById(controllerLinkIds[this.name]);
         } else {
             const link = this._findControllerLink();
             if (link) {
-                controllerLinkIds[this.id] = link.id;
+                controllerLinkIds[this.name] = link.id;
                 return this._controllerLink = link;
             } else {
-                controllerLinkIds[this.id] = null;
+                controllerLinkIds[this.name] = null;
                 return this._controllerLink = null;
             }
         }
@@ -36,6 +36,6 @@ Room.prototype._findControllerLink = function() {
 Room.prototype.forceControllerLinkReload = function() {
     const link = this._findControllerLink();
     if (link) {
-        controllerLinkIds[this.id] = link.id;
+        controllerLinkIds[this.name] = link.id;
     }
 };
