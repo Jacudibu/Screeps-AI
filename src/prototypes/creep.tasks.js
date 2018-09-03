@@ -12,8 +12,14 @@ Creep.prototype.harvestEnergyInBase = function() {
                 this.transfer(source.nearbyLink, RESOURCE_ENERGY, CARRY_CAPACITY);
 
                 if (source.nearbyLink.energy >= source.nearbyLink.energyCapacity - CARRY_CAPACITY) {
-                    if (this.room.controllerLink && this.room.controllerLink.energy < 400) {
-                        source.nearbyLink.transferEnergy(this.room.controllerLink)
+                    if (this.room.controllerLink && this.room.controllerLink.energy < 700) {
+                        source.nearbyLink.transferEnergy(this.room.controllerLink);
+                        break;
+                    }
+
+                    if (this.room.storageLink && this.room.storageLink.energy < 700) {
+                        source.nearbyLink.transferEnergy(this.room.storageLink);
+                        break;
                     }
                 }
             }

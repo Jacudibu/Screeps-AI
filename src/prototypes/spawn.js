@@ -97,7 +97,7 @@ Spawn.prototype.spawnHarvester = function(energy) {
         remainder -= 100;
     }
 
-    if (remainder >= 50 && this.room.myLinks.length >= this.room.sources.length) {
+    if (remainder >= 50 && this.room.myLinks.length >= 2) {
         body.push(CARRY);
     }
 

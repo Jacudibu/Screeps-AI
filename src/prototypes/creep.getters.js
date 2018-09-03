@@ -185,8 +185,8 @@ Creep.prototype._getEnergyHaulTarget = function() {
                 return potentialTarget;
             }
 
-            if (potentialTarget.energy) {
-                // only happens below RCL 4 where creeps can haul energy from spawn.
+            if (potentialTarget.energy > 100) {
+                // spawns & links
                 return potentialTarget;
             }
         }
@@ -211,6 +211,12 @@ Creep.prototype._getEnergyHaulTarget = function() {
                 return potentialTarget;
             }
         }
+    }
+
+    if (this.room.storageLink && this.room.storageLink.energy > 700) {
+        this.memory.taskTargetId = this.room.storageLink.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        return this.room.storageLink;
     }
 
     if (this.room.controller.my) {
@@ -249,8 +255,8 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
                 return potentialTarget;
             }
 
-            if (potentialTarget.energy) {
-                // only happens below RCL 4 where creeps can haul energy from spawn.
+            if (potentialTarget.energy > 100) {
+                // spawns & links
                 return potentialTarget;
             }
         }
@@ -275,6 +281,12 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
                 return potentialTarget;
             }
         }
+    }
+
+    if (this.room.storageLink && this.room.storageLink.energy > 700) {
+        this.memory.taskTargetId = this.room.storageLink.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        return this.room.storageLink;
     }
 
     if (this.room.labTask) {
