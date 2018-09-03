@@ -2,7 +2,7 @@ const harvester = {
     run(creep) {
         switch (creep.memory.task) {
             case TASK.HARVEST_ENERGY:
-                creep.harvestEnergy();
+                creep.harvestEnergyInBase();
                 break;
             case TASK.MOVE_ONTO_CONTAINER:
                 creep.moveOntoContainer(TASK.HARVEST_ENERGY);

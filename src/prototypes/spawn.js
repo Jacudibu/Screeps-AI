@@ -94,6 +94,11 @@ Spawn.prototype.spawnHarvester = function(energy) {
     if (remainder >= 100) {
         body.push(MOVE);
         body.push(MOVE);
+        remainder -= 100;
+    }
+
+    if (remainder >= 50 && this.room.myLinks.length >= 3) {
+        body.push(CARRY);
     }
 
     body.sort();

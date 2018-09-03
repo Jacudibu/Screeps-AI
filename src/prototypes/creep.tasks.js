@@ -1,4 +1,4 @@
-Creep.prototype.harvestEnergy = function() {
+Creep.prototype.harvestEnergyInBase = function() {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
@@ -8,6 +8,13 @@ Creep.prototype.harvestEnergy = function() {
 
     switch (this.harvest(source)) {
         case OK:
+            if (this.carry[RESOURCE_ENERGY] >= CARRY_CAPACITY - 10 && source.nearbyLink) {
+                this.transfer(source.nearbyLink, RESOURCE_ENERGY, CARRY_CAPACITY);
+
+                if (source.nearbyLink.energy >= source.nearbyLink.energyCapacity - CARRY_CAPACITY) {
+                    source.nearbyLink.transferEnergy(this.room.controllerLink);
+                }
+            }
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             break;
@@ -18,7 +25,7 @@ Creep.prototype.harvestEnergy = function() {
             this.suicide();
             break;
         default:
-            this.logActionError("harvestEnergy on source " + source, + this.harvest(source));
+            this.logActionError("harvestEnergyInBase on source " + source, + this.harvest(source));
             break;
     }
 };
@@ -135,6 +142,7 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
 
     if (this.memory.taskTargetId) {
         energyStorage = Game.getObjectById(this.memory.taskTargetId);
+        // TODO check sufficient storage remaining?
     }
 
     if (!energyStorage) {
