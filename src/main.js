@@ -9,6 +9,7 @@ require('prototypes.creep.finders');
 require('prototypes.creep.tasks');
 require('prototypes.mineral.container');
 require('prototypes.room');
+require('prototypes.room.freeextensions');
 require('prototypes.room.labs');
 require('prototypes.room.links');
 require('prototypes.room.mineral');

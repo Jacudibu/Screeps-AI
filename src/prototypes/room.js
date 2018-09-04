@@ -163,22 +163,6 @@ Room.prototype.getUnoccupiedSources = function() {
 
 };
 
-Room.prototype.getFreeSpawnsTowersOrExtensions = function() {
-    if (!this._freeSpawnsTowersAndExtensions) {
-        this._freeSpawnsTowersAndExtensions = this.find(FIND_MY_STRUCTURES, {
-            filter: (structure) => {
-                return structure.canStoreEnergy(1);
-            }
-        });
-    }
-
-    if (this._freeSpawnsTowersAndExtensions.length === 0) {
-        return ERR_NOT_FOUND;
-    }
-
-    return this._freeSpawnsTowersAndExtensions;
-};
-
 Room.prototype.getEmptyPublicEnergyContainers = function() {
     if (!this._emptyPublicEnergyContainers) {
         const publicEnergyContainerMemoryEntry = this.memory.publicEnergyContainers;

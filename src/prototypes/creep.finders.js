@@ -95,10 +95,19 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
 };
 
 Creep.prototype.findClosestFreeEnergyStorage = function() {
-    let structuresThatRequireEnergy = this.room.getFreeSpawnsTowersOrExtensions();
+    let spawns = this.room.mySpawns.filter(spawn => spawn.energy < spawn.energyCapacity);
+    if (spawns.length > 0) {
+        return _.sortBy(spawns, s => this.pos.getRangeTo(s))[0];
+    }
 
-    if (structuresThatRequireEnergy !== ERR_NOT_FOUND) {
-        return _.sortBy(structuresThatRequireEnergy, s => this.pos.getRangeTo(s))[0];
+    let extension = this.room.getClosestEmptyExtensionToPosition(this.pos, this.carry[RESOURCE_ENERGY]);
+    if (extension !== ERR_NOT_FOUND) {
+        return extension;
+    }
+
+    let towers = this.room.myTowers.filter(tower => tower.energy < tower.energyCapacity);
+    if (towers.length > 0) {
+        return _.sortBy(towers, tower => this.pos.getRangeTo(tower))[0];
     }
 
     let publicEnergyContainers = this.room.getEmptyPublicEnergyContainers();

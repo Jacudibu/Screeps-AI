@@ -567,6 +567,7 @@ Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
     switch (result) {
         case OK:
             Memory.creepsBuilt = Memory.creepsBuilt + 1;
+            this.room.refreshFreeExtensionsInNextTick();
             break;
         case ERR_NOT_ENOUGH_ENERGY:
             break;
