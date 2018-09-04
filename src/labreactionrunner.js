@@ -19,13 +19,13 @@ const labReactionRunner = {
         for (let roomName in Game.rooms) {
             const room = Game.rooms[roomName];
 
-            if (room.myLabs < 3 || room.outputLabs === 0) {
+            if (room.myLabs.length < 3 || room.outputLabs.length === 0) {
                 continue;
             }
 
             if (!nextLabTick[roomName] || nextLabTick[roomName] <= Game.time)
             {
-                this.runLabCodeForRoom(room);
+                this.tryRunLabCodeForRoom(room);
             }
 
             this.drawLabVisuals(room);
@@ -44,6 +44,18 @@ const labReactionRunner = {
 
         room.visual.text("next labTick: " + nextLabTick[room.name], 0, 0, {align: 'left'});
         room.visual.text("current labtask: " + room.labTask + (room.labReaction ? " > " + room.labReaction : ""), 0, 1, {align: 'left'});
+    },
+
+    tryRunLabCodeForRoom(room) {
+        try {
+            this.runLabCodeForRoom(room);
+        } catch (e) {
+            let message = room.name + "|LabCode -> caught error: " + e;
+            if (e.stack) {
+                message += "\nTrace:\n" + e.stack;
+            }
+            log.error(message);
+        }
     },
 
     runLabCodeForRoom(room) {
