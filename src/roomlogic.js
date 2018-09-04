@@ -19,4 +19,5 @@ const roomLogic = {
     }
 };
 
+profiler.registerObject(roomLogic, "RoomLogic");
 module.exports = roomLogic;

@@ -84,4 +84,5 @@ const memoryManagment = {
 
 };
 
+profiler.registerObject(memoryManagment, "MemoryManagment");
 module.exports = memoryManagment;

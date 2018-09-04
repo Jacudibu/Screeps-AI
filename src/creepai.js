@@ -109,4 +109,5 @@ const creepAi = {
     },
 };
 
+profiler.registerObject(creepAi, "CreepAi");
 module.exports = creepAi;

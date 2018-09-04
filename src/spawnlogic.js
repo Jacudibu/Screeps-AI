@@ -290,4 +290,5 @@ const spawnlogic = {
     },
 };
 
+profiler.registerObject(spawnlogic, "SpawnLogic");
 module.exports = spawnlogic;
