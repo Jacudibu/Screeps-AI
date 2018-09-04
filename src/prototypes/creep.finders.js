@@ -169,13 +169,11 @@ Creep.prototype.findMineralStorage = function() {
 
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     const publicEnergyContainer = this.room.memory.publicEnergyContainers;
-    const container = this.room.find(FIND_STRUCTURES, {
-        filter: (structure) => {
-            return structure.structureType === STRUCTURE_CONTAINER
-                && !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
+    const container = this.room.containers.filter((structure) => {
+            return !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
                 && _.sum(structure.store) > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT;
         }
-    });
+    );
 
     if (container.length === 0) {
         return ERR_NOT_FOUND;

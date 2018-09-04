@@ -6,7 +6,7 @@ const attacker = {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined) {
                         creep.setTask(TASK.RECYCLE);
                     } else {
-                        if (creep.room.find(FIND_MY_SPAWNS).length > 0) {
+                        if (creep.room.mySpawns.length > 0) {
                             creep.setTask(TASK.DEFEND_STAY_ON_RAMPART);
                         } else {
                             creep.setTask(TASK.DEFEND_MELEE_CHARGE);

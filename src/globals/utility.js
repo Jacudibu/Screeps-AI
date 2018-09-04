@@ -10,4 +10,12 @@ global.g = {
     s: global.gs = Game.spawns,
     r: global.gr = Game.rooms,
     m: global.gm = Game.market,
+    p: global.gp = Game.profiler,
+    t: global.gt = Game.time,
+};
+
+global.m = {
+    c: global.mc = Memory.creeps,
+    r: global.mr = Memory.rooms,
+    s: global.ms = Memory.stats,
 };

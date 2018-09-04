@@ -624,7 +624,7 @@ Creep.prototype.defendRoomByStandingOnRamparts = function() {
 };
 
 Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
-    let ramparts = this.room.find(FIND_MY_STRUCTURES, {filter: structure => structure.structureType === STRUCTURE_RAMPART});
+    let ramparts = this.room.myRamparts;
 
     if (ramparts.length === 0) {
         this.say("FOR GLORY", true);
