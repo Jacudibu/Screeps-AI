@@ -25,6 +25,10 @@ Object.defineProperty(Room.prototype, "controllerLink", {
 });
 
 Room.prototype._findControllerLink = function() {
+    if (!this.controller) {
+        return undefined;
+    }
+
     let links = this.controller.pos.findInRange(FIND_STRUCTURES, 4, {filter: s => s.structureType === STRUCTURE_LINK });
 
     if (links.length === 0) {
