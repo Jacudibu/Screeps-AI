@@ -8,8 +8,7 @@ Room.prototype.update = function() {
 
 Room.prototype.updateThreat = function() {
     if (this._hostiles.length === 0) {
-        this._threat = null;
-        this.memory.threat = undefined; // TODO: Remove
+        this.threat = null;
         return;
     }
 
@@ -38,20 +37,20 @@ Room.prototype.updateThreat = function() {
         threat.total  += creep.body.length;
     }
 
-    this._threat = threat;
+    this.threat = threat;
 };
 
 Room.prototype.respondToThreat = function() {
-    if (!this._threat) {
+    if (!this.threat) {
         this.memory.requiresHelp = undefined;
         return;
     }
 
     if (this.memory.requiresHelp === undefined) {
         this.memory.requiresHelp = true;
-        if (this._threat.players[0] !== "Invader" && this._threat.players[0] !== "Source Keeper" && this.controller && this.controller.my) {
-            const message = this.name + " is being attacked by " + JSON.stringify(this._threat.players) + "<br>" +
-                                        "Threat info: " + JSON.stringify(this._threat, null, 2);
+        if (this.threat.players[0] !== "Invader" && this.threat.players[0] !== "Source Keeper" && this.controller && this.controller.my) {
+            const message = this.name + " is being attacked by " + JSON.stringify(this.threat.players) + "<br>" +
+                                        "Threat info: " + JSON.stringify(this.threat, null, 2);
             log.warning(message);
             Game.notify(message);
         }

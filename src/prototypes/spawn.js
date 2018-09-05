@@ -479,6 +479,24 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
 
     let maxLength = targetRoomName === this.room.name ? 50 : 30;
 
+    let room = Game.rooms[targetRoomName];
+    if (room) {
+        if (room.threat) {
+            if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
+                maxLength = room.threat.total * 2;
+            } else {
+                // Full power TODO: finetuning
+                maxLength = 50;
+            }
+        } else {
+            // no threat remaining, so no spawn needed
+            return OK;
+        }
+    } else {
+        // no vision? mmh... TODO?
+        maxLength = 30;
+    }
+
     while (energy >= 130 && body.length < maxLength) {
         body.push(ATTACK, MOVE);
         energy -= 130;
