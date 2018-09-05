@@ -8,6 +8,12 @@ const remoteUpgrader = {
                 }
 
                 if (_.sum(creep.carry) < 10) {
+                    if (creep.room.controller && creep.room.controller.level === 8) {
+                        // TODO: easy fix for now,should be removed once supportRooms are implemented
+                        creep.room.memory.requestedCreeps.upgrader = 1;
+                        creep.memory.respawnTTL = undefined;
+                    }
+
                     creep.setTask(TASK.COLLECT_ENERGY);
                     return;
                 }
