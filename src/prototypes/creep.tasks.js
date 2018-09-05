@@ -93,9 +93,6 @@ Creep.prototype.harvestEnergyInRemoteRoom = function() {
                     this.travelTo(source.nearbyContainer);
                 }
                 this.say("ò.ó", true);
-            } else {
-                this.say('ಥ~ಥ');
-                this.drop(RESOURCE_ENERGY);
             }
         } else {
             let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
