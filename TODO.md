@@ -1,10 +1,12 @@
  h  |   Task 
 :---:|  ----
+ 1  |   Use Array.map.reduce instead of Array.sort[0]
  1  |   Threat response
  1  |   Remote Repairer -> Use route index instead of copying route
  4  |   Grouping Creeps into Squads
- ?  |   Boost code
- 1  |   Increse threat if a creep has boosted bodyparts
+ 2  |   Boost upgraders on spawn
+ 8  |   Boost other creeps if needed
+ 1  |   Increase threat if a creep has boosted bodyparts
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
  3  |   Memory cleanup method to fix memory fuckups
  1  |   Detect if remote builder is needed and spawn one automatically

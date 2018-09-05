@@ -7,7 +7,7 @@ const remoteWorker = {
                 }
 
                 if (_.sum(creep.carry) < 10) {
-                    creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
+                    creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
                     return;
                 }
 
@@ -33,19 +33,20 @@ const remoteWorker = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.HARVEST_ENERGY_FETCH:
+            case TASK.HARVEST_ENERGY:
                 creep.harvestEnergyAndWork(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.BUILD_STRUCTURE:
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HARVEST_ENERGY_FETCH, 0.5, true);
+                creep.repairStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HARVEST_ENERGY, 0.5, true);
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);
                 break;
             case TASK.MOVE_ONTO_CONTAINER:
-                creep.moveOntoContainer(TASK.HARVEST_ENERGY_FETCH);
+                creep.moveOntoContainer(TASK.HARVEST_ENERGY);
                 break;
             case TASK.DISMANTLE:
                 creep.dismantleStructure(TASK.DECIDE_WHAT_TO_DO);

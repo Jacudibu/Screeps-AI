@@ -1,4 +1,4 @@
-const remoteWorker = {
+const remoteHarvester = {
     run(creep) {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
@@ -6,26 +6,26 @@ const remoteWorker = {
                     creep.setTask(TASK.MOVE_TO_ROOM);
                 }
 
-                if (_.sum(creep.carry) < 10) {
-                    let startTask = creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY_FETCH);
-                    if (startTask === TASK.HARVEST_ENERGY_FETCH || startTask === TASK.MOVE_ONTO_CONTAINER) {
-                        this.run(creep);
-                    }
+                let startTask = creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
+                if (!startTask) {
                     return;
                 }
-                creep.setTask(TASK.HARVEST_ENERGY_FETCH);
+
+                creep.memory.respawnTTL = CREEP_LIFE_TIME - creep.ticksToLive;
+                this.run(creep);
                 break;
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.HARVEST_ENERGY_FETCH:
+            case TASK.HARVEST_ENERGY:
                 creep.harvestEnergyInRemoteRoom();
                 break;
             case TASK.STORE_ENERGY:
                 creep.drop(RESOURCE_ENERGY);
                 break;
             case TASK.MOVE_ONTO_CONTAINER:
-                creep.moveOntoContainer(TASK.HARVEST_ENERGY_FETCH);
+                creep.moveOntoContainer(TASK.HARVEST_ENERGY);
                 break;
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
@@ -33,4 +33,4 @@ const remoteWorker = {
         }
     }
 };
-module.exports =remoteWorker;
+module.exports = remoteHarvester;

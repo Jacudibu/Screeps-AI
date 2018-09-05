@@ -460,7 +460,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
 
     let containerPosition = source.getNearbyContainerPosition();
     if (containerPosition === ERR_NOT_FOUND) {
-        this.memory.task = taskWhenNoContainerAvailable;
+        return this.memory.task = taskWhenNoContainerAvailable;
     } else {
         if (source.memory.workersMax > 1) {
             return this.memory.task = taskWhenNoContainerAvailable;
