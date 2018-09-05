@@ -62,7 +62,7 @@ Creep.prototype.harvestMineral = function() {
     }
 };
 
-Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
+Creep.prototype.harvestEnergyInRemoteRoom = function() {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
@@ -89,31 +89,60 @@ Creep.prototype.harvestEnergyAndFetch = function(taskWhenFinished) {
     if (_.sum(this.carry) === this.carryCapacity) {
         if (source.nearbyContainer) {
             if (source.nearbyContainer.hits < source.nearbyContainer.hitsMax) {
-                if (this.repair(source.nearbyContainer)) {
+                if (!this.repair(source.nearbyContainer)) {
                     this.travelTo(source.nearbyContainer);
                 }
                 this.say("ò.ó", true);
             } else {
-                if (taskWhenFinished !== TASK.HARVEST_ENERGY_FETCH) {
-                    source.memory.workersAssigned--;
-                    this.setTask(taskWhenFinished);
-                } else {
-                    this.say('ಥ~ಥ');
-                    this.drop(RESOURCE_ENERGY);
-                }
+                this.say('ಥ~ಥ');
+                this.drop(RESOURCE_ENERGY);
             }
         } else {
-            if (taskWhenFinished !== TASK.HARVEST_ENERGY_FETCH) {
-                source.memory.workersAssigned--;
-                this.setTask(taskWhenFinished);
-            } else {
-                let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
-                if (constructionSites.length > 0) {
-                    this.build(constructionSites[0]);
-                    this.say("ô.o", true);
-                }
+            let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
+            if (constructionSites.length > 0) {
+                this.build(constructionSites[0]);
             }
         }
+    }
+};
+
+Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
+    let source = this._getSource();
+
+    if (source === ERR_NOT_FOUND) {
+        this.say("x~x");
+        return;
+    }
+
+    switch (this.harvest(source)) {
+        case OK:
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            source.memory.workersAssigned--;
+            this.setTask(taskWhenFinished);
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(source);
+            break;
+        case ERR_NO_BODYPART:
+            this.suicide();
+            break;
+        default:
+            this.logActionError("harvestingEnergyFetch on source " + source, this.harvest(source));
+            break;
+    }
+
+    if (_.sum(this.carry) === this.carryCapacity) {
+        if (source.nearbyContainer) {
+            if (source.nearbyContainer.hits < source.nearbyContainer.hitsMax) {
+                this.repair(source.nearbyContainer);
+                this.say("ò.ó", true);
+                return;
+            }
+        }
+
+        source.memory.workersAssigned--;
+        this.setTask(taskWhenFinished);
     }
 };
 
@@ -426,7 +455,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
         this.say("*zZz*");
-        if (this.ticksToLive < 1200) {
+        if (this.ticksToLive < 1200 && this.ticksToLive > 1100) {
             log.info(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
         }
         return;

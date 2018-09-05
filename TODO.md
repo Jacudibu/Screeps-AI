@@ -5,7 +5,6 @@
  4  |   Grouping Creeps into Squads
  ?  |   Boost code
  1  |   Increse threat if a creep has boosted bodyparts
- 2  |   Make Harvesters use Links
  2  |   Make creeps push repairer & builder away (or swap places) if those block the path
  3  |   Memory cleanup method to fix memory fuckups
  1  |   Detect if remote builder is needed and spawn one automatically

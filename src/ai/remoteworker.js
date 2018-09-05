@@ -33,7 +33,7 @@ const remoteWorker = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.HARVEST_ENERGY_FETCH:
-                creep.harvestEnergyAndFetch(TASK.DECIDE_WHAT_TO_DO);
+                creep.harvestEnergyAndWork(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.BUILD_STRUCTURE:
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO);
