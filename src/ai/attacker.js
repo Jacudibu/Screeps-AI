@@ -37,7 +37,7 @@ const attacker = {
                                 return;
                             }
 
-                            target = _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c))[0];
+                            target = utility.getClosestObjectFromArray(this, possibleTargets);
                             creep.travelTo(target);
                             return;
                         }
@@ -45,7 +45,7 @@ const attacker = {
 
                     }
 
-                    target = _.sortBy(possibleTargets, c => creep.pos.getRangeTo(c))[0];
+                    target = utility.getClosestObjectFromArray(this, possibleTargets);
                 }
 
                 creep.say(":<", true);

@@ -595,8 +595,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
             return;
         }
 
-        _.sortBy(possibleTargets, c => this.pos.getRangeTo(c));
-        target = possibleTargets[0];
+        target = utility.getClosestObjectFromArray(this, possibleTargets);
     }
 
     switch (this.attack(target)) {
@@ -629,8 +628,7 @@ Creep.prototype.defendRoomByStandingOnRamparts = function() {
             return;
         }
 
-        _.sortBy(possibleTargets, c => this.pos.getRangeTo(c));
-        target = possibleTargets[0];
+        target = utility.getClosestObjectFromArray(this, possibleTargets);
     }
 
     switch (this.attack(target)) {
@@ -659,9 +657,9 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
         return;
     }
 
-    ramparts = _.sortBy(ramparts, rampart => rampart.pos.getRangeTo(enemy.pos));
+    let closestRampart = utility.getClosestObjectFromArray(enemy, ramparts);
 
-    switch (this.travelTo(ramparts[0])) {
+    switch (this.travelTo(closestRampart)) {
         case OK:
             this.say("NOT TODAY!", true);
             break;

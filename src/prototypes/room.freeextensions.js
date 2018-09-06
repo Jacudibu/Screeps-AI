@@ -29,12 +29,12 @@ Room.prototype.refreshFreeExtensionsInNextTick = function() {
     areRoomExtensionsUpToDate[this.name] = false;
 };
 
-Room.prototype.getClosestEmptyExtensionToPosition = function(pos, energy = 0) {
+Room.prototype.getClosestEmptyExtensionToPosition = function(creep, energy = 0) {
     if (this.freeExtensions.length === 0) {
         return ERR_NOT_FOUND;
     }
 
-    let closestExtension = _.sortBy(this.freeExtensions, s => pos.getRangeTo(s))[0];
+    let closestExtension = utility.getClosestObjectFromArray(creep, this.freeExtensions);
 
     if (energy > closestExtension.energyCapacity) {
         _.remove(this._freeExtensions, extension => extension.id === closestExtension.id);

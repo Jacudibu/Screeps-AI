@@ -49,7 +49,7 @@ Creep.prototype.findClosestFilledEnergyStructure = function() {
         }
     }
 
-    return _.sortBy(energyStorages, s => this.pos.getRangeTo(s))[0];
+    return utility.getClosestObjectFromArray(this, energyStorages);
 };
 
 Creep.prototype.findClosestFilledEnergyStorage = function() {
@@ -91,28 +91,28 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
         return ERR_NOT_FOUND;
     }
 
-    return _.sortBy(filledEnergyStorages, s => this.pos.getRangeTo(s))[0];
+    return utility.getClosestObjectFromArray(this, filledEnergyStorages);
 };
 
 Creep.prototype.findClosestFreeEnergyStorage = function() {
     let spawns = this.room.mySpawns.filter(spawn => spawn.energy < spawn.energyCapacity);
     if (spawns.length > 0) {
-        return _.sortBy(spawns, s => this.pos.getRangeTo(s))[0];
+        return utility.getClosestObjectFromArray(this, spawns);
     }
 
-    let extension = this.room.getClosestEmptyExtensionToPosition(this.pos, this.carry[RESOURCE_ENERGY]);
+    let extension = this.room.getClosestEmptyExtensionToPosition(this, this.carry[RESOURCE_ENERGY]);
     if (extension !== ERR_NOT_FOUND) {
         return extension;
     }
 
     let towers = this.room.myTowers.filter(tower => tower.energy < tower.energyCapacity);
     if (towers.length > 0) {
-        return _.sortBy(towers, tower => this.pos.getRangeTo(tower))[0];
+        return utility.getClosestObjectFromArray(this, towers);
     }
 
     let publicEnergyContainers = this.room.getEmptyPublicEnergyContainers();
     if (publicEnergyContainers !== ERR_NOT_FOUND) {
-        return _.sortBy(publicEnergyContainers, c => this.pos.getRangeTo(c))[0]
+        return utility.getClosestObjectFromArray(this, publicEnergyContainers);
     }
 
     let labs = this.room.labs;
@@ -173,17 +173,17 @@ Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
         return ERR_NOT_FOUND;
     }
 
-    const container = this.room.containers.filter((structure) => {
+    const containers = this.room.containers.filter((structure) => {
             return !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
                 && _.sum(structure.store) > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT;
         }
     );
 
-    if (container.length === 0) {
+    if (containers.length === 0) {
         return ERR_NOT_FOUND;
     }
 
-    return _.sortBy(container, s => this.pos.getRangeTo(s))[0];
+    return utility.getClosestObjectFromArray(this, containers);
 };
 
 Creep.prototype.findClosestDroppedResource = function() {
@@ -193,8 +193,7 @@ Creep.prototype.findClosestDroppedResource = function() {
         return ERR_NOT_FOUND;
     }
 
-    droppedEnergy = _.sortBy(droppedEnergy, s => this.pos.getRangeTo(s));
-    return droppedEnergy[0];
+    return utility.getClosestObjectFromArray(this, droppedEnergy);
 };
 
 Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
@@ -233,5 +232,5 @@ Creep.prototype.findClosestTombstone = function() {
         return ERR_NOT_FOUND;
     }
 
-    return _.sortBy(tombstones, s => this.pos.getRangeTo(s))[0];
+    return utility.getClosestObjectFromArray(this, tombstones);
 };

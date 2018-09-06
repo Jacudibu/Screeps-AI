@@ -12,7 +12,7 @@ Creep.prototype._getSource = function() {
         return ERR_NOT_FOUND;
     }
 
-    let source = _.sortBy(sources, source => source.pos.getRangeTo(this))[0];
+    let source = utility.getClosestObjectFromArray(this, sources);
 
     source.memory.workersAssigned++;
     this.memory.taskTargetId = source.id;
@@ -116,7 +116,7 @@ Creep.prototype._getConstructionSite = function() {
         } else {
             // :(
             // just get the closest structure to our creep then, lol.
-            constructionSites = _.sortBy(constructionSites, site => site.pos.getRangeTo(this));
+            constructionSites = [utility.getClosestObjectFromArray(this, constructionSites)];
         }
     }
 
@@ -151,8 +151,12 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
         }
     });
 
+    if(damagedStructures.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
     if (sortByRange) {
-        damagedStructures = _.sortBy(damagedStructures, c => c.pos.getRangeTo(this));
+        damagedStructures = [utility.getClosestObjectFromArray(this, damagedStructures)];
     } else {
         damagedStructures.sort((a,b) => {
             let diff = a.hits - b.hits;
@@ -162,10 +166,6 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
 
             return a.hits - b.hits
         });
-    }
-
-    if(damagedStructures.length === 0) {
-        return ERR_NOT_FOUND;
     }
 
     this.memory.taskTargetId = damagedStructures[0].id;
@@ -371,7 +371,7 @@ Creep.prototype._getDismantleTarget = function() {
         filter: (structure) => structure.structureType !== STRUCTURE_RAMPART
     });
     if (enemyStructures.length > 0) {
-        let target = _.sortBy(enemyStructures, site => site.pos.getRangeTo(this))[0];
+        let target = utility.getClosestObjectFromArray(this, enemyStructures);
         this.memory.taskTargetId = target.id;
         return target;
     }
@@ -380,7 +380,7 @@ Creep.prototype._getDismantleTarget = function() {
         filter: (flag) => this.room.lookForAt(LOOK_STRUCTURES, flag.pos)
     });
     if (flags.length > 0) {
-        let flag = _.sortBy(flags, flag => flag.pos.getRangeTo(this))[0];
+        let flag = utility.getClosestObjectFromArray(this, flags);
         let target = this.room.lookForAt(LOOK_STRUCTURES, flag.pos)[0];
         flag.remove();
 
