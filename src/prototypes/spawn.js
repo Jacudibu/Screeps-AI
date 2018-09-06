@@ -483,7 +483,7 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     if (room) {
         if (room.threat) {
             if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
-                maxLength = room.threat.total * 2;
+                maxLength = Math.min(50, room.threat.total * 2);
             } else {
                 // Full power TODO: finetuning
                 maxLength = 50;

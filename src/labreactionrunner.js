@@ -90,9 +90,16 @@ const labReactionRunner = {
         }
 
         if (room.inputLabs[0].requestedMineral && room.inputLabs[1].requestedMineral) {
-            // Lab just went empty.
-            room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
-            return;
+            if (   room.inputLabs[0].mineralType === room.inputLabs[0].requestedMineral
+                && room.inputLabs[1].mineralType === room.inputLabs[1].requestedMineral) {
+                // Lab just went empty.
+                room.labTask = LABTASK.DECIDE_WHAT_TO_DO;
+                return;
+            } else {
+                log.warning(room.name + "|Labcode: wrong reactionminerals loaded...");
+                room.labTask = LABTASK.MAKE_EMPTY;
+                return;
+            }
         }
 
         if (room.labReaction) {
