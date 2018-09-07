@@ -223,7 +223,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(this.room.controller);
+            this.travelTo(this.room.controller, {maxRooms: 1, range: 2});
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(taskWhenFinished);
@@ -417,7 +417,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         }
     }
 
-    this.travelTo(targetPos, {maxRooms: 1});
+    this.travelTo(targetPos, {maxRooms: 1, range: 0});
     if(this.pos.isEqualTo(targetPos)) {
         this.memory.task = taskWhenFinished;
     }
