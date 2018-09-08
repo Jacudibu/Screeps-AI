@@ -218,9 +218,9 @@ const spawnlogic = {
     },
 
     checkRemoteMiningRooms(room) {
-        let remoteMiningRooms = room.memory.remoteMiningRooms;
+        let remoteMiningRoomList = room.memory.remoteMiningRooms;
 
-        if (!remoteMiningRooms || remoteMiningRooms.length === 0) {
+        if (!remoteMiningRoomList || remoteMiningRoomList.length === 0) {
             return;
         }
 
@@ -228,43 +228,43 @@ const spawnlogic = {
             return;
         }
 
-        for (let i = 0; i < remoteMiningRooms.length; i++) {
-            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+        for (let i = 0; i < remoteMiningRoomList.length; i++) {
+            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
 
-            if (!remoteMiningRoom.sources) {
-                if (Game.rooms[remoteMiningRoom[i]]) {
-                    Game.rooms[remoteMiningRooms[i]].initializeMemoryForAllSourcesInRoom();
+            if (!remoteMiningRoomMemory.sources) {
+                if (Game.rooms[remoteMiningRoomMemory[i]]) {
+                    Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
-                    log.info(room.name + " ---> " + remoteMiningRooms[i] + "|no vision to set up remote mining room source memory at index " + i);
+                    log.info(room.name + " ---> " + remoteMiningRoomList[i] + "|no vision to set up remote mining room source memory at index " + i);
                     continue;
                 }
             }
 
-            if (remoteMiningRoom.assignedHarvesters < Object.keys(remoteMiningRoom.sources).length) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].assignedHarvesters++;
+            if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
+                Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
                 return;
             }
 
-            if (remoteMiningRoom.assignedHaulers < remoteMiningRoom.requiredHaulers) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].assignedHaulers++;
+            if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
+                Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
                 return;
             }
         }
 
         // Iterate reservers seperately
-        for (let i = 0; i < remoteMiningRooms.length; i++) {
-            let otherRoom = Game.rooms[remoteMiningRooms[i]];
+        for (let i = 0; i < remoteMiningRoomList.length; i++) {
+            let otherRoom = Game.rooms[remoteMiningRoomList[i]];
 
             if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 1000) {
                 continue;
             }
 
-            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRooms[i]];
+            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
             if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
-                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].isReserverAssigned = true;
+                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteMiningRoomList[i]});
+                Memory.rooms[remoteMiningRoomList[i]].isReserverAssigned = true;
                 return;
             }
         }
