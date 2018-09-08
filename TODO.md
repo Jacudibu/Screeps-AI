@@ -1,6 +1,5 @@
  h  |   Task 
 :---:|  ----
- 1  |   Use Array.map.reduce instead of Array.sort[0]
  1  |   Threat response
  1  |   Remote Repairer -> Use route index instead of copying route
  4  |   Grouping Creeps into Squads

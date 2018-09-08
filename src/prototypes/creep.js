@@ -37,9 +37,14 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
-            args.targetRoomName = this.memory.targetRoomName;
-            args.respawnTTL = this.memory.respawnTTL;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            const constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
+            if (constructionSites && constructionSites.length > 0) {
+                args.targetRoomName = this.memory.targetRoomName;
+                args.respawnTTL = this.memory.respawnTTL;
+                Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            } else {
+                log.warning(this.room + "|" + this.name + " -> Ignoring respawn, no construction Sites left.");
+            }
             break;
         case ROLE.REMOTE_HARVESTER:
             args.targetRoomName = this.memory.targetRoomName;
