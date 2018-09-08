@@ -43,6 +43,16 @@ Room.prototype.updateThreat = function() {
 Room.prototype.respondToThreat = function() {
     if (!this.threat) {
         this.memory.requiresHelp = undefined;
+
+        // Kill scouts and such things
+        const allHostiles = this.find(FIND_HOSTILE_CREEPS);
+        if (allHostiles.length > 0) {
+            if (this.towers.length > 0) {
+                this.towers[0].attack(allHostiles[0]);
+            }
+
+            this.commandTowersToAttackTarget(this.find(FIND_HOSTILE_CREEPS)[0]);
+        }
         return;
     }
 
