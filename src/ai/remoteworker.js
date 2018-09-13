@@ -26,7 +26,7 @@ const remoteWorker = {
                     return;
                 }
 
-                creep.say('ಥ~ಥ', true);
+                creep.say(creepTalk.dropResource, true);
                 creep.drop(RESOURCE_ENERGY);
                 break;
             case TASK.MOVE_TO_ROOM:

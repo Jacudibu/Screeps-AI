@@ -17,7 +17,7 @@ const attacker = {
                 creep.moveToRoom(TASK.ATTACK);
                 break;
             case TASK.WAIT_FOR_INPUT:
-                creep.say("(ノ°Д°）ノ︵┻━┻", true);
+                creep.say(creepTalk.tableFlip, true);
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.ATTACK:
@@ -33,7 +33,7 @@ const attacker = {
                         if (possibleTargets.length === 0) {
                             possibleTargets = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
                             if (possibleTargets.length === 0) {
-                                creep.say("*zZz*");
+                                creep.say(creepTalk.waitingForInput);
                                 return;
                             }
 
@@ -48,7 +48,7 @@ const attacker = {
                     target = utility.getClosestObjectFromArray(this, possibleTargets);
                 }
 
-                creep.say(":<", true);
+                creep.say(creepTalk.attack, true);
                 switch (creep.attack(target)) {
                     case OK:
                         break;
@@ -63,7 +63,7 @@ const attacker = {
                 }
                 break;
             case TASK.WAIT:
-                creep.say('lalala', true);
+                creep.say(creepTalk.wait, true);
                 break;
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);

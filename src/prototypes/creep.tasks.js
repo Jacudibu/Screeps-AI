@@ -2,7 +2,7 @@ Creep.prototype.harvestEnergyInBase = function() {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
-        this.say("x~x");
+        this.say(creepTalk.noSourceAvailable);
         return;
     }
 
@@ -42,7 +42,7 @@ Creep.prototype.harvestMineral = function() {
     let mineral = this.room.mineral;
 
     if (mineral === ERR_NOT_FOUND) {
-        this.say("no mineral");
+        this.say(creepTalk.noSourceAvailable);
     }
 
     switch (this.harvest(mineral)) {
@@ -66,7 +66,7 @@ Creep.prototype.harvestEnergyInRemoteRoom = function() {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
-        this.say("x~x");
+        this.say(creepTalk.noSourceAvailable);
         return;
     }
 
@@ -92,7 +92,7 @@ Creep.prototype.harvestEnergyInRemoteRoom = function() {
                 if (!this.repair(source.nearbyContainer)) {
                     this.travelTo(source.nearbyContainer, {maxRooms: 1});
                 }
-                this.say("ò.ó", true);
+                this.say(creepTalk.repairContainer, true);
             }
         } else {
             let constructionSites = this.room.lookForAt(LOOK_CONSTRUCTION_SITES, this.pos);
@@ -107,7 +107,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
     let source = this._getSource();
 
     if (source === ERR_NOT_FOUND) {
-        this.say("x~x");
+        this.say(creepTalk.noSourceAvailable);
         return;
     }
 
@@ -133,7 +133,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
         if (source.nearbyContainer) {
             if (source.nearbyContainer.hits < source.nearbyContainer.hitsMax) {
                 this.repair(source.nearbyContainer);
-                this.say("ò.ó", true);
+                this.say(creepTalk.repairContainer, true);
                 return;
             }
         }
@@ -190,7 +190,7 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
     }
 
     if (energyStorage === ERR_NOT_FOUND) {
-        this.say("q-q");
+        this.say(creepTalk.noEnergyStorage);
         return;
     }
 
@@ -246,7 +246,7 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnou
     let constructionSite = this._getConstructionSite();
 
     if (constructionSite === ERR_NOT_FOUND) {
-        this.say('x~x');
+        this.say(creepTalk.noTargetFound);
         this.setTask(taskIfNothingToBuild);
         return;
     }
@@ -277,7 +277,7 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair, taskIfNoResso
     let damagedStructure = this._getDamagedStructure(percentageToCountAsDamaged, sortByRange);
 
     if (damagedStructure === ERR_NOT_FOUND) {
-        this.say('x~x');
+        this.say(creepTalk.noTargetFound);
         this.setTask(taskIfNothingToRepair);
         return;
     }
@@ -301,7 +301,7 @@ Creep.prototype.storeEnergy = function(nextTask) {
     const structureThatRequiresEnergy = this._getEnergyStorage();
 
     if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
-        this.say('x~x');
+        this.say(creepTalk.noTargetFound);
         return;
     }
 
@@ -332,7 +332,7 @@ Creep.prototype.storeMineral = function(nextTask) {
     const mineralStorage = this._getMineralStorage();
 
     if (mineralStorage === ERR_NOT_FOUND) {
-        this.say("x~x'''");
+        this.say(creepTalk.noTargetFound);
         this.setTask(nextTask);
         return;
     }
@@ -362,7 +362,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             }
             break;
         case ERR_INVALID_TARGET:
-            this.say("WAT");
+            this.say(creepTalk.invalidTarget);
             this.logActionError("invalid target store mineral: " + mineralStorage, this.transfer(mineralStorage, this.memory.hauledResourceType));
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
@@ -400,7 +400,7 @@ Creep.prototype.signRoomController = function(nextTask) {
 Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
     let source = this._getSource();
     if (!source) {
-        this.say("e~e");
+        this.say(creepTalk.noSourceAvailable);
         return;
     }
 
@@ -411,7 +411,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         targetPos = source.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
             log.warning(this.room.name + "|Container was apparently destroyed or has decayed! OH NOEZ!");
-            this.say("x~x");
+            this.say(creepTalk.noTargetFound);
             this.memory.task = taskWhenFinished;
             return;
         }
@@ -426,7 +426,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
 Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
     let mineral = this.room.mineral;
     if (!mineral) {
-        this.say("e~e");
+        this.say(creepTalk.noTargetFound);
         return;
     }
 
@@ -451,7 +451,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
 
     let source = this._getSource();
     if (source === ERR_NOT_FOUND) {
-        this.say("*zZz*");
+        this.say(creepTalk.waitingForGoodWeather);
         if (this.ticksToLive < 1200 && this.ticksToLive > 1100) {
             log.info(this.room.name + " Harvester without energy source?!\n" + this + " --> " + JSON.stringify(this));
         }
@@ -589,7 +589,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
     if (target === undefined) {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
-            this.say("\\(^-^)/", true);
+            this.say(creepTalk.victory, true);
             this.memory.targetRoomName = this.memory.homeRoomName;
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
             return;
@@ -600,10 +600,10 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
 
     switch (this.attack(target)) {
         case OK:
-            this.say("(ノ°Д°）ノ︵┻━┻", true);
+            this.say(creepTalk.tableFlip, true);
             break;
         case ERR_NOT_IN_RANGE:
-            this.say("FOR GLORY!", true);
+            this.say(creepTalk.chargeAttack, true);
             this.travelTo(target, {maxRooms: 1});
             break;
         case ERR_INVALID_TARGET:
@@ -624,7 +624,7 @@ Creep.prototype.defendRoomByStandingOnRamparts = function() {
     if (target === undefined) {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
-            this.say("*zZz*");
+            this.say(creepTalk.waitingForGoodWeather);
             return;
         }
 
@@ -633,7 +633,7 @@ Creep.prototype.defendRoomByStandingOnRamparts = function() {
 
     switch (this.attack(target)) {
         case OK:
-            this.say("(ノ°Д°）ノ︵┻━┻", true);
+            this.say(creepTalk.tableFlip, true);
             break;
         case ERR_NOT_IN_RANGE:
             this.moveToRampartClosestToEnemy(target);
@@ -651,7 +651,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
     let ramparts = this.room.myRamparts;
 
     if (ramparts.length === 0) {
-        this.say("FOR GLORY", true);
+        this.say(creepTalk.chargeAttack, true);
         this.travelTo(enemy, {maxRooms: 1});
         this.task = TASK.DEFEND_MELEE_CHARGE;
         return;
@@ -661,7 +661,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
 
     switch (this.travelTo(closestRampart, {maxRooms: 1})) {
         case OK:
-            this.say("NOT TODAY!", true);
+            this.say(creepTalk.defendRamparts, true);
             break;
         default:
             this.logActionError("moveToRampartClosestToEnemy moveTo command", this.travelTo(ramparts[0]));

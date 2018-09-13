@@ -116,7 +116,7 @@ Room.prototype.commandTowersToHealCreep = function(target) {
         towers[i].heal(target);
     }
 
-    target.say("=^~^=", true);
+    target.say(creepTalk.gettingHealed, true);
 };
 
 Room.prototype.commandTowersToRepairStructure = function(target) {

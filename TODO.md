@@ -13,7 +13,6 @@
  3  |   Automatic Scouting
  3  |   Automatically assign remote mining rooms
  1  |   Detect if remote builder is needed and spawn one automatically
- 1  |   Extract Creeptalk Strings into seperate file for fast editing
  3  |   Adjust Upgrader count depending on total energy storage
  4  |   Proper Healer AI
  2  |   Respawn Timer fine-tuning

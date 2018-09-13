@@ -1,5 +1,6 @@
 global.profiler = require('tools.screeps-profiler');
 
+require('globals.creeptalk');
 require('globals.globalvariables');
 require('globals.utility');
 
