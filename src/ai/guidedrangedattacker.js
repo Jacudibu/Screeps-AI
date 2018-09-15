@@ -60,23 +60,16 @@ const guidedRangedAttacker = {
                     }
                 }
 
+                // TODO: Find owned & damaged Creeps in range
+                // TODO: Use findInRange instead of room.find? Profiling time!
+
                 let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS, {filter: target => creep.pos.getRangeTo(target) < 4});
                 if (possibleTargets.length === 0) {
-                    possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES, {
-                        filter: structure =>
-                            creep.pos.getRangeTo(structure) < 4 && structure.structureType !== STRUCTURE_CONTROLLER
-                    });
-                    if (possibleTargets.length === 0 && !target) {
-                        creep.say(creepTalk.waitingForInput);
-                        return;
-                    }
-                }
-
-                if (possibleTargets.length > 0) {
-                    target = utility.getClosestObjectFromArray(this, possibleTargets);
-                } else {
+                    creep.say(creepTalk.noTargetFound);
                     return;
                 }
+
+                target = utility.getClosestObjectFromArray(this, possibleTargets);
 
                 if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
                     creep.rangedMassAttack();
