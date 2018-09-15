@@ -16,6 +16,7 @@ const claimerAttackerAI     = require('ai.claimerattacker');
 const dismantlerAI          = require('ai.dismantler');
 const defenderAI            = require('ai.defender');
 const carrierAI             = require('ai.carrier');
+const guidedRangedAttackerAI= require('ai.guidedrangedattacker');
 
 const creepAi = {
     run() {
@@ -104,6 +105,9 @@ const creepAi = {
                 break;
             case ROLE.CLAIMER_ATTACKER:
                 claimerAttackerAI.run(creep);
+                break;
+            case ROLE.GUIDED_RANGED_ATTACKER:
+                guidedRangedAttackerAI.run(creep);
                 break;
         }
     },

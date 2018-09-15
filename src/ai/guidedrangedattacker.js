@@ -1,0 +1,99 @@
+const guidedRangedAttacker = {
+    run(creep) {
+        if (creep.hits < creep.hitsMax) {
+            creep.heal(creep);
+        }
+
+        switch (creep.memory.task) {
+            case TASK.DECIDE_WHAT_TO_DO:
+                if (creep.room.name === creep.memory.targetRoomName) {
+                    creep.setTask(TASK.WAIT);
+                    //creep.setTask(TASK.ATTACK);
+                } else {
+                    creep.setTask(TASK.MOVE_TO_ROOM)
+                }
+                break;
+
+            case TASK.MOVE_TO_ROOM:
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+                break;
+
+            case TASK.WAIT_FOR_INPUT:
+                creep.say(creepTalk.tableFlip, true);
+                creep.setTask(TASK.DECIDE_WHAT_TO_DO);
+                break;
+
+            case TASK.ATTACK:
+                let target = undefined;
+                if (creep.memory.taskTargetId) {
+                    target = Game.getObjectById(creep.memory.taskTargetId);
+                }
+
+                if (target) {
+                    creep.say(creepTalk.attack, true);
+                    let result = OK;
+                    if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
+                        result = creep.rangedMassAttack();
+                    } else {
+                        result = creep.rangedAttack(target);
+                    }
+
+                    switch (result) {
+                        case OK:
+                            if (target instanceof Creep) {
+                                if (target.countBodyPartsOfType(ATTACK) > 0) {
+                                    // Kiting!
+                                    creep.travelTo(target,  {range: 2});
+                                }else {
+                                    // Mass attacking!
+                                    creep.travelTo(target);
+                                }
+                            }
+                            return;
+                        case ERR_NOT_IN_RANGE:
+                            creep.travelTo(target, {range: 3, ignoreCreeps: false});
+                            break;
+                        case ERR_INVALID_TARGET:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS, {filter: target => creep.pos.getRangeTo(target) < 4});
+                if (possibleTargets.length === 0) {
+                    possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES, {
+                        filter: structure =>
+                            creep.pos.getRangeTo(structure) < 4 && structure.structureType !== STRUCTURE_CONTROLLER
+                    });
+                    if (possibleTargets.length === 0 && !target) {
+                        creep.say(creepTalk.waitingForInput);
+                        return;
+                    }
+                }
+
+                if (possibleTargets.length > 0) {
+                    target = utility.getClosestObjectFromArray(this, possibleTargets);
+                } else {
+                    return;
+                }
+
+                if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
+                    creep.rangedMassAttack();
+                } else {
+                    creep.rangedAttack(target);
+                }
+                break;
+
+            case TASK.WAIT:
+                creep.say(creepTalk.wait, true);
+                break;
+
+            default:
+                creep.setTask(TASK.MOVE_TO_ROOM);
+                break;
+        }
+    },
+};
+
+module.exports = guidedRangedAttacker;

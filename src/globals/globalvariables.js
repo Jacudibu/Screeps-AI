@@ -76,6 +76,7 @@ global.ROLE.DEFENDER = 'defender';
 global.ROLE.CARRIER = 'carrier';
 global.ROLE.MINERAL_HARVESTER = 'mineral_harvester';
 global.ROLE.CLAIMER_ATTACKER = 'claimer_attacker';
+global.ROLE.GUIDED_RANGED_ATTACKER = 'guided_ranged_attacker';
 
 global.LABTASK = {};
 global.LABTASK.RUN_REACTION = "run_reaction";

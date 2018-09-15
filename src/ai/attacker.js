@@ -13,13 +13,16 @@ const attacker = {
                     creep.setTask(TASK.MOVE_TO_ROOM)
                 }
                 break;
+
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.ATTACK);
                 break;
+
             case TASK.WAIT_FOR_INPUT:
                 creep.say(creepTalk.tableFlip, true);
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
+
             case TASK.ATTACK:
                 let target = undefined;
                 if (creep.memory.taskTargetId) {
@@ -41,8 +44,6 @@ const attacker = {
                             creep.travelTo(target);
                             return;
                         }
-
-
                     }
 
                     target = utility.getClosestObjectFromArray(this, possibleTargets);
@@ -53,7 +54,7 @@ const attacker = {
                     case OK:
                         break;
                     case ERR_NOT_IN_RANGE:
-                        creep.travelTo(target);
+                        creep.travelTo(target, {ignoreCreeps: false});
                         break;
                     case ERR_INVALID_TARGET:
                         creep.setTask(TASK.WAIT_FOR_INPUT);
@@ -62,9 +63,11 @@ const attacker = {
                         break;
                 }
                 break;
+
             case TASK.WAIT:
                 creep.say(creepTalk.wait, true);
                 break;
+
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);
                 break;
