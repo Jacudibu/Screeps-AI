@@ -123,16 +123,18 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         }
     }
 
-    if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] < TERMINAL_MAX_ENERGY_STORAGE) {
-            return this.room.terminal;
+    let storage = this.room.storage;
+    if (storage) {
+        // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
+        if (storage.store[RESOURCE_ENERGY] < (STORAGE_MAX_ENERGY - this.carryCapacity)) {
+            return storage;
         }
     }
 
-    let storage = this.room.storage;
-    if (storage) {
-        if (storage.store[RESOURCE_ENERGY] < STORAGE_MAX_ENERGY) {
-            return storage;
+    if (this.room.terminal) {
+        // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
+        if (this.room.terminal.store[RESOURCE_ENERGY] < (TERMINAL_MAX_ENERGY_STORAGE - this.carryCapacity)) {
+            return this.room.terminal;
         }
     }
 
