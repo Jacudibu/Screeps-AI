@@ -516,14 +516,16 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
 
     let maxLength = targetRoomName === this.room.name ? 50 : 30;
 
+    let isNPCAttack = false;
     let room = Game.rooms[targetRoomName];
     if (room) {
         if (room.threat) {
             if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
                 maxLength = Math.min(50, room.threat.total * 2);
+                isNPCAttack = true;
             } else {
                 // Full power TODO: finetuning
-                maxLength = 50;
+                maxLength = 48;
             }
         } else {
             // no threat remaining, so no spawn needed
@@ -537,6 +539,12 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     while (energy >= 130 && body.length < maxLength) {
         body.push(ATTACK, MOVE);
         energy -= 130;
+    }
+
+    if (maxLength === 48 && !isNPCAttack) {
+        if (energy >= BODYPART_COST.heal + BODYPART_COST.move) {
+            body.push(MOVE, HEAL);
+        }
     }
 
     let opts = {
