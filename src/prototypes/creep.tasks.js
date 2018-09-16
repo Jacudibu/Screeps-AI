@@ -548,7 +548,7 @@ Creep.prototype.reserveRoomController = function() {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(this.room.controller);
+            this.travelTo(this.room.controller, {maxRooms: 1});
             break;
         case ERR_INVALID_TARGET:
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
@@ -590,8 +590,12 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
             this.say(creepTalk.victory, true);
-            this.memory.targetRoomName = this.memory.homeRoomName;
-            this.setTask(TASK.DECIDE_WHAT_TO_DO);
+            if (this.countBodyPartsOfType(HEAL) === 0) {
+                this.memory.targetRoomName = this.memory.homeRoomName;
+                this.setTask(TASK.DECIDE_WHAT_TO_DO);
+            } else if (this.room !== this.memory.targetRoomName) {
+                this.setTask(TASK.MOVE_TO_ROOM)
+            }
             return ERR_NOT_FOUND;
         }
 

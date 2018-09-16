@@ -1,7 +1,6 @@
 const defender = {
     run(creep) {
         let attackResult = ERR_NOT_FOUND;
-
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
@@ -35,7 +34,7 @@ const defender = {
                 break;
         }
 
-        if (attackResult !== OK) {
+        if (creep.hits < creep.hitsMax && attackResult !== OK) {
             creep.heal(creep);
         }
     },

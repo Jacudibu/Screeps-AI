@@ -1,8 +1,6 @@
 const attacker = {
     run(creep) {
-        if (creep.hits < creep.hitsMax && !creep.memory.taskTargetId) {
-            creep.heal(creep);
-        }
+        let attackResult = ERR_NOT_FOUND;
 
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
@@ -50,7 +48,8 @@ const attacker = {
                 }
 
                 creep.say(creepTalk.attack, true);
-                switch (creep.attack(target)) {
+                attackResult = creep.attack(target);
+                switch (attackResult) {
                     case OK:
                         break;
                     case ERR_NOT_IN_RANGE:
@@ -71,6 +70,10 @@ const attacker = {
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);
                 break;
+        }
+
+        if (creep.hits < creep.hitsMax && attackResult !== OK) {
+            creep.heal(creep);
         }
     },
 };

@@ -15,7 +15,9 @@ Room.prototype.wipeConstructionSites = function() {
     let sites = this.find(FIND_MY_CONSTRUCTION_SITES);
 
     for (let i = 0; i < sites.length; i++) {
-        sites[i].remove();
+        if (sites[i].progress === 0) {
+            sites[i].remove();
+        }
     }
 };
 
