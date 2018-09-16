@@ -231,6 +231,10 @@ const spawnlogic = {
         for (let i = 0; i < remoteMiningRoomList.length; i++) {
             let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
 
+            if (remoteMiningRoomMemory.requiresHelp !== undefined) {
+                continue;
+            }
+
             if (!remoteMiningRoomMemory.sources) {
                 if (Game.rooms[remoteMiningRoomMemory[i]]) {
                     Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
