@@ -2,6 +2,7 @@
 :---:|  ----
  1  |   Ranged defenders
  2  |   Threat response depending on attackers
+ 4  |   Source Memory Rework
  4  |   Automatically place construction sites when given a base Layout in JSON
  1  |   Remote Repairer -> Use route index instead of copying route
  4  |   Grouping Creeps into Squads

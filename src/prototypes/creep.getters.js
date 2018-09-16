@@ -83,6 +83,22 @@ Creep.prototype._getConstructionSite = function() {
         // TODO: This is inefficient af, maybe do this only in the first few RCL-Levels? Or store the first 5 in memory?
         constructionSites.sort(function (constructionA, constructionB) {
             if (constructionA.structureType !== constructionB.structureType) {
+                if (constructionA.structureType === STRUCTURE_SPAWN) {
+                    return -1;
+                }
+
+                if (constructionB.structureType === STRUCTURE_SPAWN) {
+                    return 1;
+                }
+
+                if (constructionA.structureType === STRUCTURE_EXTENSION) {
+                    return -1;
+                }
+
+                if (constructionB.structureType === STRUCTURE_EXTENSION) {
+                    return 1;
+                }
+
                 if (constructionA.structureType === STRUCTURE_STORAGE) {
                     return -1;
                 }
@@ -91,10 +107,19 @@ Creep.prototype._getConstructionSite = function() {
                     return 1;
                 }
 
-                if (constructionA.structureType === STRUCTURE_EXTENSION) {
+                if (constructionA.structureType === STRUCTURE_TERMINAL) {
                     return -1;
                 }
-                if (constructionB.structureType === STRUCTURE_EXTENSION) {
+
+                if (constructionB.structureType === STRUCTURE_TERMINAL) {
+                    return 1;
+                }
+
+                if (constructionA.structureType === STRUCTURE_TOWER) {
+                    return -1;
+                }
+
+                if (constructionB.structureType === STRUCTURE_TOWER) {
                     return 1;
                 }
             }
