@@ -592,13 +592,14 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
             this.say(creepTalk.victory, true);
             this.memory.targetRoomName = this.memory.homeRoomName;
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
-            return;
+            return ERR_NOT_FOUND;
         }
 
         target = utility.getClosestObjectFromArray(this, possibleTargets);
     }
 
-    switch (this.attack(target)) {
+    let result = this.attack(target);
+    switch (result) {
         case OK:
             this.say(creepTalk.tableFlip, true);
             break;
@@ -613,6 +614,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
             this.logActionError("defendRoomByStandingOnRamparts attack command", this.attack(target));
             break;
     }
+    return result;
 };
 
 Creep.prototype.defendRoomByStandingOnRamparts = function() {

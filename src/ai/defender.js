@@ -1,5 +1,7 @@
-const attacker = {
+const defender = {
     run(creep) {
+        let attackResult = ERR_NOT_FOUND;
+
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.targetRoomName) {
@@ -20,10 +22,10 @@ const attacker = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.DEFEND_STAY_ON_RAMPART:
-                creep.defendRoomByStandingOnRamparts();
+                attackResult = creep.defendRoomByStandingOnRamparts();
                 break;
             case TASK.DEFEND_MELEE_CHARGE:
-                creep.defendRoomByChargingIntoEnemy();
+                attackResult = creep.defendRoomByChargingIntoEnemy();
                 break;
             case TASK.RECYCLE:
                 creep.recycle();
@@ -32,7 +34,11 @@ const attacker = {
                 creep.setTask(TASK.MOVE_TO_ROOM);
                 break;
         }
+
+        if (attackResult !== OK) {
+            creep.heal(creep);
+        }
     },
 };
 
-module.exports = attacker;
+module.exports = defender;
