@@ -1,0 +1,1 @@
+Game.shard = 'Shard2';
