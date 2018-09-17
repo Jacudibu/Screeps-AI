@@ -15,7 +15,7 @@ Creep.prototype.countBodyPartsOfType = function(types) {
 };
 
 Creep.prototype.logActionError = function(action, errorCode) {
-    log.warning(this.room.name + " |" + this.name + ": " + action + " resulted in unhandled error code " + errorCode)
+    log.warning(this + " " + action + " resulted in unhandled error code " + errorCode)
 };
 
 Creep.prototype.addRespawnEntryToSpawnQueue = function() {

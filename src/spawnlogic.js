@@ -239,7 +239,7 @@ const spawnlogic = {
                 if (Game.rooms[remoteMiningRoomMemory[i]]) {
                     Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
-                    log.info(room.name + " ---> " + remoteMiningRoomList[i] + "|no vision to set up remote mining room source memory at index " + i);
+                    //log.info(room + " ---> " + remoteMiningRoomList[i] + "|no vision to set up remote mining room source memory at index " + i);
                     continue;
                 }
             }

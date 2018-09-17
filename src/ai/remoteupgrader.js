@@ -26,7 +26,7 @@ const remoteUpgrader = {
                 break;
 
             case TASK.UPGRADE_CONTROLLER:
-                creep.upgradeRoomController(TASK.COLLECT_ENERGY);
+                creep.upgradeRoomController(TASK.COLLECT_ENERGY, 1);
                 break;
 
             case TASK.MOVE_TO_ROOM:

@@ -218,12 +218,12 @@ Creep.prototype.renew = function(taskWhenFinished) {
     }
 };
 
-Creep.prototype.upgradeRoomController = function(taskWhenFinished) {
+Creep.prototype.upgradeRoomController = function(taskWhenFinished, stuckValue = 2) {
     switch (this.upgradeController(this.room.controller)) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(this.room.controller, {maxRooms: 1, range: 2});
+            this.travelTo(this.room.controller, {maxRooms: 1, range: 2, stuckValue: stuckValue});
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
             this.setTask(taskWhenFinished);
