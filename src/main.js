@@ -4,7 +4,9 @@ require('clienthacks.clickabletostring');
 require('clienthacks.injectloan');
 
 require('globals.creeptalk');
-require('globals.globalvariables');
+require('globals.infrastructure');
+require('globals.roles');
+require('globals.tasks');
 require('globals.utility');
 
 require('prototypes.creep');

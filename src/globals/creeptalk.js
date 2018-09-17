@@ -1,7 +1,7 @@
 global.creepTalk = {};
 
 global.creepTalk.dropResource           = "ಥ~ಥ";
-global.creepTalk.tableFlip              = "(ノ°Д°）ノ︵┻━┻";
+global.creepTalk.tableFlip              = "(ノ°Д°）ノ︵┻┻";
 global.creepTalk.waitingForInput        = "*zZz*";
 global.creepTalk.attack                 = ":<";
 global.creepTalk.gettingHealed          = "=^~^=";

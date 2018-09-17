@@ -39,7 +39,7 @@ const singleList = [
 Room.prototype._checkRoomCache = function _checkRoomCache(){
     // if cache is expired or doesn't exist
     if(!roomStructuresExpiration[this.name] || !roomStructures[this.name] || roomStructuresExpiration[this.name] < Game.time){
-        roomStructuresExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
+        roomStructuresExpiration[this.name] = utility.getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
         roomStructures[this.name] = _.groupBy(this.find(FIND_STRUCTURES), s=>s.structureType);
         let i;
         for(i in roomStructures[this.name]){
@@ -51,7 +51,7 @@ Room.prototype._checkRoomCache = function _checkRoomCache(){
 Room.prototype._checkMyRoomCache = function _checkMyRoomCache(){
     // if cache is expired or doesn't exist
     if(!myRoomStructuresExpiration[this.name] || !myRoomStructures[this.name] || myRoomStructuresExpiration[this.name] < Game.time){
-        myRoomStructuresExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
+        myRoomStructuresExpiration[this.name] = utility.getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
         myRoomStructures[this.name] = _.groupBy(this.find(FIND_MY_STRUCTURES), s=>s.structureType);
         let i;
         for(i in myRoomStructures[this.name]){
@@ -63,7 +63,7 @@ Room.prototype._checkMyRoomCache = function _checkMyRoomCache(){
 Room.prototype._checkHostileRoomCache = function _checkHostileRoomCache(){
     // if cache is expired or doesn't exist
     if(!hostileRoomStructuresExpiration[this.name] || !hostileRoomStructures[this.name] || hostileRoomStructuresExpiration[this.name] < Game.time){
-        hostileRoomStructuresExpiration[this.name] = getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
+        hostileRoomStructuresExpiration[this.name] = utility.getFutureTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
         hostileRoomStructures[this.name] = _.groupBy(this.find(FIND_HOSTILE_STRUCTURES), s=>s.structureType);
         let i;
         for(i in hostileRoomStructures[this.name]){

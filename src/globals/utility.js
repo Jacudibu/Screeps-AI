@@ -1,8 +1,9 @@
-global.getFutureTimeWithRandomOffset = function(ticks, offset = 5) {
+global.utility = {};
+
+global.utility.getFutureTimeWithRandomOffset = function(ticks, offset = 5) {
     return Game.time + ticks + Math.round((Math.random() * offset * 2) - offset);
 };
 
-global.utility = {};
 global.utility.getClosestObjectFromArray = function(fromObject, toArray) {
     return toArray
         .reduce((currentlyClosestObject, element) =>
