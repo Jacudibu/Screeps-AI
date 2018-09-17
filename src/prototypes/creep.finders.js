@@ -33,10 +33,6 @@ Creep.prototype.findClosestFilledEnergyStructure = function() {
         }
     }
 
-    if (energyStorages.length === 0) {
-        return ERR_NOT_FOUND;
-    }
-
     if (this.room.controllerLink) {
         if (this.room.controllerLink.energy >= this.carryCapacity) {
             energyStorages.push(this.room.controllerLink)
@@ -47,6 +43,10 @@ Creep.prototype.findClosestFilledEnergyStructure = function() {
         if(this.room.storageLink.energy >= this.carryCapacity) {
             energyStorages.push(this.room.storageLink);
         }
+    }
+
+    if (energyStorages.length === 0) {
+        return ERR_NOT_FOUND;
     }
 
     return utility.getClosestObjectFromArray(this, energyStorages);
