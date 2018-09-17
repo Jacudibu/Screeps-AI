@@ -55,7 +55,7 @@ const remoteRepairer = {
                 let result = creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
                 if (result === ERR_NOT_FOUND) {
                     // Goto spawn room and collect energy there
-                    creep.memory.targetRoomName = this.memory.spawnRoom;
+                    creep.memory.targetRoomName = creep.memory.spawnRoom;
                     creep.setTask(TASK.MOVE_TO_ROOM);
                 }
                 break;

@@ -50,7 +50,7 @@ const labReactionRunner = {
         try {
             this.runLabCodeForRoom(room);
         } catch (e) {
-            let message = room.name + "|LabCode -> caught error: " + e;
+            let message = room + " LabCode -> caught error: " + e;
             if (e.stack) {
                 message += "\nTrace:\n" + e.stack;
             }

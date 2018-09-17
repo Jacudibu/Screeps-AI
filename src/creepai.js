@@ -37,7 +37,7 @@ const creepAi = {
         try {
             this._runCreepLogic(creep);
         } catch (e) {
-            let message = creep.room.name + "|" + creep.name + " -> caught error: " + e;
+            let message = creep + " -> caught error: " + e;
             if (e.stack) {
                 message += "\nTrace:\n" + e.stack;
             }

@@ -10,7 +10,7 @@ const spawnlogic = {
         try {
             this.runSpawnLogic(room);
         } catch (e) {
-            let message = room.name + "|RunSpawnLogic -> caught error: " + e;
+            let message = room + " RunSpawnLogic -> caught error: " + e;
             if (e.stack) {
                 message += "\nTrace:\n" + e.stack;
             }

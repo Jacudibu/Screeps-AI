@@ -10,7 +10,7 @@ const roomLogic = {
         try {
             room.update();
         } catch (e) {
-            let message = room.name + "|Update -> caught error: " + e;
+            let message = room + " Update -> caught error: " + e;
             if (e.stack) {
                 message += "\nTrace:\n" + e.stack;
             }
