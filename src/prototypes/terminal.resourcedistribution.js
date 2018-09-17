@@ -200,13 +200,24 @@ const terminalResourceDistribution = {
 };
 
 StructureTerminal.prototype.calculateDemand = function() {
-    RESOURCES_ALL.forEach(resource => {
+    if (this.room.myLabs.length > 2) {
+        RESOURCES_ALL.forEach(resource => {
+            if (!this.store[resource]) {
+                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]);
+            } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]) {
+                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource] - this.store[resource]);
+            }
+        });
+    } else {
+        // only demand energy
+        const resource = RESOURCE_ENERGY;
+
         if (!this.store[resource]) {
             terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]);
         } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]) {
             terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource] - this.store[resource]);
         }
-    });
+    }
 };
 
 StructureTerminal.prototype.calculateSupply = function() {

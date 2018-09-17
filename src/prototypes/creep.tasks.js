@@ -478,7 +478,7 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
         this.setTask(taskWhenFinished);
     }
 
-    const positionInNextRoom = new RoomPosition(25, 25, roomName);
+    const positionInNextRoom = new RoomPosition(28, 25, roomName);
     this.travelTo(positionInNextRoom);
 };
 
