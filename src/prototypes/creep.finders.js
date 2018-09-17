@@ -138,6 +138,12 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         }
     }
 
+    if (this.room.nuker) {
+        if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
+            return this.room.nuker;
+        }
+    }
+
     if (this.room.terminal) {
         if (_.sum(this.room.terminal.store) < TERMINAL_CAPACITY) {
             return this.room.terminal;

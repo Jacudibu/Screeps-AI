@@ -51,11 +51,6 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             Memory.rooms[args.targetRoomName].assignedHarvesters++;
             break;
-        case ROLE.REMOTE_REPAIRER:
-            args.targetRoomName = this.memory.targetRoomName;
-            args.route = this.memory.route;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
-            break;
         case ROLE.REMOTE_UPGRADER:
             args.targetRoomName = this.memory.targetRoomName;
             args.respawnTTL = this.memory.respawnTTL;
@@ -68,7 +63,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
             break;
         default:
-            log.warning("undefined role asking for respawn?!" + args.role);
+            log.warning(this + " undefined role asking for respawn?!" + args.role);
     }
 
     this.memory.respawnTTL = undefined;

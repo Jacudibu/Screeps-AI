@@ -37,6 +37,8 @@ Room.prototype.addRemoteMiningRoom = function (roomName) {
         Memory.rooms[roomName].assignedHaulers = 0;
         Memory.rooms[roomName].requiredHaulers = 0;
     }
+
+    this.updateRepairRoute();
 };
 
 Room.prototype.removeRemoteMiningRoom = function(roomName) {
@@ -49,6 +51,12 @@ Room.prototype.removeRemoteMiningRoom = function(roomName) {
         Memory.rooms[roomName].assignedHarvesters = undefined;
         this.memory.remoteMiningRooms.splice(index, 1);
     }
+
+    this.updateRepairRoute();
+};
+
+Room.prototype.updateRepairRoute = function() {
+    this.memory.repairRoute = this.memory.remoteMiningRooms;
 };
 
 Room.prototype.addPublicEnergyContainer = function (containerId) {

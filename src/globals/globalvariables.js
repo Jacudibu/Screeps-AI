@@ -3,6 +3,7 @@ global.UPGRADERS_DESIRED = 1;
 global.BUILDERS_DESIRED = 1;
 
 global.AUTO_SPAWN_TIMER = 30;
+global.REMOTE_REPAIRER_SPAWN_INTERVAL = 5000;
 
 global.RESPAWN_AFTER_TICKS = 1400;
 global.CRITICAL_TICKS_TO_LIVE_VALUE = 350;
@@ -67,6 +68,7 @@ global.ROLE.REMOTE_WORKER = 'remote_worker';
 global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.REMOTE_HARVESTER = 'remote_harvester';
 global.ROLE.REMOTE_REPAIRER = 'remote_repairer';
+global.ROLE.REMOTE_REPAIRER_V2 = 'remote_repairer_v2';
 global.ROLE.REMOTE_UPGRADER = 'remote_upgrader';
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.CLAIMER = 'claimer';

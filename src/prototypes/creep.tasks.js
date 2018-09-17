@@ -148,6 +148,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 
     if (target === ERR_NOT_FOUND) {
         this.setTask(taskWhenFinished);
+        return ERR_NOT_FOUND;
     }
 
     if (target instanceof Structure || target instanceof Tombstone) {

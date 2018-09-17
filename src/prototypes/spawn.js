@@ -248,7 +248,6 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
     }
 
     body.push(CARRY);
-    energy -= 50;
 
     let opts = {
         memory: {
@@ -309,6 +308,32 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
     };
 
     return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER, body, opts);
+};
+
+Spawn.prototype.spawnRemoteRepairerV2 = function(energy, repairRouteIndex = 0) {
+    let body = [];
+
+    if (energy > 1750) {
+        energy = 1750;
+    }
+
+    while(energy >= 350) {
+        body.push(WORK, CARRY, CARRY, MOVE, MOVE, MOVE);
+        energy -= 350;
+    }
+
+    body.sort();
+    let opts = {
+        memory: {
+            role: ROLE.REMOTE_REPAIRER_V2,
+            targetRoomName: this.room.memory.repairRoute[repairRouteIndex],
+            repairRouteIndex: repairRouteIndex,
+            task: TASK.COLLECT_ENERGY,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER_V2, body, opts);
 };
 
 Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTTL) {

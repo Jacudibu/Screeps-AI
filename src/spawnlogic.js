@@ -169,6 +169,8 @@ const spawnlogic = {
                 return spawn.spawnRemoteHauler(energy, args.targetRoomName);
             case ROLE.REMOTE_REPAIRER:
                 return spawn.spawnRemoteRepairer(energy, args.targetRoomName, args.route);
+            case ROLE.REMOTE_REPAIRER_V2:
+                return spawn.spawnRemoteRepairerV2(energy, args.repairRouteIndex);
             case ROLE.REMOTE_UPGRADER:
                 return spawn.spawnRemoteUpgrader(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.RESERVER:
@@ -225,6 +227,13 @@ const spawnlogic = {
         }
 
         if (this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room)) {
+            return;
+        }
+
+        if (!room.memory.nextRemoteRepairerSpawn || room.memory.nextRemoteRepairerSpawn < Game.time) {
+            room.addToSpawnQueueEnd({role: ROLE.REMOTE_REPAIRER_V2});
+            room.memory.repairRoute = room.memory.remoteMiningRooms;
+            room.memory.nextRemoteRepairerSpawn = Game.time + getFutureTimeWithRandomOffset(REMOTE_REPAIRER_SPAWN_INTERVAL, 200);
             return;
         }
 

@@ -71,6 +71,18 @@ const memoryManagment = {
                 }
                 break;
 
+            case ROLE.REMOTE_REPAIRER_V2:
+                if (creep.repairRouteIndex >= Memory.rooms[creep.spawnRoom].repairRoute.length) {
+                    return;
+                }
+
+                let args = {
+                    role: ROLE.REMOTE_REPAIRER_V2,
+                    repairRouteIndex: creep.repairRouteIndex,
+                };
+                Memory.rooms[creep.spawnRoom].spawnQueue.push(args);
+                break;
+
             case ROLE.RESERVER:
                 Memory.rooms[creep.targetRoomName].isReserverAssigned = false;
                 break;
