@@ -134,6 +134,6 @@ Room.prototype._initializeInputOutputLabCache = function() {
         }
     }
 
-    roomInputOutExpiration[this.name] = utility.getFutureTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
+    roomInputOutExpiration[this.name] = utility.getFutureGameTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
 };
 
