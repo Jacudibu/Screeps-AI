@@ -3,9 +3,11 @@
  1  |   Ranged defenders
  2  |   Threat response depending on attackers
  4  |   Source Memory Rework
+ 2  |   Sort Remote Repair Route to increase efficiency
  4  |   Automatically place construction sites when given a base Layout in JSON
  1  |   Remote Repairer -> Use route index instead of copying route
  4  |   Grouping Creeps into Squads
+ 6  |   Optimize Kiting Code to avoid running into dead ends
  2  |   Boost upgraders on spawn
  8  |   Boost other creeps if needed
  1  |   Increase threat if a creep has boosted bodyparts

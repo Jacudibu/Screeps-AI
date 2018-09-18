@@ -67,8 +67,8 @@ Creep.prototype.kite = function(thingsToKite, options = {}) {
 
     const pathFinderResult = PathFinder.search(this.pos, fancyGoalObject, {
         maxRooms: 2,
-        plainCost: options.offRoad ? 1 : options.ignoreRoads ? 1 : 2,
-        swampCost: options.offRoad ? 1 : options.ignoreRoads ? 5 : 10,
+        plainCost: 1,
+        swampCost: options.offRoad ? 1 : options.ignoreRoads ? 5 : 5,
         flee: true,
         roomCallback: callback,
     });

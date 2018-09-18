@@ -525,6 +525,16 @@ Creep.prototype.claimRoomController = function() {
 Creep.prototype.attackRoomController = function() {
     switch (this.attackController(this.room.controller)) {
         case OK:
+            // TODO: Remove hardcoded route
+            if (this.room.name === 'E52S43') {
+                this.memory.targetRoomName = 'E53S44';
+                this.setTask(TASK.MOVE_TO_ROOM);
+            } else if (this.room.name === 'E53S44') {
+                this.memory.targetRoomName = 'E52S43';
+                this.setTask(TASK.MOVE_TO_ROOM);
+            } else {
+                this.suicide();
+            }
             break;
         case ERR_NOT_IN_RANGE:
             this.travelTo(this.room.controller);
@@ -539,7 +549,7 @@ Creep.prototype.attackRoomController = function() {
             this.reserveController(this.room.controller);
             break;
         default:
-            this.logActionError("attaclomg room controller", this.attackController(this.room.controller));
+            this.logActionError("attacking room controller", this.attackController(this.room.controller));
             break;
     }
 };
