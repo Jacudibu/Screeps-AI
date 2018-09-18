@@ -32,7 +32,7 @@ require('prototypes.structurelab.requestedmineral');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
-global.Traveler = require('tools.traveler');
+require('tools.traveler');
 require('tools.logger');
 
 const memoryManagment = require('memorymanagment');
