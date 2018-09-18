@@ -13,6 +13,7 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
                     this.drop(RESOURCE_ENERGY);
                 }
 
+                this.say(this.ticksToLive % 2 === 0 ? creepTalk.flee1 : creepTalk.flee2, true);
                 return this.kite(this.room._hostiles, {range: DEFAULT_FLEE_RANGE});
             }
         }
