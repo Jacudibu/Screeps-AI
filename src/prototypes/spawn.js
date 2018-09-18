@@ -254,7 +254,7 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
             role: ROLE.REMOTE_HARVESTER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
-            respawnTTL: 100,
+            respawnTTL: RESPAWN_TTL_NOT_YET_SET,
             spawnRoom: this.room.name,
         }
     };

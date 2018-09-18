@@ -15,7 +15,9 @@ const remoteHarvester = {
                     return;
                 }
 
-                creep.memory.respawnTTL = CREEP_LIFE_TIME - creep.ticksToLive;
+                if (creep.memory.respawnTTL === RESPAWN_TTL_NOT_YET_SET) {
+                    creep.memory.respawnTTL = CREEP_LIFE_TIME - creep.ticksToLive;
+                }
                 this.run(creep);
                 break;
             case TASK.MOVE_TO_ROOM:
