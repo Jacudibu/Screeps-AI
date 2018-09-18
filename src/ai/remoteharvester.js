@@ -21,7 +21,6 @@ const remoteHarvester = {
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
-            case TASK.HARVEST_ENERGY_FETCH:
             case TASK.HARVEST_ENERGY:
                 creep.harvestEnergyInRemoteRoom();
                 break;

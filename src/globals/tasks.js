@@ -1,6 +1,5 @@
 global.TASK = {};
 global.TASK.HARVEST_ENERGY = 'harvest_energy';
-global.TASK.HARVEST_ENERGY_FETCH = 'harvest_energy_fetch';
 global.TASK.HAUL_ENERGY = 'haul_energy';
 global.TASK.MOVE_ONTO_CONTAINER = 'move_onto_container';
 global.TASK.STORE_ENERGY = 'store_energy';

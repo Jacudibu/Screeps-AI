@@ -13,6 +13,15 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
                     this.drop(RESOURCE_ENERGY);
                 }
 
+                if (this.memory.taskTargetId) {
+                    let taskTarget = Game.getObjectById(this.memory.taskTargetId);
+                    if (taskTarget instanceof Source) {
+                        taskTarget.memory.workersAssigned--;
+                    }
+                }
+
+                this.setTask(TASK.DECIDE_WHAT_TO_DO);
+
                 this.say(this.ticksToLive % 2 === 0 ? creepTalk.flee1 : creepTalk.flee2, true);
                 return this.kite(this.room._hostiles, {range: DEFAULT_FLEE_RANGE});
             }
@@ -29,7 +38,6 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
  *  - offRoad: If true, every terrain (except walls) has a matrix cost of 1. Defaults to false.
  *  - ignoreRoads: If true, plains will have a matrix cost of 1. Defaults to false.
  *  - range: The Range that should be kept. Defaults to DEFAULT_KITE_RANGE.
- *  - isAllowedToLeaveRoom: Wether the creep is allowed to leave its room. Defaults to false.
  */
 Creep.prototype.kite = function(thingsToKite, options = {}) {
     if (!thingsToKite) {
@@ -58,7 +66,7 @@ Creep.prototype.kite = function(thingsToKite, options = {}) {
     }
 
     const pathFinderResult = PathFinder.search(this.pos, fancyGoalObject, {
-        maxRooms: options.isAllowedToLeaveRoom ? 2 : 1,
+        maxRooms: 2,
         plainCost: options.offRoad ? 1 : options.ignoreRoads ? 1 : 2,
         swampCost: options.offRoad ? 1 : options.ignoreRoads ? 5 : 10,
         flee: true,
