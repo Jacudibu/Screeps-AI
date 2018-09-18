@@ -313,8 +313,8 @@ Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
 Spawn.prototype.spawnRemoteRepairerV2 = function(energy, repairRouteIndex = 0) {
     let body = [];
 
-    if (energy > 1750) {
-        energy = 1750;
+    if (energy > 350 * 8) {
+        energy = 350 * 8;
     }
 
     while(energy >= 350) {
@@ -325,7 +325,7 @@ Spawn.prototype.spawnRemoteRepairerV2 = function(energy, repairRouteIndex = 0) {
     body.sort();
     let opts = {
         memory: {
-            role: ROLE.REMOTE_REPAIRER_V2,
+            role: ROLE.REMOTE_REPAIRER,
             targetRoomName: this.room.memory.repairRoute[repairRouteIndex],
             repairRouteIndex: repairRouteIndex,
             task: TASK.COLLECT_ENERGY,
@@ -333,7 +333,7 @@ Spawn.prototype.spawnRemoteRepairerV2 = function(energy, repairRouteIndex = 0) {
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER_V2, body, opts);
+    return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER, body, opts);
 };
 
 Spawn.prototype.spawnRemoteUpgrader = function(energy, targetRoomName, respawnTTL) {
