@@ -1,6 +1,6 @@
 const remoteHauler = {
     run(creep) {
-        if (creep.fleeFromNearbyEnemies(false) !== ERR_NOT_FOUND) {
+        if (creep.memory.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
             return;
         }
 

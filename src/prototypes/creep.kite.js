@@ -1,5 +1,5 @@
 const DEFAULT_KITE_RANGE = 3;
-const DEFAULT_FLEE_RANGE = 6;
+const DEFAULT_FLEE_RANGE = 5;
 
 /**
  * Makes a creep flee from hostiles if there where any.
