@@ -1,5 +1,9 @@
 const remoteHarvester = {
     run(creep) {
+        if (creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
+            return;
+        }
+
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name !== creep.memory.targetRoomName) {

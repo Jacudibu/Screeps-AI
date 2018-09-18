@@ -12,6 +12,7 @@ require('globals.utility');
 require('prototypes.creep');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
+require('prototypes.creep.kite');
 require('prototypes.creep.tasks');
 require('prototypes.mineral.container');
 require('prototypes.room');
@@ -31,7 +32,7 @@ require('prototypes.structurelab.requestedmineral');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
-require('tools.traveler');
+global.Traveler = require('tools.traveler');
 require('tools.logger');
 
 const memoryManagment = require('memorymanagment');
@@ -47,8 +48,9 @@ profiler.enable();
 module.exports.loop = function () {
     profiler.wrap(function() {
         memoryManagment.run();
-        creepAi.run();
         roomLogic.run();
+        creepAi.run();
+//        roomLogic.run();
         spawnlogic.run();
 
         terminalResourceDistribution.run();
