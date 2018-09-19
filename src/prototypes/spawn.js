@@ -408,6 +408,7 @@ Spawn.prototype.spawnClaimerAttacker = function(energy, targetRoomName) {
             role: ROLE.CLAIMER_ATTACKER,
             targetRoomName: targetRoomName,
             task: TASK.MOVE_TO_ROOM,
+            spawnRoom: this.room.name,
         }
     };
 

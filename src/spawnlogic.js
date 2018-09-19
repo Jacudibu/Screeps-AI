@@ -182,6 +182,8 @@ const spawnlogic = {
                 return spawn.spawnCarrier(energy, args.targetRoomName, args.storageRoomName, args.respawnTTL);
             case ROLE.MINERAL_HARVESTER:
                 return spawn.spawnMineralHarvester(energy);
+            case ROLE.CLAIMER_ATTACKER:
+                return spawn.spawnClaimerAttacker(energy, args.targetRoomName);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue

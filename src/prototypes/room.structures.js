@@ -130,6 +130,16 @@ multipleList.forEach(function(type){
         enumerable: false,
         configurable: true,
     });
+
+    // without the 's', for cases where we need to use structureType directly
+    Object.defineProperty(Room.prototype, type, {
+        get: function(){
+            return this[type + 's'];
+        },
+        set: function(){},
+        enumerable: false,
+        configurable: true,
+    });
 });
 
 singleList.forEach(function(type){

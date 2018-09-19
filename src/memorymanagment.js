@@ -81,6 +81,22 @@ const memoryManagment = {
             case ROLE.MINERAL_HARVESTER:
                 Memory.rooms[creep.spawnRoom].isMineralHarvesterAssigned = false;
                 break;
+
+            case ROLE.CLAIMER_ATTACKER:
+                // TODO: This is basically just a lazy #HACK right now. REMOVE IT.
+                const room = Game.rooms[creep.targetRoomName];
+                if (room) {
+                    if (room.controller && room.controller.level === 0) {
+                        break;
+                    }
+                }
+
+                let args2 = {
+                    role: ROLE.CLAIMER_ATTACKER,
+                    targetRoomName: creep.targetRoomName,
+                };
+                Memory.rooms[creep.spawnRoom].spawnQueue.push(args2);
+                break;
         }
     },
 
