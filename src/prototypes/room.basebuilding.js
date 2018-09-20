@@ -206,29 +206,22 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(structureType, x,
             case 'structure':
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
-                        for (const structure in arrayElement.structure) {
-                            if (structure.structureType === structureType) {
-                                return ERR_ALREADY_BUILT;
-                            }
+                        if (arrayElement.structure.structureType === structureType) {
+                            return ERR_ALREADY_BUILT;
                         }
                         break;
                     case STRUCTURE_ROAD:
-                        for (const structure in arrayElement.structure) {
-                            if (structure.structureType === structureType) {
-                                return ERR_ALREADY_BUILT;
-                            }
+                        if (arrayElement.structure.structureType === structureType) {
+                            return ERR_ALREADY_BUILT;
                         }
                         break;
                     default:
-                        for (const structure in arrayElement.structure) {
-                            console.log(structure);
-                            if (structure.structureType === structureType) {
-                                return ERR_ALREADY_BUILT;
-                            }
+                        if (arrayElement.structure.structureType === structureType) {
+                            return ERR_ALREADY_BUILT;
+                        }
 
-                            if (structure.structureType !== STRUCTURE_RAMPART || structure.structureType !== STRUCTURE_ROAD) {
-                                return ERR_BLOCKED_BY_STRUCTURE;
-                            }
+                        if (arrayElement.structure.structureType !== STRUCTURE_RAMPART || arrayElement.structure.structureType !== STRUCTURE_ROAD) {
+                            return ERR_BLOCKED_BY_STRUCTURE;
                         }
                         break;
                 }
