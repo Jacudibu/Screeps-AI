@@ -1,14 +1,21 @@
 const roomLogic = {
-    run() {
+    runBeforeCreeps() {
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
-            this.tryUpdateRoom(room);
+            this.tryEarlyUpdateRoom(room);
         }
     },
 
-    tryUpdateRoom(room) {
+    runAfterCreeps() {
+        for (let roomName in Game.rooms) {
+            let room = Game.rooms[roomName];
+            this.tryLateUpdateRoom(room);
+        }
+    },
+
+    tryEarlyUpdateRoom(room) {
         try {
-            room.update();
+            room.updateBeforeCreeps();
         } catch (e) {
             let message = room + " Update -> caught error: " + e;
             if (e.stack) {
@@ -16,7 +23,19 @@ const roomLogic = {
             }
             log.error(message);
         }
-    }
+    },
+
+    tryLateUpdateRoom(room) {
+        try {
+            room.updateAfterCreeps();
+        } catch (e) {
+            let message = room + " Update -> caught error: " + e;
+            if (e.stack) {
+                message += "\nTrace:\n" + e.stack;
+            }
+            log.error(message);
+        }
+    },
 };
 
 profiler.registerObject(roomLogic, "RoomLogic");

@@ -6,8 +6,8 @@ const DEFAULT_FLEE_RANGE = 5;
  * returns ERR_NOT_FOUND if no hostiles are nearby or the result of creep.kite.
  */
 Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
-    if (this.room._hostiles && this.room._hostiles.length > 0) {
-        for (let hostile of this.room._hostiles) {
+    if (this.room._dangerousHostiles && this.room._dangerousHostiles.length > 0) {
+        for (let hostile of this.room._dangerousHostiles) {
             if (this.pos.getRangeTo(hostile) <= DEFAULT_FLEE_RANGE) {
                 if (shouldCarryBeDropped && _.sum(this.carry) > 0) {
                     this.drop(RESOURCE_ENERGY);
@@ -23,7 +23,7 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
 
                 this.say(this.ticksToLive % 2 === 0 ? creepTalk.flee1 : creepTalk.flee2, true);
-                return this.kite(this.room._hostiles, {range: DEFAULT_FLEE_RANGE});
+                return this.kite(this.room._dangerousHostiles, {range: DEFAULT_FLEE_RANGE});
             }
         }
     }

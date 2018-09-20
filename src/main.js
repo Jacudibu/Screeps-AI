@@ -23,6 +23,7 @@ require('prototypes.room.links');
 require('prototypes.room.mineral');
 require('prototypes.room.sources');
 require('prototypes.room.structures');
+require('prototypes.room.threat');
 require('prototypes.room.update');
 require('prototypes.source');
 require('prototypes.source.container');
@@ -49,9 +50,9 @@ profiler.enable();
 module.exports.loop = function () {
     profiler.wrap(function() {
         memoryManagment.run();
-        roomLogic.run();
+        roomLogic.runBeforeCreeps();
         creepAi.run();
-//        roomLogic.run();
+        roomLogic.runAfterCreeps();
         spawnlogic.run();
 
         terminalResourceDistribution.run();

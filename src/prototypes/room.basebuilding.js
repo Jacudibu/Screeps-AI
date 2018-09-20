@@ -196,21 +196,21 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(structureType, x,
             case 'structure':
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
-                        for (const structure of arrayElement.structures) {
+                        for (const structure in arrayElement.structures) {
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
                         }
                         break;
                     case STRUCTURE_ROAD:
-                        for (const structure of arrayElement.structures) {
+                        for (const structure in arrayElement.structures) {
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
                         }
                         break;
                     default:
-                        for (const structure of arrayElement.structures) {
+                        for (const structure in arrayElement.structures) {
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
