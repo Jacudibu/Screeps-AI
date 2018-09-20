@@ -373,9 +373,10 @@ Creep.prototype.storeMineral = function(nextTask) {
     }
 };
 
+const signs = Memory.signs;
 Creep.prototype.signRoomController = function(nextTask) {
-    let text = this.room.controller.level > 1 ? "Hello World! Embrace the most inefficient code ever. ^-^"
-                                              : "🍪";
+    let text = this.room.controller.level > 1 ? signs.claimed
+                                              : signs.reserved;
 
     if (this.room.controller.sign !== undefined) {
         if (this.room.controller.sign.text === text) {

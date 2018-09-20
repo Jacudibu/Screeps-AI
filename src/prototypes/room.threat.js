@@ -43,7 +43,7 @@ Room.prototype.updateThreat = function() {
     this.threat = threat;
 };
 
-Room.prototype.respondToThreat = function() {
+Room.prototype.askForHelpIfThreatDetected = function() {
     if (!this.threat) {
         this.memory.requiresHelp = undefined;
         return;

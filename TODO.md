@@ -5,7 +5,7 @@
  1  |   Make creeps haul missing minerals from terminal to storage
  1  |   Sort Remote Mining Rooms by relevance (distance, source count...)
  1  |   Ranged defenders
- 1  |   LowRCL Workers (harvest/collect E -> build -> repair -> upgrade, until 5 extensions are built)
+ 1  |   LowRCL Workers (harvest/collect E -> upgrade [before downgrade] -> build -> repair -> upgrade, until 5 extensions are built)
  1  |   Make Remote Repairer dismantle enemy & flagged structures
  2  |   Remote Room Invaders (attacking enemy haulers, miners and roads, switching rooms on incoming threat)
  2  |   Remote Room Milkers (basically just stealing energy)

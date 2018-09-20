@@ -10,7 +10,7 @@ const STRUCTURE_PRIORITY_ORDER = [
     // Nice To Have
     STRUCTURE_STORAGE,
     STRUCTURE_TERMINAL,
-    STRUCTURE_CONTAINER,
+    //STRUCTURE_CONTAINER,
     STRUCTURE_EXTRACTOR,
     STRUCTURE_RAMPART,
     STRUCTURE_LINK,
@@ -60,7 +60,7 @@ Room.prototype.tryPlacingConstructionSites = function() {
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {
-    if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] < Game.time) {
+    if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] > Game.time) {
         return;
     }
 
@@ -139,7 +139,17 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
 
     const center = this.memory.baseCenterPosition;
     if (!center) {
-        throw new Error("No center position set up for automated base building");
+        const flags = this.find(FIND_FLAGS);
+        for (const flag of flags) {
+            if (flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_YELLOW) {
+                this.memory.baseCenterPosition = { x: flag.pos.x, y: flag.pos.y };
+                flag.remove();
+            }
+        }
+
+        if (!this.memory.baseCenterPosition) {
+            throw new Error("No center position set up for automated base building. You can place a Yellow/Yellow flag to set it up.");
+        }
     }
 
     for (const position of layout.buildings[structureType].pos) {
@@ -196,21 +206,22 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(structureType, x,
             case 'structure':
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
-                        for (const structure in arrayElement.structures) {
+                        for (const structure in arrayElement.structure) {
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
                         }
                         break;
                     case STRUCTURE_ROAD:
-                        for (const structure in arrayElement.structures) {
+                        for (const structure in arrayElement.structure) {
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
                         }
                         break;
                     default:
-                        for (const structure in arrayElement.structures) {
+                        for (const structure in arrayElement.structure) {
+                            console.log(structure);
                             if (structure.structureType === structureType) {
                                 return ERR_ALREADY_BUILT;
                             }
