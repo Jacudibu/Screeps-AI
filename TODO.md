@@ -5,6 +5,12 @@
  1  |   Make creeps haul missing minerals from terminal to storage
  1  |   Sort Remote Mining Rooms by relevance (distance, source count...)
  1  |   Ranged defenders
+ 1  |   Make Remote Repairer dismantle enemy & flagged structures
+ 2  |   Remote Room Invaders (attacking enemy haulers, miners and roads, switching rooms on incoming threat)
+ 2  |   Remote Room Milkers (basically just stealing energy)
+ 2  |   Remote Room Raiders (Invaders + Milker = Raider -> attacking enemy haulers & stealing energy)
+ 2  |   Automatically Patch holes in remote mining rooms
+ 2  |   Create Safemode GCL<3 pests -> 1 move creeps blocking construction sites by just standing on them 
  2  |   Threat response depending on attackers
  4  |   Source Memory Rework
  2  |   Sort Remote Repair Route to increase efficiency
