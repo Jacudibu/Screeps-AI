@@ -2,8 +2,14 @@ Room.prototype.update = function() {
     this.checkForHostiles();
     this.updateThreat();
     this.respondToThreat();
+
+    if (!(this.controller && this.controller.my)) {
+        return;
+    }
+
     this.repairDamagedCreeps();
     this.repairAlmostBrokenRamparts();
+    this.tryPlacingConstructionSites();
 };
 
 Room.prototype.updateThreat = function() {

@@ -24,6 +24,13 @@ const STRUCTURE_PRIORITY_ORDER = [
     STRUCTURE_POWER_SPAWN,
 ];
 
+// TODO: interrupt wait time on RCL Levelup
+let nextConstructionTimer = {};
+const WAIT_TIME_WHEN_GCL1 = 10;
+const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT = 25;
+const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        = 5000;
+const WAIT_TIME_WHEN_NO_LAYOUT_SETUP            = 50000;
+
 const SUCCESSFULLY_PLACED           = 1;
 const ERR_ALREADY_AT_RCL_LIMIT      = 2;
 const ERR_ALREADY_AT_LAYOUT_LIMIT   = 3;
@@ -53,31 +60,39 @@ Room.prototype.tryPlacingConstructionSites = function() {
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {
-    const layout = this.memory.layout;
-    if (!layout) {
-        // TODO: Wait for a long, long time before checking again
-        // Those rooms are manually built right now
+    if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] < Game.time) {
         return;
     }
 
+    if (!this.memory.layout) {
+        // Those rooms are manually built right now
+        nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
+        return;
+    }
+
+    const layout = baseLayouts.diamond14x14;
+
+    if (this.controller.level === 1) {
+        nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_GCL1);
+        return
+    }
+
     if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
-        // TODO: Wait 25 Ticks.
+        nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
         return;
     }
 
     const result = this._checkIfSomethingNeedsToBeBuilt(layout);
     switch (result) {
         case SUCCESSFULLY_PLACED:
-            // TODO: wait 25 Ticks
+            nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
             break;
 
         case ERR_EVERYTHING_BUILT:
-            // TODO: wait ... 5000-ish ticks.
-            // TODO: interrupt wait time on RCL Levelup
+            nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_EVERYTHING_IS_BUILT);
             break;
 
         default:
-            // TODO: ... not sure?
             log.warning(this + "unhandled status in automatic construction site placement: " + result);
             break;
     }
@@ -154,13 +169,14 @@ Room.prototype._placeConstructionSiteAtPosition = function(structureType, x, y) 
             return ERR_UNDEFINED;
     }
 
-    const result = this.createConstructionSite(structureType, x, y);
+    const result = this.createConstructionSite(x, y, structureType);
     switch(result) {
         case OK:
             return SUCCESSFULLY_PLACED;
 
         default:
-            log.warning(this + "unexpected error when placing construction site: " + result);
+            log.warning(this + "unexpected error when placing construction site: " + result
+                        + "\ndata: x: " + x + " | y: " + y + " structureType: " + structureType);
             return ERR_UNDEFINED;
     }
 };
