@@ -251,6 +251,10 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnou
         this.setTask(taskIfNothingToBuild);
         return;
     }
+    if (constructionSite === ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK) {
+        this.say(creepTalk.waitingForSomething, true);
+        return;
+    }
 
     switch (this.build(constructionSite)) {
         case OK:

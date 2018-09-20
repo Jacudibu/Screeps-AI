@@ -71,11 +71,15 @@ Creep.prototype._getConstructionSite = function() {
     }
 
     let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES, {
-        filter: (c) => c.my
+        filter: c => c.my
     });
 
     if (constructionSites.length === 0) {
-        return ERR_NOT_FOUND;
+        if (this.room.requestNewConstructionSite()) {
+            return ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK;
+        } else {
+            return ERR_NOT_FOUND;
+        }
     }
 
     let spawns = this.room.mySpawns;

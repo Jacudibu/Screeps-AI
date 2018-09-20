@@ -1,22 +1,28 @@
-Room.prototype.initSpawnMemory = function() {
-    this.memory.requestedCreeps = {};
-    this.memory.requestedCreeps[ROLE.HARVESTER] = 0;
-    this.memory.requestedCreeps[ROLE.HAULER] = 0;
-    this.memory.requestedCreeps[ROLE.UPGRADER] = 1;
-    this.memory.requestedCreeps[ROLE.BUILDER] = 0;
-    this.memory.requestedCreeps[ROLE.REPAIRER] = 0;
-};
-
-Room.prototype.setRequestedCreepRole = function(role, count) {
-    this.memory.requestedCreeps[role] = count;
-};
-
 Room.prototype.wipeConstructionSites = function() {
     let sites = this.find(FIND_MY_CONSTRUCTION_SITES);
 
     for (let i = 0; i < sites.length; i++) {
         if (sites[i].progress === 0) {
             sites[i].remove();
+        }
+    }
+};
+
+Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) {
+    if (!areYouSure1 || !areYouSure2 || !areYouSure3) {
+        log.warning("Please call this with (true, true, true), just to make sure...");
+        return;
+    }
+
+    log.warning("You asked for it! " + this + " just got completely wiped.");
+
+    this.wipeConstructionSites();
+
+    let structures = this.find(FIND_MY_STRUCTURES);
+
+    for (let i = 0; i < structures.length; i++) {
+        if (structures[i].progress === 0) {
+            structures[i].destroy();
         }
     }
 };

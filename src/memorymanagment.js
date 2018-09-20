@@ -7,7 +7,6 @@ const memoryManagment = {
 
     resetRoomCaches() {
         for (let roomName in Game.rooms) {
-            Game.rooms[roomName]._freeSpawnsTowersAndExtensions = undefined;
             Game.rooms[roomName]._emptyPublicEnergyContainers = undefined;
         }
     },

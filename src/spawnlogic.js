@@ -68,7 +68,7 @@ const spawnlogic = {
 
     tryAddingNewCreepToSpawnQueue(room, spawns) {
         if (room.memory.requestedCreeps === undefined) {
-            room.initSpawnMemory(room);
+            room.updateRequestedCreeps();
         }
 
         if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {

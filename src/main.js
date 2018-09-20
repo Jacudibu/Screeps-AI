@@ -24,6 +24,7 @@ require('prototypes.room.freeextensions');
 require('prototypes.room.labs');
 require('prototypes.room.links');
 require('prototypes.room.mineral');
+require('prototypes.room.requestedcreeps');
 require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.threat');

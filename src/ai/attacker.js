@@ -34,7 +34,7 @@ const attacker = {
                         if (possibleTargets.length === 0) {
                             possibleTargets = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
                             if (possibleTargets.length === 0) {
-                                creep.say(creepTalk.waitingForInput);
+                                creep.say(creepTalk.waitingForSomething);
                                 return;
                             }
 

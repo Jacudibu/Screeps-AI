@@ -26,6 +26,7 @@ const STRUCTURE_PRIORITY_ORDER = [
 
 // TODO: interrupt wait time on RCL Levelup
 let nextConstructionTimer = {};
+let allowConstructionSiteRequests = {};
 const WAIT_TIME_WHEN_GCL1 = 10;
 const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT = 25;
 const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        = 5000;
@@ -59,6 +60,19 @@ Room.prototype.tryPlacingConstructionSites = function() {
     }
 };
 
+Room.prototype.requestNewConstructionSite = function() {
+    if (allowConstructionSiteRequests[this.name]) {
+        nextConstructionTimer[this.name] = 0;
+        return true;
+    }
+
+    return false;
+};
+
+Room.prototype._forceConstructionUpdate = function() {
+    nextConstructionTimer[this.name] = 0;
+};
+
 Room.prototype._automaticallyPlaceConstructionSites = function() {
     if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] > Game.time) {
         return;
@@ -66,6 +80,7 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
 
     if (!this.memory.layout) {
         // Those rooms are manually built right now
+        allowConstructionSiteRequests[this.name] = false;
         nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
         return;
     }
@@ -73,11 +88,13 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
     const layout = baseLayouts.diamond14x14;
 
     if (this.controller.level === 1) {
+        allowConstructionSiteRequests[this.name] = true;
         nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_GCL1);
         return
     }
 
     if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
+        allowConstructionSiteRequests[this.name] = true;
         nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
         return;
     }
@@ -85,10 +102,12 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
     const result = this._checkIfSomethingNeedsToBeBuilt(layout);
     switch (result) {
         case SUCCESSFULLY_PLACED:
+            allowConstructionSiteRequests[this.name] = true;
             nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
             break;
 
         case ERR_EVERYTHING_BUILT:
+            allowConstructionSiteRequests[this.name] = false;
             nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_EVERYTHING_IS_BUILT);
             break;
 
@@ -183,7 +202,10 @@ Room.prototype._placeConstructionSiteAtPosition = function(structureType, x, y) 
     switch(result) {
         case OK:
             return SUCCESSFULLY_PLACED;
-
+        case ERR_FULL:
+            return ERR_CONSTRUCTION_SITE_LIMIT;
+        case ERR_RCL_NOT_ENOUGH:
+            return ERR_ALREADY_AT_RCL_LIMIT;
         default:
             log.warning(this + "unexpected error when placing construction site: " + result
                         + "\ndata: x: " + x + " | y: " + y + " structureType: " + structureType);
