@@ -3,6 +3,7 @@
  1  |   Recovery Spawn if Creepcount is 0
  1  |   Make creeps haul surplus minerals from storage to terminal
  1  |   Make creeps haul missing minerals from terminal to storage
+ 1  |   Sort Remote Mining Rooms by relevance (distance, source count...)
  1  |   Ranged defenders
  2  |   Threat response depending on attackers
  4  |   Source Memory Rework

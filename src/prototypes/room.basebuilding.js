@@ -1,7 +1,7 @@
 global.baseLayouts = {};
 require('layouts.diamond14x14');
 
-const STRUCTURE_PRIORITIES = [
+const STRUCTURE_PRIORITY_ORDER = [
     // Essentials
     STRUCTURE_SPAWN,
     STRUCTURE_EXTENSION,
@@ -12,54 +12,88 @@ const STRUCTURE_PRIORITIES = [
     STRUCTURE_TERMINAL,
     STRUCTURE_CONTAINER,
     STRUCTURE_EXTRACTOR,
+    STRUCTURE_RAMPART,
     STRUCTURE_LINK,
     STRUCTURE_LAB,
     STRUCTURE_ROAD,
-    STRUCTURE_RAMPART,
     STRUCTURE_WALL,
 
     // Fluff
     STRUCTURE_OBSERVER,
-    STRUCTURE_POWER_SPAWN,
     STRUCTURE_NUKER,
+    STRUCTURE_POWER_SPAWN,
 ];
 
-const STATUS = {
-    SUCCESSFULLY_PLACED_CONSTRUCTION_SITE: 0,
+const SUCCESSFULLY_PLACED           = 1;
+const ERR_ALREADY_AT_RCL_LIMIT      = 2;
+const ERR_ALREADY_AT_LAYOUT_LIMIT   = 3;
+const ERR_NO_SUITABLE_SITES_FOUND   = 4;
+const ERR_EVERYTHING_BUILT          = 5;
+const ERR_CONSTRUCTION_SITE_LIMIT   = 6;
 
-    ERR_ALREADY_AT_RCL_LIMIT: 1,
-    ERR_ALREADY_AT_LAYOUT_LIMIT: 2,
-    ERR_NO_SUITABLE_SITES_FOUND: 3,
-    ERR_EVERYTHING_BUILT: 4,
+const VALID_CONSTRUCTION_SITE       = 1;
+const ERR_ALREADY_BUILT             = 2;
+const ERR_BLOCKED_BY_CREEP          = 3;
+const ERR_BLOCKED_BY_STRUCTURE      = 4;
+const ERR_BLOCKED_BY_TERRAIN_WALL   = 5;
 
-    ERR_NOT_YET_IMPLEMENTED: 42,
-    ERR_UNDEFINED: 999,
+const ERR_NOT_YET_IMPLEMENTED       = 42;
+const ERR_UNDEFINED                 = 999;
+
+Room.prototype.tryPlacingConstructionSites = function() {
+    try {
+        this._automaticallyPlaceConstructionSites();
+    } catch (e) {
+        let message = this + " construction site placement: " + e;
+        if (e.stack) {
+            message += "\nTrace:\n" + e.stack;
+        }
+        log.error(message);
+    }
 };
 
-Room.prototype.automaticallyPlaceConstructionSites = function() {
-    if (!this.memory.layout) {
+Room.prototype._automaticallyPlaceConstructionSites = function() {
+    const layout = this.memory.layout;
+    if (!layout) {
+        // TODO: Wait for a long, long time before checking again
+        // Those rooms are manually built right now
         return;
     }
 
     if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
+        // TODO: Wait 25 Ticks.
         return;
     }
 
-    const layout = baseLayouts.diamond14x14;
-    this._checkIfSomethingNeedsToBeBuilt(layout);
+    const result = this._checkIfSomethingNeedsToBeBuilt(layout);
+    switch (result) {
+        case SUCCESSFULLY_PLACED:
+            // TODO: wait 25 Ticks
+            break;
+
+        case ERR_EVERYTHING_BUILT:
+            // TODO: wait ... 5000-ish ticks.
+            // TODO: interrupt wait time on RCL Levelup
+            break;
+
+        default:
+            // TODO: ... not sure?
+            log.warning(this + "unhandled status in automatic construction site placement: " + result);
+            break;
+    }
 };
 
 Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
-    let result = STATUS.ERR_UNDEFINED;
-    for (let i = 0; i < STRUCTURE_PRIORITIES.length; i++) {
-        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITIES[i], layout);
+    let result = ERR_UNDEFINED;
+    for (let i = 0; i < STRUCTURE_PRIORITY_ORDER.length; i++) {
+        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], layout);
 
-        if (result === STATUS.SUCCESSFULLY_PLACED_CONSTRUCTION_SITE) {
+        if (result === SUCCESSFULLY_PLACED) {
             return result;
         }
     }
 
-    return STATUS.ERR_EVERYTHING_BUILT;
+    return ERR_EVERYTHING_BUILT;
 };
 
 Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, layout) {
@@ -68,11 +102,11 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, lay
 
     if (allowsMultipleStructures) {
         if (this[structureType].length >= CONTROLLER_STRUCTURES[structureType][rcl]) {
-            return STATUS.ERR_ALREADY_AT_RCL_LIMIT;
+            return ERR_ALREADY_AT_RCL_LIMIT;
         }
     } else {
         if (this[structureType] || CONTROLLER_STRUCTURES[structureType][rcl] === 0) {
-            return STATUS.ERR_ALREADY_AT_RCL_LIMIT;
+            return ERR_ALREADY_AT_RCL_LIMIT;
         }
     }
 
@@ -85,10 +119,96 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, lay
 
 Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, layout) {
     if (this[structureType].length >= layout.buildings[structureType].length) {
-        return STATUS.ERR_ALREADY_AT_LAYOUT_LIMIT;
+        return ERR_ALREADY_AT_LAYOUT_LIMIT;
     }
 
-    // TODO: Place stuff
+    const center = this.memory.baseCenterPosition;
+    if (!center) {
+        throw new Error("No center position set up for automated base building");
+    }
+
+    for (const position of layout.buildings[structureType].pos) {
+        const result = this._placeConstructionSiteAtPosition(structureType, position.x + center.x, position.y + center.y);
+        if (result === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
+
+    return ERR_UNDEFINED;
+};
+
+Room.prototype._placeConstructionSiteAtPosition = function(structureType, x, y) {
+    const check = this._checkIfStructureTypeCouldBePlacedAt(structureType, x, y);
+    switch (check) {
+        case VALID_CONSTRUCTION_SITE:
+            break;
+
+        case ERR_ALREADY_BUILT:
+        case ERR_BLOCKED_BY_CREEP:
+        case ERR_BLOCKED_BY_STRUCTURE:
+        case ERR_BLOCKED_BY_TERRAIN_WALL:
+            return check;
+
+        default:
+            log.warning(this + "unexpected check result when placing construction site: " + check);
+            return ERR_UNDEFINED;
+    }
+
+    const result = this.createConstructionSite(structureType, x, y);
+    switch(result) {
+        case OK:
+            return SUCCESSFULLY_PLACED;
+
+        default:
+            log.warning(this + "unexpected error when placing construction site: " + result);
+            return ERR_UNDEFINED;
+    }
+};
+
+Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(structureType, x, y) {
+    const stuffAtPos = this.lookAt(x, y);
+
+    for (const arrayElement of stuffAtPos) {
+        switch (arrayElement.type) {
+            case 'creep':
+                return ERR_BLOCKED_BY_CREEP;
+            case 'terrain':
+                if (arrayElement.terrain === 'wall') {
+                    return ERR_BLOCKED_BY_TERRAIN_WALL;
+                }
+                break;
+            case 'structure':
+                switch (structureType) {
+                    case STRUCTURE_RAMPART:
+                        for (const structure of arrayElement.structures) {
+                            if (structure.structureType === structureType) {
+                                return ERR_ALREADY_BUILT;
+                            }
+                        }
+                        break;
+                    case STRUCTURE_ROAD:
+                        for (const structure of arrayElement.structures) {
+                            if (structure.structureType === structureType) {
+                                return ERR_ALREADY_BUILT;
+                            }
+                        }
+                        break;
+                    default:
+                        for (const structure of arrayElement.structures) {
+                            if (structure.structureType === structureType) {
+                                return ERR_ALREADY_BUILT;
+                            }
+
+                            if (structure.structureType !== STRUCTURE_RAMPART || structure.structureType !== STRUCTURE_ROAD) {
+                                return ERR_BLOCKED_BY_STRUCTURE;
+                            }
+                        }
+                        break;
+                }
+        }
+    }
+
+    return VALID_CONSTRUCTION_SITE;
 };
 
 Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, layout) {
@@ -118,20 +238,20 @@ Room.prototype._placeRamparts = function(layout) {
     // TODO:      ---> Memory layout: ramparts: {gcl2: [], gcl5: [], gcl7: []}
     // TODO: Flood-Fill from exits in order to check if a rampart is needed for each rcl stage, remove if not reached
 
-    return STATUS.ERR_NOT_YET_IMPLEMENTED;
+    return ERR_NOT_YET_IMPLEMENTED;
 };
 
 Room.prototype._placeExtractor = function() {
     if (!this.mineral) {
-        log.warning(this + "wanted to place extractor but didn't find any mineral?!")
-        return STATUS.ERR_UNDEFINED;
+        log.warning(this + "wanted to place extractor but didn't find any mineral?!");
+        return ERR_UNDEFINED;
     }
 
     let result = this.createConstructionSite(this.mineral.pos, STRUCTURE_EXTRACTOR);
     if (result === OK) {
-        return STATUS.SUCCESSFULLY_PLACED_CONSTRUCTION_SITE;
+        return SUCCESSFULLY_PLACED;
     } else {
         log.warning(this + "wanted to place extractor, but actually placing it returned " + result);
-        return STATUS.ERR_UNDEFINED;
+        return ERR_UNDEFINED;
     }
 };
