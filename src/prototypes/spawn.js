@@ -28,6 +28,35 @@ Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
     return this._spawnDefinedCreep(role, body, opts);
 };
 
+Spawn.prototype.spawnEarlyRCLHarvester = function(energy) {
+    let body = [];
+
+    if (energy > 250 * 12) {
+        energy = 250 * 12;
+    }
+
+    while (energy >= 250) {
+        body.push(CARRY, MOVE, WORK, MOVE);
+        energy -= 250;
+    }
+
+    if (energy >= 150) {
+        body.push(WORK, MOVE);
+    }
+
+    body.sort();
+
+    let opts = {
+        memory: {
+            role: ROLE.EARLY_RCL_HARVESTER,
+            task: TASK.HARVEST_ENERGY,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.EARLY_RCL_HARVESTER, body, opts);
+};
+
 Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
     let body = [];
 

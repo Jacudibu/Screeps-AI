@@ -5,7 +5,7 @@ const builder = {
                 creep.collectEnergy(TASK.BUILD_STRUCTURE);
                 break;
             case TASK.BUILD_STRUCTURE:
-                creep.buildStructures(TASK.REPAIR_STRUCTURE);
+                creep.buildStructures(TASK.REPAIR_STRUCTURE, TASK.COLLECT_ENERGY, true);
                 break;
             case TASK.REPAIR_STRUCTURE:
                 creep.repairStructures(TASK.UPGRADE_CONTROLLER);

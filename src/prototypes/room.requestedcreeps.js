@@ -3,8 +3,13 @@ Room.prototype.updateRequestedCreeps = function() {
 
     switch(this.controller.level) {
         case 1:
-            // TODO: use earlyRCLWorker instead of all that bollocks
-            requestedCreeps[ROLE.HARVESTER] = this.sources.length * 3;
+            let freeSpace = 0;
+            for (let source of this.sources) {
+                freeSpace += source.countFreeTilesAroundSource();
+            }
+
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 3;
+            requestedCreeps[ROLE.HARVESTER] = 0;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 1;
             requestedCreeps[ROLE.BUILDER]   = 3;
@@ -12,6 +17,7 @@ Room.prototype.updateRequestedCreeps = function() {
             break;
 
         case 2:
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 3;
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 6;

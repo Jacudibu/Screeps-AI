@@ -18,12 +18,10 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
 
     this.wipeConstructionSites();
 
-    let structures = this.find(FIND_MY_STRUCTURES);
+    let structures = this.find(FIND_STRUCTURES);
 
     for (let i = 0; i < structures.length; i++) {
-        if (structures[i].progress === 0) {
-            structures[i].destroy();
-        }
+        structures[i].destroy();
     }
 };
 
@@ -81,10 +79,6 @@ Room.prototype.removePublicEnergyContainer = function(containerId) {
     }
 
     _.remove(this.memory.publicEnergyContainers, id => id ===containerId);
-};
-
-Room.prototype.setAutoSpawn = function(shouldSpawn) {
-    this.memory.autoSpawnEnabled = shouldSpawn;
 };
 
 Room.prototype.isSpawnQueueEmpty = function() {

@@ -1,5 +1,6 @@
 global.ROLE = {};
 global.ROLE.HARVESTER ='harvester';
+global.ROLE.EARLY_RCL_HARVESTER ='early_rcl_harvester';
 global.ROLE.STRIP_HARVESTER = 'strip_harvester';
 global.ROLE.HAULER ='hauler';
 global.ROLE.BUILDER = 'builder';

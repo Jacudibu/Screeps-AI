@@ -47,7 +47,6 @@ const spawnlogic = {
 
         // If something was added the spawnqueue was changed
         if (!room.isSpawnQueueEmpty()) {
-            room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
             if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
                 this.shiftElementFromSpawnQueue(room);
             }
@@ -63,6 +62,18 @@ const spawnlogic = {
             return true;
         }
 
+        if (room.myTowers > 0) {
+            return false;
+        }
+
+        if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
+            if (room.find(FIND_MY_CREEPS, {filter: creep => creep.memory.role === ROLE.ATTACKER}).length === 0) {
+                // Shoo scouts away, so they don't block construction sites.
+                room.addToSpawnQueueStart({role: ROLE.ATTACKER});
+                return true;
+            }
+        }
+
         return false;
     },
 
@@ -71,51 +82,57 @@ const spawnlogic = {
             room.updateRequestedCreeps();
         }
 
-        if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
-            if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
-                room.addToSpawnQueueStart({role: ROLE.HAULER});
+        if (room.energyCapacityAvailable < 550) {
+            // Early RCL. CUUUUTE!
+            if (this.isRoleNeeded(room, spawns, ROLE.EARLY_RCL_HARVESTER)) {
+                room.addToSpawnQueueStart({role: ROLE.EARLY_RCL_HARVESTER});
                 return;
             }
-        }
 
-        if (this.isRoleNeeded(room, spawns, ROLE.HARVESTER)) {
-            room.addToSpawnQueueStart({role: ROLE.HARVESTER});
-            return;
-        }
+            if (this.checkAndSpawnDefenderIfNecessary(room)) {
+                return;
+            }
+        } else {
+            if (this.countNumberOfCreepsWithRole(room, ROLE.HARVESTER) > 0 && this.countNumberOfCreepsWithRole(room, ROLE.HAULER) === 0) {
+                if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
+                    room.addToSpawnQueueStart({role: ROLE.HAULER});
+                    return;
+                }
+            }
 
-        if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
-            room.addToSpawnQueueEnd({role: ROLE.HAULER});
-            return;
-        }
+            if (this.isRoleNeeded(room, spawns, ROLE.HARVESTER)) {
+                room.addToSpawnQueueStart({role: ROLE.HARVESTER});
+                return;
+            }
 
-        if (this.checkAndSpawnDefenderIfNecessary(room)) {
-            return;
-        }
+            if (this.isRoleNeeded(room, spawns, ROLE.HAULER)) {
+                room.addToSpawnQueueEnd({role: ROLE.HAULER});
+                return;
+            }
 
-        if (this.isRoleNeeded(room, spawns, ROLE.UPGRADER)) {
-            room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
-            return;
-        }
+            if (this.checkAndSpawnDefenderIfNecessary(room)) {
+                return;
+            }
 
-        if (this.isRoleNeeded(room, spawns, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
-            room.addToSpawnQueueEnd({role: ROLE.BUILDER});
-            return;
-        }
+            if (this.isRoleNeeded(room, spawns, ROLE.UPGRADER)) {
+                room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
+                return;
+            }
 
-        if (this.isRoleNeeded(room, spawns, ROLE.REPAIRER)) {
-            room.addToSpawnQueueEnd({role: ROLE.REPAIRER});
-            return;
+            if (this.isRoleNeeded(room, spawns, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
+                room.addToSpawnQueueEnd({role: ROLE.BUILDER});
+                return;
+            }
+
+            if (this.isRoleNeeded(room, spawns, ROLE.REPAIRER)) {
+                room.addToSpawnQueueEnd({role: ROLE.REPAIRER});
+                return;
+            }
         }
 
         if (room.extractor && room.mineral && room.mineral.mineralAmount > 0 && !room.memory.isMineralHarvesterAssigned && room.controller.level >= 6) {
             room.addToSpawnQueueEnd({role: ROLE.MINERAL_HARVESTER});
             room.memory.isMineralHarvesterAssigned = true;
-            return;
-        }
-
-        if (room.memory.autoSpawnEnabled && room.memory.autoSpawnTimer === 0) {
-            room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
-            room.memory.autoSpawnTimer = AUTO_SPAWN_TIMER;
             return;
         }
 
@@ -184,6 +201,8 @@ const spawnlogic = {
                 return spawn.spawnMineralHarvester(energy);
             case ROLE.CLAIMER_ATTACKER:
                 return spawn.spawnClaimerAttacker(energy, args.targetRoomName);
+            case ROLE.EARLY_RCL_HARVESTER:
+                return spawn.spawnEarlyRCLHarvester(energy);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue

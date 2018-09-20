@@ -1,5 +1,6 @@
 const builderAI             = require('ai.builder');
 const harvesterAI           = require('ai.harvester');
+const earlyRCLHarvesterAI   = require('ai.earlyrclharvester');
 const haulerAI              = require('ai.hauler');
 const upgraderAI            = require('ai.upgrader');
 const repairerAI            = require('ai.repairer');
@@ -109,6 +110,9 @@ const creepAi = {
                 break;
             case ROLE.GUIDED_RANGED_ATTACKER:
                 guidedRangedAttackerAI.run(creep);
+                break;
+            case ROLE.EARLY_RCL_HARVESTER:
+                earlyRCLHarvesterAI.run(creep);
                 break;
         }
     },

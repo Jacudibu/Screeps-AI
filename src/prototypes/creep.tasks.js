@@ -38,6 +38,62 @@ Creep.prototype.harvestEnergyInBase = function() {
     }
 };
 
+Creep.prototype.harvestEnergyInLowRCLRoom = function(taskWhenFinishedOrEmptySource) {
+    let source;
+    if (this.memory.taskTargetId) {
+        source = Game.getObjectById(this.memory.taskTargetId)
+    }
+
+    if (!source) {
+        let availableSources = this.room.sources.filter(source => source.energy > 0);
+
+        let total = 0;
+        let randomValues = [];
+
+        for (let s of availableSources) {
+            total += s.countFreeTilesAroundSource();
+            randomValues.push(total);
+        }
+
+        let randomValue = _.random(1, total);
+
+        for (let i = 0; i < randomValues.length; i++) {
+            if (randomValue <= randomValues[i]) {
+                source = availableSources[i];
+                break;
+            }
+        }
+
+        if (!source) {
+            log.warning("something went wrong. random values: " + randomValues + ", total: " + total + " random value: " + randomValue);
+        }
+
+        this.memory.taskTargetId = source.id;
+    }
+
+    if (!source) {
+        this.say(creepTalk.noSourceAvailable);
+        return;
+    }
+
+    switch (this.harvest(source)) {
+        case OK:
+            break;
+        case ERR_NOT_ENOUGH_RESOURCES:
+            this.setTask(taskWhenFinishedOrEmptySource);
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(source, {maxRooms:  1});
+            break;
+        case ERR_NO_BODYPART:
+            this.suicide();
+            break;
+        default:
+            this.logActionError("harvestEnergyInLowRCLRoom on source " + source, + this.harvest(source));
+            break;
+    }
+};
+
 Creep.prototype.harvestMineral = function() {
     let mineral = this.room.mineral;
 
@@ -243,7 +299,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished, stuckValue = 
     }
 };
 
-Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnoughEnergy = TASK.COLLECT_ENERGY) {
+Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnoughEnergy = TASK.COLLECT_ENERGY, waitForNextConstructionSite = false) {
     let constructionSite = this._getConstructionSite();
 
     if (constructionSite === ERR_NOT_FOUND) {
@@ -252,8 +308,14 @@ Creep.prototype.buildStructures = function(taskIfNothingToBuild, taskWhenNotEnou
         return;
     }
     if (constructionSite === ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK) {
-        this.say(creepTalk.waitingForSomething, true);
-        return;
+        if (waitForNextConstructionSite) {
+            this.say(creepTalk.waitingForSomething, true);
+            return;
+        } else  {
+            this.say(creepTalk.noTargetFound);
+            this.setTask(taskIfNothingToBuild);
+            return
+        }
     }
 
     switch (this.build(constructionSite)) {
@@ -302,10 +364,15 @@ Creep.prototype.repairStructures = function(taskIfNothingToRepair, taskIfNoResso
     }
 };
 
-Creep.prototype.storeEnergy = function(nextTask) {
+Creep.prototype.storeEnergy = function(nextTask, taskWhenNoStorageFound = undefined) {
     const structureThatRequiresEnergy = this._getEnergyStorage();
 
     if (structureThatRequiresEnergy === ERR_NOT_FOUND) {
+        if (taskWhenNoStorageFound) {
+            this.setTask(taskWhenNoStorageFound);
+            return;
+        }
+
         this.say(creepTalk.noTargetFound);
         return;
     }

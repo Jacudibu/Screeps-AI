@@ -33,7 +33,7 @@ Source.prototype.initializeMemory = function() {
     this.room.memory.sources[this.id] = initialMemory;
 };
 
-Source.prototype._countFreeTilesAroundSource = function() {
+Source.prototype.countFreeTilesAroundSource = function() {
     let freeTileCount = 0;
     [this.pos.x - 1, this.pos.x, this.pos.x + 1].forEach(x => {
         [this.pos.y - 1, this.pos.y, this.pos.y + 1].forEach(y => {

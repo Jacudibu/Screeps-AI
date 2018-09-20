@@ -23,8 +23,10 @@ Creep.prototype._getEnergyStorage = function() {
     let structureThatRequiresEnergy;
     if (this.memory.taskTargetId) {
         structureThatRequiresEnergy = Game.getObjectById(this.memory.taskTargetId);
-        if (structureThatRequiresEnergy.canStillStoreEnergy()) {
-            return structureThatRequiresEnergy;
+        if (structureThatRequiresEnergy) {
+            if (structureThatRequiresEnergy.canStillStoreEnergy()) {
+                return structureThatRequiresEnergy;
+            }
         }
     }
 
