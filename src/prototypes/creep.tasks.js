@@ -410,7 +410,7 @@ Creep.prototype.storeMineral = function(nextTask) {
         }
     }
 
-    const mineralStorage = this._getMineralStorage();
+    const mineralStorage = this._getMineralStorage(hauledResourceType);
 
     if (mineralStorage === ERR_NOT_FOUND) {
         this.say(creepTalk.noTargetFound);

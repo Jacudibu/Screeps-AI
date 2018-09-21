@@ -53,6 +53,7 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                     if (mineralStorage.requestedMineral === resourceType) {
                         return mineralStorage;
                     }
+                    break;
             }
         }
     }
