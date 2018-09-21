@@ -27,7 +27,6 @@ const STRUCTURE_PRIORITY_ORDER = [
 // TODO: interrupt wait time on RCL Levelup
 let nextConstructionTimer = {};
 let allowConstructionSiteRequests = {};
-const WAIT_TIME_WHEN_GCL1 = 10;
 const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT = 25;
 const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        = 5000;
 const WAIT_TIME_WHEN_NO_LAYOUT_SETUP            = 50000;
@@ -88,9 +87,11 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
     const layout = baseLayouts.diamond14x14;
 
     if (this.controller.level === 1) {
-        allowConstructionSiteRequests[this.name] = true;
-        nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_GCL1);
-        return
+        if (this.mySpawns.length > 0) {
+            allowConstructionSiteRequests[this.name] = false;
+            nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_EVERYTHING_IS_BUILT);
+            return
+        }
     }
 
     if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
