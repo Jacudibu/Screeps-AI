@@ -30,6 +30,7 @@ require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.threat');
 require('prototypes.room.update');
+require('prototypes.source.distancetospawn');
 require('prototypes.source.freetilecount');
 require('prototypes.source.container');
 require('prototypes.source.link');

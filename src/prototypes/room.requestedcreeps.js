@@ -1,14 +1,9 @@
 Room.prototype.updateRequestedCreeps = function() {
     let requestedCreeps = {};
-    let freeSpaceAroundSources = 0;
-    for (let source of this.sources) {
-        freeSpaceAroundSources += source.freeTileCount;
-    }
 
     switch(this.controller.level) {
-
         case 1:
-            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpaceAroundSources * 2;
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = calculateAmountOfEarlyRCLHarvesters(this);
             requestedCreeps[ROLE.HARVESTER] = 0;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 1;
@@ -17,7 +12,7 @@ Room.prototype.updateRequestedCreeps = function() {
             break;
 
         case 2:
-            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpaceAroundSources * 2;
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = calculateAmountOfEarlyRCLHarvesters(this);
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 6;
@@ -59,4 +54,16 @@ Room.prototype.updateRequestedCreeps = function() {
     }
 
     this.memory.requestedCreeps = requestedCreeps;
+};
+
+const calculateAmountOfEarlyRCLHarvesters = function(room) {
+    let freeSpaceAroundSources = 0;
+    let distanceFactor = 0;
+
+    for (let source of room.sources) {
+        freeSpaceAroundSources += source.freeTileCount;
+        distanceFactor += 1 + Math.floor(source.distanceToSpawn * 0.1);
+    }
+
+    return freeSpaceAroundSources + distanceFactor;
 };

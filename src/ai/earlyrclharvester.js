@@ -17,8 +17,7 @@ const earlyRCLHarvester = {
                 break;
 
             case TASK.BUILD_STRUCTURE:
-                // No waiting for new construction sites, as this could make them stop doing anything, which would suck.
-                creep.buildStructures(TASK.REPAIR_STRUCTURE, TASK.HARVEST_ENERGY);
+                creep.buildStructures(TASK.REPAIR_STRUCTURE, TASK.HARVEST_ENERGY, true);
                 break;
 
             case TASK.REPAIR_STRUCTURE:

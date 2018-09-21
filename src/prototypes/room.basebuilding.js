@@ -10,7 +10,7 @@ const STRUCTURE_PRIORITY_ORDER = [
     // Nice To Have
     STRUCTURE_STORAGE,
     STRUCTURE_TERMINAL,
-    //STRUCTURE_CONTAINER,
+    STRUCTURE_CONTAINER,
     STRUCTURE_EXTRACTOR,
     STRUCTURE_RAMPART,
     STRUCTURE_LINK,
@@ -174,7 +174,7 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
     }
 
     for (const position of layout.buildings[structureType].pos) {
-        const result = this._placeConstructionSiteAtPosition(structureType, position.x + center.x, position.y + center.y);
+        const result = this._placeConstructionSiteAtPosition(position.x + center.x, position.y + center.y, structureType);
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
@@ -183,8 +183,8 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
     return ERR_UNDEFINED;
 };
 
-Room.prototype._placeConstructionSiteAtPosition = function(structureType, x, y) {
-    const check = this._checkIfStructureTypeCouldBePlacedAt(structureType, x, y);
+Room.prototype._placeConstructionSiteAtPosition = function(x, y, structureType) {
+    const check = this._checkIfStructureTypeCouldBePlacedAt(x, y, structureType);
     switch (check) {
         case VALID_CONSTRUCTION_SITE:
             break;
@@ -215,7 +215,7 @@ Room.prototype._placeConstructionSiteAtPosition = function(structureType, x, y) 
     }
 };
 
-Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(structureType, x, y) {
+Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureType) {
     const stuffAtPos = this.lookAt(x, y);
 
     for (const arrayElement of stuffAtPos) {
@@ -274,6 +274,13 @@ Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, lay
 };
 
 Room.prototype._placeRamparts = function(layout) {
+    if (this.controller.level >= 2) {
+        const result = this._placeConstructionSiteAtPosition();
+        if (result === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
+
     // TODO: RCL 2: Surround with 1 width rampart + controller
     // TODO: RCL 5: Surround with 2 width rampart (outer)
     // TODO: RCL 7: Surround with 3 width rampart (inner)
@@ -283,6 +290,26 @@ Room.prototype._placeRamparts = function(layout) {
     // TODO: Flood-Fill from exits in order to check if a rampart is needed for each rcl stage, remove if not reached
 
     return ERR_NOT_YET_IMPLEMENTED;
+};
+
+Room.prototype._placeRampartsAroundController = function() {
+    // TODO: Cache in layout
+    const controllerPos = this.controller.pos;
+
+    const xArray = [controllerPos.x - 1, controllerPos.x, controllerPos.x + 1];
+    const yArray = [controllerPos.y - 1, controllerPos.y, controllerPos.y + 1];
+    for (let x of xArray) {
+        for (let y of yArray) {
+            if (Game.map.getTerrainAt(x, y, this.pos.roomName) === 'wall') {
+                continue;
+            }
+
+            const result = this._placeConstructionSiteAtPosition(STRUCTURE_RAMPART, x, y) === SUCCESSFULLY_PLACED;
+            if (result === SUCCESSFULLY_PLACED) {
+                return SUCCESSFULLY_PLACED;
+            }
+        }
+    }
 };
 
 Room.prototype._placeExtractor = function() {
