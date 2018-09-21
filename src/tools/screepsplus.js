@@ -67,7 +67,7 @@ function collectStats() {
     Memory.stats.creeps.total = Memory.creepsBuilt;
     Memory.stats.creeps.current = Object.keys(Game.creeps).length;
 
-    let roomStats = {
+    let roomNumbers = {
         claimed: 0,
         reserved: 0,
         total: 0,
@@ -77,16 +77,16 @@ function collectStats() {
         let room = Game.rooms[roomName];
         if (room.controller) {
             if (room.controller.my) {
-                roomStats.claimed++;
+                roomNumbers.claimed++;
             } else if (room.controller.reservation) {
                 if (room.controller.reservation.username === 'Jacudibu') {
-                    roomStats.reserved++;
+                    roomNumbers.reserved++;
                 }
             }
         }
-        roomStats.total++;
+        roomNumbers.total++;
     }
-    Memory.stats.rooms = roomStats;
+    Memory.stats.roomNumbers = roomNumbers;
 
     Memory.stats.heapStatistics = Game.cpu.getHeapStatistics()
 }
