@@ -57,7 +57,7 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
 
     if (this.room.containers) {
         this.room.containers.map(container => {
-            if (container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+            if (container && container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
                 filledEnergyStorages.push(container);
             }
         })
