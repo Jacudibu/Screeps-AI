@@ -488,10 +488,14 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         source.forceNearbyContainerReload();
         targetPos = source.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
-            log.warning(this.room.name + "|Container was apparently destroyed or has decayed! OH NOEZ!");
-            this.say(creepTalk.noTargetFound);
-            this.memory.task = taskWhenFinished;
-            return;
+            targetPos = source.getNearbyContainerConstructionSitePosition();
+            if (targetPos === ERR_NOT_FOUND) {
+                targetPos = source.placeContainerConstructionSiteAndGetItsPosition(this.pos);
+                if (targetPos === ERR_INVALID_ARGS) {
+                    log.warning(this + "unable to place source container!");
+                    targetPos = source.pos;
+                }
+            }
         }
     }
 
@@ -536,17 +540,7 @@ Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvaila
         return;
     }
 
-    let containerPosition = source.getNearbyContainerPosition();
-    if (containerPosition === ERR_NOT_FOUND) {
-        return this.memory.task = taskWhenNoContainerAvailable;
-    } else {
-        if (source.memory.workersMax > 1) {
-            return this.memory.task = taskWhenNoContainerAvailable;
-        } else {
-            return this.memory.task = TASK.MOVE_ONTO_CONTAINER;
-        }
-    }
-
+    return this.memory.task = TASK.MOVE_ONTO_CONTAINER;
 };
 
 Creep.prototype.moveToRoom = function(taskWhenFinished) {

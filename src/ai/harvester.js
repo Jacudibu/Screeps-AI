@@ -18,7 +18,8 @@ const harvester = {
                 creep.moveToRoom(TASK.HARVEST_ENERGY);
                 break;
             default:
-                creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
+                creep.setTask(TASK.MOVE_ONTO_CONTAINER);
+                this.run(creep);
                 break;
         }
     },
