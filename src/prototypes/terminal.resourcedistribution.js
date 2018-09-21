@@ -164,8 +164,11 @@ const terminalResourceDistribution = {
             }
 
             for (const supplyData of resourceSupply[terminal.room.name]) {
-                if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
-                    console.log(terminal.room + " " + supplyData.amount + " below sell threshold for resource: " + supplyData.resourceType);
+                let availableResourceAmount = supplyData.amount - TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType];
+
+                if (availableResourceAmount < TERMINAL_MIN_SEND) {
+                    console.log(terminal.room + " " +  (-availableResourceAmount)
+                                + " below sell threshold for resource: " + supplyData.resourceType);
                     continue;
                 }
 
@@ -183,34 +186,29 @@ const terminalResourceDistribution = {
                     continue;
                 }
 
+                let dealAmount = bestDeal.amount - availableResourceAmount;
 
-                let amount = bestDeal.amount - supplyData.amount;
-
-                if (amount <= 0) {
-                    amount = bestDeal.amount;
+                if (dealAmount <= 0) {
+                    dealAmount = bestDeal.amount;
                 } else {
-                    amount = bestDeal.amount - amount;
+                    dealAmount = availableResourceAmount;
                 }
 
-                if (bestDeal.resourceType === RESOURCE_ENERGY) {
-                    // reduce sold amount by market
-                }
-
-                let result = Game.market.deal(bestDeal.id, amount, terminal.room.name);
+                let result = Game.market.deal(bestDeal.id, dealAmount, terminal.room.name);
                 // for debugging
                 // console.log(terminal.room.name + " would have sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
                 // result = OK;
                 if (result === OK) {
-                    console.log(terminal.room + " sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
-                    if (amount === bestDeal.amount) {
+                    console.log(terminal.room + " sold " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                    if (dealAmount === bestDeal.amount) {
                         _.remove(orders, bestDeal);
                     } else {
-                        bestDeal.amount -= amount;
+                        bestDeal.amount -= dealAmount;
                     }
                     break;
                 } else {
-                    console.log(terminal.room + " tried to sell " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id + ", but failed."
-                                + "Error: " + result + ", bestDeal.amount: " + bestDeal.amount + " amount " + amount);
+                    console.log(terminal.room + " tried to sell " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id + ", but failed."
+                                + "Error: " + result + ", bestDeal.amount: " + bestDeal.amount + " available amount " + availableResourceAmount);
                 }
             }
         }
