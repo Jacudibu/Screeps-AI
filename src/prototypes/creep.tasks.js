@@ -401,6 +401,15 @@ Creep.prototype.storeEnergy = function(nextTask, taskWhenNoStorageFound = undefi
 };
 
 Creep.prototype.storeMineral = function(nextTask) {
+    let hauledResourceType;
+
+    for (let resourceName in this.carry) {
+        if (this.carry[resourceName] > 0) {
+            hauledResourceType = resourceName;
+            break;
+        }
+    }
+
     const mineralStorage = this._getMineralStorage();
 
     if (mineralStorage === ERR_NOT_FOUND) {
@@ -409,7 +418,7 @@ Creep.prototype.storeMineral = function(nextTask) {
         return;
     }
 
-    switch (this.transfer(mineralStorage, this.memory.hauledResourceType)) {
+    switch (this.transfer(mineralStorage, hauledResourceType)) {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
@@ -418,28 +427,24 @@ Creep.prototype.storeMineral = function(nextTask) {
         case ERR_NOT_ENOUGH_RESOURCES:
             if (_.sum(this.carry) === 0) {
                 this.setTask(nextTask);
-            } else {
-                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== this.memory.hauledResourceType)[0];
             }
             break;
         case ERR_FULL:
             this.logActionError("storing resource", "ERR_FULL");
-            this.drop(this.memory.hauledResourceType);
+            this.drop(hauledResourceType);
             break;
         case ERR_INVALID_ARGS:
             if (_.sum(this.carry) === 0) {
                 this.setTask(nextTask);
-            } else {
-                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== this.memory.hauledResourceType)[0];
             }
             break;
         case ERR_INVALID_TARGET:
             this.say(creepTalk.invalidTarget);
-            this.logActionError("invalid target store mineral: " + mineralStorage, this.transfer(mineralStorage, this.memory.hauledResourceType));
+            this.logActionError("invalid target store mineral: " + mineralStorage, this.transfer(mineralStorage, hauledResourceType));
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
         default:
-            this.logActionError("storing resource", this.transfer(mineralStorage, this.memory.hauledResourceType));
+            this.logActionError("storing resource", this.transfer(mineralStorage, hauledResourceType));
             break;
     }
 };

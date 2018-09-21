@@ -40,7 +40,7 @@ Creep.prototype._getEnergyStorage = function() {
     return structureThatRequiresEnergy;
 };
 
-Creep.prototype._getMineralStorage = function() {
+Creep.prototype._getMineralStorage = function(resourceType) {
     let mineralStorage = ERR_NOT_FOUND;
     if (this.memory.taskTargetId) {
         mineralStorage = Game.getObjectById(this.memory.taskTargetId);
@@ -48,13 +48,16 @@ Creep.prototype._getMineralStorage = function() {
             switch(mineralStorage.structureType) {
                 case STRUCTURE_STORAGE:
                 case STRUCTURE_TERMINAL:
-                case STRUCTURE_LAB:
                     return mineralStorage;
+                case STRUCTURE_LAB:
+                    if (mineralStorage.requestedMineral === resourceType) {
+                        return mineralStorage;
+                    }
             }
         }
     }
 
-    mineralStorage = this.findMineralStorage();
+    mineralStorage = this.findMineralStorage(resourceType);
 
     if (mineralStorage === ERR_NOT_FOUND) {
         return ERR_NOT_FOUND;
@@ -348,7 +351,7 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
 
             // Empty Output
             for (let lab of this.room.outputLabs) {
-                if (lab.mineralType && (lab.mineralAmount > MINIMUM_HAUL_RESOURCE_AMOUNT)) {
+                if (lab.mineralType && (lab.mineralAmount > MINIMUM_HAUL_FROM_OUTPUT_LAB_RESOURCE_AMOUNT)) {
                     this.memory.taskTargetId = lab.id;
                     this.memory.hauledResourceType = lab.mineralType;
                     return lab;

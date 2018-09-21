@@ -153,17 +153,17 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
     return ERR_NOT_FOUND;
 };
 
-Creep.prototype.findMineralStorage = function() {
+Creep.prototype.findMineralStorage = function(resourceType) {
     if (this.room.inputLabs.length > 0) {
         for (let lab of this.room.inputLabs) {
-            if (lab.requestedMineral === this.memory.hauledResourceType && lab.mineralAmount < lab.mineralCapacity) {
+            if (lab.requestedMineral === resourceType && lab.mineralAmount < lab.mineralCapacity) {
                 return lab;
             }
         }
     }
 
     if (this.room.storage) {
-        if (!this.room.storage.store[this.memory.hauledResourceType] || this.room.storage.store[this.memory.hauledResourceType] < STORAGE_MAX[this.memory.hauledResourceType]) {
+        if (!this.room.storage.store[resourceType] || this.room.storage.store[resourceType] < STORAGE_MAX[resourceType]) {
             return this.room.storage;
         }
     }
