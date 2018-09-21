@@ -10,6 +10,7 @@ require('globals.infrastructure');
 require('globals.roles');
 require('globals.tasks');
 require('globals.utility');
+require('globals.storagelimits');
 
 require('prototypes.creep');
 require('prototypes.creep.getters');

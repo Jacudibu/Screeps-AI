@@ -1,4 +1,4 @@
-const TERMINAL_DISTRIBUTION_CONSTANTS = require('globals.terminaldistributionconstants');
+const TERMINAL_DISTRIBUTION_CONSTANTS = require('globals.terminallimits');
 const DEAL = true;
 const NO_DEAL = false;
 const DISTRIBUTION_INTERVAL = 17;
@@ -164,7 +164,7 @@ const terminalResourceDistribution = {
             }
 
             for (const supplyData of resourceSupply[terminal.room.name]) {
-                if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
+                if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD_AMOUNT[supplyData.resourceType]) {
                     //console.log(terminal.room + " " +  (-availableResourceAmount) + " below sell threshold for resource: " + supplyData.resourceType);
                     continue;
                 }
@@ -217,9 +217,9 @@ StructureTerminal.prototype.calculateDemand = function() {
     if (this.room.myLabs.length > 2) {
         RESOURCES_ALL.forEach(resource => {
             if (!this.store[resource]) {
-                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]);
-            } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]) {
-                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource] - this.store[resource]);
+                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource]);
+            } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource]) {
+                terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource] - this.store[resource]);
             }
         });
     } else {
@@ -227,17 +227,17 @@ StructureTerminal.prototype.calculateDemand = function() {
         const resource = RESOURCE_ENERGY;
 
         if (!this.store[resource]) {
-            terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]);
-        } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource]) {
-            terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.MIN_STORAGE[resource] - this.store[resource]);
+            terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource]);
+        } else if (this.store[resource] < TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource]) {
+            terminalResourceDistribution.addToDemandList(this.room.name, resource, TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MIN_STORE[resource] - this.store[resource]);
         }
     }
 };
 
 StructureTerminal.prototype.calculateSupply = function() {
     RESOURCES_ALL.forEach(resource => {
-        if (this.store[resource] && this.store[resource] > TERMINAL_DISTRIBUTION_CONSTANTS.MAX_STORAGE[resource]) {
-            terminalResourceDistribution.addToSupplyList(this.room.name, resource, this.store[resource] - TERMINAL_DISTRIBUTION_CONSTANTS.MAX_STORAGE[resource]);
+        if (this.store[resource] && this.store[resource] > TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]) {
+            terminalResourceDistribution.addToSupplyList(this.room.name, resource, this.store[resource] - TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]);
         }
     });
 };

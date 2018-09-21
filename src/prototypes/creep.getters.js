@@ -364,14 +364,6 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         return potentialTarget;
     }
 
-    if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] > TERMINAL_MIN_ENERGY_STORAGE_FOR_HAULER_RETRIEVAL) {
-            this.memory.taskTargetId = this.room.terminal.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
-            return this.room.terminal;
-        }
-    }
-
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
@@ -379,6 +371,37 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         return potentialTarget;
     }
 
+    // Haul Storage -> Terminal if storage is full
+    if (this.room.storage) {
+        for (let resource of RESOURCES_ALL) {
+            if (!this.room.storage.store[resource]) {
+                continue;
+            }
+
+            if (this.room.storage.store[resource] > STORAGE_MAX[resource] + this.carryCapacity) {
+                this.memory.taskTargetId = this.room.storage.id;
+                this.memory.hauledResourceType = resource;
+                return this.room.storage;
+            }
+        }
+    }
+
+    // Haul Terminal -> Storage if storage is not full
+    if (this.room.terminal && this.room.storage) {
+        for (let resource of RESOURCES_ALL) {
+            if (!this.room.terminal.store[resource]) {
+                continue;
+            }
+
+            if (this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
+                this.memory.taskTargetId = this.room.terminal.id;
+                this.memory.hauledResourceType = resource;
+                return this.room.terminal;
+            }
+        }
+    }
+
+    // Just haul energy, and do something with it (worst case it will just dump it back in afterwards)
     if (this.room.storage) {
         if (this.room.storage.store[RESOURCE_ENERGY] > 0) {
             this.memory.taskTargetId = this.room.storage.id;
