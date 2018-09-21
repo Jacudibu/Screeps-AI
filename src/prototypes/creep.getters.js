@@ -436,15 +436,19 @@ Creep.prototype._getDismantleTarget = function() {
     }
 
     let flags = this.room.find(FIND_FLAGS, {
-        filter: (flag) => this.room.lookForAt(LOOK_STRUCTURES, flag.pos)
+        filter: flag => flag.color === COLOR_WHITE && flag.secondaryColor === COLOR_WHITE
+                     && this.room.lookForAt(LOOK_STRUCTURES, flag.pos).length > 0
     });
     if (flags.length > 0) {
         let flag = utility.getClosestObjectFromArray(this, flags);
+
         let target = this.room.lookForAt(LOOK_STRUCTURES, flag.pos)[0];
         flag.remove();
 
-        this.memory.taskTargetId = target.id;
-        return target;
+        if (target) {
+            this.memory.taskTargetId = target.id;
+            return target;
+        }
     }
 
     return undefined;

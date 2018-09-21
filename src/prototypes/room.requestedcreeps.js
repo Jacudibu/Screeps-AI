@@ -8,7 +8,7 @@ Room.prototype.updateRequestedCreeps = function() {
                 freeSpace += source.countFreeTilesAroundSource();
             }
 
-            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 3;
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 2;
             requestedCreeps[ROLE.HARVESTER] = 0;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 1;
@@ -17,7 +17,7 @@ Room.prototype.updateRequestedCreeps = function() {
             break;
 
         case 2:
-            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 3;
+            requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = freeSpace * 2;
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 6;

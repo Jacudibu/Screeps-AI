@@ -156,7 +156,7 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
         return ERR_ALREADY_AT_LAYOUT_LIMIT;
     }
 
-    const center = this.memory.baseCenterPosition;
+    let center = this.memory.baseCenterPosition;
     if (!center) {
         const flags = this.find(FIND_FLAGS);
         for (const flag of flags) {
@@ -169,6 +169,7 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
         if (!this.memory.baseCenterPosition) {
             throw new Error("No center position set up for automated base building. You can place a Yellow/Yellow flag to set it up.");
         }
+        center = this.memory.baseCenterPosition;
     }
 
     for (const position of layout.buildings[structureType].pos) {

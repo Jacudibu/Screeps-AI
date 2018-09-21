@@ -55,13 +55,7 @@ const spawnlogic = {
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
     },
 
-    checkAndSpawnDefenderIfNecessary(room) {
-        if (room.memory.requiresHelp) {
-            room.memory.requiresHelp = false;
-            room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: room.name});
-            return true;
-        }
-
+    checkAndSpawnLowRCLDefenderIfNecessary(room) {
         if (room.myTowers.length > 0) {
             return false;
         }
@@ -73,7 +67,14 @@ const spawnlogic = {
                 return true;
             }
         }
+    },
 
+    checkAndSpawnDefenderIfNecessary(room) {
+        if (room.memory.requiresHelp) {
+            room.memory.requiresHelp = false;
+            room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: room.name});
+            return true;
+        }
         return false;
     },
 
@@ -89,7 +90,7 @@ const spawnlogic = {
                 return;
             }
 
-            if (this.checkAndSpawnDefenderIfNecessary(room)) {
+            if (this.checkAndSpawnLowRCLDefenderIfNecessary(room)) {
                 return;
             }
         } else {
@@ -211,7 +212,7 @@ const spawnlogic = {
     isRoleNeeded(room, spawns, role) {
         // is said role already being spawned?
         for (let i = 0; i < spawns.length; i++) {
-            if (spawns[i].spawning && Memory.creeps[spawns[i].spawning.name].role === role) {
+            if (spawns[i] && spawns[i].spawning && Memory.creeps[spawns[i].spawning.name].role === role) {
                 return false;
             }
         }

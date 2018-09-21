@@ -23,6 +23,13 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
     for (let i = 0; i < structures.length; i++) {
         structures[i].destroy();
     }
+
+    let creeps = this.find(FIND_MY_CREEPS);
+    for (let i = 0; i < creeps.length; i++) {
+        creeps[i].suicide();
+    }
+
+    delete this.memory;
 };
 
 Room.prototype.addRemoteMiningRoom = function (roomName) {
