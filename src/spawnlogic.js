@@ -62,7 +62,7 @@ const spawnlogic = {
             return true;
         }
 
-        if (room.myTowers > 0) {
+        if (room.myTowers.length > 0) {
             return false;
         }
 
@@ -192,7 +192,7 @@ const spawnlogic = {
             case ROLE.RESERVER:
                 return spawn.spawnReserver(energy, args.targetRoomName);
             case ROLE.ATTACKER:
-                return spawn.spawnDefender(energy, args.targetRoomName);
+                return spawn.spawnAttacker(energy, args.targetRoomName);
             case ROLE.DEFENDER:
                 return spawn.spawnDefender(energy, args.targetRoomName);
             case ROLE.CARRIER:
@@ -265,7 +265,7 @@ const spawnlogic = {
             }
 
             if (!remoteMiningRoomMemory.sources) {
-                if (Game.rooms[remoteMiningRoomMemory[i]] !== undefined) {
+                if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
                     Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
                     log.info(room + " ---> " + remoteMiningRoomList[i] + "|no vision to set up remote mining room source memory at index " + i);

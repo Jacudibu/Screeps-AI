@@ -123,8 +123,11 @@ const terminalResourceDistribution = {
 
     sellRemainingSupplyOnMarket(terminals) {
         if (resourceSupply.length === 0) {
+            console.log("Skipping marketing entirely, no room has any supply");
             return;
         }
+
+        log.warning("================================ MARKET ============================");
 
         let supplyResourceTypes = [];
 
@@ -148,7 +151,7 @@ const terminalResourceDistribution = {
         }
 
         // initially filter orders
-        const orders = Game.market.getAllOrders(order => order.type === ORDER_BUY && supplyResourceTypes.includes(order.resourceType));
+        let orders = Game.market.getAllOrders(order => order.type === ORDER_BUY && supplyResourceTypes.includes(order.resourceType));
 
         for (const terminal of terminals) {
             if (terminal.cooldown > 0) {
@@ -156,11 +159,13 @@ const terminalResourceDistribution = {
             }
 
             if (!resourceSupply[terminal.room.name]) {
+                console.log(terminal.room + " skipping marketing, no supply");
                 continue;
             }
 
             for (const supplyData of resourceSupply[terminal.room.name]) {
                 if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
+                    console.log(terminal.room + " " + supplyData.amount + " below sell threshold for resource: " + supplyData.resourceType);
                     continue;
                 }
 
@@ -174,14 +179,21 @@ const terminalResourceDistribution = {
                 })[matchingOrders.length - 1];
 
                 if (!bestDeal) {
+                    console.log(terminal.room + " no deals found for " + supplyData.resourceType);
                     continue;
                 }
 
-                let amount = bestDeal.remainingAmount - supplyData.amount;
-                if (amount < 0) {
-                    amount = bestDeal.remainingAmount;
+
+                let amount = bestDeal.amount - supplyData.amount;
+
+                if (amount <= 0) {
+                    amount = bestDeal.amount;
                 } else {
-                    amount = bestDeal.remainingAmount - amount;
+                    amount = bestDeal.amount - amount;
+                }
+
+                if (bestDeal.resourceType === RESOURCE_ENERGY) {
+                    // reduce sold amount by market
                 }
 
                 let result = Game.market.deal(bestDeal.id, amount, terminal.room.name);
@@ -189,9 +201,16 @@ const terminalResourceDistribution = {
                 // console.log(terminal.room.name + " would have sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
                 // result = OK;
                 if (result === OK) {
-                    // console.log(terminal.room.name + " sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
-                    _.remove(orders, bestDeal);
+                    console.log(terminal.room + " sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                    if (amount === bestDeal.amount) {
+                        _.remove(orders, bestDeal);
+                    } else {
+                        bestDeal.amount -= amount;
+                    }
                     break;
+                } else {
+                    console.log(terminal.room + " tried to sell " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id + ", but failed."
+                                + "Error: " + result + ", bestDeal.amount: " + bestDeal.amount + " amount " + amount);
                 }
             }
         }

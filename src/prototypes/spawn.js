@@ -476,6 +476,10 @@ Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
 Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
     let body = [];
 
+    if (energy > 130 * 25) {
+        energy = 130 * 25;
+    }
+
     while (energy >= 130) {
         body.push(ATTACK, MOVE);
         energy -= 130;
@@ -690,8 +694,8 @@ Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
         case ERR_NOT_ENOUGH_ENERGY:
             break;
         default:
-            log.warning("unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
-                + "\nBody: " + body + " name:" + name + "memory:" + opts);
+            log.warning(this.room + " unexpected error when spawning creep: " + this.spawnCreep(body, name, opts)
+                + "\nBody: " + body.length + " -> " + body + "\nname:" + name + "\nmemory:" + opts);
             break;
     }
 
