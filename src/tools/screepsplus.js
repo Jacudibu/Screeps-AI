@@ -15,9 +15,14 @@ function collectStats() {
     }
 
     if (!lastGlobalReset) {
-        log.info("Global reset registered!");
+        log.warning("====== Global reset registered ======");
         lastGlobalReset = Game.time;
         Memory.stats.lastGlobalReset = lastGlobalReset;
+    }
+
+    // Screepsplus agent only fetches data once every 15 seconds, so no need to do this every tick
+    if (Game.time % 4 !== 0) {
+        return;
     }
 
     Memory.stats.tick = Game.time;
@@ -61,6 +66,8 @@ function collectStats() {
     Memory.stats.creeps = {};
     Memory.stats.creeps.total = Memory.creepsBuilt;
     Memory.stats.creeps.current = Object.keys(Game.creeps).length
+
+    Memory.stats.heapStatistics = Game.cpu.getHeapStatistics()
 }
 
 module.exports = {

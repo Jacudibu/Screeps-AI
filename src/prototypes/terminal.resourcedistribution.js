@@ -123,11 +123,11 @@ const terminalResourceDistribution = {
 
     sellRemainingSupplyOnMarket(terminals) {
         if (resourceSupply.length === 0) {
-            console.log("Skipping marketing entirely, no room has any supply");
+            // console.log("Skipping marketing entirely, no room has any supply");
             return;
         }
 
-        log.warning("================================ MARKET ============================");
+        // log.warning("================================ MARKET ============================");
 
         let supplyResourceTypes = [];
 
@@ -159,16 +159,13 @@ const terminalResourceDistribution = {
             }
 
             if (!resourceSupply[terminal.room.name]) {
-                console.log(terminal.room + " skipping marketing, no supply");
+                //console.log(terminal.room + " skipping marketing, no supply");
                 continue;
             }
 
             for (const supplyData of resourceSupply[terminal.room.name]) {
-                let availableResourceAmount = supplyData.amount - TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType];
-
-                if (availableResourceAmount < TERMINAL_MIN_SEND) {
-                    console.log(terminal.room + " " +  (-availableResourceAmount)
-                                + " below sell threshold for resource: " + supplyData.resourceType);
+                if (supplyData.amount < TERMINAL_DISTRIBUTION_CONSTANTS.SELL_THRESHOLD[supplyData.resourceType]) {
+                    //console.log(terminal.room + " " +  (-availableResourceAmount) + " below sell threshold for resource: " + supplyData.resourceType);
                     continue;
                 }
 
@@ -182,16 +179,16 @@ const terminalResourceDistribution = {
                 })[matchingOrders.length - 1];
 
                 if (!bestDeal) {
-                    console.log(terminal.room + " no deals found for " + supplyData.resourceType);
+                    //console.log(terminal.room + " no deals found for " + supplyData.resourceType);
                     continue;
                 }
 
-                let dealAmount = bestDeal.amount - availableResourceAmount;
+                let dealAmount;
 
-                if (dealAmount <= 0) {
+                if (bestDeal.amount < supplyData.amount) {
                     dealAmount = bestDeal.amount;
                 } else {
-                    dealAmount = availableResourceAmount;
+                    dealAmount = supplyData.amount;
                 }
 
                 let result = Game.market.deal(bestDeal.id, dealAmount, terminal.room.name);
@@ -199,7 +196,7 @@ const terminalResourceDistribution = {
                 // console.log(terminal.room.name + " would have sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
                 // result = OK;
                 if (result === OK) {
-                    console.log(terminal.room + " sold " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                    //console.log(terminal.room + " sold " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
                     if (dealAmount === bestDeal.amount) {
                         _.remove(orders, bestDeal);
                     } else {
@@ -207,8 +204,8 @@ const terminalResourceDistribution = {
                     }
                     break;
                 } else {
-                    console.log(terminal.room + " tried to sell " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id + ", but failed."
-                                + "Error: " + result + ", bestDeal.amount: " + bestDeal.amount + " available amount " + availableResourceAmount);
+                    //console.log(terminal.room + " tried to sell " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id + ", but failed."
+                    //            + "Error: " + result + ", bestDeal.amount: " + bestDeal.amount + " available amount " + availableResourceAmount);
                 }
             }
         }
