@@ -51,7 +51,7 @@ Creep.prototype.harvestEnergyInLowRCLRoom = function(taskWhenFinishedOrEmptySour
         let randomValues = [];
 
         for (let s of availableSources) {
-            total += s.countFreeTilesAroundSource();
+            total += s.freeTileCount;
             randomValues.push(total);
         }
 

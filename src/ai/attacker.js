@@ -22,12 +22,12 @@ const attacker = {
                 break;
 
             case TASK.ATTACK:
-                let target = undefined;
+                let target;
                 if (creep.memory.taskTargetId) {
                     target = Game.getObjectById(creep.memory.taskTargetId);
                 }
 
-                if (target === undefined) {
+                if (!target) {
                     let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
                     if (possibleTargets.length === 0) {
                         possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter: structure => structure.structureType !== STRUCTURE_CONTROLLER});

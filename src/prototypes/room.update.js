@@ -24,6 +24,11 @@ Room.prototype.checkForRCLUpdate = function() {
     if (!this.memory.lastRCL) {
         this.memory.lastRCL = this.controller.level;
         lastRCL[this.name] = this.controller.level;
+
+        if (this.controller.level === 1) {
+            log.warning(this + " new room established!");
+        }
+
         this.onRCLUpdate();
         return;
     }

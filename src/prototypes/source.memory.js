@@ -21,26 +21,10 @@ Object.defineProperty(Source.prototype, 'memory', {
     }
 });
 
-Source.prototype.setWorkersMax = function(amount) {
-    this.memory.workersMax = amount;
-};
-
 Source.prototype.initializeMemory = function() {
     let initialMemory = {};
     initialMemory.workersAssigned = 0;
     initialMemory.workersMax = 1; // this._countFreeTilesAroundSource();
 
     this.room.memory.sources[this.id] = initialMemory;
-};
-
-Source.prototype.countFreeTilesAroundSource = function() {
-    let freeTileCount = 0;
-    [this.pos.x - 1, this.pos.x, this.pos.x + 1].forEach(x => {
-        [this.pos.y - 1, this.pos.y, this.pos.y + 1].forEach(y => {
-            if (Game.map.getTerrainAt(x, y, this.pos.roomName) !== 'wall')
-                freeTileCount++;
-        }, this);
-    }, this);
-
-    return freeTileCount;
 };
