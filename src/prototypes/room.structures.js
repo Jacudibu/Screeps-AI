@@ -36,7 +36,13 @@ const singleList = [
     //STRUCTURE_TERMINAL,   STRUCTURE_CONTROLLER,   STRUCTURE_STORAGE,
 ];
 
-Room.prototype._checkRoomCache = function _checkRoomCache(){
+Room.prototype._forceStructureUpdate = function() {
+    roomStructuresExpiration[this.name] = 0;
+    myRoomStructuresExpiration[this.name] = 0;
+    hostileRoomStructuresExpiration[this.name] = 0;
+};
+
+Room.prototype._checkRoomCache = function(){
     // if cache is expired or doesn't exist
     if(!roomStructuresExpiration[this.name] || !roomStructures[this.name] || roomStructuresExpiration[this.name] < Game.time){
         roomStructuresExpiration[this.name] = utility.getFutureGameTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
@@ -48,7 +54,7 @@ Room.prototype._checkRoomCache = function _checkRoomCache(){
     }
 };
 
-Room.prototype._checkMyRoomCache = function _checkMyRoomCache(){
+Room.prototype._checkMyRoomCache = function(){
     // if cache is expired or doesn't exist
     if(!myRoomStructuresExpiration[this.name] || !myRoomStructures[this.name] || myRoomStructuresExpiration[this.name] < Game.time){
         myRoomStructuresExpiration[this.name] = utility.getFutureGameTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);
@@ -60,7 +66,7 @@ Room.prototype._checkMyRoomCache = function _checkMyRoomCache(){
     }
 };
 
-Room.prototype._checkHostileRoomCache = function _checkHostileRoomCache(){
+Room.prototype._checkHostileRoomCache = function(){
     // if cache is expired or doesn't exist
     if(!hostileRoomStructuresExpiration[this.name] || !hostileRoomStructures[this.name] || hostileRoomStructuresExpiration[this.name] < Game.time){
         hostileRoomStructuresExpiration[this.name] = utility.getFutureGameTimeWithRandomOffset(CACHE_TIMEOUT, CACHE_OFFSET);

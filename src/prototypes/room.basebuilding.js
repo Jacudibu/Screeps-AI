@@ -10,7 +10,7 @@ const STRUCTURE_PRIORITY_ORDER = [
     // Nice To Have
     STRUCTURE_STORAGE,
     STRUCTURE_TERMINAL,
-    STRUCTURE_CONTAINER,
+    //STRUCTURE_CONTAINER, // spams warnings right now, so leave out until autoplacement works properly
     STRUCTURE_EXTRACTOR,
     STRUCTURE_RAMPART,
     STRUCTURE_LINK,
@@ -99,6 +99,9 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
         nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
         return;
     }
+
+    this._forceStructureUpdate();
+    this._reloadFreeExtensionCache();
 
     const result = this._checkIfSomethingNeedsToBeBuilt(layout);
     switch (result) {
@@ -275,7 +278,7 @@ Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, lay
 
 Room.prototype._placeRamparts = function(layout) {
     if (this.controller.level >= 2) {
-        const result = this._placeConstructionSiteAtPosition();
+        const result = this._placeRampartsAroundController();
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
@@ -300,11 +303,11 @@ Room.prototype._placeRampartsAroundController = function() {
     const yArray = [controllerPos.y - 1, controllerPos.y, controllerPos.y + 1];
     for (let x of xArray) {
         for (let y of yArray) {
-            if (Game.map.getTerrainAt(x, y, this.pos.roomName) === 'wall') {
+            if (Game.map.getTerrainAt(x, y, this.name) === 'wall') {
                 continue;
             }
 
-            const result = this._placeConstructionSiteAtPosition(STRUCTURE_RAMPART, x, y) === SUCCESSFULLY_PLACED;
+            const result = this._placeConstructionSiteAtPosition(x, y, STRUCTURE_RAMPART);
             if (result === SUCCESSFULLY_PLACED) {
                 return SUCCESSFULLY_PLACED;
             }
