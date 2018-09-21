@@ -45,6 +45,10 @@ const spawnlogic = {
             this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room);
         }
 
+        if (this.checkIfRoomIsAliveAndReviveIfNecessary(room)) {
+            return;
+        }
+
         // If something was added the spawnqueue was changed
         if (!room.isSpawnQueueEmpty()) {
             if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
@@ -61,7 +65,7 @@ const spawnlogic = {
         }
 
         if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
-            if (room.find(FIND_MY_CREEPS, {filter: creep => creep.memory.role === ROLE.ATTACKER}).length === 0) {
+            if (this.countNumberOfCreepsWithRole(room, ROLE.ATTACKER) === 0) {
                 // Shoo scouts away, so they don't block construction sites.
                 room.addToSpawnQueueStart({role: ROLE.ATTACKER});
                 return true;
@@ -82,6 +86,8 @@ const spawnlogic = {
         if (room.memory.requestedCreeps === undefined) {
             room.updateRequestedCreeps();
         }
+
+
 
         if (room.energyCapacityAvailable < 550) {
             // Early RCL. CUUUUTE!
@@ -235,7 +241,7 @@ const spawnlogic = {
     },
 
     countNumberOfCreepsWithRole(room, role) {
-        let creeps = room.find(FIND_MY_CREEPS);
+        const creeps = room.find(FIND_MY_CREEPS);
         return _.sum(creeps, creep => creep.memory.role === role);
     },
 
@@ -321,6 +327,22 @@ const spawnlogic = {
 
         return false;
     },
+
+    checkIfRoomIsAliveAndReviveIfNecessary(room) {
+        if (room.find(FIND_MY_CREEPS).length > 0) {
+            return false;
+        }
+
+        for (let spawn of room.mySpawns) {
+            if (spawn.spawning) {
+                return false;
+            }
+        }
+
+        log.warning(room + "just died! Trying to revive it...");
+        room.mySpawns[0].spawnEarlyRCLHarvester(room.energyAvailable);
+        return true;
+    }
 };
 
 profiler.registerObject(spawnlogic, "SpawnLogic");
