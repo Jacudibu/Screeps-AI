@@ -291,55 +291,7 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.REMOTE_HARVESTER, body, opts);
 };
 
-Spawn.prototype.spawnRemoteRepairer = function(energy, targetRoomName, route) {
-    if (!route) {
-        log.info("Room route not provided. Using default queue for room.");
-        if (!this.room.memory.repairRoute) {
-            log.info("Unable to find default repair route for room. Cancelling spawn request...");
-            return;
-        }
-
-        route = this.room.memory.repairRoute;
-    }
-
-    if (this.room.memory.repairRoute) {
-        if (route.length < this.room.memory.repairRoute.length) {
-            log.info("Found a longer (and therefore probably newer) repair route. Overriding...");
-            route = this.room.memory.repairRoute;
-        }
-    }
-
-    if (!targetRoomName) {
-        targetRoomName = route[0];
-    }
-
-    let body = [];
-
-    if (energy > 1750) {
-        energy = 1750;
-    }
-
-    while(energy >= 350) {
-        body.push(WORK, CARRY, CARRY, MOVE, MOVE, MOVE);
-        energy -= 350;
-    }
-
-    body.sort();
-    let opts = {
-        memory: {
-            role: ROLE.REMOTE_REPAIRER,
-            targetRoomName: targetRoomName,
-            route: route,
-            task: TASK.COLLECT_ENERGY,
-            respawnTTL: 50,
-            spawnRoom: this.room.name,
-        }
-    };
-
-    return this._spawnDefinedCreep(ROLE.REMOTE_REPAIRER, body, opts);
-};
-
-Spawn.prototype.spawnRemoteRepairerV2 = function(energy, repairRouteIndex = 0) {
+Spawn.prototype.spawnRemoteRepairer = function(energy, repairRouteIndex = 0) {
     let body = [];
 
     if (energy > 350 * 8) {

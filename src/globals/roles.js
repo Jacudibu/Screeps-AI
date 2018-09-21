@@ -10,7 +10,6 @@ global.ROLE.REMOTE_WORKER = 'remote_worker';
 global.ROLE.REMOTE_HAULER = 'remote_hauler';
 global.ROLE.REMOTE_HARVESTER = 'remote_harvester';
 global.ROLE.REMOTE_REPAIRER = 'remote_repairer';
-global.ROLE.REMOTE_REPAIRER_V2 = 'remote_repairer_v2';
 global.ROLE.REMOTE_UPGRADER = 'remote_upgrader';
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.CLAIMER = 'claimer';

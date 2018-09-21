@@ -81,7 +81,6 @@ const creepAi = {
                 remoteHarvesterAI.run(creep);
                 break;
             case ROLE.REMOTE_REPAIRER:
-            case ROLE.REMOTE_REPAIRER_V2:
                 remoteRepairerV2AI.run(creep);
                 break;
             case ROLE.REMOTE_UPGRADER:

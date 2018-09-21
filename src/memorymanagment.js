@@ -61,7 +61,6 @@ const memoryManagment = {
                 break;
 
             case ROLE.REMOTE_REPAIRER:
-            case ROLE.REMOTE_REPAIRER_V2:
                 if (creep.repairRouteIndex >= Memory.rooms[creep.spawnRoom].repairRoute.length) {
                     return;
                 }

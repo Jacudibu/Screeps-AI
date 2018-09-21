@@ -185,8 +185,7 @@ const spawnlogic = {
             case ROLE.REMOTE_HAULER:
                 return spawn.spawnRemoteHauler(energy, args.targetRoomName);
             case ROLE.REMOTE_REPAIRER:
-            case ROLE.REMOTE_REPAIRER_V2:
-                return spawn.spawnRemoteRepairerV2(energy, args.repairRouteIndex);
+                return spawn.spawnRemoteRepairer(energy, args.repairRouteIndex);
             case ROLE.REMOTE_UPGRADER:
                 return spawn.spawnRemoteUpgrader(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.RESERVER:
