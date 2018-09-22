@@ -95,6 +95,15 @@ const memoryManagment = {
                 };
                 Memory.rooms[creep.spawnRoom].spawnQueue.push(args2);
                 break;
+
+            case ROLE.SCOUT:
+                if (Game.rooms[creep.targetRoomName]) {
+                    // creep got killed while switching rooms, a cruel act!
+                    Game.rooms[creep.targetRoomName].updateScoutData();
+                } else if (Memory.rooms[creep.targetRoomName]) {
+                    delete Memory.rooms[creep.targetRoomName].isAlreadyScouted;
+                }
+                break;
         }
     },
 

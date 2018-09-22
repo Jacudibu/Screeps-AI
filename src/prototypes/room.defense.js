@@ -36,7 +36,7 @@ Room.prototype.repairDamagedCreeps = function() {
 
 Room.prototype.repairAlmostBrokenRamparts = function() {
     for(let rampart of this.ramparts) {
-        if (rampart.hits < 1500) {
+        if (rampart && rampart.hits < 1500) {
             this.commandTowersToRepairStructure(rampart);
             return;
         }

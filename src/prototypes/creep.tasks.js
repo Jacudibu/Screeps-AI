@@ -596,7 +596,6 @@ Creep.prototype.claimRoomController = function() {
 Creep.prototype.attackRoomController = function() {
     switch (this.attackController(this.room.controller)) {
         case OK:
-            // TODO: Remove hardcoded route
             if (this.room.name === 'E52S43') {
                 this.memory.targetRoomName = 'E53S44';
                 this.setTask(TASK.MOVE_TO_ROOM);
@@ -755,4 +754,66 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
             this.logActionError("moveToRampartClosestToEnemy moveTo command", this.travelTo(ramparts[0]));
             break;
     }
+};
+
+Creep.prototype.selectNextRoomToScout = function() {
+    const exits = Game.map.describeExits(this.room.name);
+    const rooms = [];
+
+    for (let direction in exits) {
+        rooms.push(exits[direction]);
+    }
+
+    const targetRoom = rooms.reduce((acc, room) => {
+        if (!Game.map.isRoomAvailable(acc)) {
+            return room;
+        }
+
+        if (!Game.map.isRoomAvailable(room)) {
+            return acc;
+        }
+
+        const accMemory  = Memory.rooms[acc];
+
+        // Check if acc has priority
+        if (accMemory === undefined) {
+            return acc;
+        }
+
+        if (accMemory.isAlreadyScouted) {
+            return room;
+        }
+
+        if (accMemory.lastScouted === undefined) {
+            return acc;
+        }
+
+        // Check if room has priority
+        const roomMemory = Memory.rooms[room];
+        if (roomMemory === undefined) {
+            return room;
+        }
+
+        if (roomMemory.isAlreadyScouted) {
+            return acc;
+        }
+
+        if (roomMemory.lastScouted === undefined) {
+            return room;
+        }
+
+        // Just return the one with the oldest entry
+        if (accMemory.lastScouted < roomMemory.lastScouted) {
+            return acc;
+        } else {
+            return room;
+        }
+    });
+
+    if (!Memory.rooms[targetRoom]) {
+        Memory.rooms[targetRoom] = {};
+    }
+
+    Memory.rooms[targetRoom].isAlreadyScouted = true;
+    this.memory.targetRoomName = targetRoom;
 };

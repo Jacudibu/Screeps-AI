@@ -288,6 +288,8 @@ Room.prototype._placeRamparts = function(layout) {
     // TODO: RCL 5: Surround with 2 width rampart (outer)
     // TODO: RCL 7: Surround with 3 width rampart (inner)
 
+    // TODO: 1 Thickness Ramparts -> Flood fill -> remove unreached ramparts -> increase remaining rampart width to 3
+
     // TODO: Store all rampart positions in memory, so this only needs to be called once
     // TODO:      ---> Memory layout: ramparts: {gcl2: [], gcl5: [], gcl7: []}
     // TODO: Flood-Fill from exits in order to check if a rampart is needed for each rcl stage, remove if not reached

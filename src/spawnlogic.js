@@ -274,7 +274,7 @@ const spawnlogic = {
                 if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
                     Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
-                    log.info(room + " ---> " + remoteMiningRoomList[i] + "|no vision to set up remote mining room source memory at index " + i);
+                    // no vision, claimer will be spawned later
                     continue;
                 }
             }

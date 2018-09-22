@@ -633,6 +633,22 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 
 };
 
+Spawn.prototype.spawnScout = function(energy) {
+    if (energy < 50) {
+        return ERR_NOT_ENOUGH_RESOURCES;
+    }
+
+    let body = [MOVE];
+    let opts = {
+        memory: {
+            role: ROLE.SCOUT,
+            spawnRoom: this.room.name,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.SCOUT, body, opts);
+};
+
 const roleNames = require('globals.rolenames');
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
     let name = roleNames.getRoleName(role) + (Memory.creepsBuilt % 1000);

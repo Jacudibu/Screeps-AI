@@ -18,6 +18,7 @@ const dismantlerAI          = require('ai.dismantler');
 const defenderAI            = require('ai.defender');
 const carrierAI             = require('ai.carrier');
 const guidedRangedAttackerAI= require('ai.guidedrangedattacker');
+const scoutAI               = require('ai.scout');
 
 const creepAi = {
     run() {
@@ -112,6 +113,9 @@ const creepAi = {
                 break;
             case ROLE.EARLY_RCL_HARVESTER:
                 earlyRCLHarvesterAI.run(creep);
+                break;
+            case ROLE.SCOUT:
+                scoutAI.run(creep);
                 break;
         }
     },
