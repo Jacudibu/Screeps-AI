@@ -633,8 +633,9 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 
 };
 
+const roleNames = require('globals.rolenames');
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
-    let name = role + (Memory.creepsBuilt % 1000);
+    let name = roleNames.getRoleName(role) + (Memory.creepsBuilt % 1000);
 
     let result = this.spawnCreep(body, name, opts);
 
