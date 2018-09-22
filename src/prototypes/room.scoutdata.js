@@ -4,7 +4,7 @@ Room.prototype.updateScoutData = function() {
 
     const scoutData = {};
 
-    if (!this.room.memory.scoutData || !this.memory.scoutData.v || this.memory.scoutData.v !== currentScoutVersionNumber) {
+    if (!this.memory.scoutData || !this.memory.scoutData.v || this.memory.scoutData.v !== currentScoutVersionNumber) {
         scoutData.v = currentScoutVersionNumber;
         if (this.find(FIND_SOURCES).length > 0) {
             this.memory.sourceCount = this.find(FIND_SOURCES).length;
@@ -15,17 +15,17 @@ Room.prototype.updateScoutData = function() {
         }
     }
 
-    if (this.room.controller) {
-        if (this.room.controller.owner) {
+    if (this.controller) {
+        if (this.controller.owner) {
             scoutData.owner = this.controller.owner.username;
             scoutData.rcl = this.controller.level;
-            if (this.room.controller.safeMode) {
-                scoutData.safeMode = this.room.controller.safeMode;
+            if (this.controller.safeMode) {
+                scoutData.safeMode = this.controller.safeMode;
             }
-            if (this.room.controller.safeModeCooldown) {
-                scoutData.safeModeCooldown = this.room.controller.safeModeCooldown;
+            if (this.controller.safeModeCooldown) {
+                scoutData.safeModeCooldown = this.controller.safeModeCooldown;
             }
-        } else if (this.room.controller.reservation) {
+        } else if (this.controller.reservation) {
             scoutData.reserver = this.controller.reservation.username;
         } else {
             if (this.find(FIND_STRUCTURES).filter(structure =>
