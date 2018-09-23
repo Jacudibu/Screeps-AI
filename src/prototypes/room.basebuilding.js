@@ -415,4 +415,6 @@ Room.prototype._placeExtraRoadsArray = function(roadPositions) {
             return SUCCESSFULLY_PLACED;
         }
     }
+
+    return ERR_UNDEFINED;
 };

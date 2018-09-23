@@ -75,10 +75,13 @@ const RoadGenerator = {
                 Memory.rooms[roomName].extraRoadPositions = {}
             }
 
-            if (roomName !== remoteRoom.name) {
-                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
-            } else {
+            if (roomName === remoteRoom.name) {
                 Memory.rooms[roomName].extraRoadPositions.sources = extraRoadPositionsSplitByRoom[roomName];
+            } else if (roomName === baseRoom.name) {
+                // reverse entries so that they are ordered by distance to base center
+                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName].reverse();
+            } else {
+                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
             }
         }
 
@@ -115,7 +118,7 @@ const RoadGenerator = {
                 }
             }
         }
-        //console.log("allowed rooms: " + JSON.stringify(allowedRooms));
+        console.log("allowed rooms: " + JSON.stringify(allowedRooms));
 
         for (let roomName in allowedRooms) {
             if (!Game.rooms[roomName]) {
@@ -137,7 +140,10 @@ const RoadGenerator = {
             if (roomName !== fromPos.roomName) {
                 if (Memory.rooms[roomName].extraRoadPositions)
                     for (const extraRoadKey in Memory.rooms[roomName].extraRoadPositions) {
-                        goals = goals.concat(Memory.rooms[roomName].extraRoadPositions[extraRoadKey]);
+                        if (extraRoadKey !== fromPos.roomName) {
+                            // we want to regenerate the path if it was already set
+                            goals = goals.concat(Memory.rooms[roomName].extraRoadPositions[extraRoadKey]);
+                        }
                     }
             }
         }
@@ -152,6 +158,7 @@ const RoadGenerator = {
         const result = PathFinder.search(roadStartingPoint, goals, {
             plainCost: 2,
             swampCost: 5,
+            heuristicWeight: allowedRooms ? 2 : 1.25,
             roomCallback: function(roomName) {
                 if (allowedRooms) {
                     if (!allowedRooms[roomName]) {
