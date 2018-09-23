@@ -127,8 +127,13 @@ Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
         result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], layout);
 
         if (result === SUCCESSFULLY_PLACED) {
-            return result;
+            return SUCCESSFULLY_PLACED;
         }
+    }
+
+    result = this._placeExtraRoads(layout);
+    if (result === SUCCESSFULLY_PLACED) {
+        return SUCCESSFULLY_PLACED;
     }
 
     return ERR_EVERYTHING_BUILT;
@@ -329,5 +334,76 @@ Room.prototype._placeExtractor = function() {
     } else {
         log.warning(this + "wanted to place extractor, but actually placing it returned " + result);
         return ERR_UNDEFINED;
+    }
+};
+
+Room.prototype._placeExtraRoads = function(layout) {
+    // Roads to sources, minerals & controller
+
+    // TODO: Store layouting result in memorieeeh
+
+    const layoutRoadRoomPositions = [];
+    const baseOffset = this.memory.baseCenterPosition;
+    for (const road of layout.buildings.road.pos) {
+        layoutRoadRoomPositions.push(new RoomPosition(road.x + baseOffset.x, road.y + baseOffset.y, this.name));
+    }
+
+    const sourceRoadPositions = this._getSourceRoadPositions(layoutRoadRoomPositions);
+    if (this._placeExtraRoadsPlacementHelper(sourceRoadPositions) === SUCCESSFULLY_PLACED) {
+        return SUCCESSFULLY_PLACED;
+    }
+
+    const controllerRoadPositions = this._getControllerRoadPositions(layoutRoadRoomPositions);
+    if (this._placeExtraRoadsPlacementHelper(controllerRoadPositions) === SUCCESSFULLY_PLACED) {
+        return SUCCESSFULLY_PLACED;
+    }
+
+    if (this.controller.level > 6) {
+        const mineralRoadPositions = this._getMineralRoadPositions(layoutRoadRoomPositions);
+        if (this._placeExtraRoadsPlacementHelper(mineralRoadPositions) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
+
+    return ERR_UNDEFINED;
+};
+
+Room.prototype._getSourceRoadPositions = function(layoutRoadRoomPositions) {
+    const sourceRoadPositions = [];
+    for (const source of this.sources) {
+        // find the road starting point // TODO: There must be a better way to do this... could use container position instead
+        const travelPath = Traveler.findTravelPath(source, this.spawns[0]);
+        const roadStartingPoint = travelPath.path[0];
+
+        const roadPath = PathFinder.search(roadStartingPoint, layoutRoadRoomPositions);
+        for (const roadPos of roadPath.path) {
+            // TODO: Check if roadPos is already in sourceRoadPositions
+            sourceRoadPositions.push(roadPos);
+        }
+    }
+    return sourceRoadPositions;
+};
+
+Room.prototype._getControllerRoadPositions = function(layoutRoadRoomPositions) {
+    const travelPath = Traveler.findTravelPath(this.controller, this.spawns[0]);
+    const roadStartingPoint = travelPath.path[0];
+
+    return PathFinder.search(roadStartingPoint, layoutRoadRoomPositions).path;
+};
+
+Room.prototype._getMineralRoadPositions = function(layoutRoadRoomPositions) {
+    const travelPath = Traveler.findTravelPath(this.mineral, this.spawns[0]);
+    const roadStartingPoint = travelPath.path[0];
+
+    return PathFinder.search(roadStartingPoint, layoutRoadRoomPositions).path;
+};
+
+Room.prototype._placeExtraRoadsPlacementHelper = function(roadPositions) {
+    let result;
+    for (let roadPos of roadPositions) {
+        result = this._placeConstructionSiteAtPosition(roadPos.x, roadPos.y, STRUCTURE_ROAD);
+        if (result === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
     }
 };

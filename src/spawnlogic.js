@@ -1,4 +1,4 @@
-const SCOUT_SPAWN_INTERVAL = 25; // TODO: Adjust Value to something more reasonable once testing is done
+const SCOUT_SPAWN_INTERVAL = 200;
 const nextScoutSpawns = {};
 
 const spawnlogic = {
