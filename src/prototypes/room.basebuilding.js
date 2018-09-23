@@ -150,7 +150,7 @@ Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
 Room.prototype._debugExtraRoadPlacement = function() {
     for (const category in this.memory.extraRoadPositions) {
         for (const roomPos of this.memory.extraRoadPositions[category]) {
-            this.visual.circle(roomPos);
+            this.visual.circle(roomPos, {fill: "#00a0ff"});
         }
     }
 };
@@ -380,6 +380,7 @@ Room.prototype._placeExtractor = function() {
 Room.prototype._placeExtraRoads = function(layout) {
     const extraRoadPositions = RoadGenerator.generateAndGetRoads(this, layout);
 
+    /*
     for (let i = 0; i < this.sources.length; i++) {
         if (this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
@@ -396,6 +397,7 @@ Room.prototype._placeExtraRoads = function(layout) {
         }
     }
 
+    */
     return ERR_UNDEFINED;
 };
 

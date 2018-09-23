@@ -4,6 +4,8 @@ const RoadGenerator = {
     generateAndGetRoads(room, layout) {
         // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
 
+        console.log("Raod Generator call!");
+
         const layoutCenterPosition = new RoomPosition(room.memory.baseCenterPosition.x, room.memory.baseCenterPosition.y, room.name);
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
@@ -19,6 +21,7 @@ const RoadGenerator = {
 
         for (const remoteRoom of room.memory.remoteMiningRooms) {
             if (!Game.rooms[remoteRoom]) {
+                console.log("skipping " + remoteRoom);
                 continue;
             }
             this.generateRoadsForRemoteRoom(room, layout, Game.rooms[remoteRoom])
@@ -69,6 +72,11 @@ const RoadGenerator = {
         //console.log(JSON.stringify(extraRoadPositionsSplitByRoom));
 
         for (const roomName in extraRoadPositionsSplitByRoom) {
+            if (!Memory.rooms[roomName]) {
+                console.log("no room memory? " + roomName);
+                continue;
+            }
+
             if (!Memory.rooms[roomName].extraRoadPositions) {
                 Memory.rooms[roomName].extraRoadPositions = {}
             }
@@ -106,15 +114,18 @@ const RoadGenerator = {
             allowedRooms = {};
             allowedRooms[fromPos.roomName] = true;
             const route = Game.map.findRoute(fromPos.roomName, toPos.roomName);
+            //console.log("route: " + JSON.stringify(route));
             if (route !== ERR_NO_PATH) {
                 for (let value of route) {
                     allowedRooms[value.room] = true;
                 }
             }
         }
+        //console.log("allowed rooms: " + JSON.stringify(allowedRooms));
 
         for (let roomName in allowedRooms) {
             if (!Game.rooms[roomName]) {
+                log.warning("No vision of " + roomName);
                 return ERR_NO_VISION;
             }
         }
@@ -127,9 +138,13 @@ const RoadGenerator = {
 
         // Every layouted road in other rooms along the path is also a goal. Phew. Thats a lot.
         for (let roomName in allowedRooms) {
-            if (Memory.rooms[roomName].extraRoadPositions)
-            for (const extraRoadKey in Memory.rooms[roomName].extraRoadPositions) {
-                goals = goals.concat(Memory.rooms[roomName].extraRoadPositions[extraRoadKey]);
+            // allowed rooms is empty in base. In remotes we don't want other room's routes to interfere with the source route
+            // we are also using extraRoadPositions already in here, so POI in the room won't have duplicate positions
+            if (roomName !== fromPos.roomName) {
+                if (Memory.rooms[roomName].extraRoadPositions)
+                    for (const extraRoadKey in Memory.rooms[roomName].extraRoadPositions) {
+                        goals = goals.concat(Memory.rooms[roomName].extraRoadPositions[extraRoadKey]);
+                    }
             }
         }
 
@@ -141,9 +156,8 @@ const RoadGenerator = {
         });
 
         const result = PathFinder.search(roadStartingPoint, goals, {
-            plainCost: 1,
-            swampCost: 2.5,
-            heuristicWeight: 1.75,
+            plainCost: 2,
+            swampCost: 5,
             roomCallback: function(roomName) {
                 if (allowedRooms) {
                     if (!allowedRooms[roomName]) {
@@ -160,7 +174,7 @@ const RoadGenerator = {
                 let costs = new PathFinder.CostMatrix;
 
                 room.find(FIND_STRUCTURES).forEach(function(structure) {
-                    if (structure.structureType !== STRUCTURE_RAMPART) {
+                    if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                         costs.set(structure.pos.x, structure.pos.y, 255);
                     }
                 });
@@ -169,8 +183,6 @@ const RoadGenerator = {
             }
         });
 
-        if (result.incomplete) {
-        }
         return result.path;
     },
 };

@@ -278,33 +278,31 @@ const spawnlogic = {
         }
 
         for (let i = 0; i < remoteMiningRoomList.length; i++) {
-            if (Game.shard.name !== "screeps-test1") {
-                let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
+            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
 
-                if (remoteMiningRoomMemory.requiresHelp !== undefined) {
+            if (remoteMiningRoomMemory.requiresHelp !== undefined) {
+                continue;
+            }
+
+            if (!remoteMiningRoomMemory.sources) {
+                if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
+                    Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
+                } else {
+                    // no vision, claimer will be spawned later
                     continue;
                 }
+            }
 
-                if (!remoteMiningRoomMemory.sources) {
-                    if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
-                        Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
-                    } else {
-                        // no vision, claimer will be spawned later
-                        continue;
-                    }
-                }
+            if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
+                Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
+                return;
+            }
 
-                if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
-                    room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
-                    Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
-                    return;
-                }
-
-                if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
-                    room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
-                    Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
-                    return;
-                }
+            if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
+                Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
+                return;
             }
         }
 
@@ -312,16 +310,10 @@ const spawnlogic = {
         for (let i = 0; i < remoteMiningRoomList.length; i++) {
             let otherRoom = Game.rooms[remoteMiningRoomList[i]];
 
-            // TODO: Remove this
-            if (Game.shard.name !== "screeps-test1") {
-                if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 999999999) {
-                    continue;
-                }
-            } else {
-                if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 1000) {
-                    continue;
-                }
+            if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 1000) {
+                continue;
             }
+
             let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
 
             if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
