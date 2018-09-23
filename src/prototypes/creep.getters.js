@@ -254,6 +254,7 @@ Creep.prototype._getEnergyHaulTarget = function() {
         return this.room.storageLink;
     }
 
+    // TODO: Check if hostile structures length === 0 instead
     if (this.room.controller.my) {
         return ERR_NOT_FOUND;
     }

@@ -1,6 +1,13 @@
 const earlyRCLHarvester = {
     run(creep) {
         switch (creep.memory.task) {
+            case TASK.HAUL_ENERGY:
+                if (creep.haulEnergy(TASK.STORE_ENERGY) === ERR_NOT_FOUND) {
+                    this.setTask(TASK.HARVEST_ENERGY);
+                    this.run(creep);
+                }
+                break;
+
             case TASK.HARVEST_ENERGY:
                 let nextTask = creep.room.controller.ticksToDowngrade < 1000 ? TASK.UPGRADE_CONTROLLER : TASK.STORE_ENERGY;
 
@@ -13,23 +20,23 @@ const earlyRCLHarvester = {
                 break;
 
             case TASK.STORE_ENERGY:
-                creep.storeEnergy(TASK.HARVEST_ENERGY, TASK.BUILD_STRUCTURE);
+                creep.storeEnergy(TASK.HAUL_ENERGY, TASK.BUILD_STRUCTURE);
                 break;
 
             case TASK.BUILD_STRUCTURE:
-                creep.buildStructures(TASK.REPAIR_STRUCTURE, TASK.HARVEST_ENERGY, true);
+                creep.buildStructures(TASK.REPAIR_STRUCTURE, TASK.HAUL_ENERGY, true);
                 break;
 
             case TASK.REPAIR_STRUCTURE:
-                creep.repairStructures(TASK.UPGRADE_CONTROLLER, TASK.HARVEST_ENERGY);
+                creep.repairStructures(TASK.UPGRADE_CONTROLLER, TASK.HAUL_ENERGY);
                 break;
 
             case TASK.UPGRADE_CONTROLLER:
-                creep.upgradeRoomController(TASK.HARVEST_ENERGY, 1);
+                creep.upgradeRoomController(TASK.HAUL_ENERGY, 1);
                 break;
 
             default:
-                creep.setTask(TASK.HARVEST_ENERGY);
+                creep.setTask(TASK.HAUL_ENERGY);
                 break;
         }
     }
