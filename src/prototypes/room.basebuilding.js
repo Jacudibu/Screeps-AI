@@ -380,7 +380,6 @@ Room.prototype._placeExtractor = function() {
 Room.prototype._placeExtraRoads = function(layout) {
     const extraRoadPositions = RoadGenerator.generateAndGetRoads(this, layout);
 
-    /*
     for (let i = 0; i < this.sources.length; i++) {
         if (this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
@@ -397,7 +396,6 @@ Room.prototype._placeExtraRoads = function(layout) {
         }
     }
 
-    */
     return ERR_UNDEFINED;
 };
 

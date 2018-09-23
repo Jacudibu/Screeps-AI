@@ -2,9 +2,9 @@ const ERR_NO_VISION = -100;
 
 const RoadGenerator = {
     generateAndGetRoads(room, layout) {
-        // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
-
-        console.log("Raod Generator call!");
+        if (room.memory.extraRoadPositions) {
+            return room.memory.extraRoadPositions;
+        }
 
         const layoutCenterPosition = new RoomPosition(room.memory.baseCenterPosition.x, room.memory.baseCenterPosition.y, room.name);
 
@@ -18,14 +18,6 @@ const RoadGenerator = {
         extraRoadPositions.mineral    = this.getRoadPositionsToRoomObject(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
 
         room.memory.extraRoadPositions = extraRoadPositions;
-
-        for (const remoteRoom of room.memory.remoteMiningRooms) {
-            if (!Game.rooms[remoteRoom]) {
-                console.log("skipping " + remoteRoom);
-                continue;
-            }
-            this.generateRoadsForRemoteRoom(room, layout, Game.rooms[remoteRoom])
-        }
 
         return extraRoadPositions;
     },
