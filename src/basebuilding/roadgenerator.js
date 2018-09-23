@@ -57,7 +57,9 @@ const RoadGenerator = {
                 result[roomPosition.roomName] = [];
             }
 
-            result[roomPosition.roomName].push(roomPosition);
+            if (roomPosition.x > 0 && roomPosition.x < 49  && roomPosition.y > 0 && roomPosition.y < 49) {
+                result[roomPosition.roomName].push(roomPosition);
+            }
             return result;
         }, {});
 

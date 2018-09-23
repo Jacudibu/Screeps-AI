@@ -396,6 +396,14 @@ Room.prototype._placeExtraRoads = function(layout) {
         }
     }
 
+    for (const remoteName of this.memory.remoteMiningRooms) {
+        if (extraRoadPositions[remoteName]) {
+            if (this._placeExtraRoadsArray(extraRoadPositions[remoteName]) === SUCCESSFULLY_PLACED) {
+                return SUCCESSFULLY_PLACED;
+            }
+        }
+    }
+
     return ERR_UNDEFINED;
 };
 
