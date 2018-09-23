@@ -1,6 +1,8 @@
 global.baseLayouts = {};
 require('layouts.diamond14x14');
 
+const RoadGenerator = require('basebuilding.roadgenerator');
+
 const STRUCTURE_PRIORITY_ORDER = [
     // Essentials
     STRUCTURE_SPAWN,
@@ -338,17 +340,20 @@ Room.prototype._placeExtractor = function() {
 };
 
 Room.prototype._placeExtraRoads = function(layout) {
-    const extraRoadPositions = this.getExtraRoadCache(layout);
-    if (this._placeExtraRoadsPlacementHelper(extraRoadPositions.sources) === SUCCESSFULLY_PLACED) {
-        return SUCCESSFULLY_PLACED;
+    const extraRoadPositions = RoadGenerator.generateAndGetRoads(this, layout);
+
+    for (let i = 0; i < this.sources.length; i++) {
+        if (this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
     }
 
-    if (this._placeExtraRoadsPlacementHelper(extraRoadPositions.controller) === SUCCESSFULLY_PLACED) {
+    if (this._placeExtraRoadsArray(extraRoadPositions.controller) === SUCCESSFULLY_PLACED) {
         return SUCCESSFULLY_PLACED;
     }
 
     if (this.controller.level > 6) {
-        if (this._placeExtraRoadsPlacementHelper(extraRoadPositions.mineral) === SUCCESSFULLY_PLACED) {
+        if (this._placeExtraRoadsArray(extraRoadPositions.mineral) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
@@ -356,35 +361,7 @@ Room.prototype._placeExtraRoads = function(layout) {
     return ERR_UNDEFINED;
 };
 
-Room.prototype.getExtraRoadCache = function(layout) {
-    // TODO: Store layouting result in memorieeeh
-
-    const layoutRoadRoomPositions = [];
-    const baseOffset = this.memory.baseCenterPosition;
-    for (const road of layout.buildings.road.pos) {
-        layoutRoadRoomPositions.push(new RoomPosition(road.x + baseOffset.x, road.y + baseOffset.y, this.name));
-    }
-
-    const extraRoadPositions = {};
-    for (let i = 0; i < this.sources.length; i++) {
-        extraRoadPositions['source' + i] = this._getRoadPositionsToRoomObject(this.sources[i], layoutRoadRoomPositions, extraRoadPositions);
-    }
-    extraRoadPositions.controller = this._getRoadPositionsToRoomObject(this.controller, layoutRoadRoomPositions, extraRoadPositions);
-    extraRoadPositions.mineral    = this._getRoadPositionsToRoomObject(this.mineral, layoutRoadRoomPositions, extraRoadPositions);
-
-    this.memory.extraRoadPositions = extraRoadPositions;
-
-    return extraRoadPositions;
-};
-
-Room.prototype._getRoadPositionsToRoomObject = function(target, layoutRoadRoomPositions, extraRoadPositions) {
-    const travelPath = Traveler.findTravelPath(target, this.spawns[0]);
-    const roadStartingPoint = travelPath.path[0];
-
-    return this._findPathForRoads(roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions);
-};
-
-Room.prototype._placeExtraRoadsPlacementHelper = function(roadPositions) {
+Room.prototype._placeExtraRoadsArray = function(roadPositions) {
     let result;
     for (let roadPos of roadPositions) {
         result = this._placeConstructionSiteAtPosition(roadPos.x, roadPos.y, STRUCTURE_ROAD);
@@ -392,36 +369,4 @@ Room.prototype._placeExtraRoadsPlacementHelper = function(roadPositions) {
             return SUCCESSFULLY_PLACED;
         }
     }
-};
-
-Room.prototype._findPathForRoads = function(roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions) {
-    // Every road in our layout is a goal since every layouted road has already been optimized and paths to the base.
-    let goals = [].concat(layoutRoadRoomPositions);
-    for (const extraRoadKey in extraRoadPositions) {
-        goals = goals.concat(extraRoadPositions[extraRoadKey]);
-    }
-
-    return PathFinder.search(roadStartingPoint, goals, {
-        plainCost: 2,
-        swampCost: 3,
-        roomCallback: function(roomName) {
-            let room = Game.rooms[roomName];
-            if (!room) {
-                log.warning("no vision in room " + roomName + ", so road placement might be a bit wonkydonky right now. this needs to be tested anyway.");
-                return;
-            }
-
-            let costs = new PathFinder.CostMatrix;
-
-            room.find(FIND_STRUCTURES).forEach(function(structure) {
-                if (structure.structureType === STRUCTURE_ROAD) {
-                    costs.set(structure.pos.x, structure.pos.y, 1);
-                } else if (structure.structureType !== STRUCTURE_RAMPART) {
-                    costs.set(structure.pos.x, structure.pos.y, 255);
-                }
-            });
-
-            return costs;
-        }
-    }).path;
 };
