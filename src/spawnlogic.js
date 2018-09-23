@@ -1,3 +1,6 @@
+const SCOUT_SPAWN_INTERVAL = 25; // TODO: Adjust Value to something more reasonable once testing is done
+const nextScoutSpawns = {};
+
 const spawnlogic = {
     run() {
         for (const i in Game.rooms) {
@@ -54,6 +57,15 @@ const spawnlogic = {
             if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
                 this.shiftElementFromSpawnQueue(room);
             }
+        } else {
+            // TODO: Remove this if. Just a safety net so we don't start spawning faulty scouts on the main server.
+            if (room.memory.layout) {
+                if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
+                    nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+                }
+            }
+
         }
 
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
@@ -209,6 +221,8 @@ const spawnlogic = {
                 return spawn.spawnClaimerAttacker(energy, args.targetRoomName);
             case ROLE.EARLY_RCL_HARVESTER:
                 return spawn.spawnEarlyRCLHarvester(energy);
+            case ROLE.SCOUT:
+                return spawn.spawnScout(energy);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue
