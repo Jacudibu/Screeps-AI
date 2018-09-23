@@ -1,4 +1,4 @@
-RoadGenerator = {
+const RoadGenerator = {
     generateAndGetRoads(room, layout) {
         // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
 

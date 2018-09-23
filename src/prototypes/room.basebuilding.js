@@ -163,8 +163,14 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, lay
 };
 
 Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, layout) {
-    if (this[structureType].length >= layout.buildings[structureType].length) {
-        return ERR_ALREADY_AT_LAYOUT_LIMIT;
+    if (layout.buildings[structureType].pos.length > 1) {
+        if (this[structureType].length >= layout.buildings[structureType].pos.length) {
+            return ERR_ALREADY_AT_LAYOUT_LIMIT;
+        }
+    } else {
+        if (this[structureType]) {
+            return ERR_ALREADY_AT_LAYOUT_LIMIT;
+        }
     }
 
     let center = this.memory.baseCenterPosition;
