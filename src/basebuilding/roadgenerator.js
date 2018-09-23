@@ -2,32 +2,68 @@ const RoadGenerator = {
     generateAndGetRoads(room, layout) {
         // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
 
-        const layoutRoadRoomPositions = [];
-        const baseOffset = room.memory.baseCenterPosition;
-        for (const road of layout.buildings.road.pos) {
-            layoutRoadRoomPositions.push(new RoomPosition(road.x + baseOffset.x, road.y + baseOffset.y, room.name));
-        }
+        const layoutCenterPosition = room.memory.baseCenterPosition;
+        layoutCenterPosition.roomName = room.name;
+
+        const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
 
         const extraRoadPositions = {};
         for (let i = 0; i < room.sources.length; i++) {
-            extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(room, room.sources[i], layoutRoadRoomPositions, extraRoadPositions);
+            extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(room.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
         }
-        extraRoadPositions.controller = this.getRoadPositionsToRoomObject(room, room.controller, layoutRoadRoomPositions, extraRoadPositions);
-        extraRoadPositions.mineral    = this.getRoadPositionsToRoomObject(room, room.mineral, layoutRoadRoomPositions, extraRoadPositions);
+        extraRoadPositions.controller = this.getRoadPositionsToRoomObject(room.controller, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
+        extraRoadPositions.mineral    = this.getRoadPositionsToRoomObject(room.mineral, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
 
         room.memory.extraRoadPositions = extraRoadPositions;
 
         return extraRoadPositions;
     },
 
-    getRoadPositionsToRoomObject(room, target, layoutRoadRoomPositions, extraRoadPositions) {
-        const travelPath = Traveler.findTravelPath(target, room.spawns[0]);
+    generateRoadsForRemoteRoom(baseRoom, layout, remoteRoom) {
+        // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
+
+        const layoutCenterPosition = baseRoom.memory.baseCenterPosition;
+        layoutCenterPosition.roomName = baseRoom.name;
+
+        const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
+
+        const extraRoadPositions = {};
+        for (let i = 0; i < remoteRoom.sources.length; i++) {
+            extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
+        }
+
+        const extraRoadPositionsSplitByRoom = extraRoadPositions.reduce((result, roomPosition) => {
+            if (!result[roomPosition.roomName]) {
+                result[roomPosition.roomName] = [];
+            }
+
+            result[roomPosition.roomName].push(roomPosition);
+        }, {});
+
+        for (const roomName in extraRoadPositionsSplitByRoom) {
+            Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
+        }
+
+        return extraRoadPositionsSplitByRoom;
+    },
+
+    getRoomPositionsForRoadsInLayout(roomName, layout, layoutCenterPosition) {
+        const roadPositions = [];
+        for (const road of layout.buildings.road.pos) {
+            roadPositions.push(new RoomPosition(road.x + layoutCenterPosition.x, road.y + layoutCenterPosition.y, roomName));
+        }
+        return roadPositions;
+    },
+
+    getRoadPositionsToRoomObject(from, to, layoutRoadRoomPositions, extraRoadPositions) {
+        const travelPath = Traveler.findTravelPath(from, to);
         const roadStartingPoint = travelPath.path[0];
 
         return this.findPathForRoads(roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions);
     },
 
     findPathForRoads(roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions) {
+        // TODO: Add traversed rooms so we don't store/place roads twice
         // Every road in our layout is a goal since every layouted road has already been optimized and paths to the base.
         let goals = [].concat(layoutRoadRoomPositions);
         for (const extraRoadKey in extraRoadPositions) {
@@ -66,6 +102,9 @@ const RoadGenerator = {
         }).path;
     },
 };
+
+// TODO: remove global
+global.RoadGenerator = RoadGenerator;
 
 profiler.registerObject(RoadGenerator, "RoadGenerator");
 module.exports = RoadGenerator;
