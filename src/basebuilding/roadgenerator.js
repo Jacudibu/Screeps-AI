@@ -15,7 +15,7 @@ RoadGenerator = {
         extraRoadPositions.controller = this.getRoadPositionsToRoomObject(room, room.controller, layoutRoadRoomPositions, extraRoadPositions);
         extraRoadPositions.mineral    = this.getRoadPositionsToRoomObject(room, room.mineral, layoutRoadRoomPositions, extraRoadPositions);
 
-        room.extraRoadPositions = extraRoadPositions;
+        room.memory.extraRoadPositions = extraRoadPositions;
 
         return extraRoadPositions;
     },
@@ -33,6 +33,13 @@ RoadGenerator = {
         for (const extraRoadKey in extraRoadPositions) {
             goals = goals.concat(extraRoadPositions[extraRoadKey]);
         }
+
+        goals = goals.map(function(position) {
+            return {
+                pos: position,
+                range: 1
+            };
+        });
 
         return PathFinder.search(roadStartingPoint, goals, {
             plainCost: 2,

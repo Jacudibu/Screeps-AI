@@ -27,6 +27,14 @@ ROLE_NAMES[ROLE.CLAIMER_ATTACKER]       = 'claimerattacker';
 // Defenseive Creeps
 ROLE_NAMES[ROLE.DEFENDER]               = 'guardian';
 
+
+/* Random name ideas
+ *
+ * Goblin - light attackers
+ * Kobold - thieves
+ */
+
+
 const getRoleName = function(role) {
     if (ROLE_NAMES[role]) {
         return ROLE_NAMES[role];
