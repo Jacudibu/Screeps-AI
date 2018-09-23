@@ -15,6 +15,13 @@ const RoadGenerator = {
 
         room.memory.extraRoadPositions = extraRoadPositions;
 
+        for (const remoteRoom of room.memory.remoteMiningRooms) {
+            if (!Game.rooms[remoteRoom]) {
+                continue;
+            }
+            this.generateRoadsForRemoteRoom(room, layout, Game.rooms[remoteRoom])
+        }
+
         return extraRoadPositions;
     },
 
@@ -25,14 +32,27 @@ const RoadGenerator = {
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
 
-        const extraRoadPositions = {};
-        let mergedRoadPositions = [];
+        const extraRoadPositionsA = {};
+        let mergedRoadPositionsA = [];
         for (let i = 0; i < remoteRoom.sources.length; i++) {
-            extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
-            mergedRoadPositions = mergedRoadPositions.concat(extraRoadPositions['source' + i]);
+            extraRoadPositionsA['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositionsA);
+            mergedRoadPositionsA = mergedRoadPositionsA.concat(extraRoadPositionsA['source' + i]);
         }
 
-        console.log(JSON.stringify(extraRoadPositions));
+        const extraRoadPositionsB = {};
+        let mergedRoadPositionsB = [];
+        for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
+            extraRoadPositionsB['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositionsB);
+            mergedRoadPositionsB = mergedRoadPositionsB.concat(extraRoadPositionsB['source' + i]);
+        }
+
+        let mergedRoadPositions;
+        if (mergedRoadPositionsA.length < mergedRoadPositionsB.length) {
+            mergedRoadPositions = mergedRoadPositionsA;
+        } else {
+            mergedRoadPositions = mergedRoadPositionsB;
+        }
+
         console.log(JSON.stringify(mergedRoadPositions));
 
         const extraRoadPositionsSplitByRoom = mergedRoadPositions.reduce((result, roomPosition) => {
@@ -93,7 +113,7 @@ const RoadGenerator = {
 
         return PathFinder.search(roadStartingPoint, goals, {
             plainCost: 2,
-            swampCost: 3,
+            swampCost: 4,
             roomCallback: function(roomName) {
                 let room = Game.rooms[roomName];
                 if (!room) {

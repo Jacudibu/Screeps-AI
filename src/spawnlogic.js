@@ -278,31 +278,33 @@ const spawnlogic = {
         }
 
         for (let i = 0; i < remoteMiningRoomList.length; i++) {
-            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
+            if (Game.shard.name !== "screeps-test1") {
+                let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
 
-            if (remoteMiningRoomMemory.requiresHelp !== undefined) {
-                continue;
-            }
-
-            if (!remoteMiningRoomMemory.sources) {
-                if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
-                    Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
-                } else {
-                    // no vision, claimer will be spawned later
+                if (remoteMiningRoomMemory.requiresHelp !== undefined) {
                     continue;
                 }
-            }
 
-            if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
-                Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
-                return;
-            }
+                if (!remoteMiningRoomMemory.sources) {
+                    if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
+                        Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
+                    } else {
+                        // no vision, claimer will be spawned later
+                        continue;
+                    }
+                }
 
-            if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
-                Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
-                return;
+                if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
+                    room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
+                    Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
+                    return;
+                }
+
+                if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
+                    room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
+                    Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
+                    return;
+                }
             }
         }
 
