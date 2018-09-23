@@ -2,8 +2,7 @@ const RoadGenerator = {
     generateAndGetRoads(room, layout) {
         // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
 
-        const layoutCenterPosition = room.memory.baseCenterPosition;
-        layoutCenterPosition.roomName = room.name;
+        const layoutCenterPosition = new RoomPosition(room.memory.baseCenterPosition.x, room.memory.baseCenterPosition.y, room.name);
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
 
@@ -22,26 +21,41 @@ const RoadGenerator = {
     generateRoadsForRemoteRoom(baseRoom, layout, remoteRoom) {
         // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
 
-        const layoutCenterPosition = baseRoom.memory.baseCenterPosition;
-        layoutCenterPosition.roomName = baseRoom.name;
+        const layoutCenterPosition = new RoomPosition(baseRoom.memory.baseCenterPosition.x, baseRoom.memory.baseCenterPosition.y, baseRoom.name);
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
 
         const extraRoadPositions = {};
+        let mergedRoadPositions = [];
         for (let i = 0; i < remoteRoom.sources.length; i++) {
             extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i], layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
+            mergedRoadPositions = mergedRoadPositions.concat(extraRoadPositions['source' + i]);
         }
 
-        const extraRoadPositionsSplitByRoom = extraRoadPositions.reduce((result, roomPosition) => {
+        console.log(JSON.stringify(extraRoadPositions));
+        console.log(JSON.stringify(mergedRoadPositions));
+
+        const extraRoadPositionsSplitByRoom = mergedRoadPositions.reduce((result, roomPosition) => {
             if (!result[roomPosition.roomName]) {
                 result[roomPosition.roomName] = [];
             }
 
             result[roomPosition.roomName].push(roomPosition);
+            return result;
         }, {});
 
+        console.log(JSON.stringify(extraRoadPositionsSplitByRoom));
+
         for (const roomName in extraRoadPositionsSplitByRoom) {
-            Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
+            if (!Memory.rooms[roomName].extraRoadPositions) {
+                Memory.rooms[roomName].extraRoadPositions = {}
+            }
+
+            if (roomName !== remoteRoom.name) {
+                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
+            } else {
+                Memory.rooms[roomName].extraRoadPositions.sources = extraRoadPositionsSplitByRoom[roomName];
+            }
         }
 
         return extraRoadPositionsSplitByRoom;

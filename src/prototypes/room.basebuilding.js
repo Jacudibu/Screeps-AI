@@ -49,9 +49,23 @@ const ERR_BLOCKED_BY_TERRAIN_WALL   = 5;
 const ERR_NOT_YET_IMPLEMENTED       = 42;
 const ERR_UNDEFINED                 = 999;
 
+const DEBUG = true;
+
 Room.prototype.tryPlacingConstructionSites = function() {
     try {
         this._automaticallyPlaceConstructionSites();
+    } catch (e) {
+        let message = this + " construction site placement: " + e;
+        if (e.stack) {
+            message += "\nTrace:\n" + e.stack;
+        }
+        log.error(message);
+    }
+};
+
+Room.prototype.tryPlacingRemoteConstructionSites = function() {
+    try {
+        this._automaticallyPlaceRemoteConstructionSites();
     } catch (e) {
         let message = this + " construction site placement: " + e;
         if (e.stack) {
@@ -75,6 +89,10 @@ Room.prototype._forceConstructionUpdate = function() {
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {
+    if (DEBUG) {
+        this._debugExtraRoadPlacement();
+    }
+
     if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] > Game.time) {
         return;
     }
@@ -120,6 +138,20 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
         default:
             log.warning(this + "unhandled status in automatic construction site placement: " + result);
             break;
+    }
+};
+
+Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
+    if (DEBUG) {
+        this._debugExtraRoadPlacement();
+    }
+};
+
+Room.prototype._debugExtraRoadPlacement = function() {
+    for (const category in this.memory.extraRoadPositions) {
+        for (const roomPos of this.memory.extraRoadPositions[category]) {
+            this.visual.circle(roomPos);
+        }
     }
 };
 

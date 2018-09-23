@@ -1,22 +1,26 @@
 Room.prototype.updateBeforeCreeps = function() {
     this.checkForHostiles();
     this.updateThreat();
-    this.askForHelpIfThreatDetected();
 };
 
 Room.prototype.updateAfterCreeps = function() {
-    this.askForHelpIfThreatDetected();
     this.sortHostilesByPriority();
 
-    if (!(this.controller && this.controller.my)) {
-        return;
-    }
+    if (this.controller) {
+        if (this.controller.my) {
+            this.askForHelpIfThreatDetected();
+            this.attackHostiles();
+            this.repairDamagedCreeps();
+            this.repairAlmostBrokenRamparts();
+            this.checkForRCLUpdate();
+            this.tryPlacingConstructionSites();
+        }
 
-    this.attackHostiles();
-    this.repairDamagedCreeps();
-    this.repairAlmostBrokenRamparts();
-    this.checkForRCLUpdate();
-    this.tryPlacingConstructionSites();
+        if (this.controller.reservation && this.controller.reservation.username === "Jacudibu") {
+            this.askForHelpIfThreatDetected();
+            this.tryPlacingRemoteConstructionSites();
+        }
+    }
 };
 
 let lastRCL = {};
