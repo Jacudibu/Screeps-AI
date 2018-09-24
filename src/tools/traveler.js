@@ -36,6 +36,7 @@ class Traveler {
                     options.returnData.path = direction.toString();
                 }
                 return creep.move(direction);
+                // return creep.moveAndPush(direction);
             }
             return OK;
         }
@@ -94,7 +95,7 @@ class Traveler {
             state.cpu = _.round(cpuUsed + state.cpu);
             if (state.cpu > REPORT_CPU_THRESHOLD) {
                 // see note at end of file for more info on this
-                console.log(`TRAVELER: heavy cpu use: ${creep.name}, cpu: ${state.cpu} origin: ${creep.pos}, dest: ${destination}`);
+                console.log(`TRAVELER: heavy cpu use: ${creep}, cpu: ${state.cpu} origin: ${creep.pos}, dest: ${destination}`);
             }
             let color = "orange";
             if (ret.incomplete) {
@@ -128,6 +129,7 @@ class Traveler {
             options.returnData.path = travelData.path;
         }
         return creep.move(nextDirection);
+        //return creep.moveAndPush(nextDirection);
     }
     /**
      * make position objects consistent so that either can be used as an argument

@@ -746,14 +746,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
 
     let closestRampart = utility.getClosestObjectFromArray(enemy, ramparts);
 
-    switch (this.travelTo(closestRampart, {maxRooms: 1})) {
-        case OK:
-            this.say(creepTalk.defendRamparts, true);
-            break;
-        default:
-            this.logActionError("moveToRampartClosestToEnemy moveTo command", this.travelTo(ramparts[0]));
-            break;
-    }
+    this.travelTo(closestRampart, {maxRooms: 1, range: 0});
 };
 
 Creep.prototype.selectNextRoomToScout = function() {

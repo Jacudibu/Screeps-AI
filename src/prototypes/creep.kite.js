@@ -75,6 +75,7 @@ Creep.prototype.kite = function(thingsToKite, options = {}) {
 
     let nextDirection = this.pos.getDirectionTo(pathFinderResult.path[0]);
     return this.move(nextDirection);
+    //return this.moveAndPush(nextDirection);
 };
 
 const turnIntoGoalObject = function(thing, range) {
