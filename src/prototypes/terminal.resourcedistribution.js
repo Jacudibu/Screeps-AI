@@ -171,12 +171,21 @@ const terminalResourceDistribution = {
 
                 const matchingOrders = orders.filter(order => order.resourceType === supplyData.resourceType);
 
-                const bestDeal = _.sortBy(matchingOrders, order => {
-                    let transactionCostFactor = Game.market.calcTransactionCost(1000, terminal.room.name, order.roomName) * 0.0001;
-                    let price = order.price;
+                if (matchingOrders.length === 0) {
+                    continue;
+                }
 
-                    return price - (transactionCostFactor * TRANSACTION_ENERGY_COST_FACTOR);
-                })[matchingOrders.length - 1];
+                let bestOrderPrice = -9999;
+                const bestDeal = matchingOrders.reduce((bestOrder, currentOrder) => {
+                    let transactionCostFactor = Game.market.calcTransactionCost(1000, terminal.room.name, currentOrder.roomName) * 0.0001;
+                    let price = currentOrder.price - (transactionCostFactor * TRANSACTION_ENERGY_COST_FACTOR);
+                    if (price > bestOrderPrice) {
+                        bestOrderPrice = price;
+                        return currentOrder;
+                    } else {
+                        return bestOrder;
+                    }
+                }, null);
 
                 if (!bestDeal) {
                     //console.log(terminal.room + " no deals found for " + supplyData.resourceType);
@@ -191,10 +200,10 @@ const terminalResourceDistribution = {
                     dealAmount = supplyData.amount;
                 }
 
-                let result = Game.market.deal(bestDeal.id, dealAmount, terminal.room.name);
+                const result = Game.market.deal(bestDeal.id, dealAmount, terminal.room.name);
                 // for debugging
-                // console.log(terminal.room.name + " would have sold " + amount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
-                // result = OK;
+                //console.log(terminal.room.name + " would have sold " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
+                //const result = OK;
                 if (result === OK) {
                     //console.log(terminal.room + " sold " + dealAmount + "x" + bestDeal.resourceType + " for " + bestDeal.price + " Credits. OrderID: " + bestDeal.id);
                     if (dealAmount === bestDeal.amount) {
