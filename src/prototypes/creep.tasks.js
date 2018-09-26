@@ -430,7 +430,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             }
             break;
         case ERR_FULL:
-            this.logActionError("storing resource", "ERR_FULL");
+            this.logActionError("storing resource " + hauledResourceType + " in " + mineralStorage, "ERR_FULL");
             this.drop(hauledResourceType);
             break;
         case ERR_INVALID_ARGS:
@@ -440,7 +440,7 @@ Creep.prototype.storeMineral = function(nextTask) {
             break;
         case ERR_INVALID_TARGET:
             this.say(creepTalk.invalidTarget);
-            this.logActionError("invalid target store mineral: " + mineralStorage, this.transfer(mineralStorage, hauledResourceType));
+            this.logActionError("invalid target store mineral: " + mineralStorage, ERR_INVALID_TARGET);
             this.setTask(TASK.MOVE_TO_ROOM);
             break;
         default:
