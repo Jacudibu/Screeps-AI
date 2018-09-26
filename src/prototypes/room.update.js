@@ -14,7 +14,7 @@ Room.prototype.updateAfterCreeps = function() {
             this.repairAlmostBrokenRamparts();
             this.checkForRCLUpdate();
 
-            if (Game.shard === "screepsplus1") {
+            if (Game.shard.name === "screepsplus1") {
                 this.tryPlacingConstructionSites();
             }
         }
@@ -22,7 +22,7 @@ Room.prototype.updateAfterCreeps = function() {
         if (this.controller.reservation && this.controller.reservation.username === "Jacudibu") {
             this.askForHelpIfThreatDetected();
 
-            if (Game.shard === "screepsplus1") {
+            if (Game.shard.name === "screepsplus1") {
                 this.tryPlacingRemoteConstructionSites();
             }
         }
