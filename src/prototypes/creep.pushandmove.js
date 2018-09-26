@@ -1,20 +1,38 @@
 Creep.prototype.moveAndPush = function(direction) {
-    moveCache.creepMoves[this.name] = direction;
+    if (!moveCache.creepMoves[this.room.name]) {
+        moveCache.creepMoves[this.room.name] = {};
+    }
+
+    moveCache.creepMoves[this.room.name][this.name] = direction;
+    moveCache.pushees.push(this.name);
+};
+
+Creep.prototype.justMove = function(direction) {
+    if (!moveCache.creepMoves[this.room.name]) {
+        moveCache.creepMoves[this.room.name] = {};
+    }
+    moveCache.creepMoves[this.room.name][this.name] = direction;
 };
 
 moveCache = {
     creepMoves: {},
+    pushees: [],
 
     moveAllCreeps() {
         let totalCPU = 0;
         let calls = 0;
+        let moves = 0;
         let pushes = 0;
 
-        for (const creepName in this.creepMoves) {
+        while(this.pushees.length > 0) {
             calls++;
+            const creepName = this.pushees.pop();
             const cpuStartAtStart = Game.cpu.getUsed();
             const creep = Game.creeps[creepName];
-            const direction = this.creepMoves[creepName];
+            if (!creep) {
+                continue;
+            }
+            const direction = this.creepMoves[creep.room.name][creepName];
 
             if (!creep || !direction) {
                 continue;
@@ -24,11 +42,17 @@ moveCache = {
             }
 
             totalCPU += Game.cpu.getUsed() - cpuStartAtStart;
-            creep.move(direction);
         }
 
-        totalCPU = totalCPU - (pushes * 0.2);
-        console.log("Creep.moveAndPush Overhead: " + totalCPU + " | calls: " + calls + " | avg: " + (totalCPU / calls));
+        for (let roomName in this.creepMoves) {
+            for (let creepName in this.creepMoves[roomName]) {
+                moves++;
+                Game.creeps[creepName].move(this.creepMoves[roomName][creepName]);
+            }
+        }
+
+        console.log("Creep.moveAndPush Overhead: " + totalCPU + " | calls: " + calls + " | avg: " + (totalCPU / calls) + " | Total moves: " + moves + " | cost per move: " + (totalCPU / calls / moves));
+        this.pushees = [];
         this.creepMoves = {};
     },
 
@@ -79,7 +103,7 @@ moveCache = {
             return;
         }
 
-        //const terrain =creep.room.getTerrain();
+        const terrain = creep.room.getTerrain();
         const possibleDirections = [];
         for (let x = -1; x < 2; x++) {
             for (let y = -1; y < 2; y++) {
@@ -87,8 +111,7 @@ moveCache = {
                     continue;
                 }
 
-                //if (terrain.get(x, y) === TERRAIN_MASK_WALL) {
-                if (Game.map.getTerrainAt(position.x + x, position.y + y, creep.room.name) === "wall") {
+                if (terrain.get(x + otherCreep.pos.x, y + otherCreep.pos.y) === TERRAIN_MASK_WALL) {
                     continue;
                 }
 
@@ -96,36 +119,45 @@ moveCache = {
             }
         }
 
-        otherCreep.move(_.random(0, possibleDirections.length -1));
+        otherCreep.move(_.random(0, possibleDirections.length - 1));
     },
 
     convertRelativePositionToDirection(x, y) {
-        const xy = (x * 10) + y;
-
         // 10 * x + y     x
-        //          -1 |  0 |  1
+        //         -1 | 0 |  1
         //       -------------------
-        //    -1 | -11 | -1 |  9
-        // y   0 | -10 |  0 | 10
-        //     1 |  -9 |  1 | 11
+        //    -1 | TL | T | TR
+        // y   0 |  L | - |  R
+        //     1 | BL | B | BR
 
-        switch(xy) {
-            case -11:
-                return TOP_LEFT;
-            case -10:
-                return LEFT;
-            case -9:
-                return BOTTOM_LEFT;
+        switch(x) {
             case -1:
-                return TOP;
+                switch(y) {
+                    case -1:
+                        return TOP_LEFT;
+                    case 0:
+                        return LEFT;
+                    case 1:
+                        return BOTTOM_LEFT;
+                }
+
+            case 0:
+                switch(y) {
+                    case -1:
+                        return TOP;
+                    case 1:
+                        return BOTTOM;
+                }
+
             case 1:
-                return BOTTOM;
-            case 9:
-                return TOP_RIGHT;
-            case 10:
-                return RIGHT;
-            case 11:
-                return BOTTOM_RIGHT;
+                switch(y) {
+                    case -1:
+                        return TOP_RIGHT;
+                    case 0:
+                        return LEFT;
+                    case 1:
+                        return BOTTOM_RIGHT;
+                }
         }
     }
 };

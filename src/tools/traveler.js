@@ -35,8 +35,8 @@ class Traveler {
                     options.returnData.nextPos = destination;
                     options.returnData.path = direction.toString();
                 }
-                return creep.move(direction);
-                // return creep.moveAndPush(direction);
+                return creep.justMove(direction);
+                // return creep.move(direction);
             }
             return OK;
         }
@@ -128,8 +128,14 @@ class Traveler {
             options.returnData.state = state;
             options.returnData.path = travelData.path;
         }
-        return creep.move(nextDirection);
-        //return creep.moveAndPush(nextDirection);
+
+        if (state.stuckCount === 0) {
+            return creep.justMove(nextDirection);
+        } else {
+            return creep.moveAndPush(nextDirection);
+        }
+
+        //return creep.move(nextDirection);
     }
     /**
      * make position objects consistent so that either can be used as an argument

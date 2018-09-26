@@ -33,7 +33,7 @@ const creepAi = {
             this._tryRunCreepLogic(creep);
         }
 
-        // moveCache.moveAllCreeps();
+        moveCache.moveAllCreeps();
     },
 
     _tryRunCreepLogic(creep) {
