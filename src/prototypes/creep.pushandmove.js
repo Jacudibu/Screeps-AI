@@ -164,4 +164,5 @@ moveCache = {
     }
 };
 
+profiler.registerObject(moveCache, "moveCache");
 global.moveCache = moveCache;

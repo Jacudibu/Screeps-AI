@@ -13,12 +13,18 @@ Room.prototype.updateAfterCreeps = function() {
             this.repairDamagedCreeps();
             this.repairAlmostBrokenRamparts();
             this.checkForRCLUpdate();
-            this.tryPlacingConstructionSites();
+
+            if (Game.shard === "screepsplus1") {
+                this.tryPlacingConstructionSites();
+            }
         }
 
         if (this.controller.reservation && this.controller.reservation.username === "Jacudibu") {
             this.askForHelpIfThreatDetected();
-            this.tryPlacingRemoteConstructionSites();
+
+            if (Game.shard === "screepsplus1") {
+                this.tryPlacingRemoteConstructionSites();
+            }
         }
     }
 };
