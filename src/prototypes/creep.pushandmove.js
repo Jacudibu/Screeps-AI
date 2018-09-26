@@ -19,15 +19,14 @@ moveCache = {
     pushees: [],
 
     moveAllCreeps() {
-        let totalCPU = 0;
-        let calls = 0;
-        let moves = 0;
-        let pushes = 0;
+        //let calls = 0;
+        //let moves = 0;
+        //let successFullPushes = 0;
 
+        //const cpuStartAtStart = Game.cpu.getUsed();
         while(this.pushees.length > 0) {
-            calls++;
+            //calls++;
             const creepName = this.pushees.pop();
-            const cpuStartAtStart = Game.cpu.getUsed();
             const creep = Game.creeps[creepName];
             if (!creep) {
                 continue;
@@ -37,21 +36,23 @@ moveCache = {
             if (!creep || !direction) {
                 continue;
             }
-            if (this.pushThingsAway(creep, direction)) {
-                pushes++;
-            }
 
-            totalCPU += Game.cpu.getUsed() - cpuStartAtStart;
+            this.pushThingsAway(creep, direction);
+            //if (this.pushThingsAway(creep, direction)) {
+            //    successFullPushes++;
+            //}
+
         }
+        //const totalCPU = Game.cpu.getUsed() - cpuStartAtStart - (successFullPushes * 0.2);
 
         for (let roomName in this.creepMoves) {
             for (let creepName in this.creepMoves[roomName]) {
-                moves++;
+                //moves++;
                 Game.creeps[creepName].move(this.creepMoves[roomName][creepName]);
             }
         }
 
-        console.log("Creep.moveAndPush Overhead: " + totalCPU + " | calls: " + calls + " | avg: " + (totalCPU / calls) + " | Total moves: " + moves + " | cost per move: " + (totalCPU / calls / moves));
+        //console.log("Creep.moveAndPush Overhead: " + totalCPU + " | calls: " + calls + " | avg: " + (totalCPU / calls) + " | Total moves: " + moves + " | overhead per move(): " + ((totalCPU / calls) / moves));
         this.pushees = [];
         this.creepMoves = {};
     },
@@ -120,6 +121,7 @@ moveCache = {
         }
 
         otherCreep.move(_.random(0, possibleDirections.length - 1));
+        return true;
     },
 
     convertRelativePositionToDirection(x, y) {
