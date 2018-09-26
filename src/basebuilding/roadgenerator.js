@@ -2,24 +2,24 @@ const ERR_NO_VISION = -100;
 
 const RoadGenerator = {
     generateAndGetRoads(room, layout) {
-        if (room.memory.extraRoadPositions) {
-            return room.memory.extraRoadPositions;
+        if (room.memory.layout.roads) {
+            return room.memory.layout.roads;
         }
 
         const layoutCenterPosition = new RoomPosition(room.memory.baseCenterPosition.x, room.memory.baseCenterPosition.y, room.name);
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
 
-        const extraRoadPositions = {};
+        const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
-            extraRoadPositions['source' + i] = this.getRoadPositionsToRoomObject(room.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
+            roads['source' + i] = this.getRoadPositionsToRoomObject(room.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
         }
-        extraRoadPositions.controller = this.getRoadPositionsToRoomObject(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
-        extraRoadPositions.mineral    = this.getRoadPositionsToRoomObject(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositions);
+        roads.controller = this.getRoadPositionsToRoomObject(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.mineral    = this.getRoadPositionsToRoomObject(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
 
-        room.memory.extraRoadPositions = extraRoadPositions;
+        room.memory.layout.roads = roads;
 
-        return extraRoadPositions;
+        return roads;
     },
 
     generateRoadsForRemoteRoom(baseRoom, layout, remoteRoom) {
@@ -29,30 +29,30 @@ const RoadGenerator = {
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
 
-        const extraRoadPositionsA = {};
-        let mergedRoadPositionsA = [];
+        const roadsA = {};
+        let mergedRoadsA = [];
         for (let i = 0; i < remoteRoom.sources.length; i++) {
-            extraRoadPositionsA['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositionsA);
-            mergedRoadPositionsA = mergedRoadPositionsA.concat(extraRoadPositionsA['source' + i]);
+            roadsA['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roadsA);
+            mergedRoadsA = mergedRoadsA.concat(roadsA['source' + i]);
         }
 
-        const extraRoadPositionsB = {};
-        let mergedRoadPositionsB = [];
+        const roadsB = {};
+        let mergedRoadsB = [];
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
-            extraRoadPositionsB['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, extraRoadPositionsB);
-            mergedRoadPositionsB = mergedRoadPositionsB.concat(extraRoadPositionsB['source' + i]);
+            roadsB['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roadsB);
+            mergedRoadsB = mergedRoadsB.concat(roadsB['source' + i]);
         }
 
-        let mergedRoadPositions;
-        if (mergedRoadPositionsA.length < mergedRoadPositionsB.length) {
-            mergedRoadPositions = mergedRoadPositionsA;
+        let roads;
+        if (mergedRoadsA.length < mergedRoadsB.length) {
+            roads = mergedRoadsA;
         } else {
-            mergedRoadPositions = mergedRoadPositionsB;
+            roads = mergedRoadsB;
         }
 
-        //console.log(JSON.stringify(mergedRoadPositions));
+        //console.log(JSON.stringify(roads));
 
-        const extraRoadPositionsSplitByRoom = mergedRoadPositions.reduce((result, roomPosition) => {
+        const roadsSplitByRoom = roads.reduce((result, roomPosition) => {
             if (!result[roomPosition.roomName]) {
                 result[roomPosition.roomName] = [];
             }
@@ -63,29 +63,29 @@ const RoadGenerator = {
             return result;
         }, {});
 
-        //console.log(JSON.stringify(extraRoadPositionsSplitByRoom));
+        //console.log(JSON.stringify(roadsSplitByRoom));
 
-        for (const roomName in extraRoadPositionsSplitByRoom) {
+        for (const roomName in roadsSplitByRoom) {
             if (!Memory.rooms[roomName]) {
                 console.log("no room memory? " + roomName);
                 continue;
             }
 
-            if (!Memory.rooms[roomName].extraRoadPositions) {
-                Memory.rooms[roomName].extraRoadPositions = {}
+            if (!Memory.rooms[roomName].layout.roads) {
+                Memory.rooms[roomName].layout.roads = {}
             }
 
             if (roomName === remoteRoom.name) {
-                Memory.rooms[roomName].extraRoadPositions.sources = extraRoadPositionsSplitByRoom[roomName];
+                Memory.rooms[roomName].layout.roads.sources = roadsSplitByRoom[roomName];
             } else if (roomName === baseRoom.name) {
                 // reverse entries so that they are ordered by distance to base center
-                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName].reverse();
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] = roadsSplitByRoom[roomName].reverse();
             } else {
-                Memory.rooms[roomName].extraRoadPositions[remoteRoom.name] = extraRoadPositionsSplitByRoom[roomName];
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] = roadsSplitByRoom[roomName];
             }
         }
 
-        return extraRoadPositionsSplitByRoom;
+        return roadsSplitByRoom;
     },
 
     getRoomPositionsForRoadsInLayout(roomName, layout, layoutCenterPosition) {
@@ -96,14 +96,14 @@ const RoadGenerator = {
         return roadPositions;
     },
 
-    getRoadPositionsToRoomObject(fromPos, toPos, layoutRoadRoomPositions, extraRoadPositions) {
+    getRoadPositionsToRoomObject(fromPos, toPos, layoutRoadRoomPositions, roads) {
         const travelPath = Traveler.findTravelPath(fromPos, toPos);
         const roadStartingPoint = travelPath.path[0];
 
-        return this.findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions);
+        return this.findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, roads);
     },
 
-    findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, extraRoadPositions) {
+    findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, roads) {
         // TODO: Add traversed rooms so we don't store/place roads twice
 
         let allowedRooms;
@@ -129,20 +129,20 @@ const RoadGenerator = {
 
         // Every road in our layout is a goal since every layouted road has already been optimized and paths to the base.
         let goals = [].concat(layoutRoadRoomPositions);
-        for (const extraRoadKey in extraRoadPositions) {
-            goals = goals.concat(extraRoadPositions[extraRoadKey]);
+        for (const roadKey in roads) {
+            goals = goals.concat(roads[roadKey]);
         }
 
         // Every layouted road in other rooms along the path is also a goal. Phew. Thats a lot.
         for (let roomName in allowedRooms) {
             // allowed rooms is empty in base. In remotes we don't want other room's routes to interfere with the source route
-            // we are also using extraRoadPositions already in here, so POI in the room won't have duplicate positions
+            // we are also using roads already in here, so POI in the room won't have duplicate positions
             if (roomName !== fromPos.roomName) {
-                if (Memory.rooms[roomName].extraRoadPositions)
-                    for (const extraRoadKey in Memory.rooms[roomName].extraRoadPositions) {
-                        if (extraRoadKey !== fromPos.roomName) {
+                if (Memory.rooms[roomName].layout.roads)
+                    for (const roadKey in Memory.rooms[roomName].layout.roads) {
+                        if (roadKey !== fromPos.roomName) {
                             // we want to regenerate the path if it was already set
-                            goals = goals.concat(Memory.rooms[roomName].extraRoadPositions[extraRoadKey]);
+                            goals = goals.concat(Memory.rooms[roomName].layout.roads[roadKey]);
                         }
                     }
             }

@@ -91,29 +91,9 @@ Room.prototype._forceConstructionUpdate = function() {
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {
-    if (DEBUG) {
-        this._debugExtraRoadPlacement();
-
-        let ramparts = this.memory.layout.ramparts;
-        if (!ramparts) {
-            ramparts = this._calculateRampartPositions(this.memory.layout);
-        }
-
-        for (let pos of ramparts.center) {
-            this.visual.circle(pos.x, pos.y, {fill: "#009900"});
-        }
-
-        for (let pos of ramparts.inner) {
-            this.visual.circle(pos.x, pos.y, {fill: "#00bb00"});
-        }
-
-        for (let pos of ramparts.outer) {
-            this.visual.circle(pos.x, pos.y, {fill: "#007700"});
-        }
-
-        for (let pos of ramparts.controller) {
-            this.visual.circle(pos.x, pos.y, {fill: "#009900"});
-        }
+    if (DEBUG && this.memory.layout) {
+        this._debugRoadPlacement(this.memory.layout);
+        this._debugRampartPlacement();
     }
 
     if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] > Game.time) {
@@ -172,15 +152,50 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
 
 Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
     if (DEBUG) {
-        this._debugExtraRoadPlacement();
+        this._debugRoadPlacement();
     }
 };
 
-Room.prototype._debugExtraRoadPlacement = function() {
-    for (const category in this.memory.extraRoadPositions) {
-        for (const roomPos of this.memory.extraRoadPositions[category]) {
+Room.prototype._debugRoadPlacement = function(layout) {
+    if (this.controller && this.controller.my) {
+        // Just making sure it exists...
+        RoadGenerator.generateAndGetRoads(this, layout);
+
+        if (layout) {
+            const center = this.memory.baseCenterPosition;
+            for (let pos of layout.buildings.road.pos) {
+                this.visual.circle(new RoomPosition(pos.x + center.x, pos.y + center.y, this.name), {fill: "#00a0ff"});
+            }
+        }
+    }
+
+    for (const category in this.memory.layout.roads) {
+        for (const roomPos of this.memory.layout.roads[category]) {
             this.visual.circle(roomPos, {fill: "#00a0ff"});
         }
+    }
+};
+
+Room.prototype._debugRampartPlacement = function() {
+    let ramparts = this.memory.layout.ramparts;
+    if (!ramparts) {
+        ramparts = this._calculateRampartPositions(this.memory.layout);
+    }
+
+    for (let pos of ramparts.center) {
+        this.visual.circle(pos.x, pos.y, {fill: "#009900"});
+    }
+
+    for (let pos of ramparts.inner) {
+        this.visual.circle(pos.x, pos.y, {fill: "#00bb00"});
+    }
+
+    for (let pos of ramparts.outer) {
+        this.visual.circle(pos.x, pos.y, {fill: "#007700"});
+    }
+
+    for (let pos of ramparts.controller) {
+        this.visual.circle(pos.x, pos.y, {fill: "#009900"});
     }
 };
 
