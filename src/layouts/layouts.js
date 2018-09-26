@@ -1,0 +1,49 @@
+require('layouts.layoutraws');
+
+const offsetAndSortLayout = function(layout, offsetX, offsetY) {
+    return sortPositionsBasedOnDistanceFromNullPoint(offsetLayout(layout, offsetX, offsetY));
+};
+
+const offsetLayout = function(layout, offsetX, offsetY) {
+    let buildings = {};
+    for (const buildingType in layout.buildings) {
+        let positions = [];
+        const layoutPositions = layout.buildings[buildingType].pos;
+        for (let i = 0; i < layoutPositions.length; i++) {
+            positions.push({ x: layoutPositions[i].x + offsetX,
+                y: layoutPositions[i].y + offsetY});
+        }
+
+        buildings[buildingType] = {pos: positions}
+    }
+
+    return {buildings: buildings};
+};
+
+const sortPositionsBasedOnDistanceFromNullPoint = function(layout) {
+    let buildings = {};
+    for (const buildingType in layout.buildings) {
+        let layoutPositions = layout.buildings[buildingType].pos;
+        layoutPositions.sort(
+            (a, b) => {
+                // noinspection JSSuspiciousNameCombination
+                const distA = (Math.abs(a.x) + Math.abs(a.y));
+                // noinspection JSSuspiciousNameCombination
+                const distB = (Math.abs(b.x) + Math.abs(b.y));
+
+                return distA - distB;
+            });
+
+        buildings[buildingType] = {pos: layoutPositions}
+    }
+
+    return {buildings: buildings};
+};
+
+global.baseLayouts.diamond14x14 = offsetAndSortLayout(baseLayouts.diamond14x14, -7, -7);
+global.baseLayouts.diamond14x14.width = 14;
+global.baseLayouts.diamond14x14.heigth = 14;
+
+global.baseLayouts.E55S47 = offsetAndSortLayout(baseLayouts.E55S47, -25, -8);
+global.baseLayouts.E55S47.width = 14;
+global.baseLayouts.E55S47.heigth = 14;

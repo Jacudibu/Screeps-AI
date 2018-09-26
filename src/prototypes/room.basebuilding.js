@@ -1,5 +1,5 @@
 global.baseLayouts = {};
-require('layouts.diamond14x14');
+require('layouts.layouts');
 
 const RoadGenerator = require('basebuilding.roadgenerator');
 
@@ -97,14 +97,19 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
         return;
     }
 
-    if (!this.memory.layout) {
+    if (!this.memory.layout && !this.memory.predefinedLayoutName) {
         // Those rooms are manually built right now
         allowConstructionSiteRequests[this.name] = false;
         nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
         return;
     }
 
-    const layout = baseLayouts.diamond14x14;
+    let layout;
+    if (this.memory.layout) {
+        layout = this.memory.layout;
+    } else {
+        layout = baseLayouts[this.memory.predefinedLayoutName]
+    }
 
     if (this.controller.level === 1) {
         if (this.mySpawns.length > 0) {
