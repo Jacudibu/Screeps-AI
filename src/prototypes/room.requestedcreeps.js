@@ -14,7 +14,7 @@ Room.prototype.updateRequestedCreeps = function() {
         case 2:
             requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = calculateAmountOfEarlyRCLHarvesters(this);
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
-            requestedCreeps[ROLE.HAULER]    = 6;
+            requestedCreeps[ROLE.HAULER]    = 2 + calculateDistanceFactor(this);
             requestedCreeps[ROLE.UPGRADER]  = 6;
             requestedCreeps[ROLE.BUILDER]   = 3;
             requestedCreeps[ROLE.REPAIRER]  = 1;
@@ -22,7 +22,7 @@ Room.prototype.updateRequestedCreeps = function() {
 
         case 3:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
-            requestedCreeps[ROLE.HAULER]    = 4;
+            requestedCreeps[ROLE.HAULER]    = 2 + (calculateDistanceFactor(this) * 0.66);
             requestedCreeps[ROLE.UPGRADER]  = 3;
             requestedCreeps[ROLE.BUILDER]   = 3;
             requestedCreeps[ROLE.REPAIRER]  = 1;
@@ -30,7 +30,7 @@ Room.prototype.updateRequestedCreeps = function() {
 
         case 4:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
-            requestedCreeps[ROLE.HAULER]    = 3;
+            requestedCreeps[ROLE.HAULER]    = 2 + (calculateDistanceFactor(this) * 0.33);
             requestedCreeps[ROLE.UPGRADER]  = 2;
             requestedCreeps[ROLE.BUILDER]   = 3;
             requestedCreeps[ROLE.REPAIRER]  = 1;
@@ -58,12 +58,19 @@ Room.prototype.updateRequestedCreeps = function() {
 
 const calculateAmountOfEarlyRCLHarvesters = function(room) {
     let freeSpaceAroundSources = 0;
+    for (let source of room.sources) {
+        freeSpaceAroundSources += source.freeTileCount;
+    }
+
+    return freeSpaceAroundSources + calculateDistanceFactor(room);
+};
+
+const calculateDistanceFactor = function(room) {
     let distanceFactor = 0;
 
     for (let source of room.sources) {
-        freeSpaceAroundSources += source.freeTileCount;
         distanceFactor += 1 + Math.floor(source.distanceToSpawn * 0.1);
     }
 
-    return freeSpaceAroundSources + distanceFactor;
+    return distanceFactor;
 };
