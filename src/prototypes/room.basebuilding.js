@@ -299,8 +299,8 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
 
     for (const arrayElement of stuffAtPos) {
         switch (arrayElement.type) {
-            case 'creep':
-                return ERR_BLOCKED_BY_CREEP;
+            //case 'creep':
+            //    return ERR_BLOCKED_BY_CREEP;
             case 'terrain':
                 if (arrayElement.terrain === 'wall') {
                     return ERR_BLOCKED_BY_TERRAIN_WALL;
