@@ -5,7 +5,7 @@ const upgrader = {
                 creep.collectEnergy(TASK.UPGRADE_CONTROLLER);
                 break;
             case TASK.UPGRADE_CONTROLLER:
-                creep.upgradeRoomController(TASK.SIGN_CONTROLLER);
+                creep.upgradeRoomController(TASK.COLLECT_ENERGY);
                 break;
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.HARVEST_ENERGY);
@@ -17,7 +17,7 @@ const upgrader = {
                 creep.moveToRoom(TASK.UPGRADE_CONTROLLER);
                 break;
             default:
-                creep.setTask(TASK.COLLECT_ENERGY);
+                creep.setTask(TASK.SIGN_CONTROLLER);
                 break;
         }
     },

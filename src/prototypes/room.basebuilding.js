@@ -29,6 +29,7 @@ const STRUCTURE_PRIORITY_ORDER = [
 // TODO: interrupt wait time on RCL Levelup
 let nextConstructionTimer = {};
 let allowConstructionSiteRequests = {};
+let phase = {};
 const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT = 25;
 const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        = 5000;
 const WAIT_TIME_WHEN_NO_LAYOUT_SETUP            = 50000;
@@ -78,7 +79,8 @@ Room.prototype.tryPlacingRemoteConstructionSites = function() {
 Room.prototype.requestNewConstructionSite = function() {
     if (allowConstructionSiteRequests[this.name]) {
         nextConstructionTimer[this.name] = 0;
-        return true;
+
+        return phase[this.name] !== STRUCTURE_RAMPART;
     }
 
     return false;
@@ -197,6 +199,7 @@ Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
         return SUCCESSFULLY_PLACED;
     }
 
+    phase[this.name] = "DONE";
     return ERR_EVERYTHING_BUILT;
 };
 
@@ -214,6 +217,7 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, lay
         }
     }
 
+    phase[this.name] = structureType;
     if (layout.buildings[structureType]) {
         return this._placeConstructionSitesBasedOnLayout(structureType, layout);
     } else {
@@ -513,7 +517,7 @@ Room.prototype._calculateRampartPositions = function(layout) {
 };
 
 Room.prototype._placeRampartArray = function(array) {
-    for (let pos in array) {
+    for (let pos of array) {
         const result = this._placeConstructionSiteAtPosition(pos.x, pos.y, STRUCTURE_RAMPART);
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
@@ -521,8 +525,6 @@ Room.prototype._placeRampartArray = function(array) {
     }
     return ERR_EVERYTHING_BUILT;
 };
-
-
 
 Room.prototype._placeExtractor = function() {
     if (!this.mineral) {

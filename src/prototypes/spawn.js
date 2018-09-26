@@ -190,6 +190,7 @@ Spawn.prototype.spawnUpgrader = function(energy) {
         memory: {
             role: ROLE.UPGRADER,
             spawnRoom: this.room.name,
+            task: TASK.SIGN_CONTROLLER,
         }
     };
 
