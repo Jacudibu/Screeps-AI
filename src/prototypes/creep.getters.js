@@ -453,7 +453,7 @@ Creep.prototype._getDismantleTarget = function() {
         }
     }
 
-    return undefined;
+    return ERR_NOT_FOUND;
 };
 
 Creep.prototype._getClosestHostileConstructionSite = function() {

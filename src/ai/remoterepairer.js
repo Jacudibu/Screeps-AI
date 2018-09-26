@@ -1,16 +1,23 @@
 const remoteRepairer = {
     run(creep) {
+        if (creep.memory.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
+            return;
+        }
+
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name !== creep.memory.targetRoomName) {
-                    if (_.sum(creep.carry) < creep.carryCapacity) {
-                        let spawns = creep.room.find(FIND_MY_SPAWNS);
-                        if (spawns.length > 0) {
-                            creep.setTask(TASK.COLLECT_ENERGY);
-                            return;
-                        }
-                    }
+                if (creep.room.name === creep.memory.spawnRoom) {
+                    creep.memory.targetRoomName = Memory.rooms[creep.memory.spawnRoom].repairRoute[creep.memory.repairRouteIndex];
 
+                    if (_.sum(creep.carry) < creep.carryCapacity) {
+                        creep.setTask(TASK.COLLECT_ENERGY);
+                    } else {
+                        creep.setTask(TASK.MOVE_TO_ROOM);
+                    }
+                    return;
+                }
+
+                if (creep.room.name !== creep.memory.targetRoomName) {
                     creep.setTask(TASK.MOVE_TO_ROOM);
                     return;
                 }
@@ -20,9 +27,20 @@ const remoteRepairer = {
                     if (damagedStructure === ERR_NOT_FOUND) {
                         let constructionSite = creep._getConstructionSite();
                         if (constructionSite === ERR_NOT_FOUND) {
-                            let nextRoom = creep.memory.route.shift();
-                            creep.memory.route.push(nextRoom);
-                            creep.memory.targetRoomName = nextRoom;
+                            if (creep.dismantleStructure() === OK) {
+                                creep.setTask(TASK.DISMANTLE);
+                                return;
+                            }
+
+                            const nextRoomIndex = ++creep.memory.repairRouteIndex;
+                            const repairRoute = Memory.rooms[creep.memory.spawnRoom].repairRoute;
+
+                            if (nextRoomIndex >= repairRoute.length) {
+                                creep.suicide();
+                                return;
+                            }
+
+                            creep.memory.targetRoomName = repairRoute[nextRoomIndex];
                             creep.setTask(TASK.MOVE_TO_ROOM);
                             return;
                         } else {
@@ -35,7 +53,11 @@ const remoteRepairer = {
                     }
                 }
 
-                creep.setTask(TASK.HAUL_ENERGY);
+                if (creep.dismantleStructure() === OK) {
+                    creep.setTask(TASK.DISMANTLE);
+                } else {
+                    creep.setTask(TASK.HAUL_ENERGY);
+                }
                 break;
 
             case TASK.MOVE_TO_ROOM:
@@ -43,7 +65,12 @@ const remoteRepairer = {
                 break;
 
             case TASK.HAUL_ENERGY:
-                creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
+                let result = creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
+                if (result === ERR_NOT_FOUND) {
+                    // Goto spawn room and collect energy there
+                    creep.memory.targetRoomName = creep.memory.spawnRoom;
+                    creep.setTask(TASK.MOVE_TO_ROOM);
+                }
                 break;
 
             case TASK.COLLECT_ENERGY:
@@ -56,6 +83,10 @@ const remoteRepairer = {
 
             case TASK.BUILD_STRUCTURE:
                 creep.buildStructures(TASK.DECIDE_WHAT_TO_DO, TASK.HAUL_ENERGY);
+                break;
+
+            case TASK.DISMANTLE:
+                creep.dismantleStructure(TASK.DECIDE_WHAT_TO_DO);
                 break;
 
             default:

@@ -557,23 +557,27 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
 Creep.prototype.dismantleStructure = function(taskWhenFinished) {
     const target = this._getDismantleTarget();
 
-    if (target) {
-        switch (this.dismantle(target)) {
-            case OK:
-                if (_.sum(this.carry) === this.carryCapacity) {
-                    this.drop(RESOURCE_ENERGY);
-                }
-                break;
-            case ERR_NOT_IN_RANGE:
-                this.travelTo(target);
-                break;
-            default:
-                this.logActionError("dismantling object", this.dismantle(target));
-                break;
+    if (target === ERR_NOT_FOUND) {
+        if (taskWhenFinished) {
+            this.setTask(taskWhenFinished);
         }
-    } else {
-        this.setTask(taskWhenFinished);
+        return ERR_NOT_FOUND;
     }
+
+    switch (this.dismantle(target)) {
+        case OK:
+            if (_.sum(this.carry) === this.carryCapacity) {
+                this.drop(RESOURCE_ENERGY);
+            }
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.travelTo(target);
+            break;
+        default:
+            this.logActionError("dismantling object", this.dismantle(target));
+            break;
+    }
+    return OK;
 };
 
 Creep.prototype.claimRoomController = function() {
