@@ -42,8 +42,8 @@ const sortPositionsBasedOnDistanceFromNullPoint = function(layout) {
 
 global.baseLayouts.diamond14x14 = offsetAndSortLayout(baseLayouts.diamond14x14, -7, -7);
 global.baseLayouts.diamond14x14.width = 14;
-global.baseLayouts.diamond14x14.heigth = 14;
+global.baseLayouts.diamond14x14.height = 14;
 
 global.baseLayouts.E55S47 = offsetAndSortLayout(baseLayouts.E55S47, -25, -8);
 global.baseLayouts.E55S47.width = 14;
-global.baseLayouts.E55S47.heigth = 14;
+global.baseLayouts.E55S47.height = 14;

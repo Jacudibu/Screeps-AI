@@ -91,6 +91,27 @@ Room.prototype._forceConstructionUpdate = function() {
 Room.prototype._automaticallyPlaceConstructionSites = function() {
     if (DEBUG) {
         this._debugExtraRoadPlacement();
+
+        let ramparts = this.memory.layout.ramparts;
+        if (!ramparts) {
+            ramparts = this._calculateRampartPositions(this.memory.layout);
+        }
+
+        for (let pos of ramparts.center) {
+            this.visual.circle(pos.x, pos.y, {fill: "#009900"});
+        }
+
+        for (let pos of ramparts.inner) {
+            this.visual.circle(pos.x, pos.y, {fill: "#00bb00"});
+        }
+
+        for (let pos of ramparts.outer) {
+            this.visual.circle(pos.x, pos.y, {fill: "#007700"});
+        }
+
+        for (let pos of ramparts.controller) {
+            this.visual.circle(pos.x, pos.y, {fill: "#009900"});
+        }
     }
 
     if (nextConstructionTimer[this.name] && nextConstructionTimer[this.name] > Game.time) {
@@ -108,7 +129,8 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
     if (this.memory.layout) {
         layout = this.memory.layout;
     } else {
-        layout = baseLayouts[this.memory.predefinedLayoutName]
+        layout = baseLayouts[this.memory.predefinedLayoutName];
+        this.memory.layout = layout;
     }
 
     if (this.controller.level === 1) {
@@ -327,45 +349,180 @@ Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, lay
 };
 
 Room.prototype._placeRamparts = function(layout) {
+    let ramparts = this.memory.layout.ramparts;
+    if (!ramparts) {
+        ramparts = this._calculateRampartPositions(layout);
+    }
+
     if (this.controller.level >= 2) {
-        const result = this._placeRampartsAroundController();
-        if (result === SUCCESSFULLY_PLACED) {
+        if (this._placeRampartArray(ramparts.center) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+
+        if (this._placeRampartArray(ramparts.controller) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
 
-    // TODO: RCL 2: Surround with 1 width rampart + controller
-    // TODO: RCL 5: Surround with 2 width rampart (outer)
-    // TODO: RCL 7: Surround with 3 width rampart (inner)
+    if (this.controller.level >= 7) {
+        if (this._placeRampartArray(ramparts.outer) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
 
-    // TODO: 1 Thickness Ramparts -> Flood fill -> remove unreached ramparts -> increase remaining rampart width to 3
+    if (this.controller.level >= 8) {
+        if (this._placeRampartArray(ramparts.inner) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
 
-    // TODO: Store all rampart positions in memory, so this only needs to be called once
-    // TODO:      ---> Memory layout: ramparts: {gcl2: [], gcl5: [], gcl7: []}
-    // TODO: Flood-Fill from exits in order to check if a rampart is needed for each rcl stage, remove if not reached
-
-    return ERR_NOT_YET_IMPLEMENTED;
+    return ERR_EVERYTHING_BUILT;
 };
 
-Room.prototype._placeRampartsAroundController = function() {
-    // TODO: Cache in layout
-    const controllerPos = this.controller.pos;
+Room.prototype._calculateRampartPositions = function(layout) {
+    const possibleBaseRampartPositions = [];
+    const possibleControllerRampartPositions = [];
+    const terrain = this.getTerrain();
+    const widthHalf = Math.floor(layout.width * 0.5);
+    const heightHalf = Math.floor(layout.height * 0.5);
+    const center = this.memory.baseCenterPosition;
 
+    for (let x = -widthHalf; x <= widthHalf; x++) {
+        for (let y = -heightHalf; y <= heightHalf; y++) {
+            const pos = {x: center.x + x, y: center.y + y};
+            if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
+                continue;
+            }
+
+            if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
+                continue;
+            }
+
+            possibleBaseRampartPositions.push(pos);
+        }
+    }
+
+    const controllerPos = this.controller.pos;
     const xArray = [controllerPos.x - 1, controllerPos.x, controllerPos.x + 1];
     const yArray = [controllerPos.y - 1, controllerPos.y, controllerPos.y + 1];
     for (let x of xArray) {
         for (let y of yArray) {
-            if (Game.map.getTerrainAt(x, y, this.name) === 'wall') {
+            if (x === y) {
                 continue;
             }
 
-            const result = this._placeConstructionSiteAtPosition(x, y, STRUCTURE_RAMPART);
-            if (result === SUCCESSFULLY_PLACED) {
-                return SUCCESSFULLY_PLACED;
+            if (terrain.get(x, y) === TERRAIN_MASK_WALL) {
+                continue;
             }
+
+            possibleControllerRampartPositions.push({x: x, y: y});
         }
     }
+
+    // FLOOD FILL!
+    let visitedPositions = [];
+    let todo = [];
+    todo.push(...this.find(FIND_EXIT));
+    let baseRampartLayer = [];
+    let controllerRamparts = [];
+    while (todo.length > 0) {
+        const current = todo.pop();
+
+        // check surroundings
+        for (let x = -1; x < 2; x++) {
+            for (let y = -1; y < 2; y++) {
+                if (x === y) {
+                    continue;
+                }
+
+                let pos = {x: current.x + x, y: current.y + y};
+                if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
+                    continue;
+                }
+
+                if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
+                    continue;
+                }
+
+                if (visitedPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
+                    continue;
+                }
+
+                if (todo.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
+                    continue;
+                }
+
+                if (possibleBaseRampartPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
+                    baseRampartLayer.push(pos);
+                    visitedPositions.push(pos);
+                    continue;
+                }
+
+                if (possibleControllerRampartPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
+                    controllerRamparts.push(pos);
+                    visitedPositions.push(pos);
+                    continue;
+                }
+
+                todo.push(pos);
+            }
+        }
+
+        visitedPositions.push(current);
+    }
+
+    // Expand base ramparts
+    const outerRampartLayer = [];
+    const innerRampartLayer = [];
+
+    for (let pos of baseRampartLayer) {
+        if (pos.x === -widthHalf + center.x) {
+            // LEFT
+            innerRampartLayer.push({x: pos.x + 1, y: pos.y});
+            outerRampartLayer.push({x: pos.x - 1, y: pos.y});
+        }
+
+        if (pos.x === widthHalf + center.x) {
+            // RIGHT
+            innerRampartLayer.push({x: pos.x - 1, y: pos.y});
+            outerRampartLayer.push({x: pos.x + 1, y: pos.y});
+        }
+
+        if (pos.y === -heightHalf + center.y) {
+            // TOP
+            innerRampartLayer.push({x: pos.x, y: pos.y + 1});
+            outerRampartLayer.push({x: pos.x, y: pos.y - 1});
+        }
+
+        if (pos.y === heightHalf + center.y) {
+            // BOTTOM
+            innerRampartLayer.push({x: pos.x, y: pos.y - 1});
+            outerRampartLayer.push({x: pos.x, y: pos.y + 1});
+        }
+    }
+
+    const ramparts = {};
+    ramparts.controller = controllerRamparts;
+    ramparts.inner = innerRampartLayer;
+    ramparts.center = baseRampartLayer;
+    ramparts.outer = outerRampartLayer;
+
+
+    this.memory.layout.ramparts = ramparts;
+    return ramparts;
 };
+
+Room.prototype._placeRampartArray = function(array) {
+    for (let pos in array) {
+        const result = this._placeConstructionSiteAtPosition(pos.x, pos.y, STRUCTURE_RAMPART);
+        if (result === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
+    return ERR_EVERYTHING_BUILT;
+};
+
+
 
 Room.prototype._placeExtractor = function() {
     if (!this.mineral) {
