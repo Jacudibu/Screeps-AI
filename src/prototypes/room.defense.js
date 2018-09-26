@@ -6,8 +6,6 @@ Room.prototype.attackHostiles = function() {
             if (this.towers.length > 0) {
                 this.towers[0].attack(allHostiles[0]);
             }
-
-            this.commandTowersToAttackTarget(this.find(FIND_HOSTILE_CREEPS)[0]);
         }
         return;
     }
