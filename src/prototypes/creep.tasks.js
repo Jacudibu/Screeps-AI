@@ -810,3 +810,13 @@ Creep.prototype.selectNextRoomToScout = function() {
     Memory.rooms[targetRoom].isAlreadyScouted = true;
     this.memory.targetRoomName = targetRoom;
 };
+
+Creep.prototype.stepOntoHostileConstructionSites = function() {
+    const target = this._getClosestHostileConstructionSite();
+    if (target === ERR_NOT_FOUND) {
+        return ERR_NOT_FOUND;
+    }
+
+    this.travelTo(target, {range: 0});
+    return OK;
+};

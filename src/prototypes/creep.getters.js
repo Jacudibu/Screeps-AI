@@ -455,3 +455,21 @@ Creep.prototype._getDismantleTarget = function() {
 
     return undefined;
 };
+
+Creep.prototype._getClosestHostileConstructionSite = function() {
+    let target;
+    if (this.memory.taskTargetId) {
+        target = Game.getObjectById(this.memory.taskTargetId);
+        if (target && target instanceof ConstructionSite && !target.my) {
+            return target;
+        }
+    }
+
+    const hostileConstructionSites = this.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
+
+    if (hostileConstructionSites.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return utility.getClosestObjectFromArray(this, hostileConstructionSites);
+};

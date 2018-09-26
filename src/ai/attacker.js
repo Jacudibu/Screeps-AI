@@ -39,7 +39,7 @@ const attacker = {
                             }
 
                             target = utility.getClosestObjectFromArray(this, possibleTargets);
-                            creep.travelTo(target);
+                            creep.travelTo(target, {range: 0});
                             return;
                         }
                     }

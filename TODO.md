@@ -1,8 +1,5 @@
  h  |   Task 
 :---:|  ----
- 1  |   Recovery Spawn if Creepcount is 0
- 1  |   Make creeps haul surplus minerals from storage to terminal
- 1  |   Make creeps haul missing minerals from terminal to storage
  1  |   Sort Remote Mining Rooms by relevance (distance, source count...)
  1  |   Ranged defenders
  1  |   LowRCL Workers (harvest/collect E -> upgrade [before downgrade] -> build -> repair -> upgrade, until 5 extensions are built)
