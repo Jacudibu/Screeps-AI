@@ -406,8 +406,8 @@ Room.prototype._calculateRampartPositions = function(layout) {
     const heightHalf = Math.floor(layout.height * 0.5);
     const center = this.memory.baseCenterPosition;
 
-    for (let x = -widthHalf; x <= widthHalf; x++) {
-        for (let y = -heightHalf; y <= heightHalf; y++) {
+    for (let x = -widthHalf; x < widthHalf; x++) {
+        for (let y = -heightHalf; y < heightHalf; y++) {
             const pos = {x: center.x + x, y: center.y + y};
             if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
                 continue;
@@ -575,10 +575,12 @@ Room.prototype._placeExtraRoads = function(layout) {
         }
     }
 
-    for (const remoteName of this.memory.remoteMiningRooms) {
-        if (extraRoadPositions[remoteName]) {
-            if (this._placeExtraRoadsArray(extraRoadPositions[remoteName]) === SUCCESSFULLY_PLACED) {
-                return SUCCESSFULLY_PLACED;
+    if (this.memory.remoteMiningRooms) {
+        for (const remoteName of this.memory.remoteMiningRooms) {
+            if (extraRoadPositions[remoteName]) {
+                if (this._placeExtraRoadsArray(extraRoadPositions[remoteName]) === SUCCESSFULLY_PLACED) {
+                    return SUCCESSFULLY_PLACED;
+                }
             }
         }
     }
