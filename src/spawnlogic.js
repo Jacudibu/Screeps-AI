@@ -86,9 +86,6 @@ const spawnlogic = {
             }
         }
 
-        if (ticksAtMaxEnergyWithoutSpawningSomething[room.name] > 0) {
-            console.log(ticksAtMaxEnergyWithoutSpawningSomething[room.name]);
-        }
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
     },
 

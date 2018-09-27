@@ -19,14 +19,18 @@ Room.prototype.updateScoutData = function() {
         if (this.controller.owner) {
             scoutData.owner = this.controller.owner.username;
             scoutData.rcl = this.controller.level;
+
             if (this.controller.safeMode) {
                 scoutData.safeMode = this.controller.safeMode;
             }
+
             if (this.controller.safeModeCooldown) {
                 scoutData.safeModeCooldown = this.controller.safeModeCooldown;
             }
+
         } else if (this.controller.reservation) {
             scoutData.reserver = this.controller.reservation.username;
+
         } else {
             if (this.find(FIND_STRUCTURES).filter(structure =>
                 structure.structureType === STRUCTURE_ROAD || structure.structureType === STRUCTURE_CONTAINER)) {
