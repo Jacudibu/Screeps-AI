@@ -27,9 +27,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
     switch (args.role) {
         case ROLE.HAULER:
             let spawnQueueCount = Memory.rooms[this.room.name].spawnQueue.filter(entry => entry.role === ROLE.HAULER).length;
-            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.role === ROLE.HAULER && creep.memory.respawnTTL).length;
-
-            console.log("HARVESTER Respawn! aliveCount: " + aliveCount + " | spawnQueue Count: " + spawnQueueCount + " | requested: " + Memory.rooms[this.room.name].requestedCreeps[ROLE.HAULER]);
+            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.memory.respawnTTL).length;
 
             if ((aliveCount + spawnQueueCount) <= Memory.rooms[this.room.name].requestedCreeps[ROLE.HAULER]) {
                 Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
