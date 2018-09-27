@@ -1,3 +1,5 @@
+const RAMPART_TOWER_REPAIR_THRESHOLD = 7500;
+
 Room.prototype.attackHostiles = function() {
     if (!this.threat) {
         // Kill scouts and such things
@@ -34,11 +36,13 @@ Room.prototype.repairDamagedCreeps = function() {
 
 Room.prototype.repairAlmostBrokenRamparts = function() {
     for(let rampart of this.ramparts) {
-        if (rampart && rampart.hits < 1500) {
+        if (rampart && rampart.hits < RAMPART_TOWER_REPAIR_THRESHOLD) {
             this.commandTowersToRepairStructure(rampart);
-            return;
+            return OK;
         }
     }
+
+    return ERR_NOT_FOUND;
 };
 
 Room.prototype.sortHostilesByPriority = function() {

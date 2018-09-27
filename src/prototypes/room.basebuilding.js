@@ -412,11 +412,11 @@ Room.prototype._calculateRampartPositions = function(layout) {
             if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
                 continue;
             }
-
+/*
             if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
                 continue;
             }
-
+*/
             possibleBaseRampartPositions.push(pos);
         }
     }

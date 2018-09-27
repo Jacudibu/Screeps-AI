@@ -9,9 +9,11 @@ Room.prototype.updateAfterCreeps = function() {
     if (this.controller) {
         if (this.controller.my) {
             this.askForHelpIfThreatDetected();
-            this.attackHostiles();
-            this.repairDamagedCreeps();
-            this.repairAlmostBrokenRamparts();
+
+            if (this.repairAlmostBrokenRamparts() === ERR_NOT_FOUND) {
+                this.attackHostiles();
+                this.repairDamagedCreeps();
+            }
             this.checkForRCLUpdate();
 
             if (Game.shard.name === "screepsplus1") {
