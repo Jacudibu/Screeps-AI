@@ -38,13 +38,13 @@ const attacker = {
                                 return;
                             }
 
-                            target = utility.getClosestObjectFromArray(this, possibleTargets);
+                            target = utility.getClosestObjectFromArray(creep, possibleTargets);
                             creep.travelTo(target, {range: 0});
                             return;
                         }
                     }
 
-                    target = utility.getClosestObjectFromArray(this, possibleTargets);
+                    target = utility.getClosestObjectFromArray(creep, possibleTargets);
                 }
 
                 creep.say(creepTalk.attack, true);

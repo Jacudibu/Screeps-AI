@@ -69,7 +69,7 @@ const guidedRangedAttacker = {
                     return;
                 }
 
-                target = utility.getClosestObjectFromArray(this, possibleTargets);
+                target = utility.getClosestObjectFromArray(creep, possibleTargets);
 
                 if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
                     creep.rangedMassAttack();
