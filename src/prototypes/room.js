@@ -30,6 +30,7 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
     }
 
     delete this.memory;
+
 };
 
 Room.prototype.addRemoteMiningRoom = function (roomName) {

@@ -455,7 +455,7 @@ Creep.prototype.signRoomController = function(nextTask) {
                                               : signs.reserved;
 
     if (this.room.controller.level > 1 && Game.shard.name === "screepsplus1") {
-        text = "Testing full automation - survived " + (Game.time - 2287580) + " ticks! x)";
+        text = "Testing full automation - survived " + (Game.time - 2328276) + " ticks! x)";
     }
 
     if (this.room.controller.sign !== undefined) {

@@ -501,7 +501,7 @@ Room.prototype._calculateRampartPositions = function(layout) {
             outerRampartLayer.push({x: pos.x - 1, y: pos.y});
         }
 
-        if (pos.x === widthHalf + center.x) {
+        if (pos.x === widthHalf + center.x - 1) {
             // RIGHT
             innerRampartLayer.push({x: pos.x - 1, y: pos.y});
             outerRampartLayer.push({x: pos.x + 1, y: pos.y});
@@ -513,7 +513,7 @@ Room.prototype._calculateRampartPositions = function(layout) {
             outerRampartLayer.push({x: pos.x, y: pos.y - 1});
         }
 
-        if (pos.y === heightHalf + center.y) {
+        if (pos.y === heightHalf + center.y - 1) {
             // BOTTOM
             innerRampartLayer.push({x: pos.x, y: pos.y - 1});
             outerRampartLayer.push({x: pos.x, y: pos.y + 1});

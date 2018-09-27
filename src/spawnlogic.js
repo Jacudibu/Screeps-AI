@@ -1,5 +1,8 @@
 const SCOUT_SPAWN_INTERVAL = 200;
 const nextScoutSpawns = {};
+const ticksAtMaxEnergyWithoutSpawningSomething = {};
+
+const AUTO_UPGRADER_SPAWN_INTERVAL = 30;
 
 const spawnlogic = {
     run() {
@@ -57,6 +60,7 @@ const spawnlogic = {
             if (this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, this.peekFirstElementFromSpawnQueue(room)) === OK) {
                 this.shiftElementFromSpawnQueue(room);
             }
+            ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
         } else {
             // TODO: Remove this if. Just a safety net so we don't start spawning faulty scouts on the main server.
             if (Game.shard.name === 'screepsplus1') {
@@ -66,8 +70,25 @@ const spawnlogic = {
                 }
             }
 
+            if (room.energyCapacityAvailable === room.energyAvailable) {
+                if (!ticksAtMaxEnergyWithoutSpawningSomething[room.name]) {
+                    ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
+                }
+
+                ticksAtMaxEnergyWithoutSpawningSomething[room.name]++;
+                if (ticksAtMaxEnergyWithoutSpawningSomething[room.name] > AUTO_UPGRADER_SPAWN_INTERVAL) {
+                    if (room.energyCapacityAvailable >= 550 && room.controller.level < 8) {
+                        ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
+                        this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.UPGRADER});
+                    }
+
+                }
+            }
         }
 
+        if (ticksAtMaxEnergyWithoutSpawningSomething[room.name] > 0) {
+            console.log(ticksAtMaxEnergyWithoutSpawningSomething[room.name]);
+        }
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
     },
 
