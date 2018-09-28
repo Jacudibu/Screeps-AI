@@ -358,7 +358,7 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
 Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, layout) {
     switch (structureType) {
         case STRUCTURE_RAMPART:
-            return this._placeRamparts(layout);
+            return ERR_EVERYTHING_BUILT; //this._placeRamparts(layout);
 
         case STRUCTURE_WALL:
             // *shrugs* Who needs walls anyways?
