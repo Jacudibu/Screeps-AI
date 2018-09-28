@@ -1,8 +1,8 @@
 const ERR_NO_VISION = -100;
 
 const RoadGenerator = {
-    generateAndGetRoads(room, layout) {
-        if (room.memory.layout.roads) {
+    generateAndGetRoads(room, layout, forceRegeneration = false) {
+        if (room.memory.layout.roads && !forceRegeneration) {
             return room.memory.layout.roads;
         }
 
@@ -118,7 +118,6 @@ const RoadGenerator = {
                 }
             }
         }
-        console.log("allowed rooms: " + JSON.stringify(allowedRooms));
 
         for (let roomName in allowedRooms) {
             if (!Game.rooms[roomName]) {
@@ -177,6 +176,20 @@ const RoadGenerator = {
                 room.find(FIND_STRUCTURES).forEach(function(structure) {
                     if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                         costs.set(structure.pos.x, structure.pos.y, 255);
+                    }
+                });
+
+                const terrain = room.getTerrain();
+                const mineralsAndSources = [];
+                mineralsAndSources.push(...room.find(FIND_MINERALS));
+                mineralsAndSources.push(...room.find(FIND_SOURCES));
+                mineralsAndSources.forEach(function(mineral) {
+                    for (let x = -1; x < 2; x++) {
+                        for (let y = -1; y < 2; y++) {
+                            if (terrain.get(mineral.pos.x + x, mineral.pos.y + y) !== TERRAIN_MASK_WALL) {
+                                costs.set(mineral.pos.x + x, mineral.pos.y + y , 20);
+                            }
+                        }
                     }
                 });
 
