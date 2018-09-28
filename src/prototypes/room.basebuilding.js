@@ -405,7 +405,6 @@ Room.prototype._placeRamparts = function(layout) {
 };
 
 Room.prototype._calculateRampartPositions = function(layout) {
-    const terrain = this.getTerrain();
     const widthHalf = Math.floor(layout.width * 0.5);
     const heightHalf = Math.floor(layout.height * 0.5);
     const center = this._getCenterPosition();
@@ -414,62 +413,14 @@ Room.prototype._calculateRampartPositions = function(layout) {
     const possibleControllerRampartPositions = this._generateBox(this.controller.pos, 1, 1);
 
     // FLOOD FILL!
-    let visitedPositions = [];
-    let todo = [];
-    todo.push(...this.find(FIND_EXIT));
-    let baseRampartLayer = [];
-    let controllerRamparts = [];
-    while (todo.length > 0) {
-        const current = todo.pop();
-
-        // check surroundings
-        for (let x = -1; x < 2; x++) {
-            for (let y = -1; y < 2; y++) {
-                if (x === y) {
-                    continue;
-                }
-
-                let pos = {x: current.x + x, y: current.y + y};
-                if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
-                    continue;
-                }
-
-                if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
-                    continue;
-                }
-
-                if (visitedPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
-                    continue;
-                }
-
-                if (todo.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
-                    continue;
-                }
-
-                if (possibleBaseRampartPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
-                    baseRampartLayer.push(pos);
-                    visitedPositions.push(pos);
-                    continue;
-                }
-
-                if (possibleControllerRampartPositions.find(rampartPos => rampartPos.x === pos.x && rampartPos.y === pos.y)) {
-                    controllerRamparts.push(pos);
-                    visitedPositions.push(pos);
-                    continue;
-                }
-
-                todo.push(pos);
-            }
-        }
-
-        visitedPositions.push(current);
-    }
+    const centerRampartLayer = this._filterReachablePositionsViaFloodfill(possibleBaseRampartPositions);
+    const controllerRamparts = this._filterReachablePositionsViaFloodfill(possibleControllerRampartPositions, centerRampartLayer);
 
     // Expand base ramparts
     const outerRampartLayer = [];
     const innerRampartLayer = [];
 
-    for (let pos of baseRampartLayer) {
+    for (let pos of centerRampartLayer) {
         if (pos.x === -widthHalf + center.x) {
             // LEFT
             innerRampartLayer.push({x: pos.x + 1, y: pos.y});
@@ -497,15 +448,14 @@ Room.prototype._calculateRampartPositions = function(layout) {
 
     const ramparts = {};
     ramparts.controller = controllerRamparts;
-    ramparts.inner = innerRampartLayer;
-    ramparts.center = baseRampartLayer;
-    ramparts.outer = outerRampartLayer;
+    ramparts.inner  = innerRampartLayer;
+    ramparts.center = centerRampartLayer;
+    ramparts.outer  = outerRampartLayer;
 
 
     this.memory.layout.ramparts = ramparts;
     return ramparts;
 };
-
 
 Room.prototype._generateBox = function(centerPosition, widthHalf, heightHalf) {
     let terrain = this.getTerrain();
@@ -529,6 +479,62 @@ Room.prototype._generateBox = function(centerPosition, widthHalf, heightHalf) {
     return result;
 };
 
+Room.prototype._filterReachablePositionsViaFloodfill = function(positionsToBeFiltered, additionalBlockers = []) {
+    const terrain = this.getTerrain();
+
+    let visitedPositions = [];
+    let todo = [];
+    todo.push(...this.find(FIND_EXIT));
+
+    let result = [];
+
+    while (todo.length > 0) {
+        const current = todo.pop();
+
+        // check surroundings
+        for (let x = -1; x < 2; x++) {
+            for (let y = -1; y < 2; y++) {
+                if (x === y) {
+                    continue;
+                }
+
+                let pos = {x: current.x + x, y: current.y + y};
+                if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
+                    continue;
+                }
+
+                if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
+                    continue;
+                }
+
+                if (visitedPositions.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
+                    continue;
+                }
+
+                if (todo.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
+                    continue;
+                }
+
+                if (positionsToBeFiltered.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
+                    result.push(pos);
+                    visitedPositions.push(pos);
+                    continue;
+                }
+
+                if (additionalBlockers.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
+                    visitedPositions.push(pos);
+                    continue;
+                }
+
+                todo.push(pos);
+            }
+        }
+
+        visitedPositions.push(current);
+    }
+
+    return result;
+};
 
 Room.prototype._placeRampartArray = function(array) {
     for (let pos of array) {
