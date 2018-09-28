@@ -6,7 +6,7 @@ const RoadGenerator = {
             return room.memory.layout.roads;
         }
 
-        const layoutCenterPosition = new RoomPosition(room.memory.baseCenterPosition.x, room.memory.baseCenterPosition.y, room.name);
+        const layoutCenterPosition = room._getCenterPosition();
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
 

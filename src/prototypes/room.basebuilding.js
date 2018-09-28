@@ -162,7 +162,7 @@ Room.prototype._debugRoadPlacement = function(layout) {
         RoadGenerator.generateAndGetRoads(this, layout);
 
         if (layout) {
-            const center = this.memory.baseCenterPosition;
+            const center = this._getCenterPosition();
             for (let pos of layout.buildings.road.pos) {
                 this.visual.circle(new RoomPosition(pos.x + center.x, pos.y + center.y, this.name), {fill: "#00a0ff"});
             }
@@ -199,10 +199,32 @@ Room.prototype._debugRampartPlacement = function() {
     }
 };
 
+
+Room.prototype._getCenterPosition = function() {
+    let center = this.memory.baseCenterPosition;
+    if (!center) {
+        const flags = this.find(FIND_FLAGS);
+        for (const flag of flags) {
+            if (flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_YELLOW) {
+                center = { x: flag.pos.x, y: flag.pos.y };
+                flag.remove();
+            }
+        }
+
+        if (!center) {
+            throw new Error("No center position set up for automated base building. You can place a Yellow/Yellow flag to set it up.");
+        }
+        this.memory.baseCenterPosition = center;
+    }
+
+    return new RoomPosition(center.x, center.y, this.name);
+};
+
 Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
+    const center = this._getCenterPosition();
     let result = ERR_UNDEFINED;
     for (let i = 0; i < STRUCTURE_PRIORITY_ORDER.length; i++) {
-        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], layout);
+        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], center, layout);
 
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
@@ -218,7 +240,7 @@ Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
     return ERR_EVERYTHING_BUILT;
 };
 
-Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, layout) {
+Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, center, layout) {
     const rcl = this.controller.level;
     const allowsMultipleStructures = CONTROLLER_STRUCTURES[structureType][8] > 1;
 
@@ -234,13 +256,13 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, lay
 
     phase[this.name] = structureType;
     if (layout.buildings[structureType]) {
-        return this._placeConstructionSitesBasedOnLayout(structureType, layout);
+        return this._placeConstructionSitesBasedOnLayout(structureType, center, layout);
     } else {
         return this._placeConstructionSitesBasedOnMagic(structureType, layout);
     }
 };
 
-Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, layout) {
+Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, center, layout) {
     if (layout.buildings[structureType].pos.length > 1) {
         if (this[structureType].length >= layout.buildings[structureType].pos.length) {
             return ERR_ALREADY_AT_LAYOUT_LIMIT;
@@ -249,22 +271,6 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, la
         if (this[structureType]) {
             return ERR_ALREADY_AT_LAYOUT_LIMIT;
         }
-    }
-
-    let center = this.memory.baseCenterPosition;
-    if (!center) {
-        const flags = this.find(FIND_FLAGS);
-        for (const flag of flags) {
-            if (flag.color === COLOR_YELLOW && flag.secondaryColor === COLOR_YELLOW) {
-                this.memory.baseCenterPosition = { x: flag.pos.x, y: flag.pos.y };
-                flag.remove();
-            }
-        }
-
-        if (!this.memory.baseCenterPosition) {
-            throw new Error("No center position set up for automated base building. You can place a Yellow/Yellow flag to set it up.");
-        }
-        center = this.memory.baseCenterPosition;
     }
 
     for (const position of layout.buildings[structureType].pos) {
@@ -399,44 +405,13 @@ Room.prototype._placeRamparts = function(layout) {
 };
 
 Room.prototype._calculateRampartPositions = function(layout) {
-    const possibleBaseRampartPositions = [];
-    const possibleControllerRampartPositions = [];
     const terrain = this.getTerrain();
     const widthHalf = Math.floor(layout.width * 0.5);
     const heightHalf = Math.floor(layout.height * 0.5);
-    const center = this.memory.baseCenterPosition;
+    const center = this._getCenterPosition();
 
-    for (let x = -widthHalf; x < widthHalf; x++) {
-        for (let y = -heightHalf; y < heightHalf; y++) {
-            const pos = {x: center.x + x, y: center.y + y};
-            if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
-                continue;
-            }
-/*
-            if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
-                continue;
-            }
-*/
-            possibleBaseRampartPositions.push(pos);
-        }
-    }
-
-    const controllerPos = this.controller.pos;
-    const xArray = [controllerPos.x - 1, controllerPos.x, controllerPos.x + 1];
-    const yArray = [controllerPos.y - 1, controllerPos.y, controllerPos.y + 1];
-    for (let x of xArray) {
-        for (let y of yArray) {
-            if (x === y) {
-                continue;
-            }
-
-            if (terrain.get(x, y) === TERRAIN_MASK_WALL) {
-                continue;
-            }
-
-            possibleControllerRampartPositions.push({x: x, y: y});
-        }
-    }
+    const possibleBaseRampartPositions = this._generateBox(center, widthHalf, heightHalf);
+    const possibleControllerRampartPositions = this._generateBox(this.controller.pos, 1, 1);
 
     // FLOOD FILL!
     let visitedPositions = [];
@@ -530,6 +505,30 @@ Room.prototype._calculateRampartPositions = function(layout) {
     this.memory.layout.ramparts = ramparts;
     return ramparts;
 };
+
+
+Room.prototype._generateBox = function(centerPosition, widthHalf, heightHalf) {
+    let terrain = this.getTerrain();
+    let result = [];
+
+    for (let x = -widthHalf; x < widthHalf; x++) {
+        for (let y = -heightHalf; y < heightHalf; y++) {
+            const pos = {x: centerPosition.x + x, y: centerPosition.y + y};
+            if (pos.x <= 1 || pos.x >= 48 || pos.y <= 1 || pos.y >= 48) {
+                continue;
+            }
+
+            if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
+                continue;
+            }
+
+            result.push(pos);
+        }
+    }
+
+    return result;
+};
+
 
 Room.prototype._placeRampartArray = function(array) {
     for (let pos of array) {
