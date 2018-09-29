@@ -63,6 +63,11 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             break;
         case ROLE.CARRIER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
+
+            if (Game.rooms[args.targetRoomName] && Game.rooms[args.targetRoomName].terminal) {
+                break;
+            }
+
             args.storageRoomName = this.memory.remoteHaulStorageRoom;
             args.respawnTTL = this.memory.respawnTTL;
             Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
