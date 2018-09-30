@@ -29,9 +29,14 @@ const STRUCTURE_PRIORITY_ORDER = [
 // TODO: interrupt wait time on RCL Levelup
 let nextConstructionTimer = {};
 let allowConstructionSiteRequests = {};
+
+let nextRemoteConstructionTimer = {};
+let allowRemoteConstructionSiteRequests = {};
+
 let phase = {};
-const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT = 25;
-const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        = 5000;
+const WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT =    25;
+const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT        =  5000;
+const WAIT_TIME_WHEN_EVERYTHING_IS_BUILT_REMOTE = 10000;
 const WAIT_TIME_WHEN_NO_LAYOUT_SETUP            = 50000;
 
 const SUCCESSFULLY_PLACED           = 1;
@@ -151,13 +156,38 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
 };
 
 Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
-    if (!this.memory.layout) {
+    if (DEBUG && this.memory.layout) {
+        this._debugRoadPlacement();
+    }
+
+    if (nextRemoteConstructionTimer[this.name] && nextRemoteConstructionTimer[this.name] > Game.time) {
         return;
     }
 
-    if (DEBUG) {
-        this._debugRoadPlacement();
+    if (!this.memory.layout) {
+        // Those rooms are manually built right now
+        allowRemoteConstructionSiteRequests[this.name] = false;
+        nextRemoteConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
+        return;
     }
+
+    if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
+        allowRemoteConstructionSiteRequests[this.name] = true;
+        nextRemoteConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_CONSTRUCTION_SITES_PRESENT);
+        return;
+    }
+
+    this._forceStructureUpdate();
+
+    const remoteRoads = this.memory.layout.roads;
+    for (const remoteName in remoteRoads) {
+        if (this._placeExtraRoadsArray(remoteRoads[remoteName]) === SUCCESSFULLY_PLACED) {
+            return SUCCESSFULLY_PLACED;
+        }
+    }
+
+    nextRemoteConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_EVERYTHING_IS_BUILT_REMOTE);
+    return ERR_EVERYTHING_BUILT;
 };
 
 Room.prototype._replaceRoads = function() {
