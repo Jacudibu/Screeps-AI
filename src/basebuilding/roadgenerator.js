@@ -23,8 +23,6 @@ const RoadGenerator = {
     },
 
     generateRoadsForRemoteRoom(baseRoom, layout, remoteRoom) {
-        // TODO: Store layouting result in memorieeeh and that instead of recalculating literally everything every tick
-
         const layoutCenterPosition = new RoomPosition(baseRoom.memory.baseCenterPosition.x, baseRoom.memory.baseCenterPosition.y, baseRoom.name);
 
         const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
@@ -71,8 +69,12 @@ const RoadGenerator = {
                 continue;
             }
 
+            if (!Memory.rooms[roomName].layout) {
+                Memory.rooms[roomName].layout = {};
+            }
+
             if (!Memory.rooms[roomName].layout.roads) {
-                Memory.rooms[roomName].layout.roads = {}
+                Memory.rooms[roomName].layout.roads = {};
             }
 
             if (roomName === remoteRoom.name) {
@@ -180,14 +182,17 @@ const RoadGenerator = {
                 });
 
                 const terrain = room.getTerrain();
-                const mineralsAndSources = [];
-                mineralsAndSources.push(...room.find(FIND_MINERALS));
-                mineralsAndSources.push(...room.find(FIND_SOURCES));
-                mineralsAndSources.forEach(function(mineral) {
+                const thingsToKeepDistanceFrom = [];
+                thingsToKeepDistanceFrom.push(...room.find(FIND_MINERALS));
+                thingsToKeepDistanceFrom.push(...room.find(FIND_SOURCES));
+                if (room.controller) {
+                    thingsToKeepDistanceFrom.push(room.controller);
+                }
+                thingsToKeepDistanceFrom.forEach(function(thing) {
                     for (let x = -1; x < 2; x++) {
                         for (let y = -1; y < 2; y++) {
-                            if (terrain.get(mineral.pos.x + x, mineral.pos.y + y) !== TERRAIN_MASK_WALL) {
-                                costs.set(mineral.pos.x + x, mineral.pos.y + y , 20);
+                            if (terrain.get(thing.pos.x + x, thing.pos.y + y) !== TERRAIN_MASK_WALL) {
+                                costs.set(thing.pos.x + x, thing.pos.y + y , 20);
                             }
                         }
                     }

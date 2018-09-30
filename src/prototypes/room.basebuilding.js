@@ -151,9 +151,17 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
 };
 
 Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
+    if (!this.memory.layout) {
+        return;
+    }
+
     if (DEBUG) {
         this._debugRoadPlacement();
     }
+};
+
+Room.prototype._replaceRoads = function() {
+    RoadGenerator.generateRoadsForRemoteRoom(Game.rooms['E55S47'], baseLayouts.E55S47, this);
 };
 
 Room.prototype._debugRoadPlacement = function(layout) {
