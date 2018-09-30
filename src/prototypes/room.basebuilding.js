@@ -82,10 +82,18 @@ Room.prototype.tryPlacingRemoteConstructionSites = function() {
 };
 
 Room.prototype.requestNewConstructionSite = function() {
-    if (allowConstructionSiteRequests[this.name]) {
-        nextConstructionTimer[this.name] = 0;
+    if (this.controller && this.controller.my) {
+        if (allowConstructionSiteRequests[this.name]) {
+            nextConstructionTimer[this.name] = 0;
 
-        return phase[this.name] !== STRUCTURE_RAMPART;
+            return phase[this.name] !== STRUCTURE_RAMPART;
+        }
+    } else {
+        if (allowRemoteConstructionSiteRequests[this.name]) {
+            nextRemoteConstructionTimer[this.name] = 0;
+
+            return true;
+        }
     }
 
     return false;
