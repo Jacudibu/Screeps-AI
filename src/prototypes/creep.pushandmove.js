@@ -112,17 +112,49 @@ moveCache = {
                     continue;
                 }
 
-                if (terrain.get(x + otherCreep.pos.x, y + otherCreep.pos.y) === TERRAIN_MASK_WALL) {
+                const realPosX = x + otherCreep.pos.x;
+                const realPosY = y + otherCreep.pos.y;
+
+                if (terrain.get(realPosX, realPosY) === TERRAIN_MASK_WALL) {
                     continue;
                 }
 
-                possibleDirections.push(this.convertRelativePositionToDirection(x, y));
+                if (realPosX === creep.pos.x && realPosY === creep.pos.y) {
+                    // swapping should always be possible
+                    possibleDirections.push(this.convertRelativePositionToDirection(x, y));
+                    continue;
+                }
+
+                if (creep.room.lookForAt(LOOK_CREEPS, realPosX, realPosY).length !== 0) {
+                    continue; // Creep blocking that position
+                }
+
+                const structures = creep.room.lookForAt(LOOK_CREEPS, realPosX, realPosY);
+                let blocked = false;
+                if (structures.length > 0) {
+                    for (const structure of structures) {
+                        if (   structure.structureType === STRUCTURE_ROAD
+                            || structure.structureType === STRUCTURE_RAMPART
+                            || structure.structureType === STRUCTURE_CONTAINER) {
+                            continue;
+                        }
+
+                        blocked = true;
+                        break;
+                    }
+                }
+
+                if (!blocked) {
+                    possibleDirections.push(this.convertRelativePositionToDirection(x, y));
+                }
             }
         }
 
         otherCreep.move(_.random(0, possibleDirections.length - 1));
         return true;
     },
+
+
 
     convertRelativePositionToDirection(x, y) {
         // 10 * x + y     x
