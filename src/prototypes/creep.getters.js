@@ -50,7 +50,8 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                 case STRUCTURE_TERMINAL:
                     return mineralStorage;
                 case STRUCTURE_LAB:
-                    if (mineralStorage.requestedMineral === resourceType) {
+                    if (   mineralStorage.requestedMineral === resourceType
+                        && mineralStorage.mineralAmount < mineralStorage.mineralCapacity) {
                         return mineralStorage;
                     }
                     break;
