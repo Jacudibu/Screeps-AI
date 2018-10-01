@@ -481,7 +481,7 @@ Creep.prototype.signRoomController = function(nextTask) {
 
 Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
     let source = this._getSource();
-    if (!source) {
+    if (source === ERR_NOT_FOUND) {
         this.say(creepTalk.noSourceAvailable);
         return;
     }
