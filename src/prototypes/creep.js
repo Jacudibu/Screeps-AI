@@ -26,6 +26,12 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
     // Handle special cases with counts in memory
     switch (args.role) {
         case ROLE.HAULER:
+            if (this.room.name !== this.memory.spawnRoom) {
+                // Happens when haulers decide to travel into distant lands and never turn back
+                log.warning(this + " is in the wrong room and asks for a respawn. Does this happen more often? If so, try to find out why");
+                break;
+            }
+
             let spawnQueueCount = Memory.rooms[this.room.name].spawnQueue.filter(entry => entry.role === ROLE.HAULER).length;
             let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.memory.respawnTTL).length;
 
