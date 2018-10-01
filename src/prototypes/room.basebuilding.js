@@ -91,8 +91,7 @@ Room.prototype.requestNewConstructionSite = function() {
     } else {
         if (allowRemoteConstructionSiteRequests[this.name]) {
             nextRemoteConstructionTimer[this.name] = 0;
-
-            return true;
+            return this._automaticallyPlaceRemoteConstructionSites() === SUCCESSFULLY_PLACED;
         }
     }
 
