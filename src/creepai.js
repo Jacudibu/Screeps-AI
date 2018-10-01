@@ -33,7 +33,19 @@ const creepAi = {
             this._tryRunCreepLogic(creep);
         }
 
-        moveCache.moveAllCreeps();
+        this._tryMoveAllCreeps();
+    },
+
+    _tryMoveAllCreeps() {
+        try {
+            moveCache.moveAllCreeps();
+        } catch (e) {
+            let message = " moveCache.moveAllCreeps -> caught error: " + e;
+            if (e.stack) {
+                message += "\nTrace:\n" + e.stack;
+            }
+            log.error(message);
+        }
     },
 
     _tryRunCreepLogic(creep) {

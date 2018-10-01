@@ -48,7 +48,10 @@ moveCache = {
         for (let roomName in this.creepMoves) {
             for (let creepName in this.creepMoves[roomName]) {
                 //moves++;
-                Game.creeps[creepName].move(this.creepMoves[roomName][creepName]);
+                const moveCreep = Game.creeps[creepName];
+                if (moveCreep) {
+                    moveCreep.move(this.creepMoves[roomName][creepName]);
+                }
             }
         }
 
