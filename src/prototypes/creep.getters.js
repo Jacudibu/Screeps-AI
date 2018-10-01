@@ -416,6 +416,15 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
+    // If storage is empty and terminal has energy, something has gone wrong - so let our haulers fix that.
+    if (this.room.terminal) {
+        if (this.room.terminal.store[RESOURCE_ENERGY] > 0) {
+            this.memory.taskTargetId = this.room.terminal.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.terminal;
+        }
+    }
+
     return ERR_NOT_FOUND;
 };
 

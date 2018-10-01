@@ -373,6 +373,16 @@ const spawnlogic = {
         }
 
         log.warning(room + "just died! Trying to revive it...");
+        if (room.storage && room.storage.store[RESOURCE_ENERGY] > 5000) {
+            room.mySpawns[0].spawnHauler(room.energyAvailable);
+            return true;
+        }
+
+        if (room.terminal && room.terminal.store[RESOURCE_ENERGY] > 5000) {
+            room.mySpawns[0].spawnHauler(room.energyAvailable);
+            return true;
+        }
+
         room.mySpawns[0].spawnEarlyRCLHarvester(room.energyAvailable);
         return true;
     }
