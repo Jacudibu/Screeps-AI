@@ -118,6 +118,11 @@ moveCache = {
                 const realPosX = x + otherCreep.pos.x;
                 const realPosY = y + otherCreep.pos.y;
 
+                // don't cross room borders
+                if (realPosX < 1 || realPosX > 48 || realPosY < 1 || realPosY > 48) {
+                    continue;
+                }
+
                 if (terrain.get(realPosX, realPosY) === TERRAIN_MASK_WALL) {
                     continue;
                 }
