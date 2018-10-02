@@ -118,41 +118,7 @@ moveCache = {
                 const realPosX = x + otherCreep.pos.x;
                 const realPosY = y + otherCreep.pos.y;
 
-                // don't cross room borders
-                if (realPosX < 1 || realPosX > 48 || realPosY < 1 || realPosY > 48) {
-                    continue;
-                }
-
-                if (terrain.get(realPosX, realPosY) === TERRAIN_MASK_WALL) {
-                    continue;
-                }
-
-                if (realPosX === creep.pos.x && realPosY === creep.pos.y) {
-                    // swapping should always be possible
-                    possibleDirections.push(this.convertRelativePositionToDirection(x, y));
-                    continue;
-                }
-
-                if (creep.room.lookForAt(LOOK_CREEPS, realPosX, realPosY).length !== 0) {
-                    continue; // Creep blocking that position
-                }
-
-                const structures = creep.room.lookForAt(LOOK_CREEPS, realPosX, realPosY);
-                let blocked = false;
-                if (structures.length > 0) {
-                    for (const structure of structures) {
-                        if (   structure.structureType === STRUCTURE_ROAD
-                            || structure.structureType === STRUCTURE_RAMPART
-                            || structure.structureType === STRUCTURE_CONTAINER) {
-                            continue;
-                        }
-
-                        blocked = true;
-                        break;
-                    }
-                }
-
-                if (!blocked) {
+                if (this.isValidPushPosition(creep, terrain, realPosX, realPosY)) {
                     possibleDirections.push(this.convertRelativePositionToDirection(x, y));
                 }
             }
@@ -162,7 +128,40 @@ moveCache = {
         return true;
     },
 
+    isValidPushPosition(creep, terrain, pushPosX, pushPosY) {
+        // don't cross room borders
+        if (pushPosX < 1 || pushPosX > 48 || pushPosY < 1 || pushPosY > 48) {
+            return false;
+        }
 
+        if (terrain.get(pushPosX, pushPosY) === TERRAIN_MASK_WALL) {
+            return false;
+        }
+
+        if (pushPosX === creep.pos.x && pushPosY === creep.pos.y) {
+            // swapping should always be possible
+            return true;
+        }
+
+        if (creep.room.lookForAt(LOOK_CREEPS, pushPosX, pushPosY).length !== 0) {
+            return false; // Creep blocking that position
+        }
+
+        const structures = creep.room.lookForAt(LOOK_STRUCTURES, pushPosX, pushPosY);
+        if (structures.length > 0) {
+            for (const structure of structures) {
+                if (   structure.structureType === STRUCTURE_ROAD
+                    || structure.structureType === STRUCTURE_RAMPART
+                    || structure.structureType === STRUCTURE_CONTAINER) {
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
+        return true;
+    },
 
     convertRelativePositionToDirection(x, y) {
         // 10 * x + y     x
