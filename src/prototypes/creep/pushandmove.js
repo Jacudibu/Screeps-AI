@@ -182,6 +182,7 @@ moveCache = {
                     case 1:
                         return BOTTOM_LEFT;
                 }
+                break;
 
             case 0:
                 switch(y) {
@@ -190,6 +191,7 @@ moveCache = {
                     case 1:
                         return BOTTOM;
                 }
+                break;
 
             case 1:
                 switch(y) {
@@ -200,6 +202,7 @@ moveCache = {
                     case 1:
                         return BOTTOM_RIGHT;
                 }
+                break;
         }
     }
 };

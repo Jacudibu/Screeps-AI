@@ -12,14 +12,18 @@ require('globals.tasks');
 require('globals.utility');
 require('globals.storagelimits');
 
-require('prototypes.creep');
+require('prototypes.creep._');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
 require('prototypes.creep.kite');
 require('prototypes.creep.pushandmove');
 require('prototypes.creep.tasks');
+
+require('prototypes.lab.requestedmineral');
+
 require('prototypes.mineral.container');
-require('prototypes.room');
+
+require('prototypes.room._');
 require('prototypes.room.basebuilding');
 require('prototypes.room.defense');
 require('prototypes.room.freeextensions');
@@ -32,14 +36,16 @@ require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.threat');
 require('prototypes.room.update');
+
 require('prototypes.source.distancetospawn');
 require('prototypes.source.freetilecount');
 require('prototypes.source.container');
 require('prototypes.source.link');
 require('prototypes.source.memory');
-require('prototypes.spawn');
-require('prototypes.structure');
-require('prototypes.structurelab.requestedmineral');
+
+require('prototypes.spawn.creepspawnmethods');
+
+require('prototypes.structure.energystorage');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
