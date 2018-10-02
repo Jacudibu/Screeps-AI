@@ -2,6 +2,7 @@ global.baseLayouts = {};
 require('layouts.layouts');
 
 const RoadGenerator = require('basebuilding.roadgenerator');
+const rampartGenerator = require('basebuilding.rampartgenerator');
 
 const STRUCTURE_PRIORITY_ORDER = [
     // Essentials
@@ -197,10 +198,6 @@ Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
     return ERR_EVERYTHING_BUILT;
 };
 
-Room.prototype._replaceRoads = function() {
-    RoadGenerator.generateRoadsForRemoteRoom(Game.rooms['E55S47'], baseLayouts.E55S47, this);
-};
-
 Room.prototype._debugRoadPlacement = function(layout) {
     if (this.controller && this.controller.my) {
         // Just making sure it exists...
@@ -224,7 +221,7 @@ Room.prototype._debugRoadPlacement = function(layout) {
 Room.prototype._debugRampartPlacement = function() {
     let ramparts = this.memory.layout.ramparts;
     if (!ramparts) {
-        ramparts = this._calculateRampartPositions(this.memory.layout);
+        ramparts = rampartGenerator.calculateRampartPositions(this.memory.layout);
     }
 
     for (let pos of ramparts.center) {
@@ -368,6 +365,7 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
             //case 'creep':
             //    return ERR_BLOCKED_BY_CREEP;
             case 'terrain':
+                // noinspection JSUnresolvedVariable
                 if (arrayElement.terrain === 'wall') {
                     return ERR_BLOCKED_BY_TERRAIN_WALL;
                 }
@@ -375,20 +373,24 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
             case 'structure':
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
+                        // noinspection JSUnresolvedVariable
                         if (arrayElement.structure.structureType === structureType) {
                             return ERR_ALREADY_BUILT;
                         }
                         break;
                     case STRUCTURE_ROAD:
+                        // noinspection JSUnresolvedVariable
                         if (arrayElement.structure.structureType === structureType) {
                             return ERR_ALREADY_BUILT;
                         }
                         break;
                     default:
+                        // noinspection JSUnresolvedVariable
                         if (arrayElement.structure.structureType === structureType) {
                             return ERR_ALREADY_BUILT;
                         }
 
+                        // noinspection JSUnresolvedVariable
                         if (arrayElement.structure.structureType !== STRUCTURE_RAMPART || arrayElement.structure.structureType !== STRUCTURE_ROAD) {
                             return ERR_BLOCKED_BY_STRUCTURE;
                         }
@@ -419,10 +421,7 @@ Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, lay
 };
 
 Room.prototype._placeRamparts = function(layout) {
-    let ramparts = this.memory.layout.ramparts;
-    if (!ramparts) {
-        ramparts = this._calculateRampartPositions(layout);
-    }
+    let ramparts = rampartGenerator.generateAndGetRamparts(this, layout);
 
     if (this.controller.level >= 2) {
         if (this._placeRampartArray(ramparts.center) === SUCCESSFULLY_PLACED) {
@@ -434,151 +433,19 @@ Room.prototype._placeRamparts = function(layout) {
         }
     }
 
-    if (this.controller.level >= 7) {
+    if (this.controller.level >= 5) {
         if (this._placeRampartArray(ramparts.outer) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
 
-    if (this.controller.level >= 8) {
+    if (this.controller.level >= 7) {
         if (this._placeRampartArray(ramparts.inner) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
 
     return ERR_EVERYTHING_BUILT;
-};
-
-Room.prototype._calculateRampartPositions = function(layout) {
-    const widthHalf = Math.floor(layout.width * 0.5);
-    const heightHalf = Math.floor(layout.height * 0.5);
-    const center = this._getCenterPosition();
-
-    const possibleBaseRampartPositions = this._generateBox(center, widthHalf, heightHalf);
-    const possibleControllerRampartPositions = this._generateBox(this.controller.pos, 1, 1);
-
-    // FLOOD FILL!
-    const centerRampartLayer = this._filterReachablePositionsViaFloodfill(possibleBaseRampartPositions);
-    const controllerRamparts = this._filterReachablePositionsViaFloodfill(possibleControllerRampartPositions, centerRampartLayer);
-
-    // Expand base ramparts
-    const outerRampartLayer = [];
-    const innerRampartLayer = [];
-
-    for (let pos of centerRampartLayer) {
-        if (pos.x === -widthHalf + center.x) {
-            // LEFT
-            innerRampartLayer.push({x: pos.x + 1, y: pos.y});
-            outerRampartLayer.push({x: pos.x - 1, y: pos.y});
-        }
-
-        if (pos.x === widthHalf + center.x - 1) {
-            // RIGHT
-            innerRampartLayer.push({x: pos.x - 1, y: pos.y});
-            outerRampartLayer.push({x: pos.x + 1, y: pos.y});
-        }
-
-        if (pos.y === -heightHalf + center.y) {
-            // TOP
-            innerRampartLayer.push({x: pos.x, y: pos.y + 1});
-            outerRampartLayer.push({x: pos.x, y: pos.y - 1});
-        }
-
-        if (pos.y === heightHalf + center.y - 1) {
-            // BOTTOM
-            innerRampartLayer.push({x: pos.x, y: pos.y - 1});
-            outerRampartLayer.push({x: pos.x, y: pos.y + 1});
-        }
-    }
-
-    const ramparts = {};
-    ramparts.controller = controllerRamparts;
-    ramparts.inner  = innerRampartLayer;
-    ramparts.center = centerRampartLayer;
-    ramparts.outer  = outerRampartLayer;
-
-
-    this.memory.layout.ramparts = ramparts;
-    return ramparts;
-};
-
-Room.prototype._generateBox = function(centerPosition, widthHalf, heightHalf) {
-    let terrain = this.getTerrain();
-    let result = [];
-
-    for (let x = -widthHalf; x < widthHalf; x++) {
-        for (let y = -heightHalf; y < heightHalf; y++) {
-            const pos = {x: centerPosition.x + x, y: centerPosition.y + y};
-            if (pos.x <= 1 || pos.x >= 48 || pos.y <= 1 || pos.y >= 48) {
-                continue;
-            }
-
-            if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
-                continue;
-            }
-
-            result.push(pos);
-        }
-    }
-
-    return result;
-};
-
-Room.prototype._filterReachablePositionsViaFloodfill = function(positionsToBeFiltered, additionalBlockers = []) {
-    const terrain = this.getTerrain();
-
-    let visitedPositions = [];
-    let todo = [];
-    todo.push(...this.find(FIND_EXIT));
-
-    let result = [];
-
-    while (todo.length > 0) {
-        const current = todo.pop();
-
-        // check surroundings
-        for (let x = -1; x < 2; x++) {
-            for (let y = -1; y < 2; y++) {
-                if (x === y) {
-                    continue;
-                }
-
-                let pos = {x: current.x + x, y: current.y + y};
-                if (pos.x <= 0 || pos.x >= 49 || pos.y <= 0 || pos.y >= 49) {
-                    continue;
-                }
-
-                if (terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
-                    continue;
-                }
-
-                if (visitedPositions.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                    continue;
-                }
-
-                if (todo.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                    continue;
-                }
-
-                if (positionsToBeFiltered.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                    result.push(pos);
-                    visitedPositions.push(pos);
-                    continue;
-                }
-
-                if (additionalBlockers.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                    visitedPositions.push(pos);
-                    continue;
-                }
-
-                todo.push(pos);
-            }
-        }
-
-        visitedPositions.push(current);
-    }
-
-    return result;
 };
 
 Room.prototype._placeRampartArray = function(array) {
