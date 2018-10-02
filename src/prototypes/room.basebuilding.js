@@ -619,7 +619,7 @@ Room.prototype._placeExtraRoads = function(layout) {
         return SUCCESSFULLY_PLACED;
     }
 
-    if (this.controller.level > 6) {
+    if (this.controller.level >= 6) {
         if (this._placeExtraRoadsArray(extraRoadPositions.mineral) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }

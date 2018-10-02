@@ -519,8 +519,18 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
     let targetPos = mineral.getNearbyContainerPosition();
 
     if (targetPos === ERR_NOT_FOUND) {
-        this.memory.task = taskWhenFinished;
-        return;
+        mineral.forceNearbyContainerReload();
+        targetPos = mineral.getNearbyContainerPosition();
+        if (targetPos === ERR_NOT_FOUND) {
+            targetPos = mineral.getNearbyContainerConstructionSitePosition();
+            if (targetPos === ERR_NOT_FOUND) {
+                targetPos = mineral.placeContainerConstructionSiteAndGetItsPosition(this.pos);
+                if (targetPos === ERR_INVALID_ARGS) {
+                    log.warning(this + "unable to place mineral container!");
+                    targetPos = mineral.pos;
+                }
+            }
+        }
     }
 
     this.travelTo(targetPos, {maxRooms: 1});

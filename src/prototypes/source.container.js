@@ -31,7 +31,7 @@ Object.defineProperty(Source.prototype, "nearbyContainerConstructionSite", {
         if (containerConstructionSiteIds[this.id]) {
             return this._nearbyContainerConstructionSite = Game.getObjectById(containerConstructionSiteIds[this.id]);
         } else {
-            const constructionSite = this._findNearbyContainer();
+            const constructionSite = this._findNearbyContainerConstructionSite();
             if (constructionSite) {
                 containerConstructionSiteIds[this.id] = constructionSite.id;
                 return this._nearbyContainerConstructionSite = constructionSite;
