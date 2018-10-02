@@ -241,6 +241,9 @@ Room.prototype._debugRampartPlacement = function() {
     }
 };
 
+Room.prototype.forceRampartRegeneration = function() {
+    rampartGenerator.calculateRampartPositions(this, this.memory.layout);
+};
 
 Room.prototype._getCenterPosition = function() {
     let center = this.memory.baseCenterPosition;
