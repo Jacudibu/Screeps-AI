@@ -100,8 +100,8 @@ Room.prototype._checkInputOutputLabCache = function() {
 };
 
 Room.prototype._initializeInputOutputLabCache = function() {
-    roomInputLabs[this.name] = [];
-    roomOutputLabs[this.name] = [];
+    const input = [];
+    const output = [];
 
     let highestSurroundingLabCount = 0;
     let labsInRange = {};
@@ -128,11 +128,18 @@ Room.prototype._initializeInputOutputLabCache = function() {
 
     for (let lab of labs) {
         if (labsInRange[lab.id] === highestSurroundingLabCount) {
-            roomInputLabs[this.name].push(lab.id);
+            input.push(lab.id);
         } else {
-            roomOutputLabs[this.name].push(lab.id);
+            output.push(lab.id);
         }
     }
+
+    while(input.length > 2) {
+        output.push(input.pop());
+    }
+
+    roomInputLabs[this.name] = input;
+    roomOutputLabs[this.name] = output;
 
     roomInputOutExpiration[this.name] = utility.getFutureGameTimeWithRandomOffset(CACHE_EXPIRATION_TIME, CACHE_EXPIRATION_OFFSET);
 };
