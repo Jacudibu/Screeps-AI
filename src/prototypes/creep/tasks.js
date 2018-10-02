@@ -539,7 +539,7 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
     }
 };
 
-Creep.prototype.determineHarvesterStartTask = function(taskWhenNoContainerAvailable) {
+Creep.prototype.determineHarvesterStartTask = function() {
     if (this.memory.targetRoomName && this.room.name !== this.memory.targetRoomName) {
         this.setTask(TASK.MOVE_TO_ROOM);
         return;

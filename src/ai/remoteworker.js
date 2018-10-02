@@ -7,7 +7,7 @@ const remoteWorker = {
                 }
 
                 if (_.sum(creep.carry) < 10) {
-                    creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
+                    creep.determineHarvesterStartTask();
                     return;
                 }
 

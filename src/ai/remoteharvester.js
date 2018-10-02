@@ -10,7 +10,7 @@ const remoteHarvester = {
                     creep.setTask(TASK.MOVE_TO_ROOM);
                 }
 
-                let startTask = creep.determineHarvesterStartTask(TASK.HARVEST_ENERGY);
+                let startTask = creep.determineHarvesterStartTask();
                 if (!startTask) {
                     return;
                 }
