@@ -27,11 +27,11 @@ const rampartGenerator = {
         const innerFlood  = this.filterReachablePositionsViaFloodFill(room, innerBox);
 
         const ramparts = {};
-        ramparts.outer  = outerFlood;
-        ramparts.center = centerFlood;
-        ramparts.inner  = innerFlood;
+        ramparts.outer  = /*outerBox; */ outerFlood;
+        ramparts.center = /*centerBox;*/ centerFlood;
+        ramparts.inner  = /*innerBox; */ innerFlood;
 
-        ramparts.controller = this.filterReachablePositionsViaFloodFill(room, possibleControllerRampartPositions, ramparts.outer);
+        ramparts.controller = possibleControllerRampartPositions; //this.filterReachablePositionsViaFloodFill(room, possibleControllerRampartPositions, ramparts.outer);
 
         room.memory.layout.ramparts = ramparts;
 
@@ -53,20 +53,20 @@ const rampartGenerator = {
         }
 
         // bottom
-        y = heightHalf - 1;
+        y = heightHalf;
         for (x = -widthHalf; x < widthHalf; x++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
 
         // left
         x = -widthHalf;
-        for (y = -heightHalf; y < heightHalf; y++) {
+        for (y = -heightHalf + 1; y < heightHalf - 1; y++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
 
         // right
-        x = widthHalf - 1;
-        for (y = -heightHalf; y < heightHalf; y++) {
+        x = widthHalf;
+        for (y = -heightHalf + 1; y < heightHalf - 1; y++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
         return result;
@@ -96,11 +96,21 @@ const rampartGenerator = {
 
         while (todo.length > 0) {
             const current = todo.pop();
+            visitedPositions.push(current);
+
+            if (positionsToBeFiltered.find(checkedPos => checkedPos.x === current.x && checkedPos.y === current.y)) {
+                result.push(current);
+                continue;
+            }
+
+            if (additionalBlockers.find(checkedPos => checkedPos.x === current.x && checkedPos.y === current.y)) {
+                continue;
+            }
 
             // check surroundings
             for (let x = -1; x < 2; x++) {
                 for (let y = -1; y < 2; y++) {
-                    if (x === y) {
+                    if (x === 0 && y === 0) {
                         continue;
                     }
 
@@ -121,22 +131,9 @@ const rampartGenerator = {
                         continue;
                     }
 
-                    if (positionsToBeFiltered.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                        result.push(pos);
-                        visitedPositions.push(pos);
-                        continue;
-                    }
-
-                    if (additionalBlockers.find(checkedPos => checkedPos.x === pos.x && checkedPos.y === pos.y)) {
-                        visitedPositions.push(pos);
-                        continue;
-                    }
-
                     todo.push(pos);
                 }
             }
-
-            visitedPositions.push(current);
         }
 
         return result;
