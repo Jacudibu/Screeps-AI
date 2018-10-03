@@ -34,7 +34,7 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
 };
 
 Room.prototype.updateRepairRoute = function() {
-    this.memory.repairRoute = this.memory.remoteMiningRooms;
+    this.memory.repairRoute = this.remotes;
 };
 
 Room.prototype.addPublicEnergyContainer = function (containerId) {

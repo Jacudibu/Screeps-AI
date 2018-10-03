@@ -495,8 +495,8 @@ Room.prototype._placeExtraRoads = function(layout) {
         }
     }
 
-    if (this.memory.remoteMiningRooms) {
-        for (const remoteName of this.memory.remoteMiningRooms) {
+    if (this.remotes) {
+        for (const remoteName of this.remotes) {
             if (extraRoadPositions[remoteName]) {
                 if (this._placeExtraRoadsArray(extraRoadPositions[remoteName]) === SUCCESSFULLY_PLACED) {
                     return SUCCESSFULLY_PLACED;

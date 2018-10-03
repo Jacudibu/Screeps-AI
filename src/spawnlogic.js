@@ -272,9 +272,9 @@ const spawnlogic = {
     },
 
     checkRemoteMiningRooms(room) {
-        let remoteMiningRoomList = room.memory.remoteMiningRooms;
+        let remotes = room.remotes;
 
-        if (!remoteMiningRoomList || remoteMiningRoomList.length === 0) {
+        if (!remotes || remotes.length === 0) {
             return;
         }
 
@@ -282,23 +282,28 @@ const spawnlogic = {
             return;
         }
 
-        if (!room.memory.nextRemoteRepairerSpawn || room.memory.nextRemoteRepairerSpawn < Game.time) {
-            room.addToSpawnQueueEnd({role: ROLE.REMOTE_REPAIRER});
-            room.memory.repairRoute = room.memory.remoteMiningRooms;
-            room.memory.nextRemoteRepairerSpawn = utility.getFutureGameTimeWithRandomOffset(REMOTE_REPAIRER_SPAWN_INTERVAL, 200);
-            return;
+        if (room.controller.level >= 3) {
+            if (!room.memory.nextRemoteRepairerSpawn || room.memory.nextRemoteRepairerSpawn < Game.time) {
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_REPAIRER});
+
+                // TODO: Remove this once remote mining rooms are set up properly
+                room.memory.repairRoute = room.remotes;
+
+                room.memory.nextRemoteRepairerSpawn = utility.getFutureGameTimeWithRandomOffset(REMOTE_REPAIRER_SPAWN_INTERVAL, 200);
+                return;
+            }
         }
 
-        for (let i = 0; i < remoteMiningRoomList.length; i++) {
-            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
+        for (let i = 0; i < remotes.length; i++) {
+            let remoteMiningRoomMemory = Memory.rooms[remotes[i]];
 
             if (remoteMiningRoomMemory.requiresHelp !== undefined) {
                 continue;
             }
 
             if (!remoteMiningRoomMemory.sources) {
-                if (Game.rooms[remoteMiningRoomList[i]] !== undefined) {
-                    Game.rooms[remoteMiningRoomList[i]].initializeMemoryForAllSourcesInRoom();
+                if (Game.rooms[remotes[i]] !== undefined) {
+                    Game.rooms[remotes[i]].initializeMemoryForAllSourcesInRoom();
                 } else {
                     // no vision, claimer will be spawned later
                     continue;
@@ -306,14 +311,14 @@ const spawnlogic = {
             }
 
             if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteMiningRoomList[i]});
-                Memory.rooms[remoteMiningRoomList[i]].assignedHarvesters++;
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remotes[i]});
+                Memory.rooms[remotes[i]].assignedHarvesters++;
                 return;
             }
 
             if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteMiningRoomList[i]});
-                Memory.rooms[remoteMiningRoomList[i]].assignedHaulers++;
+                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remotes[i]});
+                Memory.rooms[remotes[i]].assignedHaulers++;
                 return;
             }
         }
@@ -324,35 +329,35 @@ const spawnlogic = {
         }
 
         // Iterate reservers seperately
-        for (let i = 0; i < remoteMiningRoomList.length; i++) {
-            let otherRoom = Game.rooms[remoteMiningRoomList[i]];
+        for (let i = 0; i < remotes.length; i++) {
+            let otherRoom = Game.rooms[remotes[i]];
 
             if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 1000) {
                 continue;
             }
 
-            let remoteMiningRoomMemory = Memory.rooms[remoteMiningRoomList[i]];
+            let remoteMiningRoomMemory = Memory.rooms[remotes[i]];
 
             if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
-                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteMiningRoomList[i]});
-                Memory.rooms[remoteMiningRoomList[i]].isReserverAssigned = true;
+                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remotes[i]});
+                Memory.rooms[remotes[i]].isReserverAssigned = true;
                 return;
             }
         }
     },
 
     checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room) {
-        let remoteMiningRooms = room.memory.remoteMiningRooms;
+        let remotes = room.remotes;
 
-        if (!remoteMiningRooms || remoteMiningRooms.length === 0) {
+        if (!remotes || remotes.length === 0) {
             return false;
         }
 
-        for (let i = 0; i < remoteMiningRooms.length; i++) {
-            let remoteMiningRoom = Memory.rooms[remoteMiningRooms[i]];
+        for (let i = 0; i < remotes.length; i++) {
+            let remoteMiningRoom = Memory.rooms[remotes[i]];
             if (remoteMiningRoom.requiresHelp === true) {
-                room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: remoteMiningRooms[i]});
-                Memory.rooms[remoteMiningRooms[i]].requiresHelp = false;
+                room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: remotes[i]});
+                Memory.rooms[remotes[i]].requiresHelp = false;
                 return true;
             }
         }

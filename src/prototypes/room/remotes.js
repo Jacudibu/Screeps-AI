@@ -38,6 +38,7 @@ Room.prototype.addRemote = function (roomName) {
     this.memory.remoteMiningRooms = this.remotes;
 
     initializeRemoteMemory(roomName);
+
     this.updateRepairRoute();
 };
 
