@@ -1,9 +1,34 @@
-Room.prototype.updateRequestedCreeps = function() {
+const requests = {};
+Object.defineProperty(Room.prototype, "requestedCreeps", {
+    get: function() {
+        if (requests[this.name]) {
+            return requests[this.name];
+        }
+
+        console.log(this._recalculateRequestedCreeps());
+        return requests[this.name] = this._recalculateRequestedCreeps();
+    },
+
+    set: function() {},
+    configurable: false,
+    enumerable: false,
+});
+
+Room.prototype._recalculateRequestedCreeps = function() {
     let requestedCreeps = {};
 
     switch(this.controller.level) {
+        case 0:
+            log.warning(this + "_recalculateRequestedCreeps called by RCL 0 room.");
+            break;
+
         case 1:
             requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = calculateAmountOfEarlyRCLHarvesters(this);
+            if (requestedCreeps[ROLE.EARLY_RCL_HARVESTER] === undefined) {
+                log.warning(this + "unable to calculate earlybirds on rcl 1, might be related to the very first tick of the game?");
+                return;
+            }
+
             requestedCreeps[ROLE.HARVESTER] = 0;
             requestedCreeps[ROLE.HAULER]    = 6;
             requestedCreeps[ROLE.UPGRADER]  = 1;
@@ -13,6 +38,7 @@ Room.prototype.updateRequestedCreeps = function() {
 
         case 2:
             requestedCreeps[ROLE.EARLY_RCL_HARVESTER] = calculateAmountOfEarlyRCLHarvesters(this);
+
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 2 + calculateDistanceFactor(this);
             requestedCreeps[ROLE.UPGRADER]  = 3;
@@ -53,7 +79,7 @@ Room.prototype.updateRequestedCreeps = function() {
             break;
     }
 
-    this.memory.requestedCreeps = requestedCreeps;
+    return requests[this.name] = requestedCreeps;
 };
 
 const calculateAmountOfEarlyRCLHarvesters = function(room) {

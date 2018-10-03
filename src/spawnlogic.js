@@ -113,12 +113,6 @@ const spawnlogic = {
     },
 
     tryAddingNewCreepToSpawnQueue(room, spawns) {
-        if (room.memory.requestedCreeps === undefined) {
-            room.updateRequestedCreeps();
-        }
-
-
-
         if (room.energyCapacityAvailable < 550) {
             // Early RCL. CUUUUTE!
             if (this.isRoleNeeded(room, spawns, ROLE.EARLY_RCL_HARVESTER)) {
@@ -269,7 +263,7 @@ const spawnlogic = {
 
         let creepsWithRoleCount = this.countNumberOfCreepsWithRole(room, role);
 
-        return creepsWithRoleCount < room.memory.requestedCreeps[role];
+        return creepsWithRoleCount < room.requestedCreeps[role];
     },
 
     countNumberOfCreepsWithRole(room, role) {

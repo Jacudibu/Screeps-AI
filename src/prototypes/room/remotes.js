@@ -1,13 +1,13 @@
 const remotes = {};
 Object.defineProperty(Room.prototype, "remotes", {
     get: function() {
-        if (remotes[this.roomName]) {
-            return remotes[this.roomName];
+        if (remotes[this.name]) {
+            return remotes[this.name];
         }
 
         if (this.memory.remoteMiningRooms) {
-            remotes[this.roomName] = this.memory.remoteMiningRooms;
-            return remotes[this.roomName];
+            remotes[this.name] = this.memory.remoteMiningRooms;
+            return remotes[this.name];
         }
 
         return undefined;

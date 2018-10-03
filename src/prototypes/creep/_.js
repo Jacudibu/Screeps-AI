@@ -35,7 +35,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             let spawnQueueCount = Memory.rooms[this.room.name].spawnQueue.filter(entry => entry.role === ROLE.HAULER).length;
             let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.memory.respawnTTL).length;
 
-            if ((aliveCount + spawnQueueCount) <= Memory.rooms[this.room.name].requestedCreeps[ROLE.HAULER]) {
+            if ((aliveCount + spawnQueueCount) <= this.room.requestedCreeps[ROLE.HAULER]) {
                 Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
             }
             break;

@@ -57,6 +57,6 @@ Room.prototype.checkForRCLUpdate = function() {
 };
 
 Room.prototype.onRCLUpdate = function() {
-    this.updateRequestedCreeps();
+    this._recalculateRequestedCreeps();
     this._forceConstructionUpdate();
 };
