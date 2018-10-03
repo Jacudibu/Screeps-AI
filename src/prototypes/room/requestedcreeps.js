@@ -5,8 +5,7 @@ Object.defineProperty(Room.prototype, "requestedCreeps", {
             return requests[this.name];
         }
 
-        console.log(this._recalculateRequestedCreeps());
-        return requests[this.name] = this._recalculateRequestedCreeps();
+        return this._recalculateRequestedCreeps();
     },
 
     set: function() {},
