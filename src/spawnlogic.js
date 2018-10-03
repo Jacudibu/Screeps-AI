@@ -324,6 +324,11 @@ const spawnlogic = {
             }
         }
 
+        if (room.energyCapacityAvailable < BODYPART_COST.claim + BODYPART_COST.move) {
+            // TODO: Add a constant for minimum costs of certain creeps and use that instead
+            return;
+        }
+
         // Iterate reservers seperately
         for (let i = 0; i < remoteMiningRoomList.length; i++) {
             let otherRoom = Game.rooms[remoteMiningRoomList[i]];

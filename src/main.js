@@ -30,6 +30,7 @@ require('prototypes.room.freeextensions');
 require('prototypes.room.labs');
 require('prototypes.room.links');
 require('prototypes.room.mineral');
+require('prototypes.room.remotes');
 require('prototypes.room.requestedcreeps');
 require('prototypes.room.scoutdata');
 require('prototypes.room.sources');
