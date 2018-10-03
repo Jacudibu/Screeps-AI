@@ -33,40 +33,6 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
 
 };
 
-Room.prototype.addRemoteMiningRoom = function (roomName) {
-    if (!this.memory.remoteMiningRooms) {
-        this.memory.remoteMiningRooms = [];
-    }
-
-    this.memory.remoteMiningRooms.push(roomName);
-
-    if (Memory.rooms[roomName] === undefined) {
-        Memory.rooms[roomName] = {};
-    }
-
-    if (Memory.rooms[roomName].assignedHarvesters === undefined) {
-        Memory.rooms[roomName].assignedHarvesters = 0;
-        Memory.rooms[roomName].assignedHaulers = 0;
-        Memory.rooms[roomName].requiredHaulers = 0;
-    }
-
-    this.updateRepairRoute();
-};
-
-Room.prototype.removeRemoteMiningRoom = function(roomName) {
-    if (!this.memory.remoteMiningRooms) {
-        return;
-    }
-
-    let index = this.memory.remoteMiningRooms.indexOf(roomName);
-    if (index > -1) {
-        Memory.rooms[roomName].assignedHarvesters = undefined;
-        this.memory.remoteMiningRooms.splice(index, 1);
-    }
-
-    this.updateRepairRoute();
-};
-
 Room.prototype.updateRepairRoute = function() {
     this.memory.repairRoute = this.memory.remoteMiningRooms;
 };
