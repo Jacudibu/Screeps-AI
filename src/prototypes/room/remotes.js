@@ -37,7 +37,7 @@ Room.prototype.addRemote = function (roomName) {
 
     this.memory.remoteMiningRooms = this.remotes;
 
-    initializeRemoteMemory(roomName);
+    initializeRemoteMemory(this.name, roomName);
 
     this.updateRepairRoute();
 };
@@ -55,14 +55,30 @@ Room.prototype.removeRemote = function(roomName) {
     this.updateRepairRoute();
 };
 
-initializeRemoteMemory = function(roomName) {
-    if (Memory.rooms[roomName] === undefined) {
-        Memory.rooms[roomName] = {};
+initializeRemoteMemory = function(roomName, remoteRoomName) {
+    if (Memory.rooms[remoteRoomName] === undefined) {
+        Memory.rooms[remoteRoomName] = {};
     }
 
-    if (Memory.rooms[roomName].assignedHarvesters === undefined) {
-        Memory.rooms[roomName].assignedHarvesters = 0;
-        Memory.rooms[roomName].assignedHaulers = 0;
-        Memory.rooms[roomName].requiredHaulers = 0;
+    if (Memory.rooms[remoteRoomName].assignedHarvesters === undefined) {
+        Memory.rooms[remoteRoomName].assignedHarvesters = 0;
+        Memory.rooms[remoteRoomName].assignedHaulers = 0;
+
+        // TODO: remove this if once scouts are running around on the live server
+        if (Memory.rooms[remoteRoomName].sourceCount) {
+            Memory.rooms[remoteRoomName].requiredHaulers = calculateNormalDistanceBetweenRooms(roomName, remoteRoomName) * Memory.rooms[remoteRoomName].sourceCount;
+        } else {
+            Memory.rooms[remoteRoomName].requiredHaulers = 0;
+        }
+
     }
+};
+
+calculateNormalDistanceBetweenRooms = function(roomA, roomB) {
+    const route = Game.map.findRoute(roomA, roomB);
+    if (route === ERR_NO_PATH) {
+        return Infinity;
+    }
+
+    return route.length;
 };
