@@ -30,7 +30,10 @@ const attacker = {
                 if (!target) {
                     let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
                     if (possibleTargets.length === 0) {
-                        possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter: structure => structure.structureType !== STRUCTURE_CONTROLLER});
+                        possibleTargets = creep.room.find(FIND_HOSTILE_STRUCTURES, {filter:
+                                    structure => structure.structureType !== STRUCTURE_CONTROLLER
+                                              && structure.structureType !== STRUCTURE_STORAGE
+                                              && structure.structureType !== STRUCTURE_TERMINAL});
                         if (possibleTargets.length === 0) {
                             possibleTargets = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES);
                             if (possibleTargets.length === 0) {
