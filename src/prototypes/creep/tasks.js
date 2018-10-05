@@ -215,7 +215,12 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 };
 
 Creep.prototype.haulAnyResource = function(taskWhenFinished) {
-    let target = this._getAnyResourceHaulTarget();
+    let target;
+    if (this.room.controller && this.room.controller.my) {
+        target = this._getAnyResourceHaulTargetInOwnedRoom();
+    } else {
+        target = this._getAnyResourceHaulTargetInRemoteRoom();
+    }
 
     if (target === ERR_NOT_FOUND) {
         this.setTask(taskWhenFinished);

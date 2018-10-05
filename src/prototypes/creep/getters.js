@@ -279,7 +279,7 @@ Creep.prototype._getEnergyHaulTarget = function() {
     return ERR_NOT_FOUND;
 };
 
-Creep.prototype._getAnyResourceHaulTarget = function() {
+Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     if (this.memory.taskTargetId) {
         let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
 
@@ -370,6 +370,13 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         return potentialTarget;
     }
 
+    potentialTarget = this.findClosestDroppedResource();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
+        return potentialTarget;
+    }
+
     // Haul Storage -> Terminal if storage is full
     if (this.room.storage) {
         for (let resource of RESOURCES_ALL) {
@@ -450,6 +457,82 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
+    return ERR_NOT_FOUND;
+};
+
+Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
+    if (this.memory.taskTargetId) {
+        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+
+        if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+                return potentialTarget;
+            }
+
+            if (potentialTarget.energy > 100) {
+                // spawns & links
+                return potentialTarget;
+            }
+        }
+    }
+
+    let potentialTarget = this.findHighestDroppedResourceAboveHaulThreshold();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
+        return potentialTarget;
+    }
+
+    potentialTarget = this.findClosestContainerAboveHaulThreshold();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return potentialTarget;
+        } else {
+            if (this.carry[RESOURCE_ENERGY] === 0) {
+                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                return potentialTarget;
+            }
+        }
+    }
+
+    potentialTarget = this.findClosestTombstone();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        return potentialTarget;
+    }
+
+    // Hostile structure looting!
+    let hostileStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
+    for (let structure of hostileStructures) {
+        // spawns etc
+        if (structure.energy) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
+
+        // Labs
+        if (structure.mineralAmount) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = structure.mineralType;
+            return structure;
+        }
+
+        // storage & terminal
+        if (structure.store && structure.store[RESOURCE_ENERGY]) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
+    }
+
     potentialTarget = this.findClosestDroppedResource();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
@@ -459,6 +542,7 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
 
     return ERR_NOT_FOUND;
 };
+
 
 Creep.prototype._getDismantleTarget = function() {
     if (this.memory.taskTargetId) {
