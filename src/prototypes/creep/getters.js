@@ -384,7 +384,7 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
                 continue;
             }
 
-            if (this.room.storage.store[resource] > STORAGE_MAX[resource] + this.carryCapacity) {
+            if (this.room.storage.store[resource] > this.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity)) {
                 this.memory.taskTargetId = this.room.storage.id;
                 this.memory.hauledResourceType = resource;
                 return this.room.storage;
@@ -392,36 +392,38 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
-    // Haul Terminal -> Storage if storage is not full
-    if (this.room.terminal && this.room.storage) {
-        for (let resource of RESOURCES_ALL) {
-            if (!this.room.terminal.store[resource]) {
-                continue;
-            }
+    if (!this.shouldEvacuate) {
+        // Haul Terminal -> Storage if storage is not full
+        if (this.room.terminal && this.room.storage) {
+            for (let resource of RESOURCES_ALL) {
+                if (!this.room.terminal.store[resource]) {
+                    continue;
+                }
 
-            if (this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
+                if (this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
+                    this.memory.taskTargetId = this.room.terminal.id;
+                    this.memory.hauledResourceType = resource;
+                    return this.room.terminal;
+                }
+            }
+        }
+
+        // Just haul energy, and do something with it (worst case it will just dump it back in afterwards)
+        if (this.room.storage) {
+            if (this.room.storage.store[RESOURCE_ENERGY] > 0) {
+                this.memory.taskTargetId = this.room.storage.id;
+                this.memory.hauledResourceType = RESOURCE_ENERGY;
+                return this.room.storage;
+            }
+        }
+
+        // If storage is empty and terminal has energy, something has gone wrong - so let our haulers fix that.
+        if (this.room.terminal) {
+            if (this.room.terminal.store[RESOURCE_ENERGY] > 0) {
                 this.memory.taskTargetId = this.room.terminal.id;
-                this.memory.hauledResourceType = resource;
+                this.memory.hauledResourceType = RESOURCE_ENERGY;
                 return this.room.terminal;
             }
-        }
-    }
-
-    // Just haul energy, and do something with it (worst case it will just dump it back in afterwards)
-    if (this.room.storage) {
-        if (this.room.storage.store[RESOURCE_ENERGY] > 0) {
-            this.memory.taskTargetId = this.room.storage.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
-            return this.room.storage;
-        }
-    }
-
-    // If storage is empty and terminal has energy, something has gone wrong - so let our haulers fix that.
-    if (this.room.terminal) {
-        if (this.room.terminal.store[RESOURCE_ENERGY] > 0) {
-            this.memory.taskTargetId = this.room.terminal.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
-            return this.room.terminal;
         }
     }
 

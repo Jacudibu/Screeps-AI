@@ -26,6 +26,7 @@ require('prototypes.mineral.container');
 require('prototypes.room._');
 require('prototypes.room.basebuilding');
 require('prototypes.room.defense');
+require('prototypes.room.evacuation');
 require('prototypes.room.freeextensions');
 require('prototypes.room.labs');
 require('prototypes.room.links');
