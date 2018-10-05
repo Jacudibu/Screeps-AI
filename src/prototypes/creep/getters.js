@@ -363,13 +363,6 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
         }
     }
 
-    potentialTarget = this.findClosestDroppedResource();
-    if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
-        return potentialTarget;
-    }
-
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
@@ -425,6 +418,43 @@ Creep.prototype._getAnyResourceHaulTarget = function() {
                 return this.room.terminal;
             }
         }
+    }
+
+    // TODO: Check if hostile structures length === 0 instead
+    if (this.room.controller.my) {
+        return ERR_NOT_FOUND;
+    }
+
+    // Hostile structure looting!
+    let hostileStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
+    for (let structure of hostileStructures) {
+        // spawns etc
+        if (structure.energy) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
+
+        // Labs
+        if (structure.mineralAmount) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = structure.mineralType;
+            return structure;
+        }
+
+        // storage & terminal
+        if (structure.store && structure.store[RESOURCE_ENERGY]) {
+            this.memory.taskTargetId = structure.id;
+            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            return structure;
+        }
+    }
+
+    potentialTarget = this.findClosestDroppedResource();
+    if (potentialTarget !== ERR_NOT_FOUND) {
+        this.memory.taskTargetId = potentialTarget.id;
+        this.memory.hauledResourceType = potentialTarget.resourceType;
+        return potentialTarget;
     }
 
     return ERR_NOT_FOUND;
