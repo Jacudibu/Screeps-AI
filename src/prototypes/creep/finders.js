@@ -115,15 +115,15 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         return utility.getClosestObjectFromArray(this, publicEnergyContainers);
     }
 
-    let labs = this.room.labs;
-    if (labs && labs.length > 0) {
-        let labsThatNeedEnergy = labs.filter(lab => lab.energy < lab.energyCapacity);
-        if (labsThatNeedEnergy && labsThatNeedEnergy.length > 0) {
-            return labsThatNeedEnergy[0];
+    if (!this.room.shouldEvacuate) {
+        let labs = this.room.labs;
+        if (labs && labs.length > 0) {
+            let labsThatNeedEnergy = labs.filter(lab => lab.energy < lab.energyCapacity);
+            if (labsThatNeedEnergy && labsThatNeedEnergy.length > 0) {
+                return labsThatNeedEnergy[0];
+            }
         }
-    }
 
-    if (!this.shouldEvacuate) {
         let storage = this.room.storage;
         if (storage) {
             // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
@@ -131,18 +131,18 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
                 return storage;
             }
         }
-    }
 
-    if (this.room.terminal) {
-        // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
-        if (this.room.terminal.store[RESOURCE_ENERGY] < (TERMINAL_MAX_ENERGY_STORAGE - this.carryCapacity)) {
-            return this.room.terminal;
+        if (this.room.terminal) {
+            // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
+            if (this.room.terminal.store[RESOURCE_ENERGY] < (TERMINAL_MAX_ENERGY_STORAGE - this.carryCapacity)) {
+                return this.room.terminal;
+            }
         }
-    }
 
-    if (this.room.nuker) {
-        if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
-            return this.room.nuker;
+        if (this.room.nuker) {
+            if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
+                return this.room.nuker;
+            }
         }
     }
 
@@ -164,7 +164,7 @@ Creep.prototype.findMineralStorage = function(resourceType) {
         }
     }
 
-    if (!this.shouldEvacuate) {
+    if (!this.room.shouldEvacuate) {
         if (this.room.storage) {
             if (!this.room.storage.store[resourceType] || this.room.storage.store[resourceType] < STORAGE_MAX[resourceType]) {
                 return this.room.storage;
@@ -176,7 +176,7 @@ Creep.prototype.findMineralStorage = function(resourceType) {
         return this.room.terminal;
     }
 
-    if (!this.shouldEvacuate) {
+    if (!this.room.shouldEvacuate) {
         if (this.room.storage) {
             return this.room.storage;
         }

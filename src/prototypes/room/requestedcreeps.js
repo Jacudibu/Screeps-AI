@@ -71,7 +71,7 @@ Room.prototype._recalculateRequestedCreeps = function() {
 
         default:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
-            requestedCreeps[ROLE.HAULER]    = 2;
+            requestedCreeps[ROLE.HAULER]    = this.shouldEvacuate ? 3 : 2;
             requestedCreeps[ROLE.UPGRADER]  = 1;
             requestedCreeps[ROLE.BUILDER]   = 1;
             requestedCreeps[ROLE.REPAIRER]  = 1;
