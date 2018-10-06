@@ -12,10 +12,10 @@ const RoadGenerator = {
 
         const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
-            roads['source' + i] = this.getRoadPositionsToRoomObject(room.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+            roads['source' + i] = this.findPathForRoads(room.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roads);
         }
-        roads.controller = this.getRoadPositionsToRoomObject(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
-        roads.mineral    = this.getRoadPositionsToRoomObject(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.mineral    = this.findPathForRoads(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
 
         room.memory.layout.roads = roads;
 
@@ -30,14 +30,14 @@ const RoadGenerator = {
         const roadsA = {};
         let mergedRoadsA = [];
         for (let i = 0; i < remoteRoom.sources.length; i++) {
-            roadsA['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roadsA);
+            roadsA['source' + i] = this.findPathForRoads(remoteRoom.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roadsA);
             mergedRoadsA = mergedRoadsA.concat(roadsA['source' + i]);
         }
 
         const roadsB = {};
         let mergedRoadsB = [];
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
-            roadsB['source' + i] = this.getRoadPositionsToRoomObject(remoteRoom.sources[i].pos, layoutCenterPosition, layoutRoadRoomPositions, roadsB);
+            roadsB['source' + i] = this.findPathForRoads(remoteRoom.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roadsB);
             mergedRoadsB = mergedRoadsB.concat(roadsB['source' + i]);
         }
 
@@ -78,16 +78,20 @@ const RoadGenerator = {
             }
 
             if (roomName === remoteRoom.name) {
-                Memory.rooms[roomName].layout.roads.sources = roadsSplitByRoom[roomName];
+                Memory.rooms[roomName].layout.roads.sources = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
             } else if (roomName === baseRoom.name) {
                 // reverse entries so that they are ordered by distance to base center
-                Memory.rooms[roomName].layout.roads[remoteRoom.name] = roadsSplitByRoom[roomName].reverse();
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] =  this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName].reverse());
             } else {
-                Memory.rooms[roomName].layout.roads[remoteRoom.name] = roadsSplitByRoom[roomName];
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] =  this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
             }
         }
 
         return roadsSplitByRoom;
+    },
+
+    removeRoomNamesFromPositionArray(array) {
+        return array.map(function(pos) {return {x: pos.x, y: pos.y};});
     },
 
     getRoomPositionsForRoadsInLayout(roomName, layout, layoutCenterPosition) {
@@ -98,14 +102,7 @@ const RoadGenerator = {
         return roadPositions;
     },
 
-    getRoadPositionsToRoomObject(fromPos, toPos, layoutRoadRoomPositions, roads) {
-        const travelPath = Traveler.findTravelPath(fromPos, toPos);
-        const roadStartingPoint = travelPath.path[0];
-
-        return this.findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, roads);
-    },
-
-    findPathForRoads(fromPos, toPos, roadStartingPoint, layoutRoadRoomPositions, roads) {
+    findPathForRoads(fromPos, toPos, layoutRoadRoomPositions, roads) {
         // TODO: Add traversed rooms so we don't store/place roads twice
 
         let allowedRooms;
@@ -134,21 +131,6 @@ const RoadGenerator = {
             goals = goals.concat(roads[roadKey]);
         }
 
-        // Every layouted road in other rooms along the path is also a goal. Phew. Thats a lot.
-        for (let roomName in allowedRooms) {
-            // allowed rooms is empty in base. In remotes we don't want other room's routes to interfere with the source route
-            // we are also using roads already in here, so POI in the room won't have duplicate positions
-            if (roomName !== fromPos.roomName) {
-                if (Memory.rooms[roomName].layout.roads)
-                    for (const roadKey in Memory.rooms[roomName].layout.roads) {
-                        if (roadKey !== fromPos.roomName) {
-                            // we want to regenerate the path if it was already set
-                            goals = goals.concat(Memory.rooms[roomName].layout.roads[roadKey]);
-                        }
-                    }
-            }
-        }
-
         goals = goals.map(function(position) {
             return {
                 pos: position,
@@ -156,10 +138,10 @@ const RoadGenerator = {
             };
         });
 
-        const result = PathFinder.search(roadStartingPoint, goals, {
+        const result = PathFinder.search(fromPos, goals, {
             plainCost: 2,
             swampCost: 5,
-            heuristicWeight: allowedRooms ? 2 : 1.25,
+            heuristicWeight: allowedRooms ? 1.5 : 1.25,
             roomCallback: function(roomName) {
                 if (allowedRooms) {
                     if (!allowedRooms[roomName]) {
@@ -197,6 +179,16 @@ const RoadGenerator = {
                         }
                     }
                 });
+
+                if (Memory.rooms[roomName].layout.roads) {
+                    for (const roadKey in Memory.rooms[roomName].layout.roads) {
+                        if (roadKey !== fromPos.roomName) {
+                            for (const pos of Memory.rooms[roomName].layout.roads[roadKey]) {
+                                costs.set(pos.x, pos.y, 1);
+                            }
+                        }
+                    }
+                }
 
                 return costs;
             }
