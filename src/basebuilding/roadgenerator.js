@@ -141,7 +141,7 @@ const RoadGenerator = {
         const result = PathFinder.search(fromPos, goals, {
             plainCost: 2,
             swampCost: 5,
-            heuristicWeight: allowedRooms ? 1.5 : 1.25,
+            heuristicWeight: allowedRooms ? 1.45 : 1.25,
             roomCallback: function(roomName) {
                 if (allowedRooms) {
                     if (!allowedRooms[roomName]) {
@@ -180,11 +180,13 @@ const RoadGenerator = {
                     }
                 });
 
-                if (Memory.rooms[roomName].layout.roads) {
-                    for (const roadKey in Memory.rooms[roomName].layout.roads) {
-                        if (roadKey !== fromPos.roomName) {
-                            for (const pos of Memory.rooms[roomName].layout.roads[roadKey]) {
-                                costs.set(pos.x, pos.y, 1);
+                if (Memory.rooms[roomName] && Memory.rooms[roomName].layout) {
+                    if (Memory.rooms[roomName].layout.roads) {
+                        for (const roadKey in Memory.rooms[roomName].layout.roads) {
+                            if (roadKey !== fromPos.roomName) {
+                                for (const pos of Memory.rooms[roomName].layout.roads[roadKey]) {
+                                    costs.set(pos.x, pos.y, 1);
+                                }
                             }
                         }
                     }
