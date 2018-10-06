@@ -14,7 +14,7 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
         return;
     }
 
-    log.warning("You asked for it! " + this + " just got completely wiped.");
+    delete this.memory;
 
     this.wipeConstructionSites();
 
@@ -29,8 +29,7 @@ Room.prototype.wipeEverything = function(areYouSure1, areYouSure2, areYouSure3) 
         creeps[i].suicide();
     }
 
-    delete this.memory;
-
+    log.warning("You asked for it! " + this + " just got completely wiped.");
 };
 
 Room.prototype.updateRepairRoute = function() {

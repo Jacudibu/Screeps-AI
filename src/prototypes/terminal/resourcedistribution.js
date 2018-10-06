@@ -69,11 +69,11 @@ const terminalResourceDistribution = {
     matchSupplyAndDemand() {
         let supplyKeys = _.shuffle(Object.keys(resourceSupply));
         let demandKeys = _.shuffle(Object.keys(resourceDemand));
+        let result = NO_DEAL;
 
         for (let supplierRoomName of supplyKeys) {
             let currentSupply = resourceSupply[supplierRoomName];
 
-            let result = NO_DEAL;
             for (let demanderRoomName of demandKeys) {
                 let currentDemand = resourceDemand[demanderRoomName];
 
@@ -88,34 +88,36 @@ const terminalResourceDistribution = {
     makeInternalTransactions(supplierRoomName, supply, demanderRoomName, demand) {
         for (let supplyData of supply) {
             for (let demandData of demand) {
-                if (supplyData.resourceType === demandData.resourceType) {
-                    let amount = demandData.amount - supplyData.amount;
-                    if (amount < 0) {
-                        amount = demandData.amount;
-                    } else {
-                        amount = demandData.amount - amount;
-                    }
-
-                    let result = Game.rooms[supplierRoomName].terminal.send(supplyData.resourceType, amount, demanderRoomName);
-                    if (result !== OK) {
-                        log.warning("Unexpected Error when distributing " + amount + " " + supplyData.resourceType + " from "
-                            + supplierRoomName + " to " + demanderRoomName + ": " + result);
-
-                        return NO_DEAL;
-                    }
-
-                    // store changes due to this transaction
-                    supplyData.amount -= amount;
-                    if (supplyData.amount - MIN_SUPPLY_AMOUNT <= 0) {
-                        _.remove(supply, data => data.resourceType === supplyData.resourceType);
-                    }
-                    demandData.amount -= amount;
-                    if (demandData.amount - MIN_DEMAND_AMOUNT <= 0) {
-                        _.remove(demand, data => data.resourceType === demandData.resourceType);
-                    }
-
-                    return DEAL;
+                if (supplyData.resourceType !== demandData.resourceType) {
+                    continue;
                 }
+
+                let amount = demandData.amount - supplyData.amount;
+                if (amount < 0) {
+                    amount = demandData.amount;
+                } else {
+                    amount = demandData.amount - amount;
+                }
+
+                let result = Game.rooms[supplierRoomName].terminal.send(supplyData.resourceType, amount, demanderRoomName);
+                if (result !== OK) {
+                    log.warning("Unexpected Error when distributing " + amount + " " + supplyData.resourceType + " from "
+                        + supplierRoomName + " to " + demanderRoomName + ": " + result);
+
+                    return NO_DEAL;
+                }
+
+                // store changes due to this transaction
+                supplyData.amount -= amount;
+                if (supplyData.amount - MIN_SUPPLY_AMOUNT <= 0) {
+                    _.remove(supply, data => data.resourceType === supplyData.resourceType);
+                }
+                demandData.amount -= amount;
+                if (demandData.amount - MIN_DEMAND_AMOUNT <= 0) {
+                    _.remove(demand, data => data.resourceType === demandData.resourceType);
+                }
+
+                return DEAL;
             }
         }
         return NO_DEAL;
