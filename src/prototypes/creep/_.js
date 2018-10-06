@@ -36,15 +36,15 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.memory.respawnTTL).length;
 
             if ((aliveCount + spawnQueueCount) <= this.room.requestedCreeps[ROLE.HAULER]) {
-                Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
+                addToSpawnQueueStart(this.memory.spawnRoom, args);
             }
             break;
         case ROLE.HARVESTER:
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueStart(args);
+            addToSpawnQueueStart(this.memory.spawnRoom, args);
             break;
         case ROLE.REMOTE_HAULER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            addToSpawnQueueEnd(this.memory.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
@@ -52,20 +52,20 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             if (constructionSites && constructionSites.length > 0) {
                 args.targetRoomName = this.memory.targetRoomName;
                 args.respawnTTL = this.memory.respawnTTL;
-                Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+                addToSpawnQueueEnd(this.memory.spawnRoom, args);
             } else {
                 log.warning(this.room + "|" + this.name + " -> Ignoring respawn, no construction Sites left.");
             }
             break;
         case ROLE.REMOTE_HARVESTER:
             args.targetRoomName = this.memory.targetRoomName;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            addToSpawnQueueEnd(this.memory.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHarvesters++;
             break;
         case ROLE.REMOTE_UPGRADER:
             args.targetRoomName = this.memory.targetRoomName;
             args.respawnTTL = this.memory.respawnTTL;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            addToSpawnQueueEnd(this.memory.spawnRoom, args);
             break;
         case ROLE.CARRIER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
@@ -76,13 +76,25 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
 
             args.storageRoomName = this.memory.remoteHaulStorageRoom;
             args.respawnTTL = this.memory.respawnTTL;
-            Game.rooms[this.memory.spawnRoom].addToSpawnQueueEnd(args);
+            addToSpawnQueueEnd(this.memory.spawnRoom, args);
             break;
         default:
             log.warning(this + " undefined role asking for respawn?!" + args.role);
     }
 
     this.memory.respawnTTL = undefined;
+};
+
+addToSpawnQueueEnd = function(roomName, args) {
+    if (Game.rooms[roomName]) {
+        Game.rooms[roomName].addToSpawnQueueEnd(args);
+    }
+};
+
+addToSpawnQueueStart = function(roomName, args) {
+    if (Game.rooms[roomName]) {
+        Game.rooms[roomName].addToSpawnQueueStart(args);
+    }
 };
 
 // ~~~~~~~~~~~~~~~~~~
