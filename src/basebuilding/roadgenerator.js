@@ -12,10 +12,10 @@ const RoadGenerator = {
 
         const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
-            roads['source' + i] = this.findPathForRoads(room.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roads);
+            roads['source' + i] = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roads));
         }
-        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
-        roads.mineral    = this.findPathForRoads(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.controller = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads));
+        roads.mineral    = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads));
 
         room.memory.layout.roads = roads;
 
