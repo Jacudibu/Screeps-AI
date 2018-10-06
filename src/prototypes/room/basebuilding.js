@@ -1,7 +1,7 @@
 global.baseLayouts = {};
 require('layouts.layouts');
 
-const RoadGenerator = require('basebuilding.roadgenerator');
+const roadGenerator = require('basebuilding.roadgenerator');
 const rampartGenerator = require('basebuilding.rampartgenerator');
 
 const STRUCTURE_PRIORITY_ORDER = [
@@ -201,7 +201,7 @@ Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
 Room.prototype._debugRoadPlacement = function(layout) {
     if (this.controller && this.controller.my) {
         // Just making sure it exists...
-        RoadGenerator.generateAndGetRoads(this, layout);
+        roadGenerator.generateAndGetRoads(this, layout);
 
         if (layout) {
             const center = this._getCenterPosition();
@@ -243,6 +243,10 @@ Room.prototype._debugRampartPlacement = function() {
 
 Room.prototype.forceRampartRegeneration = function() {
     rampartGenerator.calculateRampartPositions(this, this.memory.layout);
+};
+
+Room.prototype.forceRemoteRoadRegeneration = function(baseRoomName) {
+    roadGenerator.generateRoadsForRemoteRoom(Game.rooms[baseRoomName], Memory.rooms[baseRoomName].layout, this);
 };
 
 Room.prototype._getCenterPosition = function() {
@@ -477,7 +481,7 @@ Room.prototype._placeExtractor = function() {
 };
 
 Room.prototype._placeExtraRoads = function(layout) {
-    const extraRoadPositions = RoadGenerator.generateAndGetRoads(this, layout);
+    const extraRoadPositions = roadGenerator.generateAndGetRoads(this, layout);
 
     for (let i = 0; i < this.sources.length; i++) {
         if (this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
