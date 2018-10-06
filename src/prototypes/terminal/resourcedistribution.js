@@ -223,6 +223,10 @@ const terminalResourceDistribution = {
 };
 
 StructureTerminal.prototype.calculateDemand = function() {
+    if (this.room.shouldEvacuate) {
+        return;
+    }
+
     if (this.room.myLabs.length > 2) {
         RESOURCES_ALL.forEach(resource => {
             if (!this.store[resource]) {
@@ -244,11 +248,19 @@ StructureTerminal.prototype.calculateDemand = function() {
 };
 
 StructureTerminal.prototype.calculateSupply = function() {
-    RESOURCES_ALL.forEach(resource => {
-        if (this.store[resource] && this.store[resource] > TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]) {
-            terminalResourceDistribution.addToSupplyList(this.room.name, resource, this.store[resource] - TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]);
-        }
-    });
+    if (this.room.shouldEvacuate) {
+        RESOURCES_ALL.forEach(resource => {
+            if (this.store[resource] && this.store[resource] > 0) {
+                terminalResourceDistribution.addToSupplyList(this.room.name, resource, this.store[resource]);
+            }
+        });
+    } else {
+        RESOURCES_ALL.forEach(resource => {
+            if (this.store[resource] && this.store[resource] > TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]) {
+                terminalResourceDistribution.addToSupplyList(this.room.name, resource, this.store[resource] - TERMINAL_DISTRIBUTION_CONSTANTS.TERMINAL_MAX_STORE[resource]);
+            }
+        });
+    }
 };
 
 profiler.registerObject(terminalResourceDistribution, "TerminalResourceDistribution");
