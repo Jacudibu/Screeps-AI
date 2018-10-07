@@ -384,7 +384,9 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
                 continue;
             }
 
-            if (this.room.storage.store[resource] > this.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity)) {
+
+            if (this.room.storage.store[resource] > this.room.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity)) {
+                // console.log(this + " evacuate: " + this.room.shouldEvacuate + " store: " + this.room.storage.store[resource] + " storage_max: " + (STORAGE_MAX[resource] + this.carryCapacity));
                 this.memory.taskTargetId = this.room.storage.id;
                 this.memory.hauledResourceType = resource;
                 return this.room.storage;
@@ -392,7 +394,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         }
     }
 
-    if (!this.shouldEvacuate) {
+    if (!this.room.shouldEvacuate) {
         // Haul Terminal -> Storage if storage is not full
         if (this.room.terminal && this.room.storage) {
             for (let resource of RESOURCES_ALL) {
@@ -400,7 +402,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
                     continue;
                 }
 
-                if (this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
+                if (!this.room.storage.store[resource] || this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
                     this.memory.taskTargetId = this.room.terminal.id;
                     this.memory.hauledResourceType = resource;
                     return this.room.terminal;
