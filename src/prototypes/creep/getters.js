@@ -525,23 +525,36 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
             return structure;
         }
 
-        // storage & terminal
-        if (structure.store) {
-            const storedResources = Object.keys(structure.store);
-            for (const resource of storedResources) {
-                if (structure.store[resource]) {
+        // TODO: use remoteHaulTargetRoom once that is cached as well
+        if (this.spawnRoom && Game.rooms[this.spawnRoom].terminal) {
+            // Steal precious resources!
+            // storage & terminal
+            if (structure.store) {
+                const storedResources = Object.keys(structure.store);
+                for (const resource of storedResources) {
+                    if (structure.store[resource]) {
+                        this.memory.taskTargetId = structure.id;
+                        this.memory.hauledResourceType = resource;
+                        return structure;
+                    }
+                }
+            }
+
+            // Nuker
+            if (structure.ghodium) {
+                this.memory.taskTargetId = structure.id;
+                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                return structure;
+            }
+        } else {
+            // Just steal energy
+            if (structure.store) {
+                if (structure.store[RESOURCE_ENERGY]) {
                     this.memory.taskTargetId = structure.id;
-                    this.memory.hauledResourceType = resource;
+                    this.memory.hauledResourceType = RESOURCE_ENERGY;
                     return structure;
                 }
             }
-        }
-
-        // Nuker
-        if (structure.ghodium) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_GHODIUM;
-            return structure;
         }
     }
 
