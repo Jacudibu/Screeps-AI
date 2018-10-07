@@ -25,3 +25,7 @@ Object.defineProperty(Creep.prototype, "respawnTTL", {
     configurable: false,
     enumerable: false,
 });
+
+utility.deleteRespawnTTLEntryOnDeath = function(creepName) {
+    delete respawnTTLs[creepName];
+};
