@@ -42,8 +42,8 @@ const labReactionRunner = {
                              lab.requestedMineral != null ? lab.requestedMineral : "-", lab.pos, {color: "orange", font: 0.2});
         }
 
-        room.visual.text("next labTick: " + nextLabTick[room.name], 0, 0, {align: 'left'});
-        room.visual.text("current labtask: " + room.labTask + (room.labReaction ? " > " + room.labReaction : ""), 0, 1, {align: 'left'});
+        room.visual.text("current labtask: " + room.labTask + (room.labReaction ? " > " + room.labReaction : "") +
+                         " | " + (nextLabTick[room.name] - Game.time), 1, 1, {align: 'left'});
     },
 
     tryRunLabCodeForRoom(room) {
