@@ -105,18 +105,22 @@ const RoadGenerator = {
     findPathForRoads(fromPos, toPos, layoutRoadRoomPositions, roads) {
         // TODO: Add traversed rooms so we don't store/place roads twice
 
+        console.log("from: " + JSON.stringify(fromPos));
+        console.log("to:   " + JSON.stringify(toPos));
         let allowedRooms;
         if (fromPos.roomName !== toPos.roomName) {
             allowedRooms = {};
             allowedRooms[fromPos.roomName] = true;
             const route = Game.map.findRoute(fromPos.roomName, toPos.roomName);
-            //console.log("route: " + JSON.stringify(route));
+            console.log("route: " + JSON.stringify(route));
             if (route !== ERR_NO_PATH) {
                 for (let value of route) {
                     allowedRooms[value.room] = true;
                 }
             }
         }
+
+        console.log(JSON.stringify(allowedRooms));
 
         for (let roomName in allowedRooms) {
             if (!Game.rooms[roomName]) {

@@ -497,13 +497,10 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         source.forceNearbyContainerReload();
         targetPos = source.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
-            targetPos = source.getNearbyContainerConstructionSitePosition();
-            if (targetPos === ERR_NOT_FOUND) {
-                targetPos = source.placeContainerConstructionSiteAndGetItsPosition(this.pos);
-                if (targetPos === ERR_INVALID_ARGS) {
-                    log.warning(this + "unable to place source container!");
-                    targetPos = source.pos;
-                }
+            targetPos = source.placeContainerConstructionSiteAndGetItsPosition(this.pos);
+            if (targetPos === ERR_INVALID_ARGS) {
+                log.warning(this + "unable to place source container!");
+                targetPos = source.pos;
             }
         }
     }
@@ -527,13 +524,10 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
         mineral.forceNearbyContainerReload();
         targetPos = mineral.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
-            targetPos = mineral.getNearbyContainerConstructionSitePosition();
-            if (targetPos === ERR_NOT_FOUND) {
-                targetPos = mineral.placeContainerConstructionSiteAndGetItsPosition(this.pos);
-                if (targetPos === ERR_INVALID_ARGS) {
-                    log.warning(this + "unable to place mineral container!");
-                    targetPos = mineral.pos;
-                }
+            targetPos = mineral.placeContainerConstructionSiteAndGetItsPosition(this.pos);
+            if (targetPos === ERR_INVALID_ARGS) {
+                log.warning(this + "unable to place mineral container!");
+                targetPos = mineral.pos;
             }
         }
     }

@@ -69,7 +69,7 @@ Source.prototype.getNearbyContainerPosition = function() {
     if (this.nearbyContainer) {
         return this.nearbyContainer.pos;
     } else {
-        return ERR_NOT_FOUND;
+        return this.getNearbyContainerConstructionSitePosition();
     }
 };
 
