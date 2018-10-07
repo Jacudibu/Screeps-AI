@@ -336,7 +336,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
                     return lab;
                 }
             }
-        } else {
+        } else if (this.room.labTask === LABTASK.RUN_REACTION) {
             // Fill Input
             for (let lab of this.room.inputLabs) {
                 if (lab.requestedMineral != null && lab.mineralAmount < 500) {
