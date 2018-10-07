@@ -526,9 +526,20 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
         }
 
         // storage & terminal
-        if (structure.store && structure.store[RESOURCE_ENERGY]) {
+        if (structure.store) {
+            for (const resource of RESOURCES_ALL) {
+                if (structure.store[resource]) {
+                    this.memory.taskTargetId = structure.id;
+                    this.memory.hauledResourceType = resource;
+                    return structure;
+                }
+            }
+        }
+
+        // Nuker
+        if (structure.ghodium) {
             this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.memory.hauledResourceType = RESOURCE_GHODIUM;
             return structure;
         }
     }
