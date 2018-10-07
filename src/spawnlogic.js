@@ -268,7 +268,7 @@ const spawnlogic = {
 
     countNumberOfCreepsWithRole(room, role) {
         const creeps = room.find(FIND_MY_CREEPS);
-        return _.sum(creeps, creep => creep.memory.role === role);
+        return _.sum(creeps, creep => creep.role === role);
     },
 
     checkRemoteMiningRooms(room) {

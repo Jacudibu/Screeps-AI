@@ -20,7 +20,7 @@ Creep.prototype.logActionError = function(action, errorCode) {
 
 Creep.prototype.addRespawnEntryToSpawnQueue = function() {
     let args = {
-        role: this.memory.role,
+        role: this.role,
     };
 
     // Handle special cases with counts in memory
@@ -33,7 +33,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             }
 
             let spawnQueueCount = Memory.rooms[this.room.name].spawnQueue.filter(entry => entry.role === ROLE.HAULER).length;
-            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.respawnTTL).length;
+            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.role === ROLE.HAULER && creep.respawnTTL).length;
 
             if ((aliveCount + spawnQueueCount) <= this.room.requestedCreeps[ROLE.HAULER]) {
                 addToSpawnQueueStart(this.spawnRoom, args);
@@ -43,14 +43,14 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             addToSpawnQueueStart(this.spawnRoom, args);
             break;
         case ROLE.REMOTE_HAULER:
-            args.targetRoomName = this.memory.remoteHaulTargetRoom;
+            args.targetRoomName = this.remoteHaulTargetRoom;
             addToSpawnQueueEnd(this.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
             const constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
             if (constructionSites && constructionSites.length > 0) {
-                args.targetRoomName = this.memory.targetRoomName;
+                args.targetRoomName = this.targetRoomName;
                 args.respawnTTL = this.respawnTTL;
                 addToSpawnQueueEnd(this.spawnRoom, args);
             } else {
@@ -58,23 +58,23 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             }
             break;
         case ROLE.REMOTE_HARVESTER:
-            args.targetRoomName = this.memory.targetRoomName;
+            args.targetRoomName = this.targetRoomName;
             addToSpawnQueueEnd(this.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHarvesters++;
             break;
         case ROLE.REMOTE_UPGRADER:
-            args.targetRoomName = this.memory.targetRoomName;
+            args.targetRoomName = this.targetRoomName;
             args.respawnTTL = this.respawnTTL;
             addToSpawnQueueEnd(this.spawnRoom, args);
             break;
         case ROLE.CARRIER:
-            args.targetRoomName = this.memory.remoteHaulTargetRoom;
+            args.targetRoomName = this.remoteHaulTargetRoom;
 
             if (Game.rooms[args.targetRoomName] && Game.rooms[args.targetRoomName].terminal) {
                 break;
             }
 
-            args.storageRoomName = this.memory.remoteHaulStorageRoom;
+            args.storageRoomName = this.remoteHaulStorageRoom;
             args.respawnTTL = this.respawnTTL;
             addToSpawnQueueEnd(this.spawnRoom, args);
             break;

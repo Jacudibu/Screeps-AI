@@ -67,7 +67,7 @@ const creepAi = {
             }
         }
 
-        switch (creep.memory.role) {
+        switch (creep.role) {
             case ROLE.HARVESTER:
                 harvesterAI.run(creep);
                 break;

@@ -50,7 +50,7 @@ Room.prototype.askForHelpIfThreatDetected = function() {
     }
 
     if (this.memory.requiresHelp === undefined) {
-        const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.memory.role === ROLE.DEFENDER});
+        const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER});
         if (myDefenseForce.length === 0) {
             this.memory.requiresHelp = true;
             if (this.threat.players[0] !== "Invader" && this.threat.players[0] !== "Source Keeper" && this.controller

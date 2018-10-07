@@ -6,7 +6,7 @@ const guidedRangedAttacker = {
 
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name === creep.memory.targetRoomName) {
+                if (creep.room.name === creep.targetRoomName) {
                     creep.setTask(TASK.WAIT);
                     //creep.setTask(TASK.ATTACK);
                 } else {

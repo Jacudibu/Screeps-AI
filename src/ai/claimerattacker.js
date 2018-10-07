@@ -2,7 +2,7 @@ const claimer = {
     run(creep) {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name === creep.memory.targetRoomName) {
+                if (creep.room.name === creep.targetRoomName) {
                     creep.setTask(TASK.ATTACK_CONTROLLER)
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM);

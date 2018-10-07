@@ -292,8 +292,8 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished, stuckValue = 
             break;
         case ERR_NOT_OWNER:
         case ERR_INVALID_TARGET:
-            if (!this.memory.targetRoomName) {
-                this.memory.targetRoomName = this.spawnRoom;
+            if (!this.targetRoomName) {
+                this.targetRoomName = this.spawnRoom;
             }
 
             this.setTask(TASK.MOVE_TO_ROOM);
@@ -539,7 +539,7 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
 };
 
 Creep.prototype.determineHarvesterStartTask = function() {
-    if (this.memory.targetRoomName && this.room.name !== this.memory.targetRoomName) {
+    if (this.targetRoomName && this.room.name !== this.targetRoomName) {
         this.setTask(TASK.MOVE_TO_ROOM);
         return;
     }
@@ -557,7 +557,7 @@ Creep.prototype.determineHarvesterStartTask = function() {
 };
 
 Creep.prototype.moveToRoom = function(taskWhenFinished) {
-    const roomName = this.memory.targetRoomName;
+    const roomName = this.targetRoomName;
 
     if (this.room.name === roomName) {
         this.setTask(taskWhenFinished);
@@ -614,10 +614,10 @@ Creep.prototype.attackRoomController = function() {
     switch (this.attackController(this.room.controller)) {
         case OK:
             if (this.room.name === 'E52S43') {
-                this.memory.targetRoomName = 'E53S44';
+                this.targetRoomName = 'E53S44';
                 this.setTask(TASK.MOVE_TO_ROOM);
             } else if (this.room.name === 'E53S44') {
-                this.memory.targetRoomName = 'E52S43';
+                this.targetRoomName = 'E52S43';
                 this.setTask(TASK.MOVE_TO_ROOM);
             } else {
                 this.suicide();
@@ -689,9 +689,9 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
         if (possibleTargets.length === 0) {
             this.say(creepTalk.victory, true);
             if (this.countBodyPartsOfType(HEAL) === 0) {
-                this.memory.targetRoomName = this.memory.homeRoomName;
+                this.targetRoomName = this.memory.homeRoomName;
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
-            } else if (this.room !== this.memory.targetRoomName) {
+            } else if (this.room !== this.targetRoomName) {
                 this.setTask(TASK.MOVE_TO_ROOM)
             }
             return ERR_NOT_FOUND;
@@ -825,7 +825,7 @@ Creep.prototype.selectNextRoomToScout = function() {
     }
 
     Memory.rooms[targetRoom].isAlreadyScouted = true;
-    this.memory.targetRoomName = targetRoom;
+    this.targetRoomName = targetRoom;
 };
 
 Creep.prototype.stepOntoHostileConstructionSites = function() {

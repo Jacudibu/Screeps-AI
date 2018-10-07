@@ -2,7 +2,7 @@ const carrier = {
     run(creep) {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name === creep.memory.remoteHaulTargetRoom) {
+                if (creep.room.name === creep.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === 0) {
                         if (creep.respawnTTL === -1) {
                             if (creep.room.terminal) {
@@ -12,19 +12,19 @@ const carrier = {
                             }
                             creep.setTask(TASK.RECYCLE);
                         } else {
-                            creep.memory.targetRoomName = creep.memory.remoteHaulStorageRoom;
+                            creep.targetRoomName = creep.remoteHaulStorageRoom;
                             creep.setTask(TASK.MOVE_TO_ROOM);
                         }
                     } else {
                         creep.setTask(TASK.STORE_ENERGY);
                     }
-                } else if (creep.room.name === creep.memory.remoteHaulStorageRoom) {
+                } else if (creep.room.name === creep.remoteHaulStorageRoom) {
                     if (!creep.respawnTTL) {
                         creep.setTask(TASK.RECYCLE);
                     }
 
                     if (_.sum(creep.carry) === creep.carryCapacity) {
-                        creep.memory.targetRoomName = creep.memory.remoteHaulTargetRoom;
+                        creep.targetRoomName = creep.remoteHaulTargetRoom;
                         creep.setTask(TASK.MOVE_TO_ROOM);
                     } else {
                         creep.setTask(TASK.COLLECT_ENERGY);
