@@ -61,8 +61,8 @@ const creepAi = {
     },
 
     _runCreepLogic: function(creep) {
-        if (creep.memory.respawnTTL) {
-            if (creep.ticksToLive < creep.memory.respawnTTL) {
+        if (creep.respawnTTL) {
+            if (creep.ticksToLive < creep.respawnTTL) {
                 creep.addRespawnEntryToSpawnQueue();
             }
         }

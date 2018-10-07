@@ -9,8 +9,8 @@ const harvester = {
                 break;
             case TASK.MOVE_TO_ROOM:
                 if (!creep.memory.targetRoomName) {
-                    if (creep.memory.respawnTTL) {
-                        delete creep.memory.respawnTTL;
+                    if (creep.respawnTTL) {
+                        creep.respawnTTL = null;
                     }
 
                     creep.memory.targetRoomName = creep.memory.spawnRoom;

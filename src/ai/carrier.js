@@ -4,9 +4,9 @@ const carrier = {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.memory.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === 0) {
-                        if (creep.memory.respawnTTL === -1) {
+                        if (creep.respawnTTL === -1) {
                             if (creep.room.terminal) {
-                                delete creep.memory.respawnTTL;
+                                creep.respawnTTL = null;
                             } else {
                                 creep.addRespawnEntryToSpawnQueue();
                             }
@@ -19,7 +19,7 @@ const carrier = {
                         creep.setTask(TASK.STORE_ENERGY);
                     }
                 } else if (creep.room.name === creep.memory.remoteHaulStorageRoom) {
-                    if (!creep.memory.respawnTTL) {
+                    if (!creep.respawnTTL) {
                         creep.setTask(TASK.RECYCLE);
                     }
 

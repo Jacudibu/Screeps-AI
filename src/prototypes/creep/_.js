@@ -33,7 +33,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             }
 
             let spawnQueueCount = Memory.rooms[this.room.name].spawnQueue.filter(entry => entry.role === ROLE.HAULER).length;
-            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.memory.respawnTTL).length;
+            let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.respawnTTL).length;
 
             if ((aliveCount + spawnQueueCount) <= this.room.requestedCreeps[ROLE.HAULER]) {
                 addToSpawnQueueStart(this.memory.spawnRoom, args);
@@ -51,7 +51,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             const constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
             if (constructionSites && constructionSites.length > 0) {
                 args.targetRoomName = this.memory.targetRoomName;
-                args.respawnTTL = this.memory.respawnTTL;
+                args.respawnTTL = this.respawnTTL;
                 addToSpawnQueueEnd(this.memory.spawnRoom, args);
             } else {
                 log.warning(this.room + "|" + this.name + " -> Ignoring respawn, no construction Sites left.");
@@ -64,7 +64,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             break;
         case ROLE.REMOTE_UPGRADER:
             args.targetRoomName = this.memory.targetRoomName;
-            args.respawnTTL = this.memory.respawnTTL;
+            args.respawnTTL = this.respawnTTL;
             addToSpawnQueueEnd(this.memory.spawnRoom, args);
             break;
         case ROLE.CARRIER:
@@ -75,14 +75,14 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             }
 
             args.storageRoomName = this.memory.remoteHaulStorageRoom;
-            args.respawnTTL = this.memory.respawnTTL;
+            args.respawnTTL = this.respawnTTL;
             addToSpawnQueueEnd(this.memory.spawnRoom, args);
             break;
         default:
             log.warning(this + " undefined role asking for respawn?!" + args.role);
     }
 
-    this.memory.respawnTTL = undefined;
+    this.respawnTTL = null;
 };
 
 addToSpawnQueueEnd = function(roomName, args) {

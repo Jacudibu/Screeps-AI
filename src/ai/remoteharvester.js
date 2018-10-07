@@ -15,8 +15,8 @@ const remoteHarvester = {
                     return;
                 }
 
-                if (creep.memory.respawnTTL === RESPAWN_TTL_NOT_YET_SET) {
-                    creep.memory.respawnTTL = CREEP_LIFE_TIME - creep.ticksToLive;
+                if (creep.respawnTTL === RESPAWN_TTL_NOT_YET_SET) {
+                    creep.respawnTTL = CREEP_LIFE_TIME - creep.ticksToLive;
                 }
                 this.run(creep);
                 break;

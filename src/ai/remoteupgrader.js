@@ -9,7 +9,7 @@ const remoteUpgrader = {
 
                 if (_.sum(creep.carry) < 10) {
                     if (creep.room.controller && creep.room.controller.level === 8) {
-                        creep.memory.respawnTTL = undefined;
+                        creep.respawnTTL = null;
                     }
 
                     creep.setTask(TASK.COLLECT_ENERGY);
