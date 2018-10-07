@@ -20,8 +20,7 @@ const memoryManagment = {
             let creep = Memory.creeps[creepName];
             this.deleteRoleSpecificStuff(creep);
 
-            utility.deleteRespawnTTLEntryOnDeath(creepName);
-            utility.deleteSpawnRoomEntryOnDeath(creepName);
+            utility.deleteCreepCacheOnDeath(creepName);
             delete Memory.creeps[creepName];
         }
     },
