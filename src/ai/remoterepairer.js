@@ -6,8 +6,8 @@ const remoteRepairer = {
 
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name === creep.memory.spawnRoom) {
-                    creep.memory.targetRoomName = Memory.rooms[creep.memory.spawnRoom].repairRoute[creep.memory.repairRouteIndex];
+                if (creep.room.name === creep.spawnRoom) {
+                    creep.memory.targetRoomName = Memory.rooms[creep.spawnRoom].repairRoute[creep.memory.repairRouteIndex];
 
                     if (_.sum(creep.carry) < creep.carryCapacity) {
                         creep.setTask(TASK.COLLECT_ENERGY);
@@ -33,7 +33,7 @@ const remoteRepairer = {
                             }
 
                             const nextRoomIndex = ++creep.memory.repairRouteIndex;
-                            const repairRoute = Memory.rooms[creep.memory.spawnRoom].repairRoute;
+                            const repairRoute = Memory.rooms[creep.spawnRoom].repairRoute;
 
                             if (nextRoomIndex >= repairRoute.length) {
                                 creep.suicide();
@@ -68,7 +68,7 @@ const remoteRepairer = {
                 let result = creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
                 if (result === ERR_NOT_FOUND) {
                     // Goto spawn room and collect energy there
-                    creep.memory.targetRoomName = creep.memory.spawnRoom;
+                    creep.memory.targetRoomName = creep.spawnRoom;
                     creep.setTask(TASK.MOVE_TO_ROOM);
                 }
                 break;

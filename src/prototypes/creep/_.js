@@ -26,7 +26,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
     // Handle special cases with counts in memory
     switch (args.role) {
         case ROLE.HAULER:
-            if (this.room.name !== this.memory.spawnRoom) {
+            if (this.room.name !== this.spawnRoom) {
                 // Happens when haulers decide to travel into distant lands and never turn back
                 log.warning(this + " is in the wrong room and asks for a respawn. Does this happen more often? If so, try to find out why");
                 break;
@@ -36,15 +36,15 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             let aliveCount = this.room.find(FIND_MY_CREEPS).filter(creep => creep.memory.role === ROLE.HAULER && creep.respawnTTL).length;
 
             if ((aliveCount + spawnQueueCount) <= this.room.requestedCreeps[ROLE.HAULER]) {
-                addToSpawnQueueStart(this.memory.spawnRoom, args);
+                addToSpawnQueueStart(this.spawnRoom, args);
             }
             break;
         case ROLE.HARVESTER:
-            addToSpawnQueueStart(this.memory.spawnRoom, args);
+            addToSpawnQueueStart(this.spawnRoom, args);
             break;
         case ROLE.REMOTE_HAULER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
-            addToSpawnQueueEnd(this.memory.spawnRoom, args);
+            addToSpawnQueueEnd(this.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
@@ -52,20 +52,20 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             if (constructionSites && constructionSites.length > 0) {
                 args.targetRoomName = this.memory.targetRoomName;
                 args.respawnTTL = this.respawnTTL;
-                addToSpawnQueueEnd(this.memory.spawnRoom, args);
+                addToSpawnQueueEnd(this.spawnRoom, args);
             } else {
                 log.warning(this.room + "|" + this.name + " -> Ignoring respawn, no construction Sites left.");
             }
             break;
         case ROLE.REMOTE_HARVESTER:
             args.targetRoomName = this.memory.targetRoomName;
-            addToSpawnQueueEnd(this.memory.spawnRoom, args);
+            addToSpawnQueueEnd(this.spawnRoom, args);
             Memory.rooms[args.targetRoomName].assignedHarvesters++;
             break;
         case ROLE.REMOTE_UPGRADER:
             args.targetRoomName = this.memory.targetRoomName;
             args.respawnTTL = this.respawnTTL;
-            addToSpawnQueueEnd(this.memory.spawnRoom, args);
+            addToSpawnQueueEnd(this.spawnRoom, args);
             break;
         case ROLE.CARRIER:
             args.targetRoomName = this.memory.remoteHaulTargetRoom;
@@ -76,7 +76,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
 
             args.storageRoomName = this.memory.remoteHaulStorageRoom;
             args.respawnTTL = this.respawnTTL;
-            addToSpawnQueueEnd(this.memory.spawnRoom, args);
+            addToSpawnQueueEnd(this.spawnRoom, args);
             break;
         default:
             log.warning(this + " undefined role asking for respawn?!" + args.role);

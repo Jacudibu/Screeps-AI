@@ -32,7 +32,7 @@ const hauler = {
                     if (creep.respawnTTL) {
                         creep.respawnTTL = null;
                     }
-                    creep.memory.targetRoomName = creep.memory.spawnRoom;
+                    creep.memory.targetRoomName = creep.spawnRoom;
                 }
 
                 creep.moveToRoom(TASK.STORE_RESOURCE);

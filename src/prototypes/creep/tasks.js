@@ -293,7 +293,7 @@ Creep.prototype.upgradeRoomController = function(taskWhenFinished, stuckValue = 
         case ERR_NOT_OWNER:
         case ERR_INVALID_TARGET:
             if (!this.memory.targetRoomName) {
-                this.memory.targetRoomName = this.memory.spawnRoom;
+                this.memory.targetRoomName = this.spawnRoom;
             }
 
             this.setTask(TASK.MOVE_TO_ROOM);
