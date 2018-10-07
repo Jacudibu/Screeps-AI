@@ -12,10 +12,13 @@ const RoadGenerator = {
 
         const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
-            roads['source' + i] = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roads));
+            const fromPos = room.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
+            roads['source' + i] = this.removeRoomNamesFromPositionArray(this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roads));
         }
+        const mineralFromPos = room.mineral.calculateContainerConstructionSitePosition(layoutCenterPosition);
+
         roads.controller = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads));
-        roads.mineral    = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.mineral.pos, layoutCenterPosition, layoutRoadRoomPositions, roads));
+        roads.mineral    = this.removeRoomNamesFromPositionArray(this.findPathForRoads(mineralFromPos, layoutCenterPosition, layoutRoadRoomPositions, roads));
 
         room.memory.layout.roads = roads;
 
@@ -30,14 +33,16 @@ const RoadGenerator = {
         const roadsA = {};
         let mergedRoadsA = [];
         for (let i = 0; i < remoteRoom.sources.length; i++) {
-            roadsA['source' + i] = this.findPathForRoads(remoteRoom.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roadsA);
+            const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
+            roadsA['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roadsA);
             mergedRoadsA = mergedRoadsA.concat(roadsA['source' + i]);
         }
 
         const roadsB = {};
         let mergedRoadsB = [];
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
-            roadsB['source' + i] = this.findPathForRoads(remoteRoom.sources[i].getNearbyContainerPosition(), layoutCenterPosition, layoutRoadRoomPositions, roadsB);
+            const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
+            roadsB['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roadsB);
             mergedRoadsB = mergedRoadsB.concat(roadsB['source' + i]);
         }
 
