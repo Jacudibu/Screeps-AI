@@ -55,11 +55,15 @@ Room.prototype.askForHelpIfThreatDetected = function() {
             this.memory.requiresHelp = true;
             if (this.threat.players[0] !== "Invader" && this.threat.players[0] !== "Source Keeper" && this.controller
                 && (this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
-                const message = this + " is being attacked by " + JSON.stringify(this.threat.players) + "<br>" +
-                    "Threat info: " + JSON.stringify(this.threat, null, 2);
-                log.warning(message);
 
-                Game.notify(message);
+                // TODO: Remove this once wtffrank stops sending dismantlers into that room.
+                if (this.name !== 'E51S49') {
+                    const message = this + " is being attacked by " + JSON.stringify(this.threat.players) + "<br>" +
+                        "Threat info: " + JSON.stringify(this.threat, null, 2);
+                    log.warning(message);
+
+                    Game.notify(message);
+                }
             }
         }
     }

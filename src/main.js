@@ -63,7 +63,7 @@ const labReactionRunner = require('labreactionrunner');
 
 const screepsplus = require('tools.screepsplus');
 
-profiler.enable();
+//profiler.enable();
 
 module.exports.loop = function () {
     profiler.wrap(function() {
