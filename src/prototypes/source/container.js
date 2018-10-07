@@ -95,12 +95,16 @@ Source.prototype.forceNearbyContainerReload = function() {
 };
 
 Source.prototype.placeContainerConstructionSiteAndGetItsPosition = function(posForWhichContainerPositionShouldBeOptimized) {
-    const travelPath = Traveler.findTravelPath(this.pos, posForWhichContainerPositionShouldBeOptimized);
-    const containerPos = travelPath.path[0];
+    const containerPos = this.calculateContainerConstructionSitePosition(posForWhichContainerPositionShouldBeOptimized);
 
     if (this.room.createConstructionSite(containerPos, STRUCTURE_CONTAINER) === OK) {
         return containerPos;
     } else {
         return ERR_INVALID_ARGS;
     }
+};
+
+Source.prototype.calculateContainerConstructionSitePosition = function(posForWhichContainerPositionShouldBeOptimized) {
+    const travelPath = Traveler.findTravelPath(this.pos, posForWhichContainerPositionShouldBeOptimized);
+    return travelPath.path[0];
 };
