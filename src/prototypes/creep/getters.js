@@ -527,7 +527,8 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
         // storage & terminal
         if (structure.store) {
-            for (const resource of RESOURCES_ALL) {
+            const storedResources = Object.keys(structure.store);
+            for (const resource of storedResources) {
                 if (structure.store[resource]) {
                     this.memory.taskTargetId = structure.id;
                     this.memory.hauledResourceType = resource;
