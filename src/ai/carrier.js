@@ -5,7 +5,11 @@ const carrier = {
                 if (creep.room.name === creep.memory.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === 0) {
                         if (creep.memory.respawnTTL === -1) {
-                            creep.addRespawnEntryToSpawnQueue();
+                            if (creep.room.terminal) {
+                                delete creep.memory.respawnTTL;
+                            } else {
+                                creep.addRespawnEntryToSpawnQueue();
+                            }
                             creep.setTask(TASK.RECYCLE);
                         } else {
                             creep.memory.targetRoomName = creep.memory.remoteHaulStorageRoom;
