@@ -13,12 +13,16 @@ const RoadGenerator = {
         const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
             const fromPos = room.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
-            roads['source' + i] = this.removeRoomNamesFromPositionArray(this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roads));
+            roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roads);
         }
         const mineralFromPos = room.mineral.calculateContainerConstructionSitePosition(layoutCenterPosition);
 
-        roads.controller = this.removeRoomNamesFromPositionArray(this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads));
-        roads.mineral    = this.removeRoomNamesFromPositionArray(this.findPathForRoads(mineralFromPos, layoutCenterPosition, layoutRoadRoomPositions, roads));
+        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+
+        for (const roadKey in roads) {
+            roads[roadKey] = this.removeRoomNamesFromPositionArray(roads[roadKey]);
+        }
 
         room.memory.layout.roads = roads;
 
@@ -125,7 +129,7 @@ const RoadGenerator = {
             }
         }
 
-        console.log(JSON.stringify(allowedRooms));
+        console.log("allowed rooms: " + JSON.stringify(allowedRooms));
 
         for (let roomName in allowedRooms) {
             if (!Game.rooms[roomName]) {
@@ -147,6 +151,8 @@ const RoadGenerator = {
             };
         });
 
+        console.log("frompos: " + fromPos);
+        console.log("goals: " + JSON.stringify(goals));
         const result = PathFinder.search(fromPos, goals, {
             plainCost: 2,
             swampCost: 5,
