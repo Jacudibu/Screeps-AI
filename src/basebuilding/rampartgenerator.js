@@ -48,25 +48,25 @@ const rampartGenerator = {
 
         // top
         y = -heightHalf;
-        for (x = -widthHalf; x < widthHalf; x++) {
+        for (x = -widthHalf; x < widthHalf + 1; x++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
 
         // bottom
         y = heightHalf;
-        for (x = -widthHalf; x < widthHalf; x++) {
+        for (x = -widthHalf; x < widthHalf + 1; x++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
 
         // left
         x = -widthHalf;
-        for (y = -heightHalf + 1; y < heightHalf - 1; y++) {
+        for (y = -heightHalf + 1; y < heightHalf; y++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
 
         // right
         x = widthHalf;
-        for (y = -heightHalf + 1; y < heightHalf - 1; y++) {
+        for (y = -heightHalf + 1; y < heightHalf; y++) {
             this.checkIfPositionIsValidAndAddToArray(result, centerPosition, terrain, x, y);
         }
         return result;
