@@ -1,5 +1,5 @@
 Spawn.prototype.drawSpawnInfo = function() {
-    this.room.visual.text('>' + this.spawning.name, this.pos.x + 1, this.pos.y, {align: 'left', opacity: '0.5'});
+    this.drawDebugText(this.spawning.name + " | " + (this.spawning.remainingTime - 1));
 };
 
 Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
