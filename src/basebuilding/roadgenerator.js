@@ -50,7 +50,6 @@ const RoadGenerator = {
             }
             totalCostA += pathFinderResult.cost;
         }
-        roadsA = this.removeDuplicateRoadPositions(roadsA, layout);
 
         let roadsB = [];
         let totalCostB = 0;
@@ -64,7 +63,6 @@ const RoadGenerator = {
             }
             totalCostB += pathFinderResult.cost;
         }
-        roadsB = this.removeDuplicateRoadPositions(roadsB, layout);
 
         console.log("a: length " + roadsA.length + " | cost " + totalCostA);
         console.log("b: length " + roadsB.length + " | cost " + totalCostB);
@@ -117,9 +115,11 @@ const RoadGenerator = {
                 Memory.rooms[roomName].layout.roads.sources = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
             } else if (roomName === baseRoom.name) {
                 // reverse entries so that they are ordered by distance to base center
-                Memory.rooms[roomName].layout.roads[remoteRoom.name] = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName].reverse());
+                const posArray = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName].reverse());
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] = this.removeDuplicateRoadPositions(posArray, Memory.rooms[roomName].layout);
             } else {
-                Memory.rooms[roomName].layout.roads[remoteRoom.name] = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
+                const posArray = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
+                Memory.rooms[roomName].layout.roads[remoteRoom.name] = this.removeDuplicateRoadPositions(posArray, Memory.rooms[roomName].layout);
             }
         }
 
@@ -130,31 +130,34 @@ const RoadGenerator = {
         return array.map(function(pos) {return {x: pos.x, y: pos.y};});
     },
 
-    removeDuplicateRoadPositions(roadPositionArray, layout, roadsGeneratedUntilNow) {
+    removeDuplicateRoadPositions(roadPositionArray, layout, roadsGeneratedUntilNow = null) {
         const result = [];
         for (const position of roadPositionArray) {
             if (_.find(result, road => this.arePositionsEqualOnXY(road, position))) {
                 continue;
             }
 
-            if (_.find(roadsGeneratedUntilNow, road => this.arePositionsEqualOnXYRoom(road, position))) {
-                continue;
-            }
-
-            if (layout.roads) {
-                for (const key in layout.roads) {
-                    if (_.find(layout.roads[key], road => this.arePositionsEqualOnXY(road, position))) {
-                        continue;
-                    }
-                }
-            }
-
-            if (layout.buildings && layout.buildings.road) {
-                if (_.find(layout.buildings.road.pos, road => this.arePositionsEqualOnXY(road, position))) {
+            if (roadsGeneratedUntilNow) {
+                if (_.find(roadsGeneratedUntilNow, road => this.arePositionsEqualOnXYRoom(road, position))) {
                     continue;
                 }
             }
 
+            if (layout) {
+                if (layout.roads) {
+                    for (const key in layout.roads) {
+                        if (_.find(layout.roads[key], road => this.arePositionsEqualOnXY(road, position))) {
+                            continue;
+                        }
+                    }
+                }
+
+                if (layout.buildings && layout.buildings.road) {
+                    if (_.find(layout.buildings.road.pos, road => this.arePositionsEqualOnXY(road, position))) {
+                        continue;
+                    }
+                }
+            }
             result.push(position);
         }
 
