@@ -245,6 +245,10 @@ Room.prototype.forceRampartRegeneration = function() {
     rampartGenerator.calculateRampartPositions(this, this.memory.layout);
 };
 
+Room.prototype.forceRoadRegeneration = function() {
+    roadGenerator.generateAndGetRoads(this, this.memory.layout, true);
+};
+
 Room.prototype.forceRemoteRoadRegeneration = function(baseRoomName) {
     roadGenerator.generateRoadsForRemoteRoom(Game.rooms[baseRoomName], Memory.rooms[baseRoomName].layout, this);
 };

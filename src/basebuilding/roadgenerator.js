@@ -111,8 +111,8 @@ const RoadGenerator = {
         return roadPositions;
     },
 
-    findPathForRoads(fromPos, toPos, layoutRoadRoomPositions, roads) {
-        // TODO: Add traversed rooms so we don't store/place roads twice
+    findPathForRoads(fromPos, toPos, layoutRoadRoomPositions, existingRoads) {
+        // TODO: Add traversed rooms so we don't store/place existingRoads twice
 
         console.log("from: " + JSON.stringify(fromPos));
         console.log("to:   " + JSON.stringify(toPos));
@@ -139,12 +139,7 @@ const RoadGenerator = {
         }
 
         // Every road in our layout is a goal since every layouted road has already been optimized and paths to the base.
-        let goals = [].concat(layoutRoadRoomPositions);
-        for (const roadKey in roads) {
-            goals = goals.concat(roads[roadKey]);
-        }
-
-        goals = goals.map(function(position) {
+        let goals = layoutRoadRoomPositions.map(function(position) {
             return {
                 pos: position,
                 range: 1
@@ -205,6 +200,10 @@ const RoadGenerator = {
                             }
                         }
                     }
+                }
+
+                for (const roadPos in existingRoads) {
+                    costs.set(roadPos.x, roadPos.y, 1);
                 }
 
                 return costs;
