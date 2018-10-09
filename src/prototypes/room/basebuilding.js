@@ -1,5 +1,5 @@
 global.baseLayouts = {};
-require('layouts.layouts');
+const layoutMagic = require('layouts.layouts');
 
 const roadGenerator = require('basebuilding.roadgenerator');
 const rampartGenerator = require('basebuilding.rampartgenerator');
@@ -124,7 +124,8 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
     if (this.memory.layout) {
         layout = this.memory.layout;
     } else {
-        layout = baseLayouts[this.memory.predefinedLayoutName];
+        const centerPosition = this._getCenterPosition();
+        layout = layoutMagic.offsetLayout(baseLayouts[this.memory.predefinedLayoutName], centerPosition.x, centerPosition.y);
         this.memory.layout = layout;
     }
 
@@ -204,9 +205,8 @@ Room.prototype._debugRoadPlacement = function(layout) {
         roadGenerator.generateAndGetRoads(this, layout);
 
         if (layout) {
-            const center = this._getCenterPosition();
             for (let pos of layout.buildings.road.pos) {
-                this.visual.circle(new RoomPosition(pos.x + center.x, pos.y + center.y, this.name), {fill: "#00a0ff"});
+                this.visual.circle(new RoomPosition(pos.x, pos.y, this.name), {fill: "#00a0ff"});
             }
         }
     }
@@ -274,10 +274,9 @@ Room.prototype._getCenterPosition = function() {
 };
 
 Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
-    const center = this._getCenterPosition();
     let result = ERR_UNDEFINED;
     for (let i = 0; i < STRUCTURE_PRIORITY_ORDER.length; i++) {
-        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], center, layout);
+        result = this._checkIfStructureTypeNeedsToBeBuilt(STRUCTURE_PRIORITY_ORDER[i], layout);
 
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
@@ -293,7 +292,7 @@ Room.prototype._checkIfSomethingNeedsToBeBuilt = function(layout) {
     return ERR_EVERYTHING_BUILT;
 };
 
-Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, center, layout) {
+Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, layout) {
     const rcl = this.controller.level;
     const allowsMultipleStructures = CONTROLLER_STRUCTURES[structureType][8] > 1;
 
@@ -309,13 +308,13 @@ Room.prototype._checkIfStructureTypeNeedsToBeBuilt = function(structureType, cen
 
     phase[this.name] = structureType;
     if (layout.buildings[structureType]) {
-        return this._placeConstructionSitesBasedOnLayout(structureType, center, layout);
+        return this._placeConstructionSitesBasedOnLayout(structureType, layout);
     } else {
         return this._placeConstructionSitesBasedOnMagic(structureType, layout);
     }
 };
 
-Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, center, layout) {
+Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, layout) {
     if (layout.buildings[structureType].pos.length > 1) {
         if (this[structureType].length >= layout.buildings[structureType].pos.length) {
             return ERR_ALREADY_AT_LAYOUT_LIMIT;
@@ -327,7 +326,7 @@ Room.prototype._placeConstructionSitesBasedOnLayout = function(structureType, ce
     }
 
     for (const position of layout.buildings[structureType].pos) {
-        const result = this._placeConstructionSiteAtPosition(position.x + center.x, position.y + center.y, structureType);
+        const result = this._placeConstructionSiteAtPosition(position.x, position.y, structureType);
         if (result === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
