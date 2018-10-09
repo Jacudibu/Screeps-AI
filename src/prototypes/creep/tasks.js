@@ -493,10 +493,15 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
         source.forceNearbyContainerReload();
         targetPos = source.getNearbyContainerPosition();
         if (targetPos === ERR_NOT_FOUND) {
-            targetPos = source.placeContainerConstructionSiteAndGetItsPosition(this.pos);
-            if (targetPos === ERR_INVALID_ARGS) {
-                log.warning(this + "unable to place source container!");
-                targetPos = source.pos;
+            if (Game.rooms[this.spawnRoom].controller.level > 2) {
+                targetPos = source.placeContainerConstructionSiteAndGetItsPosition(this.pos);
+                if (targetPos === ERR_INVALID_ARGS) {
+                    log.warning(this + "unable to place source container!");
+                    targetPos = source.pos;
+                }
+            } else {
+                this.memory.task = taskWhenFinished;
+                return;
             }
         }
     }
