@@ -40,7 +40,11 @@ const RoadGenerator = {
         for (let i = 0; i < remoteRoom.sources.length; i++) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
             const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsA);
-            roadsA = roadsA.concat(pathFinderResult.path);
+            for (const roadPos of pathFinderResult.path) {
+                if (!_.find(roadsA, road => roadPos.isEqualTo(road))) {
+                    roadsA.push(roadPos);
+                }
+            }
             totalCostA += pathFinderResult.cost;
         }
 
@@ -49,17 +53,29 @@ const RoadGenerator = {
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
             const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsB);
-            roadsB = roadsB.concat(pathFinderResult.path);
+            for (const roadPos of pathFinderResult.path) {
+                if (!_.find(roadsB, road => roadPos.isEqualTo(road))) {
+                    roadsB.push(roadPos);
+                }
+            }
             totalCostB += pathFinderResult.cost;
         }
 
         console.log("a: length " + roadsA.length + " | cost " + totalCostA);
         console.log("b: length " + roadsB.length + " | cost " + totalCostB);
         let roads;
-        if (totalCostA < totalCostB) {
-            roads = roadsA;
+        if (roadsA.length === roadsB.length) {
+            if (totalCostA < totalCostB) {
+                roads = roadsA;
+            } else {
+                roads = roadsB;
+            }
         } else {
-            roads = roadsB;
+            if (roadsA.length < roadsB.length) {
+                roads = roadsA;
+            } else {
+                roads = roadsB;
+            }
         }
 
         // TODO: Remove duplicates!
@@ -146,7 +162,7 @@ const RoadGenerator = {
 
         console.log("frompos: " + fromPos);
         console.log("goal: " + JSON.stringify(baseCenterPosition));
-        const result = PathFinder.search(fromPos, baseCenterPosition, {
+        return PathFinder.search(fromPos, baseCenterPosition, {
             plainCost: 2,
             swampCost: 5,
             heuristicWeight: allowedRooms ? 1.45 : 1.25,
@@ -233,8 +249,6 @@ const RoadGenerator = {
                 return costs;
             }
         });
-
-        return result;
     },
 };
 
