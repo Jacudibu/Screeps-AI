@@ -8,22 +8,21 @@ const RoadGenerator = {
 
         const layoutCenterPosition = room._getCenterPosition();
 
-        const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(room.name, layout, layoutCenterPosition);
-
         const roads = {};
         for (let i = 0; i < room.sources.length; i++) {
             const fromPos = room.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
-            roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+            roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roads);
         }
         const mineralFromPos = room.mineral.calculateContainerConstructionSitePosition(layoutCenterPosition);
 
-        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layoutRoadRoomPositions, roads);
-        roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layoutRoadRoomPositions, roads);
+        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layout, roads);
+        roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layout, roads);
 
         for (const roadKey in roads) {
             roads[roadKey] = this.removeRoomNamesFromPositionArray(roads[roadKey]);
         }
 
+        // TODO: Remove duplicates
         room.memory.layout.roads = roads;
 
         return roads;
@@ -111,16 +110,16 @@ const RoadGenerator = {
         return roadPositions;
     },
 
-    findPathForRoads(fromPos, toPos, layoutRoadRoomPositions, existingRoads) {
+    findPathForRoads(fromPos, baseCenterPosition, roomLayout, existingRoads) {
         // TODO: Add traversed rooms so we don't store/place existingRoads twice
 
         console.log("from: " + JSON.stringify(fromPos));
-        console.log("to:   " + JSON.stringify(toPos));
+        console.log("to:   " + JSON.stringify(baseCenterPosition));
         let allowedRooms;
-        if (fromPos.roomName !== toPos.roomName) {
+        if (fromPos.roomName !== baseCenterPosition.roomName) {
             allowedRooms = {};
             allowedRooms[fromPos.roomName] = true;
-            const route = Game.map.findRoute(fromPos.roomName, toPos.roomName);
+            const route = Game.map.findRoute(fromPos.roomName, baseCenterPosition.roomName);
             console.log("route: " + JSON.stringify(route));
             if (route !== ERR_NO_PATH) {
                 for (let value of route) {
@@ -138,17 +137,9 @@ const RoadGenerator = {
             }
         }
 
-        // Every road in our layout is a goal since every layouted road has already been optimized and paths to the base.
-        let goals = layoutRoadRoomPositions.map(function(position) {
-            return {
-                pos: position,
-                range: 1
-            };
-        });
-
         console.log("frompos: " + fromPos);
-        console.log("goals: " + JSON.stringify(goals));
-        const result = PathFinder.search(fromPos, goals, {
+        console.log("goal: " + JSON.stringify(baseCenterPosition));
+        const result = PathFinder.search(fromPos, baseCenterPosition, {
             plainCost: 2,
             swampCost: 5,
             heuristicWeight: allowedRooms ? 1.45 : 1.25,
@@ -167,12 +158,14 @@ const RoadGenerator = {
 
                 let costs = new PathFinder.CostMatrix;
 
+                // EXISTING STRUCTURES
                 room.find(FIND_STRUCTURES).forEach(function(structure) {
                     if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                         costs.set(structure.pos.x, structure.pos.y, 255);
                     }
                 });
 
+                // TERRAIN
                 const terrain = room.getTerrain();
                 const thingsToKeepDistanceFrom = [];
                 thingsToKeepDistanceFrom.push(...room.find(FIND_MINERALS));
@@ -190,6 +183,7 @@ const RoadGenerator = {
                     }
                 });
 
+                /*
                 if (Memory.rooms[roomName] && Memory.rooms[roomName].layout) {
                     if (Memory.rooms[roomName].layout.roads) {
                         for (const roadKey in Memory.rooms[roomName].layout.roads) {
@@ -201,11 +195,29 @@ const RoadGenerator = {
                         }
                     }
                 }
+                */
+
+                if (roomName !== baseCenterPosition.roomName) {
+                    return costs;
+                }
+
+                // BASE SPECIFICS
+                for (const buildingKey in roomLayout.buildings) {
+                    if (buildingKey === STRUCTURE_ROAD) {
+                        for (const roadPos of roomLayout.buildings[buildingKey].pos) {
+                            costs.set(roadPos.x + baseCenterPosition.x, roadPos.y + baseCenterPosition.y, 1);
+                        }
+                        continue;
+                    }
+
+                    for (const structurePos of roomLayout.buildings[buildingKey].pos) {
+                        costs.set(structurePos.x + baseCenterPosition.x, structurePos.y + baseCenterPosition.y, 255);
+                    }
+                }
 
                 for (const roadPos in existingRoads) {
                     costs.set(roadPos.x, roadPos.y, 1);
                 }
-
                 return costs;
             }
         });
