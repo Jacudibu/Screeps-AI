@@ -95,6 +95,10 @@ Source.prototype.forceNearbyContainerReload = function() {
 };
 
 Source.prototype.placeContainerConstructionSiteAndGetItsPosition = function(posForWhichContainerPositionShouldBeOptimized) {
+    if (this.getNearbyContainerPosition() !== ERR_NOT_FOUND) {
+        return this.getNearbyContainerPosition();
+    }
+
     const containerPos = this.calculateContainerConstructionSitePosition(posForWhichContainerPositionShouldBeOptimized);
 
     if (this.room.createConstructionSite(containerPos, STRUCTURE_CONTAINER) === OK) {
@@ -105,6 +109,10 @@ Source.prototype.placeContainerConstructionSiteAndGetItsPosition = function(posF
 };
 
 Source.prototype.calculateContainerConstructionSitePosition = function(posForWhichContainerPositionShouldBeOptimized) {
+    if (this.getNearbyContainerPosition() !== ERR_NOT_FOUND) {
+        return this.getNearbyContainerPosition();
+    }
+
     const travelPath = Traveler.findTravelPath(this.pos, posForWhichContainerPositionShouldBeOptimized);
     return travelPath.path[0];
 };
