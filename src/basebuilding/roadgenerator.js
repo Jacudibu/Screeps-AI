@@ -9,14 +9,18 @@ const RoadGenerator = {
         const layoutCenterPosition = room._getCenterPosition();
 
         const roads = {};
+        let roadsGeneratedByNow = [];
         for (let i = 0; i < room.sources.length; i++) {
             const fromPos = room.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
-            roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roads);
+            roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
+            roadsGeneratedByNow = roadsGeneratedByNow.concat(roads['source' + i]);
         }
         const mineralFromPos = room.mineral.calculateContainerConstructionSitePosition(layoutCenterPosition);
 
-        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layout, roads);
-        roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layout, roads);
+        roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
+        roadsGeneratedByNow = roadsGeneratedByNow.concat(roads.controller);
+
+        roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
 
         for (const roadKey in roads) {
             roads[roadKey] = this.removeRoomNamesFromPositionArray(roads[roadKey]);
@@ -31,31 +35,34 @@ const RoadGenerator = {
     generateRoadsForRemoteRoom(baseRoom, layout, remoteRoom) {
         const layoutCenterPosition = new RoomPosition(baseRoom.memory.baseCenterPosition.x, baseRoom.memory.baseCenterPosition.y, baseRoom.name);
 
-        const layoutRoadRoomPositions = this.getRoomPositionsForRoadsInLayout(baseRoom.name, layout, layoutCenterPosition);
-
-        const roadsA = {};
-        let mergedRoadsA = [];
+        let roadsA = [];
+        let totalCostA = 0;
         for (let i = 0; i < remoteRoom.sources.length; i++) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
-            roadsA['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roadsA);
-            mergedRoadsA = mergedRoadsA.concat(roadsA['source' + i]);
+            const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsA);
+            roadsA = roadsA.concat(pathFinderResult.path);
+            totalCostA += pathFinderResult.cost;
         }
 
-        const roadsB = {};
-        let mergedRoadsB = [];
+        let roadsB = [];
+        let totalCostB = 0;
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
-            roadsB['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layoutRoadRoomPositions, roadsB);
-            mergedRoadsB = mergedRoadsB.concat(roadsB['source' + i]);
+            const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsB);
+            roadsB = roadsB.concat(pathFinderResult.path);
+            totalCostB += pathFinderResult.cost;
         }
 
+        console.log("a: length " + roadsA.length + " | cost " + totalCostA);
+        console.log("b: length " + roadsB.length + " | cost " + totalCostB);
         let roads;
-        if (mergedRoadsA.length < mergedRoadsB.length) {
-            roads = mergedRoadsA;
+        if (totalCostA < totalCostB) {
+            roads = roadsA;
         } else {
-            roads = mergedRoadsB;
+            roads = roadsB;
         }
 
+        // TODO: Remove duplicates!
         //console.log(JSON.stringify(roads));
 
         const roadsSplitByRoom = roads.reduce((result, roomPosition) => {
@@ -110,8 +117,8 @@ const RoadGenerator = {
         return roadPositions;
     },
 
-    findPathForRoads(fromPos, baseCenterPosition, roomLayout, existingRoads) {
-        // TODO: Add traversed rooms so we don't store/place existingRoads twice
+    findPathForRoads(fromPos, baseCenterPosition, roomLayout, roadsGeneratedByNow) {
+        // TODO: Add traversed rooms so we don't store/place roadsGeneratedByNow twice
 
         console.log("from: " + JSON.stringify(fromPos));
         console.log("to:   " + JSON.stringify(baseCenterPosition));
@@ -158,14 +165,14 @@ const RoadGenerator = {
 
                 let costs = new PathFinder.CostMatrix;
 
-                // EXISTING STRUCTURES
+                // Existing Structures
                 room.find(FIND_STRUCTURES).forEach(function(structure) {
                     if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                         costs.set(structure.pos.x, structure.pos.y, 255);
                     }
                 });
 
-                // TERRAIN
+                // Minerals, Sources & Controllers minimum distance 1
                 const terrain = room.getTerrain();
                 const thingsToKeepDistanceFrom = [];
                 thingsToKeepDistanceFrom.push(...room.find(FIND_MINERALS));
@@ -197,11 +204,19 @@ const RoadGenerator = {
                 }
                 */
 
+                // Already generated roads
+                for (const roadPos of roadsGeneratedByNow) {
+                    //console.log(JSON.stringify(roadPos));
+                    if (roadPos.roomName === roomName) {
+                        costs.set(roadPos.x, roadPos.y, 1);
+                    }
+                }
+
                 if (roomName !== baseCenterPosition.roomName) {
                     return costs;
                 }
 
-                // BASE SPECIFICS
+                // Base Layout
                 for (const buildingKey in roomLayout.buildings) {
                     if (buildingKey === STRUCTURE_ROAD) {
                         for (const roadPos of roomLayout.buildings[buildingKey].pos) {
@@ -215,14 +230,11 @@ const RoadGenerator = {
                     }
                 }
 
-                for (const roadPos in existingRoads) {
-                    costs.set(roadPos.x, roadPos.y, 1);
-                }
                 return costs;
             }
         });
 
-        return result.path;
+        return result;
     },
 };
 

@@ -21,6 +21,10 @@ Room.prototype.updateAfterCreeps = function() {
         if (this.controller.reservation && this.controller.reservation.username === "Jacudibu") {
             this.askForHelpIfThreatDetected();
             this.tryPlacingRemoteConstructionSites();
+        } else {
+            if (this.memory.layout) {
+                this._debugRoadPlacement(this.memory.layout);
+            }
         }
     }
 };
