@@ -13,15 +13,17 @@ const RoadGenerator = {
         for (let i = 0; i < room.sources.length; i++) {
             const fromPos = room.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
             roads['source' + i] = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
+            roads['source' + i] = this.removeDuplicateRoadPositions(roads['source' + i], layout, roadsGeneratedByNow);
             roadsGeneratedByNow = roadsGeneratedByNow.concat(roads['source' + i]);
-            roads['source' + i] = this.removeDuplicateRoadPositions(roads['source' + i], layout);
         }
         const mineralFromPos = room.mineral.calculateContainerConstructionSitePosition(layoutCenterPosition);
 
         roads.controller = this.findPathForRoads(room.controller.pos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
+        roads.controller = this.removeDuplicateRoadPositions(roads.controller, layout, roadsGeneratedByNow);
         roadsGeneratedByNow = roadsGeneratedByNow.concat(roads.controller);
 
         roads.mineral    = this.findPathForRoads(mineralFromPos, layoutCenterPosition, layout, roadsGeneratedByNow).path;
+        roads.mineral    = this.removeDuplicateRoadPositions(roads.mineral, layout, roadsGeneratedByNow);
 
         for (const roadKey in roads) {
             roads[roadKey] = this.removeRoomNamesFromPositionArray(roads[roadKey]);
@@ -128,29 +130,43 @@ const RoadGenerator = {
         return array.map(function(pos) {return {x: pos.x, y: pos.y};});
     },
 
-    removeDuplicateRoadPositions(roadPositionArray, layout) {
-        return roadPositionArray.reduce((result, position) => {
-            if (_.find(result, road => position.isEqualTo(road))) {
-                return result;
+    removeDuplicateRoadPositions(roadPositionArray, layout, roadsGeneratedUntilNow) {
+        const result = [];
+        for (const position of roadPositionArray) {
+            if (_.find(result, road => this.arePositionsEqualOnXY(road, position))) {
+                continue;
+            }
+
+            if (_.find(roadsGeneratedUntilNow, road => this.arePositionsEqualOnXYRoom(road, position))) {
+                continue;
             }
 
             if (layout.roads) {
                 for (const key in layout.roads) {
-                    if (_.find(layout.roads[key], road => position.isEqualTo(road))) {
-                        return result;
+                    if (_.find(layout.roads[key], road => this.arePositionsEqualOnXY(road, position))) {
+                        continue;
                     }
                 }
             }
 
             if (layout.buildings && layout.buildings.road) {
-                if (_.find(layout.buildings.road.pos, road => position.isEqualTo(road))) {
-                    return result;
+                if (_.find(layout.buildings.road.pos, road => this.arePositionsEqualOnXY(road, position))) {
+                    continue;
                 }
             }
 
             result.push(position);
-            return result;
-        }, []);
+        }
+
+        return result;
+    },
+
+    arePositionsEqualOnXY(posA, posB) {
+        return posA.x === posB.x && posA.y === posB.y;
+    },
+
+    arePositionsEqualOnXYRoom(posA, posB) {
+        return posA.x === posB.x && posA.y === posB.y && posA.roomName === posB.roomName;
     },
 
     getRoomPositionsForRoadsInLayout(roomName, layout) {
@@ -190,7 +206,7 @@ const RoadGenerator = {
 
         console.log("frompos: " + fromPos);
         console.log("goal: " + JSON.stringify(baseCenterPosition));
-        return PathFinder.search(fromPos, baseCenterPosition, {
+        return PathFinder.search(fromPos, {pos: baseCenterPosition, range: 1}, {
             plainCost: 2,
             swampCost: 5,
             heuristicWeight: allowedRooms ? 1.45 : 1.25,

@@ -206,14 +206,14 @@ Room.prototype._debugRoadPlacement = function(layout) {
 
         if (layout) {
             for (let pos of layout.buildings.road.pos) {
-                this.visual.circle(new RoomPosition(pos.x, pos.y, this.name), {fill: "#00a0ff"});
+                this.visual.circle(new RoomPosition(pos.x, pos.y, this.name), {fill: "#00a0ff", opacity: 0.25});
             }
         }
     }
 
     for (const category in this.memory.layout.roads) {
         for (const roomPos of this.memory.layout.roads[category]) {
-            this.visual.circle(roomPos, {fill: "#00a0ff"});
+            this.visual.circle(roomPos, {fill: "#00a0ff", opacity: 0.25});
         }
     }
 };
