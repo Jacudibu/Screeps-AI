@@ -1,4 +1,4 @@
-global.PlayerMemory = {
+global.Players = {
     addOwnedRoomToPlayer(room, playerName) {
         this._ensurePlayerEntryExists(playerName);
         Memory.players[playerName].ownedRooms.push(room.name);

@@ -1,7 +1,8 @@
 global.profiler = require('tools.screeps-profiler');
 
 require('defaultmemorysetup');
-require('player');
+require('players');
+require('portals');
 
 require('clienthacks.clickabletostring');
 require('clienthacks.injectloan');
