@@ -241,6 +241,19 @@ const RoadGenerator = {
                     }
                 }
 
+                // Roads which have already been generated / placed for some other room
+                if (Memory.rooms[roomName] && Memory.rooms[roomName].layout) {
+                    for (const roadKey in Memory.rooms[roomName].layout.roads) {
+                        if (roadKey === fromPos.roomName) {
+                            continue;
+                        }
+
+                        for (const roadPos of Memory.rooms[roomName].layout.roads[roadKey]) {
+                            costs.set(roadPos.x, roadPos.y, 1);
+                        }
+                    }
+                }
+
                 if (roomName !== baseCenterPosition.roomName) {
                     return costs;
                 }
