@@ -1,4 +1,14 @@
+/* Wrapper for the data stored in Memory.players.
+ */
 global.Players = {
+    getAll() {
+        return Memory.players;
+    },
+
+    get(playerName) {
+        return Memory.players[playerName]
+    },
+
     addOwnedRoomToPlayer(room, playerName) {
         this._ensurePlayerEntryExists(playerName);
         Memory.players[playerName].ownedRooms.push(room.name);
