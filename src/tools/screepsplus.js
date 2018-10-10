@@ -15,7 +15,6 @@ function collectStats() {
     }
 
     if (!lastGlobalReset) {
-        log.warning("====== Global reset registered ======");
         lastGlobalReset = Game.time;
         Memory.stats.lastGlobalReset = lastGlobalReset;
     }

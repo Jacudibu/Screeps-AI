@@ -67,6 +67,8 @@ const labReactionRunner = require('labreactionrunner');
 
 const screepsplus = require('tools.screepsplus');
 
+log.warning("====== Global reset registered ======");
+
 //profiler.enable();
 
 module.exports.loop = function () {
