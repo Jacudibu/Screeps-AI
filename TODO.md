@@ -1,5 +1,7 @@
  h  |   Task 
 :---:|  ----
+ 1  |   Remove public energy containers and instead introduce controller.container
+ 2  |   Automatically place controller.link and source.link
  1  |   Sort Remote Mining Rooms by relevance (distance, source count...)
  2  |   Sort Remote Repair Route to increase efficiency
  1  |   Ranged defenders

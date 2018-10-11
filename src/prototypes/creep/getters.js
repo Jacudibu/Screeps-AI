@@ -213,11 +213,11 @@ Creep.prototype._getEnergyHaulTarget = function() {
         let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
 
         if (potentialTarget) {
-            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
                 return potentialTarget;
             }
 
-            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+            if (potentialTarget.amount && potentialTarget.amount > RESOURCE_MINIMUM_HAUL_AMOUNT) {
                 return potentialTarget;
             }
 
@@ -284,11 +284,11 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
 
         if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
-            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
                 return potentialTarget;
             }
 
-            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+            if (potentialTarget.amount && potentialTarget.amount > RESOURCE_MINIMUM_HAUL_AMOUNT) {
                 return potentialTarget;
             }
 
@@ -354,7 +354,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
 
             // Empty Output
             for (let lab of this.room.outputLabs) {
-                if (lab.mineralType && (lab.mineralAmount > MINIMUM_HAUL_FROM_OUTPUT_LAB_RESOURCE_AMOUNT)) {
+                if (lab.mineralType && (lab.mineralAmount > LAB_OUTPUT_MINIMUM_HAUL_AMOUNT)) {
                     this.memory.taskTargetId = lab.id;
                     this.memory.hauledResourceType = lab.mineralType;
                     return lab;
@@ -467,11 +467,11 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
         let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
 
         if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
-            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT) {
+            if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
                 return potentialTarget;
             }
 
-            if (potentialTarget.amount && potentialTarget.amount > MINIMUM_HAUL_RESOURCE_AMOUNT) {
+            if (potentialTarget.amount && potentialTarget.amount > RESOURCE_MINIMUM_HAUL_AMOUNT) {
                 return potentialTarget;
             }
 

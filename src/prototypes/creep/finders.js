@@ -57,14 +57,14 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
 
     if (this.room.containers) {
         this.room.containers.map(container => {
-            if (container && container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+            if (container && container.store[RESOURCE_ENERGY] >= CONTAINER_MINIMUM_ENERGY_STORAGE_FOR_WORKER_COLLECTION) {
                 filledEnergyStorages.push(container);
             }
         })
     }
 
     if (this.room.storage) {
-        if (this.room.storage.store[RESOURCE_ENERGY] >= this.carryCapacity) {
+        if (this.room.storage.store[RESOURCE_ENERGY] >= CONTAINER_MINIMUM_ENERGY_STORAGE_FOR_WORKER_COLLECTION) {
             filledEnergyStorages.push(this.room.storage);
         }
     }
@@ -193,7 +193,7 @@ Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
     const containers = this.room.containers.filter((structure) => {
             return structure
                 && !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
-                && _.sum(structure.store) > MINIMUM_HAUL_CONTAINER_RESOURCE_AMOUNT;
+                && _.sum(structure.store) > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT;
         }
     );
 
@@ -216,7 +216,7 @@ Creep.prototype.findClosestDroppedResource = function() {
 
 Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
     let droppedResources = this.room.find(FIND_DROPPED_RESOURCES, {
-        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT;}
+        filter: function(drop) {return drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT;}
     });
 
     if (droppedResources.length === 0) {
@@ -228,7 +228,7 @@ Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
 
 Creep.prototype.findClosestDroppedEnergy = function() {
     let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
-        filter: function(drop) {return drop.amount > MINIMUM_HAUL_RESOURCE_AMOUNT && drop.resourceType === RESOURCE_ENERGY;}
+        filter: function(drop) {return drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT && drop.resourceType === RESOURCE_ENERGY;}
     });
 
     if (droppedEnergy.length === 0) {
