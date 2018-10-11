@@ -36,24 +36,6 @@ Room.prototype.updateRepairRoute = function() {
     this.memory.repairRoute = this.remotes;
 };
 
-Room.prototype.addPublicEnergyContainer = function (containerId) {
-    if (!this.memory.publicEnergyContainers) {
-        this.memory.publicEnergyContainers = [];
-    }
-
-    if (containerId != null) {
-        this.memory.publicEnergyContainers.push(containerId);
-    }
-};
-
-Room.prototype.removePublicEnergyContainer = function(containerId) {
-    if (!this.memory.publicEnergyContainers) {
-        return;
-    }
-
-    _.remove(this.memory.publicEnergyContainers, id => id ===containerId);
-};
-
 Room.prototype.isSpawnQueueEmpty = function() {
     return this.memory.spawnQueue === undefined || this.memory.spawnQueue.length === 0;
 };
@@ -72,12 +54,6 @@ Room.prototype.addToSpawnQueueStart = function(args) {
     }
 
     this.memory.spawnQueue.unshift(args);
-};
-
-Room.prototype._findTowers = function() {
-    return _.filter(this.find(FIND_MY_STRUCTURES), function (structure) {
-        return structure.structureType === STRUCTURE_TOWER;
-    });
 };
 
 Room.prototype.commandTowersToAttackTarget = function(target) {
@@ -150,16 +126,14 @@ Room.prototype.getUnoccupiedSources = function() {
 };
 
 Room.prototype.getEmptyPublicEnergyContainers = function() {
-    if (!this._emptyPublicEnergyContainers) {
-        const publicEnergyContainerMemoryEntry = this.memory.publicEnergyContainers;
-        if (!publicEnergyContainerMemoryEntry) {
-            return ERR_NOT_FOUND;
-        }
-
-        this._emptyPublicEnergyContainers = this.memory.publicEnergyContainers
-            .map(id => Game.getObjectById(id))
-            .filter(container => container && (_.sum(container.store) < container.storeCapacity));
+    if (this.containers.length === 0) {
+        return ERR_NOT_FOUND;
     }
+
+    this._emptyPublicEnergyContainers = this.containers
+        .filter(container => container
+                          && !container.isNextToSource
+                          && _.sum(container.store) < container.storeCapacity);
 
     if (this._emptyPublicEnergyContainers.length === 0) {
         return ERR_NOT_FOUND;

@@ -14,6 +14,8 @@ require('globals.tasks');
 require('globals.utility');
 require('globals.storagelimits');
 
+require('prototypes.container.isnexttosource');
+
 require('prototypes.creep._');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');

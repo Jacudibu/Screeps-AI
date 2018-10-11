@@ -185,15 +185,14 @@ Creep.prototype.findMineralStorage = function(resourceType) {
 };
 
 Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
-    const publicEnergyContainer = this.room.memory.publicEnergyContainers;
     if (this.room.containers.length === 0) {
         return ERR_NOT_FOUND;
     }
 
-    const containers = this.room.containers.filter((structure) => {
-            return structure
-                && !(publicEnergyContainer && publicEnergyContainer.includes(structure.id))
-                && _.sum(structure.store) > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT;
+    const containers = this.room.containers.filter((container) => {
+            return container
+                && container.isNextToSource
+                && _.sum(container.store) > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT;
         }
     );
 
