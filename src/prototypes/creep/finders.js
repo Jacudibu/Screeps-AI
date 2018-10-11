@@ -191,7 +191,7 @@ Creep.prototype.findClosestContainerAboveHaulThreshold = function() {
 
     const containers = this.room.containers.filter((container) => {
             return container
-                && container.isNextToSource
+                && container.isNextToSourceOrMineral
                 && _.sum(container.store) > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT;
         }
     );

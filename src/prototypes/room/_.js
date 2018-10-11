@@ -132,7 +132,7 @@ Room.prototype.getEmptyPublicEnergyContainers = function() {
 
     this._emptyPublicEnergyContainers = this.containers
         .filter(container => container
-                          && !container.isNextToSource
+                          && !container.isNextToSourceOrMineral
                           && _.sum(container.store) < container.storeCapacity);
 
     if (this._emptyPublicEnergyContainers.length === 0) {
