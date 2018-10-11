@@ -405,8 +405,8 @@ Spawn.prototype.spawnReserver = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 650 * 4) {
-        energy = 650 * 4;
+    if (energy > 650 * 8) {
+        energy = 650 * 8;
     }
 
     while(energy >= 650) {
