@@ -33,7 +33,7 @@ moveCache = {
             }
             const direction = this.creepMoves[creep.room.name][creepName];
 
-            if (!creep || !direction) {
+            if (!direction) {
                 continue;
             }
 
@@ -124,7 +124,7 @@ moveCache = {
             }
         }
 
-        otherCreep.move(_.random(0, possibleDirections.length - 1));
+        otherCreep.move(possibleDirections[_.random(0, possibleDirections.length - 1)]);
         return true;
     },
 
