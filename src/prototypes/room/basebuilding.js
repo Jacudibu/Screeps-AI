@@ -221,7 +221,8 @@ Room.prototype._debugRoadPlacement = function(layout) {
 Room.prototype._debugRampartPlacement = function() {
     let ramparts = this.memory.layout.ramparts;
     if (!ramparts) {
-        ramparts = rampartGenerator.calculateRampartPositions(this, this.memory.layout);
+        //ramparts = rampartGenerator.calculateRampartPositions(this, this.memory.layout);
+        return;
     }
 
     for (let pos of ramparts.center) {
