@@ -236,13 +236,17 @@ Spawn.prototype.spawnRemoteHauler = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 150 * 15) {
-        energy = 150 * 15;
+    if (energy > 150 * 16 + 100) { // 16*3 = 48 body parts
+        energy = 150 * 16 + 100;
     }
 
     while(energy >= 150) {
         body.push(CARRY, CARRY, MOVE);
         energy -= 150;
+    }
+
+    if (energy >= 100) {
+        body.push(CARRY, MOVE); // final 2 body parts
     }
 
     let opts = {
