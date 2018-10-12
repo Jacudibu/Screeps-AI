@@ -68,6 +68,7 @@ const roomLogic = require('roomlogic');
 const labReactionRunner = require('labreactionrunner');
 
 const screepsplus = require('tools.screepsplus');
+const warfare = require('warfare._imports');
 
 log.warning("====== Global reset registered ======");
 
@@ -77,6 +78,7 @@ module.exports.loop = function () {
     profiler.wrap(function() {
         memoryManagment.run();
         roomLogic.runBeforeCreeps();
+        warfare.run();
         creepAi.run();
         roomLogic.runAfterCreeps();
         spawnlogic.run();

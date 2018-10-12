@@ -1,3 +1,6 @@
 [submodule "ScreepsAutocomplete"]
 	path = ScreepsAutocomplete
 	url = https://github.com/Jacudibu/ScreepsAutocomplete.git
+[submodule "src/warfare"]
+	path = src/warfare
+	url = https://github.com/Jacudibu/Screeps-Warfare.git
