@@ -1,6 +1,6 @@
  h  |   Task 
 :---:|  ----
- 1  |   Add and Automatically place controller.container
+ 1  |   Automatically place controller container
  3  |   Multi-Source remote Harvesters
  1  |   Make Harvesters stop harvesting if their container is filled
  2  |   Automatically place controller.link and source.link

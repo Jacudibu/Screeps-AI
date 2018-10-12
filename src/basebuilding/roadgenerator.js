@@ -194,11 +194,13 @@ const RoadGenerator = {
             swampCost: 5,
             heuristicWeight: allowedRooms ? 1.45 : 1.25,
             roomCallback: function(roomName) {
+                /*
                 if (allowedRooms) {
                     if (!allowedRooms[roomName]) {
                         return false;
                     }
                 }
+                */
 
                 let room = Game.rooms[roomName];
                 if (!room) {
