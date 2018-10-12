@@ -29,11 +29,6 @@ function collectStats() {
     Memory.stats.cpu = Game.cpu;
     Memory.stats.gcl = Game.gcl;
 
-    const memory_used = RawMemory.get().length;
-    Memory.stats.memory = {
-        used: memory_used,
-    };
-
     Memory.stats.market = {
         credits: Game.market.credits,
         num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
@@ -55,9 +50,12 @@ function collectStats() {
             Memory.stats.rooms[roomName].energyAvailable = room.energyAvailable;
             Memory.stats.rooms[roomName].energyCapacityAvailable = room.energyCapacityAvailable;
 
-            if(room.storage){
-                Memory.stats.rooms[roomName].storage = {};
-                Memory.stats.rooms[roomName].storage.energy = room.storage.store.energy;
+            if(room.storage) {
+                Memory.stats.rooms[roomName].storage = room.storage.store;
+            }
+
+            if (room.terminal) {
+                Memory.stats.rooms[roomName].terminal = room.terminal.store;
             }
         }
     });
@@ -88,6 +86,11 @@ function collectStats() {
     Memory.stats.roomNumbers = roomNumbers;
 
     Memory.stats.heapStatistics = Game.cpu.getHeapStatistics()
+
+    const memory_used = RawMemory.get().length;
+    Memory.stats.memory = {
+        used: memory_used,
+    };
 }
 
 module.exports = {
