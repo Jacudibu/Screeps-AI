@@ -9,7 +9,7 @@ The AI is still in development and lacks a whole lot of things (see [TODO.md](..
 #### Submodules
 Right now we are using the following submodules:
 * [ScreepsAutocomplete](../../../ScreepsAutocomplete) - For autocompletion in WebStorm.
-* [ScreepsWarfare](../../../ScreepsWarfare) - Advanced Combat AI Module in a private repository.
+* [ScreepsWarfare](../../../Screeps-Warfare) - Advanced Combat AI Module in a private repository.
 
 #### Some other notes
 If you are just looking for an AI to use on a public server, think twice - this is a game about programming, so you are kind of missing the point of the whole game by using someone else's code. And there are players out there who directly hunt such "non coding players", so you probably won't last too long.
