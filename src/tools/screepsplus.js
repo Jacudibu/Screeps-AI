@@ -2,68 +2,76 @@
 // Module to format data in memory for use with the https://screepspl.us
 // Grafana utility run by ags131.
 
-let lastGlobalReset;
+let lastGlobalReset = Game.time;
 
 function run() {
-    collectStats();
-    Memory.stats.cpu.used = Game.cpu.getUsed();
-}
-
-function collectStats() {
-    if (Memory.stats == null) {
-        Memory.stats = {};
-    }
-
-    if (!lastGlobalReset) {
-        lastGlobalReset = Game.time;
-        Memory.stats.lastGlobalReset = lastGlobalReset;
-    }
-
     // Screepsplus agent only fetches data once every 15 seconds, so no need to do this every tick
     if (Game.time % 4 !== 0) {
         return;
     }
 
-    Memory.stats.tick = Game.time;
+    Memory.stats = collectStats();
+}
 
-    Memory.stats.cpu = Game.cpu;
-    Memory.stats.gcl = Game.gcl;
+function collectStats() {
+    const stats = {};
 
-    Memory.stats.market = {
-        credits: Game.market.credits,
+    stats.gcl = Game.gcl;
+    stats.credits = Game.market.credits;
+    stats.tick = Game.time;
+    stats.lastGlobalReset = lastGlobalReset;
+    stats.cpu = Game.cpu;
+
+    stats.market = {
         num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
     };
 
-    Memory.stats.rooms = {};
-    _.forEach(Object.keys(Game.rooms), function(roomName){
+
+    stats.rooms = collectRoomStats();
+    stats.roomNumbers = countRooms();
+
+    stats.creeps = {};
+    stats.creeps.total = Memory.creepsBuilt;
+    stats.creeps.current = Object.keys(Game.creeps).length;
+
+    stats.heapStatistics = Game.cpu.getHeapStatistics();
+
+    stats.cpu.used = Game.cpu.getUsed();
+
+    return stats;
+}
+
+function collectRoomStats() {
+    const roomStats = {};
+    _.forEach(Object.keys(Game.rooms), function(roomName) {
         let room = Game.rooms[roomName];
 
         if(room.controller && room.controller.my){
-            Memory.stats.rooms[roomName] = {};
+            roomStats[roomName] = {};
 
-            Memory.stats.rooms[roomName].rcl = {};
+            roomStats[roomName].rcl = {};
 
-            Memory.stats.rooms[roomName].rcl.level = room.controller.level;
-            Memory.stats.rooms[roomName].rcl.progress = room.controller.progress;
-            Memory.stats.rooms[roomName].rcl.progressTotal = room.controller.progressTotal;
+            roomStats[roomName].rcl.level = room.controller.level;
+            roomStats[roomName].rcl.progress = room.controller.progress;
+            roomStats[roomName].rcl.progressTotal = room.controller.progressTotal;
 
-            Memory.stats.rooms[roomName].energyAvailable = room.energyAvailable;
-            Memory.stats.rooms[roomName].energyCapacityAvailable = room.energyCapacityAvailable;
+            roomStats[roomName].energyAvailable = room.energyAvailable;
+            roomStats[roomName].energyCapacityAvailable = room.energyCapacityAvailable;
 
             if(room.storage) {
-                Memory.stats.rooms[roomName].storage = room.storage.store;
+                roomStats[roomName].storage = room.storage.store;
             }
 
             if (room.terminal) {
-                Memory.stats.rooms[roomName].terminal = room.terminal.store;
+                roomStats[roomName].terminal = room.terminal.store;
             }
         }
     });
 
-    Memory.stats.creeps = {};
-    Memory.stats.creeps.total = Memory.creepsBuilt;
-    Memory.stats.creeps.current = Object.keys(Game.creeps).length;
+    return roomStats;
+}
 
+function countRooms() {
     let roomNumbers = {
         claimed: 0,
         reserved: 0,
@@ -83,14 +91,7 @@ function collectStats() {
         }
         roomNumbers.total++;
     }
-    Memory.stats.roomNumbers = roomNumbers;
-
-    Memory.stats.heapStatistics = Game.cpu.getHeapStatistics()
-
-    const memory_used = RawMemory.get().length;
-    Memory.stats.memory = {
-        used: memory_used,
-    };
+    return roomNumbers;
 }
 
 module.exports = {
