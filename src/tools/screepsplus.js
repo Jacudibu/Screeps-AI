@@ -26,7 +26,6 @@ function collectStats() {
         num_orders: Game.market.orders ? Object.keys(Game.market.orders).length : 0,
     };
 
-
     stats.rooms = collectRoomStats();
     stats.roomNumbers = countRooms();
 
@@ -34,9 +33,14 @@ function collectStats() {
     stats.creeps.total = Memory.creepsBuilt;
     stats.creeps.current = Object.keys(Game.creeps).length;
 
+    stats.terminalResourceNetwork = calculateTerminalResourceNetwork();
     stats.heapStatistics = Game.cpu.getHeapStatistics();
 
     stats.cpu.used = Game.cpu.getUsed();
+
+    stats.memory = {
+        used: RawMemory.get().length,
+    };
 
     return stats;
 }
@@ -92,6 +96,32 @@ function countRooms() {
         roomNumbers.total++;
     }
     return roomNumbers;
+}
+
+function calculateTerminalResourceNetwork() {
+    if (Object.keys(resourceDemand).length === 0 && Object.keys(resourceSupply).length === 0) {
+        return;
+    }
+
+    const terminalNetwork = {};
+
+    for (const resourceName of RESOURCES_ALL) {
+        terminalNetwork[resourceName] = 0;
+    }
+
+    for (const roomName in resourceDemand) {
+        for (const element of resourceDemand[roomName]) {
+            terminalNetwork[element.resourceType] -= element.amount;
+        }
+    }
+
+    for (const roomName in resourceSupply) {
+        for (const element of resourceSupply[roomName]) {
+            terminalNetwork[element.resourceType] += element.amount;
+        }
+    }
+
+    return terminalNetwork;
 }
 
 module.exports = {
