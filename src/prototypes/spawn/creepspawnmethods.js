@@ -60,13 +60,13 @@ Spawn.prototype.spawnEarlyRCLHarvester = function(energy) {
 Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
     let body = [];
 
-    if (energy > 200 * 16) {
-        energy = 200 * 16;
+    if (energy > 150 * 25) {
+        energy = 150 * 25;
     }
 
-    while (energy >= 200) {
-        body.push(WORK, MOVE, CARRY);
-        energy -= 200;
+    while (energy >= 150) {
+        body.push(WORK, MOVE);
+        energy -= 150;
     }
 
     body.sort();
