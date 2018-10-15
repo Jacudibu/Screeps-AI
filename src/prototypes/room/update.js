@@ -16,14 +16,13 @@ Room.prototype.updateAfterCreeps = function() {
             }
             this.checkForRCLUpdate();
             this.tryPlacingConstructionSites();
-        }
 
-        if (this.controller.reservation && this.controller.reservation.username === "Jacudibu") {
-            this.askForHelpIfThreatDetected();
-            this.tryPlacingRemoteConstructionSites();
-        } else {
-            if (this.memory.layout) {
-                this._debugRoadPlacement(this.memory.layout);
+            for (const remoteName of this.remotes) {
+                const remote = Game.rooms[remoteName];
+                if (remote) {
+                    remote.askForHelpIfThreatDetected();
+                    remote.tryPlacingRemoteConstructionSites();
+                }
             }
         }
     }
