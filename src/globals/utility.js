@@ -13,6 +13,29 @@ global.utility.getClosestObjectFromArray = function(fromObject, toArray) {
         );
 };
 
+global.utility.countOwnedMinerals = function() {
+    const minerals = {
+        [RESOURCE_HYDROGEN]  : 0,
+        [RESOURCE_OXYGEN]    : 0,
+        [RESOURCE_UTRIUM]    : 0,
+        [RESOURCE_LEMERGIUM] : 0,
+        [RESOURCE_KEANIUM]   : 0,
+        [RESOURCE_ZYNTHIUM]  : 0,
+        [RESOURCE_CATALYST]  : 0,
+    };
+
+    let total = 0;
+    for (const roomName in Game.rooms) {
+        const room = Game.rooms[roomName];
+        if (room.controller && room.controller.my) {
+            minerals[room.mineral.mineralType]++;
+            total++;
+        }
+    }
+
+    log.info("Total rooms: " + total + JSON.stringify(minerals, null, 2));
+};
+
 global.print = (x) => JSON.stringify(x, null, 2);
 
 global.g = {
