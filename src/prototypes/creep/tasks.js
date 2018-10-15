@@ -420,6 +420,7 @@ Creep.prototype.storeMineral = function(nextTask) {
     if (mineralStorage === ERR_NOT_FOUND) {
         this.say(creepTalk.noTargetFound);
         this.setTask(nextTask);
+        this.drop();
         return;
     }
 
@@ -436,7 +437,6 @@ Creep.prototype.storeMineral = function(nextTask) {
             break;
         case ERR_FULL:
             this.logActionError("storing resource " + hauledResourceType + " in " + mineralStorage, "ERR_FULL");
-            this.drop(hauledResourceType);
             break;
         case ERR_INVALID_ARGS:
             if (_.sum(this.carry) === 0) {

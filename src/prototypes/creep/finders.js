@@ -181,6 +181,7 @@ Creep.prototype.findMineralStorage = function(resourceType) {
             return this.room.storage;
         }
     }
+
     return ERR_NOT_FOUND;
 };
 
