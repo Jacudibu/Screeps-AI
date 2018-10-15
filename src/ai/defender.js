@@ -14,7 +14,8 @@ const defender = {
                         }
                     }
                 } else {
-                    creep.setTask(TASK.MOVE_TO_ROOM)
+                    creep.setTask(TASK.MOVE_TO_ROOM);
+                    creep.notifyWhenAttacked(false);
                 }
                 break;
             case TASK.MOVE_TO_ROOM:

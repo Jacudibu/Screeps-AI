@@ -568,7 +568,7 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
             role: ROLE.DEFENDER,
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
             homeRoomName: this.room.name,
-            task: TASK.MOVE_TO_ROOM,
+            task: TASK.DECIDE_WHAT_TO_DO,
         }
     };
 
