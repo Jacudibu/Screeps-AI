@@ -47,8 +47,14 @@ const spawnlogic = {
         if (room.isSpawnQueueEmpty()) {
             this.tryAddingNewCreepToSpawnQueue(room, spawns);
         } else {
-            this.checkAndSpawnDefenderIfNecessary(room);
-            this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room);
+            if (this.isDefenderNeeded(room.name)) {
+                this.addDefenderToSpawnQueue(room, room.name);
+            } else {
+                const remoteThatNeedsDefender = this.searchRemoteWhichNeedsDefender(room);
+                if (remoteThatNeedsDefender) {
+                    this.addDefenderToSpawnQueue(room, remoteThatNeedsDefender);
+                }
+            }
         }
 
         if (this.checkIfRoomIsAliveAndReviveIfNecessary(room)) {
@@ -103,15 +109,6 @@ const spawnlogic = {
         }
     },
 
-    checkAndSpawnDefenderIfNecessary(room) {
-        if (room.memory.requiresHelp) {
-            room.memory.requiresHelp = false;
-            room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: room.name});
-            return true;
-        }
-        return false;
-    },
-
     tryAddingNewCreepToSpawnQueue(room, spawns) {
         if (room.energyCapacityAvailable < 550) {
             // Early RCL. CUUUUTE!
@@ -141,7 +138,8 @@ const spawnlogic = {
                 return;
             }
 
-            if (this.checkAndSpawnDefenderIfNecessary(room)) {
+            if (this.isDefenderNeeded(room.name)) {
+                this.addDefenderToSpawnQueue(room, room.name);
                 return;
             }
 
@@ -278,7 +276,7 @@ const spawnlogic = {
             return;
         }
 
-        if (this.checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room)) {
+        if (this.searchRemoteWhichNeedsDefender(room) !== null) {
             return;
         }
 
@@ -346,23 +344,30 @@ const spawnlogic = {
         }
     },
 
-    checkRemoteMiningRoomsAndSpawnDefenderIfNecessary(room) {
+    isDefenderNeeded(roomName) {
+        return Memory.rooms[roomName].requiresHelp;
+    },
+
+    searchRemoteWhichNeedsDefender(room) {
         let remotes = room.remotes;
 
         if (!remotes || remotes.length === 0) {
-            return false;
+            return null;
         }
 
         for (let i = 0; i < remotes.length; i++) {
-            let remoteMiningRoom = Memory.rooms[remotes[i]];
-            if (remoteMiningRoom.requiresHelp === true) {
-                room.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: remotes[i]});
-                Memory.rooms[remotes[i]].requiresHelp = false;
-                return true;
+            const remoteRoomName = remotes[i];
+            if (this.isDefenderNeeded(remoteRoomName)) {
+                return remoteRoomName;
             }
         }
 
-        return false;
+        return null;
+    },
+
+    addDefenderToSpawnQueue(spawnRoom, targetRoomName) {
+        Memory.rooms[targetRoomName].requiresHelp = false;
+        spawnRoom.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: targetRoomName});
     },
 
     checkIfRoomIsAliveAndReviveIfNecessary(room) {
