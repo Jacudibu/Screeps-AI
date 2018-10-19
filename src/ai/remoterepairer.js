@@ -82,12 +82,8 @@ const remoteRepairer = {
                     creep.targetRoomName = repairRoute[nextRoomIndex];
                     creep.setTask(TASK.MOVE_TO_ROOM);
                     return;
-                } else if (constructionSite === ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK) {
-                    creep.memory.task = TASK.BUILD_STRUCTURE;
-                    return;
-                } else if (constructionSite === ERR_NO_LAYOUT) {
-
                 }
+                creep.memory.task = TASK.BUILD_STRUCTURE;
             } else {
                 creep.memory.task = TASK.REPAIR_STRUCTURE;
                 return;

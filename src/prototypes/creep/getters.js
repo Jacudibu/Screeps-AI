@@ -572,7 +572,7 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 Creep.prototype._getDismantleTarget = function() {
     if (this.memory.taskTargetId) {
         let target = Game.getObjectById(this.memory.taskTargetId);
-        if (target != null) {
+        if (target != null && target instanceof Structure) {
             return target;
         }
     }
