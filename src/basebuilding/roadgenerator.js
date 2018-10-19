@@ -30,6 +30,7 @@ const RoadGenerator = {
         }
 
         room.memory.layout.roads = roads;
+        this._forceConstructionTimerReset();
 
         return roads;
     },
@@ -114,6 +115,11 @@ const RoadGenerator = {
             } else {
                 const posArray = this.removeRoomNamesFromPositionArray(roadsSplitByRoom[roomName]);
                 Memory.rooms[roomName].layout.roads[remoteRoom.name] = this.removeDuplicateRoadPositionsInSameRoom(posArray, Memory.rooms[roomName].layout);
+            }
+
+            const currentRoom = Game.rooms[roomName];
+            if (currentRoom) {
+                currentRoom._forceConstructionTimerReset();
             }
         }
 

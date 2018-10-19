@@ -99,8 +99,12 @@ Room.prototype.requestNewConstructionSite = function() {
     return false;
 };
 
-Room.prototype._forceConstructionUpdate = function() {
-    nextConstructionTimer[this.name] = 0;
+Room.prototype._forceConstructionTimerReset = function() {
+    if (this.controller && this.controller.my) {
+        nextConstructionTimer[this.name] = 0;
+    } else {
+        nextRemoteConstructionTimer[this.name] = 0;
+    }
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {

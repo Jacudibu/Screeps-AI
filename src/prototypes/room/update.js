@@ -61,5 +61,5 @@ Room.prototype.checkForRCLUpdate = function() {
 
 Room.prototype.onRCLUpdate = function() {
     this._recalculateRequestedCreeps();
-    this._forceConstructionUpdate();
+    this._forceConstructionTimerReset();
 };
