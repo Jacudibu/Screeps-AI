@@ -217,7 +217,7 @@ const RoadGenerator = {
                 let costs = new PathFinder.CostMatrix;
 
                 // Existing Structures in owned rooms
-                if (this.room.controller && this.room.controller.my) {
+                if (room.controller && room.controller.my) {
                     room.find(FIND_STRUCTURES).forEach(function (structure) {
                         if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                             costs.set(structure.pos.x, structure.pos.y, 255);
