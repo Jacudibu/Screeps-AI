@@ -15,8 +15,13 @@ const remoteHauler = {
                     }
                 } else if (creep.room.name === creep.remoteHaulStorageRoom) {
                     if (_.sum(creep.carry) === 0) {
-                        creep.targetRoomName = creep.remoteHaulTargetRoom;
-                        creep.setTask(TASK.MOVE_TO_ROOM);
+                        if (creep.respawnTTL != null) {
+                            creep.targetRoomName = creep.remoteHaulTargetRoom;
+                            creep.setTask(TASK.MOVE_TO_ROOM);
+                        } else {
+                            // respawn has triggered and we are going to die soon - better now than later!
+                            creep.suicide();
+                        }
                     } else {
                         creep.setTask(TASK.STORE_RESOURCE);
                     }
