@@ -382,9 +382,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
                 continue;
             }
 
-
-            if (this.room.storage.store[resource] > this.room.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity)) {
-                // console.log(this + " evacuate: " + this.room.shouldEvacuate + " store: " + this.room.storage.store[resource] + " storage_max: " + (STORAGE_MAX[resource] + this.carryCapacity));
+            const maxStorage = this.room.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity);
+            if (this.room.storage.store[resource] > maxStorage) {
                 this.memory.taskTargetId = this.room.storage.id;
                 this.memory.hauledResourceType = resource;
                 return this.room.storage;
