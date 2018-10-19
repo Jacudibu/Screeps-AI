@@ -72,7 +72,7 @@ const terminalResourceDistribution = {
         let result = NO_DEAL;
 
         for (let supplierRoomName of supplyKeys) {
-            let currentSupply = resourceSupply[supplierRoomName];
+            let currentSupply =  _.shuffle(resourceSupply[supplierRoomName]);
 
             for (let demanderRoomName of demandKeys) {
                 let currentDemand = resourceDemand[demanderRoomName];
