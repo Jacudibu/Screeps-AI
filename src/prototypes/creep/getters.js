@@ -80,10 +80,11 @@ Creep.prototype._getConstructionSite = function() {
     let constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
 
     if (constructionSites.length === 0) {
-        if (this.room.requestNewConstructionSite()) {
-            return ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK;
-        } else {
-            return ERR_NOT_FOUND;
+        switch (this.room.requestNewConstructionSite()) {
+            case OK:
+                return ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK;
+            default:
+                return ERR_NOT_FOUND;
         }
     }
 

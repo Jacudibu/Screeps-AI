@@ -87,16 +87,20 @@ Room.prototype.requestNewConstructionSite = function() {
         if (allowConstructionSiteRequests[this.name]) {
             nextConstructionTimer[this.name] = 0;
 
-            return phase[this.name] !== STRUCTURE_RAMPART;
+            if (phase[this.name] !== STRUCTURE_RAMPART) {
+                return OK;
+            } else {
+                return ERR_REPAIR_RAMPARTS_FIRST;
+            }
         }
     } else {
         if (allowRemoteConstructionSiteRequests[this.name]) {
             nextRemoteConstructionTimer[this.name] = 0;
-            return this._automaticallyPlaceRemoteConstructionSites() === SUCCESSFULLY_PLACED;
+            return this._automaticallyPlaceRemoteConstructionSites();
         }
     }
 
-    return false;
+    return ERR_EVERYTHING_BUILT;
 };
 
 Room.prototype._forceConstructionTimerReset = function() {
@@ -181,7 +185,7 @@ Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
         // Those rooms are manually built right now
         allowRemoteConstructionSiteRequests[this.name] = false;
         nextRemoteConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
-        return;
+        return ERR_NO_LAYOUT;
     }
 
     if (this.find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
