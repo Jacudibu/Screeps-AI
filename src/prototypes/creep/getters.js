@@ -77,9 +77,7 @@ Creep.prototype._getConstructionSite = function() {
         }
     }
 
-    let constructionSites = this.room.find(FIND_CONSTRUCTION_SITES, {
-        filter: c => c.my
-    });
+    let constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
 
     if (constructionSites.length === 0) {
         if (this.room.requestNewConstructionSite()) {
