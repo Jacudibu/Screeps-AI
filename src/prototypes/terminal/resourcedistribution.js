@@ -11,7 +11,7 @@ global.resourceSupply = {};
 
 const terminalResourceDistribution = {
     run() {
-        if (Game.time % DISTRIBUTION_INTERVAL !== 0) {
+        if (Game.time % DISTRIBUTION_INTERVAL !== 4) {
             return;
         }
 
