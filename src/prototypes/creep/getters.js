@@ -55,6 +55,11 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                         return mineralStorage;
                     }
                     break;
+                case STRUCTURE_NUKER:
+                    if (mineralStorage.ghodium < mineralStorage.ghodiumCapacity) {
+                        return mineralStorage;
+                    }
+                    break;
             }
         }
     }

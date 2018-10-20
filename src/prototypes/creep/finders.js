@@ -165,6 +165,12 @@ Creep.prototype.findMineralStorage = function(resourceType) {
     }
 
     if (!this.room.shouldEvacuate) {
+        if (resourceType === RESOURCE_GHODIUM) {
+            if (this.room.nuker && this.room.nuker.ghodium < this.room.nuker.ghodiumCapacity) {
+                return this.room.nuker;
+            }
+        }
+
         if (this.room.storage) {
             if (!this.room.storage.store[resourceType] || this.room.storage.store[resourceType] < STORAGE_MAX[resourceType]) {
                 return this.room.storage;
