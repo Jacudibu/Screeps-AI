@@ -367,6 +367,22 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         }
     }
 
+    if (this.room.nuker && !this.room.shouldEvacuate) {
+        if (this.room.nuker.ghodium < this.room.nuker.ghodiumCapacity) {
+            if (this.room.terminal.store[RESOURCE_GHODIUM] && this.room.terminal.store[RESOURCE_GHODIUM] > 0) {
+                this.memory.taskTargetId = this.room.terminal.id;
+                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                return this.room.terminal;
+            }
+
+            if (this.room.storage.store[RESOURCE_GHODIUM] && this.room.storage.store[RESOURCE_GHODIUM] > 0) {
+                this.memory.taskTargetId = this.room.storage.id;
+                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                return this.room.storage;
+            }
+        }
+    }
+
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
         this.memory.taskTargetId = potentialTarget.id;
