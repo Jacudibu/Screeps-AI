@@ -124,6 +124,12 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
             }
         }
 
+        if (this.room.nuker) {
+            if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
+                return this.room.nuker;
+            }
+        }
+
         let storage = this.room.storage;
         if (storage) {
             // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
@@ -136,12 +142,6 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
             // Substracting this.carryCapacity so creeps won't infinitely haul & store energy to the same structure
             if (this.room.terminal.store[RESOURCE_ENERGY] < (TERMINAL_MAX_ENERGY_STORAGE - this.carryCapacity)) {
                 return this.room.terminal;
-            }
-        }
-
-        if (this.room.nuker) {
-            if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
-                return this.room.nuker;
             }
         }
     }
