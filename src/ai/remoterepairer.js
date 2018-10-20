@@ -84,6 +84,7 @@ const remoteRepairer = {
                     return;
                 }
                 creep.memory.task = TASK.BUILD_STRUCTURE;
+                return;
             } else {
                 creep.memory.task = TASK.REPAIR_STRUCTURE;
                 return;

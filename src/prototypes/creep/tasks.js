@@ -585,7 +585,7 @@ Creep.prototype.dismantleStructure = function(taskWhenFinished) {
             }
             break;
         case ERR_NOT_IN_RANGE:
-            this.travelTo(target);
+            this.travelTo(target, {maxRooms: 1});
             break;
         default:
             this.logActionError("dismantling object", this.dismantle(target));
