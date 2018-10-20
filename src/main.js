@@ -6,6 +6,7 @@ require('portals');
 
 require('clienthacks.clickabletostring');
 require('clienthacks.injectloan');
+require('clienthacks.steeringwheel');
 
 require('globals.creeptalk');
 require('globals.infrastructure');
