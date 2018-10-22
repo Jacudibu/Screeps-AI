@@ -34,6 +34,7 @@ Room.prototype.addRemote = function (roomName) {
     }
 
     this.remotes.push(roomName);
+    this.sortRemotesByRelevance();
 
     this.memory.remoteMiningRooms = this.remotes;
 
@@ -70,7 +71,6 @@ initializeRemoteMemory = function(roomName, remoteRoomName) {
         } else {
             Memory.rooms[remoteRoomName].requiredHaulers = 0;
         }
-
     }
 };
 
@@ -81,4 +81,44 @@ calculateNormalDistanceBetweenRooms = function(roomA, roomB) {
     }
 
     return route.length;
+};
+
+const A_GOES_FIRST = -1;
+const B_GOES_FIRST = 1;
+const A_B_ARE_SAME = 0;
+Room.prototype.sortRemotesByRelevance = function() {
+    this.remotes.sort((remoteNameA, remoteNameB) => {
+            const distA = Game.map.findRoute(this.name, remoteNameA);
+            const distB = Game.map.findRoute(this.name, remoteNameB);
+            if (distA < distB) {
+                return A_GOES_FIRST;
+            }
+
+            if (distA > distB) {
+                return B_GOES_FIRST;
+            }
+
+            const sourceCountA = Object.keys(Memory.rooms[remoteNameA].sources).length;
+            const sourceCountB = Object.keys(Memory.rooms[remoteNameB].sources).length;
+            if (sourceCountA > sourceCountB) {
+                return A_GOES_FIRST;
+            }
+
+            if (sourceCountA < sourceCountB) {
+                return B_GOES_FIRST;
+            }
+
+            /* TODO: Better solution once scouting and source memory revamp go life.
+            if (Memory.rooms[remoteNameA].sourceCount > Memory.rooms[remoteNameB].sourceCount) {
+                return A_GOES_FIRST;
+            }
+
+            if (Memory.rooms[remoteNameA].sourceCount < Memory.rooms[remoteNameB].sourceCount) {
+                return B_GOES_FIRST;
+            }
+            */
+
+            return A_B_ARE_SAME;
+        }
+    );
 };
