@@ -64,21 +64,18 @@ initializeRemoteMemory = function(baseRoomName, remoteRoomName) {
     if (Memory.rooms[remoteRoomName].assignedHarvesters === undefined) {
         Memory.rooms[remoteRoomName].assignedHarvesters = 0;
         Memory.rooms[remoteRoomName].assignedHaulers = 0;
-
-        // TODO: remove this if once scouts are running around on the live server
-        if (Memory.rooms[remoteRoomName].sourceCount) {
-            Memory.rooms[remoteRoomName].requiredHaulers = calculateRequiredHaulers(baseRoomName, remoteRoomName);
-        } else {
-            Memory.rooms[remoteRoomName].requiredHaulers = 0;
-        }
     }
 };
 
-calculateRequiredHaulers = function(baseRoomName, remoteRoomName) {
-    const baseRoom = Game.rooms[baseRoomName];
+Room.prototype.calculateRequiredHaulersForRemote = function(remoteRoomName) {
     const remoteRoom = Game.rooms[remoteRoomName];
 
-    const baseRoomCenterPosition = baseRoom._getCenterPosition();
+    const baseRoomCenterPosition = this._getCenterPosition();
+    if (!baseRoomCenterPosition) {
+        log.error(this + " No base center position defined, can't calculate required haulers for room " + remoteRoomName);
+        remoteRoom.memory.requiredHaulers = 0;
+        return;
+    }
 
     let totalSourceDistance = 0;
     for (const source of remoteRoom.sources) {
@@ -94,7 +91,7 @@ calculateRequiredHaulers = function(baseRoomName, remoteRoomName) {
 
     const requiredHaulers = roundDistance / (haulerMaxCarryCapacity / sourceEnergyPerTick);
 
-    return Math.ceil(requiredHaulers);
+    remoteRoom.memory.requiredHaulers = Math.ceil(requiredHaulers);
 };
 
 const A_GOES_FIRST = -1;

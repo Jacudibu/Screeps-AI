@@ -314,7 +314,13 @@ const spawnlogic = {
                 return;
             }
 
-            if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
+            if (remoteMiningRoomMemory.requiredHaulers === undefined) {
+                if (Game.rooms[remotes[i]]) {
+                    room.calculateRequiredHaulersForRemote(room.name, remotes[i]);
+                } else {
+                    // no vision, don't calculate and don't spawn.
+                }
+            } else if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
                 room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remotes[i]});
                 Memory.rooms[remotes[i]].assignedHaulers++;
                 return;

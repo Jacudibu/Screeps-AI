@@ -5,7 +5,6 @@
  1  |   Make Harvesters stop harvesting if their container is filled
  2  |   Automatically place controller.link and source.link
  2  |   Sort Remote Repair Route to increase efficiency
- 2  |   Automatically determine the amount of RemoteHaulers needed
  3  |   Scale number of spawned RemoteHaulers with RCL
  1  |   Ranged defenders
  2  |   Remote Room Invaders (attacking enemy haulers, miners and roads, switching rooms on incoming threat)
