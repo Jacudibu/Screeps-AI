@@ -580,9 +580,6 @@ Creep.prototype.dismantleStructure = function(taskWhenFinished) {
 
     switch (this.dismantle(target)) {
         case OK:
-            if (_.sum(this.carry) === this.carryCapacity) {
-                this.drop(RESOURCE_ENERGY);
-            }
             break;
         case ERR_NOT_IN_RANGE:
             this.travelTo(target, {maxRooms: 1});
