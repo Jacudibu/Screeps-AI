@@ -56,7 +56,7 @@ Room.prototype.removeRemote = function(roomName) {
     this.updateRepairRoute();
 };
 
-initializeRemoteMemory = function(roomName, remoteRoomName) {
+initializeRemoteMemory = function(baseRoomName, remoteRoomName) {
     if (Memory.rooms[remoteRoomName] === undefined) {
         Memory.rooms[remoteRoomName] = {};
     }
@@ -67,20 +67,34 @@ initializeRemoteMemory = function(roomName, remoteRoomName) {
 
         // TODO: remove this if once scouts are running around on the live server
         if (Memory.rooms[remoteRoomName].sourceCount) {
-            Memory.rooms[remoteRoomName].requiredHaulers = calculateNormalDistanceBetweenRooms(roomName, remoteRoomName) * Memory.rooms[remoteRoomName].sourceCount;
+            Memory.rooms[remoteRoomName].requiredHaulers = calculateRequiredHaulers(baseRoomName, remoteRoomName);
         } else {
             Memory.rooms[remoteRoomName].requiredHaulers = 0;
         }
     }
 };
 
-calculateNormalDistanceBetweenRooms = function(roomA, roomB) {
-    const route = Game.map.findRoute(roomA, roomB);
-    if (route === ERR_NO_PATH) {
-        return Infinity;
+calculateRequiredHaulers = function(baseRoomName, remoteRoomName) {
+    const baseRoom = Game.rooms[baseRoomName];
+    const remoteRoom = Game.rooms[remoteRoomName];
+
+    const baseRoomCenterPosition = baseRoom._getCenterPosition();
+
+    let totalSourceDistance = 0;
+    for (const source of remoteRoom.sources) {
+        totalSourceDistance += PathFinder.search(source.pos, baseRoomCenterPosition).path.length;
     }
 
-    return route.length;
+    const haulerMaxCarryCapacity = 1650;
+
+    const roundDistance = totalSourceDistance * 2;
+
+    const SOURCE_REFRESH_INTERVAL = 300;
+    const sourceEnergyPerTick = SOURCE_ENERGY_CAPACITY / SOURCE_REFRESH_INTERVAL;
+
+    const requiredHaulers = roundDistance / (haulerMaxCarryCapacity / sourceEnergyPerTick);
+
+    return Math.ceil(requiredHaulers);
 };
 
 const A_GOES_FIRST = -1;
@@ -88,8 +102,8 @@ const B_GOES_FIRST = 1;
 const A_B_ARE_SAME = 0;
 Room.prototype.sortRemotesByRelevance = function() {
     this.remotes.sort((remoteNameA, remoteNameB) => {
-            const distA = Game.map.findRoute(this.name, remoteNameA);
-            const distB = Game.map.findRoute(this.name, remoteNameB);
+            const distA = calculateRouteLengthBetweenRooms(this.name, remoteNameA);
+            const distB = calculateRouteLengthBetweenRooms(this.name, remoteNameB);
             if (distA < distB) {
                 return A_GOES_FIRST;
             }
@@ -121,4 +135,13 @@ Room.prototype.sortRemotesByRelevance = function() {
             return A_B_ARE_SAME;
         }
     );
+};
+
+calculateRouteLengthBetweenRooms = function(roomA, roomB) {
+    const route = Game.map.findRoute(roomA, roomB);
+    if (route === ERR_NO_PATH) {
+        return Infinity;
+    }
+
+    return route.length;
 };
