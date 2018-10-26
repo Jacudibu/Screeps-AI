@@ -18,7 +18,7 @@ const defender = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.ATTACK:
-                attackResult = creep.defendRoomByChargingIntoEnemy();
+                attackResult = creep.defendRoomWithRangedAttacks();
                 break;
             case TASK.RECYCLE:
                 creep.recycle();

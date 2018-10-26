@@ -739,23 +739,36 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
         target = utility.getClosestObjectFromArray(this, possibleTargets);
     }
 
-    let result = this.rangedAttack(target);
-    switch (result) {
-        case OK:
-            this.say(creepTalk.tableFlip, true);
-            break;
-        case ERR_NOT_IN_RANGE:
-            this.say(creepTalk.chargeAttack, true);
-            this.travelTo(target, {maxRooms: 1});
-            break;
-        case ERR_INVALID_TARGET:
-            this.memory.taskTargetId = undefined;
-            break;
-        default:
-            this.logActionError("defendRoomByChargingIntoEnemy attack command", this.attack(target));
-            break;
+    const rangeToTarget = this.pos.getRangeTo(target);
+    if (rangeToTarget === 1) {
+        let result = this.rangedMassAttack();
+        switch (result) {
+            case OK:
+                this.say(creepTalk.tableFlip, true);
+                break;
+            default:
+                this.logActionError("defendRoomByChargingIntoEnemy while range attacking", this.rangedMassAttack());
+                break;
+        }
+    } else {
+        let result = this.rangedAttack(target);
+        switch (result) {
+            case OK:
+                this.say(creepTalk.tableFlip, true);
+                break;
+            case ERR_NOT_IN_RANGE:
+                this.say(creepTalk.chargeAttack, true);
+                this.travelTo(target, {maxRooms: 1});
+                break;
+            case ERR_INVALID_TARGET:
+                this.memory.taskTargetId = undefined;
+                break;
+            default:
+                this.logActionError("defendRoomByChargingIntoEnemy attack command", this.rangedAttack(target));
+                break;
+        }
+        return result;
     }
-    return result;
 };
 
 Creep.prototype.defendRoomByStandingOnRamparts = function() {
