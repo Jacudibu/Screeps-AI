@@ -350,6 +350,12 @@ const spawnlogic = {
 
             if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
                 room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remotes[i]});
+
+                if (room.energyCapacityAvailable < 1250) {
+                    // spawn a second claimer since 1 claim part is not enough to keep reservation up
+                    room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remotes[i]});
+                }
+
                 Memory.rooms[remotes[i]].isReserverAssigned = true;
                 return;
             }
