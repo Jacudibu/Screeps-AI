@@ -320,7 +320,7 @@ const spawnlogic = {
 
             if (remoteMiningRoomMemory.requiredHaulers === undefined) {
                 if (Game.rooms[remotes[i]]) {
-                    room.calculateRequiredHaulersForRemote(room.name, remotes[i]);
+                    room.calculateRequiredHaulersForRemote(remotes[i]);
                 } else {
                     // no vision, don't calculate and don't spawn.
                 }
