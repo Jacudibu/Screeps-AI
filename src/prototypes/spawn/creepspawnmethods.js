@@ -545,9 +545,9 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     let isNPCAttack = false;
     let room = Game.rooms[targetRoomName];
     if (room) {
-        if (room.threat) {
-            if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
-                maxLength = Math.min(50, room.threat.total * 2);
+        if (roomThreats[room.name]) {
+            if (roomThreats[room.name].players[0] === "Invader" && roomThreats[room.name].players.length === 1) {
+                maxLength = Math.min(50, roomThreats[room.name].total * 2);
                 isNPCAttack = true;
             } else {
                 // Full power TODO: finetuning
@@ -594,9 +594,9 @@ Spawn.prototype.spawnRangedDefender = function(energy, targetRoomName) {
     let isNPCAttack = false;
     let room = Game.rooms[targetRoomName];
     if (room) {
-        if (room.threat) {
-            if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
-                maxLength = Math.min(50, room.threat.total * 2);
+        if (roomThreats[room.name]) {
+            if (roomThreats[room.name].players[0] === "Invader" && roomThreats[room.name].players.length === 1) {
+                maxLength = Math.min(50, roomThreats[room.name].total * 2);
                 isNPCAttack = true;
             } else {
                 // Full power TODO: finetuning

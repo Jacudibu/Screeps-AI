@@ -456,7 +456,7 @@ const spawnlogic = {
 
     addDefenderToSpawnQueue(spawnRoom, targetRoomName) {
         Memory.rooms[targetRoomName].requiresHelp = false;
-        if (Game.rooms[targetRoomName].threat && Game.rooms[targetRoomName].threat.ranged > 0) {
+        if (roomThreats[targetRoomName] && roomThreats[targetRoomName].ranged > 0) {
             spawnRoom.addToSpawnQueueStart({role: ROLE.RANGED_DEFENDER, targetRoomName: targetRoomName});
         } else {
             spawnRoom.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: targetRoomName});

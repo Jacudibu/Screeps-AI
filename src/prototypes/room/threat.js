@@ -9,9 +9,11 @@ Room.prototype.checkForHostiles = function() {
     });
 };
 
+global.roomThreats = {};
+
 Room.prototype.updateThreat = function() {
     if (this._dangerousHostiles.length === 0) {
-        this.threat = null;
+        roomThreats[this.name] = null;
         return;
     }
 
@@ -40,11 +42,11 @@ Room.prototype.updateThreat = function() {
         threat.total  += creep.body.length;
     }
 
-    this.threat = threat;
+    roomThreats[this.name] = threat;
 };
 
 Room.prototype.askForHelpIfThreatDetected = function() {
-    if (!this.threat) {
+    if (!roomThreats[this.name]) {
         this.memory.requiresHelp = undefined;
         return;
     }
@@ -53,13 +55,13 @@ Room.prototype.askForHelpIfThreatDetected = function() {
         const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER});
         if (myDefenseForce.length === 0) {
             this.memory.requiresHelp = true;
-            if (this.threat.players[0] !== "Invader" && this.threat.players[0] !== "Source Keeper" && this.controller
+            if (roomThreats[this.name].players[0] !== "Invader" && roomThreats[this.name].players[0] !== "Source Keeper" && this.controller
                 && (this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
 
                 // TODO: Remove this once wtffrank stops sending dismantlers into that room.
                 if (this.name !== 'E51S49') {
-                    const message = this + " is being attacked by " + JSON.stringify(this.threat.players) + "<br>" +
-                        "Threat info: " + JSON.stringify(this.threat, null, 2);
+                    const message = this + " is being attacked by " + JSON.stringify(roomThreats[this.name].players) + "<br>" +
+                        "Threat info: " + JSON.stringify(roomThreats[this.name], null, 2);
                     log.warning(message);
 
                     Game.notify(message);

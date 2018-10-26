@@ -1,7 +1,7 @@
 const RAMPART_TOWER_REPAIR_THRESHOLD = 7500;
 
 Room.prototype.attackHostiles = function() {
-    if (!this.threat) {
+    if (!roomThreats[this.name]) {
         // Kill scouts and such things
         const allHostiles = this.find(FIND_HOSTILE_CREEPS);
         if (allHostiles.length > 0) {
