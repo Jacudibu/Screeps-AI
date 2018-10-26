@@ -69,7 +69,7 @@ const spawnlogic = {
             ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
         } else {
             // TODO: Remove this if. Just a safety net so we don't start spawning faulty scouts on the main server.
-            if (Game.shard.name === 'screepsplus1') {
+            if (Game.shard.name === 'screepsplus1' || Game.shard.name === 'swc' ) {
                 if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
                     nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
                     this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
@@ -295,6 +295,10 @@ const spawnlogic = {
         for (let i = 0; i < remotes.length; i++) {
             let remoteMiningRoomMemory = Memory.rooms[remotes[i]];
 
+            if (!remoteMiningRoomMemory) {
+                continue;
+            }
+
             if (remoteMiningRoomMemory.requiresHelp !== undefined) {
                 continue;
             }
@@ -351,7 +355,7 @@ const spawnlogic = {
     },
 
     isDefenderNeeded(roomName) {
-        return Memory.rooms[roomName].requiresHelp;
+        return Memory.rooms[roomName] && Memory.rooms[roomName].requiresHelp;
     },
 
     searchRemoteWhichNeedsDefender(room) {
