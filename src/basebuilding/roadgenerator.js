@@ -30,7 +30,7 @@ const RoadGenerator = {
         }
 
         room.memory.layout.roads = roads;
-        this._forceConstructionTimerReset();
+        room._forceConstructionTimerReset();
 
         return roads;
     },
