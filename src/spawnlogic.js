@@ -324,7 +324,7 @@ const spawnlogic = {
                 } else {
                     // no vision, don't calculate and don't spawn.
                 }
-            } else if (remoteMiningRoomMemory.assignedHaulers < remoteMiningRoomMemory.requiredHaulers) {
+            } else if (remoteMiningRoomMemory.assignedHaulers < this.calculateRequiredHaulers(room, remoteMiningRoomMemory)) {
                 room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remotes[i]});
                 Memory.rooms[remotes[i]].assignedHaulers++;
                 return;
@@ -351,6 +351,36 @@ const spawnlogic = {
                 Memory.rooms[remotes[i]].isReserverAssigned = true;
                 return;
             }
+        }
+    },
+
+    calculateRequiredHaulers(room, remoteMiningRoomMemory) {
+        // TODO: Properly calculate those values.
+        switch (room.controller.level) {
+            case 1:
+                return remoteMiningRoomMemory.requiredHaulers * 5;
+            case 2:
+                switch (room.extensions.length) {
+                    case 0:
+                        return remoteMiningRoomMemory.requiredHaulers * 5;
+                    case 1:
+                    case 2:
+                    case 3:
+                        return remoteMiningRoomMemory.requiredHaulers * 4;
+                    case 4:
+                    case 5:
+                        return remoteMiningRoomMemory.requiredHaulers * 3;
+                }
+                break;
+            case 3:
+                if (room.extensions.length < 7) {
+                    return remoteMiningRoomMemory.requiredHaulers * 2;
+                } else {
+                    // Claimers available -> energy output doubled
+                    return remoteMiningRoomMemory.requiredHaulers * 2;
+                }
+            default:
+                return remoteMiningRoomMemory.requiredHaulers;
         }
     },
 
