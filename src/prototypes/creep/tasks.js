@@ -769,6 +769,12 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
         }
         return result;
     }
+
+    if (target.countBodyPartsOfType(ATTACK) > 0) {
+        if (rangeToTarget < 2) {
+            this.kite(target)
+        }
+    }
 };
 
 Creep.prototype.defendRoomByStandingOnRamparts = function() {
