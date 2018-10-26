@@ -26,6 +26,7 @@ ROLE_NAMES[ROLE.CLAIMER_ATTACKER]       = 'claimerattacker';
 
 // Defenseive Creeps
 ROLE_NAMES[ROLE.DEFENDER]               = 'guardian';
+ROLE_NAMES[ROLE.RANGED_DEFENDER]        = 'guardette';
 
 
 /* Random name ideas

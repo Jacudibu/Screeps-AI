@@ -711,7 +711,48 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
             this.memory.taskTargetId = undefined;
             break;
         default:
-            this.logActionError("defendRoomByStandingOnRamparts attack command", this.attack(target));
+            this.logActionError("defendRoomByChargingIntoEnemy attack command", this.attack(target));
+            break;
+    }
+    return result;
+};
+
+Creep.prototype.defendRoomWithRangedAttacks = function() {
+    let target = undefined;
+    if (this.memory.taskTargetId) {
+        target = Game.getObjectById(this.memory.taskTargetId);
+    }
+
+    if (target === undefined) {
+        let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
+        if (possibleTargets.length === 0) {
+            this.say(creepTalk.victory, true);
+            if (this.countBodyPartsOfType(HEAL) === 0) {
+                this.targetRoomName = this.memory.homeRoomName;
+                this.setTask(TASK.DECIDE_WHAT_TO_DO);
+            } else if (this.room !== this.targetRoomName) {
+                this.setTask(TASK.MOVE_TO_ROOM)
+            }
+            return ERR_NOT_FOUND;
+        }
+
+        target = utility.getClosestObjectFromArray(this, possibleTargets);
+    }
+
+    let result = this.rangedAttack(target);
+    switch (result) {
+        case OK:
+            this.say(creepTalk.tableFlip, true);
+            break;
+        case ERR_NOT_IN_RANGE:
+            this.say(creepTalk.chargeAttack, true);
+            this.travelTo(target, {maxRooms: 1});
+            break;
+        case ERR_INVALID_TARGET:
+            this.memory.taskTargetId = undefined;
+            break;
+        default:
+            this.logActionError("defendRoomByChargingIntoEnemy attack command", this.attack(target));
             break;
     }
     return result;

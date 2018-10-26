@@ -585,6 +585,54 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.DEFENDER, body, opts);
 };
 
+Spawn.prototype.spawnRangedDefender = function(energy, targetRoomName) {
+    let body = [];
+
+    let maxLength = targetRoomName === this.room.name ? 50 : 30;
+
+    let isNPCAttack = false;
+    let room = Game.rooms[targetRoomName];
+    if (room) {
+        if (room.threat) {
+            if (room.threat.players[0] === "Invader" && room.threat.players.length === 1) {
+                maxLength = Math.min(50, room.threat.total * 2);
+                isNPCAttack = true;
+            } else {
+                // Full power TODO: finetuning
+                maxLength = 48;
+            }
+        } else {
+            // no threat remaining, so no spawn needed
+            return OK;
+        }
+    } else {
+        // no vision? mmh... TODO?
+        maxLength = 30;
+    }
+
+    while (energy >= 200 && body.length < maxLength) {
+        body.push(RANGED_ATTACK, MOVE);
+        energy -= 200;
+    }
+
+    if (maxLength === 48 && !isNPCAttack) {
+        if (energy >= BODYPART_COST.heal + BODYPART_COST.move) {
+            body.push(MOVE, HEAL);
+        }
+    }
+
+    let opts = {
+        memory: {
+            role: ROLE.RANGED_DEFENDER,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            homeRoomName: this.room.name,
+            task: TASK.DECIDE_WHAT_TO_DO,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.RANGED_DEFENDER, body, opts);
+};
+
 Spawn.prototype.spawnAnnoyer = function(energy, targetRoomName) {
     let body = [];
 

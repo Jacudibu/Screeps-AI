@@ -223,6 +223,8 @@ const spawnlogic = {
                 return spawn.spawnAttacker(energy, args.targetRoomName);
             case ROLE.DEFENDER:
                 return spawn.spawnDefender(energy, args.targetRoomName);
+            case ROLE.RANGED_DEFENDER:
+                return spawn.spawnRangedDefender(energy, args.targetRoomName);
             case ROLE.CARRIER:
                 return spawn.spawnCarrier(energy, args.targetRoomName, args.storageRoomName, args.respawnTTL);
             case ROLE.MINERAL_HARVESTER:
@@ -454,7 +456,11 @@ const spawnlogic = {
 
     addDefenderToSpawnQueue(spawnRoom, targetRoomName) {
         Memory.rooms[targetRoomName].requiresHelp = false;
-        spawnRoom.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: targetRoomName});
+        if (Game.rooms[targetRoomName].threat && Game.rooms[targetRoomName].threat.ranged > 0) {
+            spawnRoom.addToSpawnQueueStart({role: ROLE.RANGED_DEFENDER, targetRoomName: targetRoomName});
+        } else {
+            spawnRoom.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: targetRoomName});
+        }
     },
 
     checkIfRoomIsAliveAndReviveIfNecessary(room) {

@@ -27,6 +27,7 @@ global.ROLE.DISMANTLER = 'dismantler';
 
 // Defensive
 global.ROLE.DEFENDER = 'defender';
+global.ROLE.RANGED_DEFENDER = 'ranged_defender';
 
 // Other
 global.ROLE.SCOUT = 'scout';
