@@ -771,7 +771,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
     }
 
     if (target.countBodyPartsOfType(ATTACK) > 0) {
-        if (rangeToTarget < 2) {
+        if (rangeToTarget <= 2) {
             this.kite(target)
         }
     }
