@@ -17,11 +17,13 @@ Room.prototype.updateAfterCreeps = function() {
             this.checkForRCLUpdate();
             this.tryPlacingConstructionSites();
 
-            for (const remoteName of this.remotes) {
-                const remote = Game.rooms[remoteName];
-                if (remote) {
-                    remote.askForHelpIfThreatDetected();
-                    remote.tryPlacingRemoteConstructionSites();
+            if (this.remotes) {
+                for (const remoteName of this.remotes) {
+                    const remote = Game.rooms[remoteName];
+                    if (remote) {
+                        remote.askForHelpIfThreatDetected();
+                        remote.tryPlacingRemoteConstructionSites();
+                    }
                 }
             }
         }

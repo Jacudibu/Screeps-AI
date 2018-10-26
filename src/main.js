@@ -72,6 +72,9 @@ const screepsplus = require('tools.screepsplus');
 const warfare = require('warfare._imports');
 
 log.warning("====== Global reset registered ======");
+if (!Memory.creepsBuilt) {
+    Memory.creepsBuilt = 0;
+}
 
 //profiler.enable();
 

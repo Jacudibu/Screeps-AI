@@ -88,7 +88,9 @@ function countRooms() {
         if (room.controller) {
             if (room.controller.my) {
                 roomNumbers.claimed++;
-                roomNumbers.remotes += room.remotes.length;
+                if (room.remotes) {
+                    roomNumbers.remotes += room.remotes.length;
+                }
             } else if (room.controller.reservation) {
                 if (room.controller.reservation.username === 'Jacudibu') {
                     roomNumbers.reserved++;
