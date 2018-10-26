@@ -43,9 +43,9 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             addToSpawnQueueStart(this.spawnRoom, args);
             break;
         case ROLE.REMOTE_HAULER:
-            args.targetRoomName = this.remoteHaulTargetRoom;
-            addToSpawnQueueEnd(this.spawnRoom, args);
-            Memory.rooms[args.targetRoomName].assignedHaulers++;
+            //args.targetRoomName = this.remoteHaulTargetRoom;
+            //addToSpawnQueueEnd(this.spawnRoom, args);
+            //Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
         case ROLE.REMOTE_WORKER:
             const constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
