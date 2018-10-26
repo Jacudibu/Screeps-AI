@@ -26,7 +26,7 @@ const ScoutData = {
                 destinations.push(portal.destination);
             }
 
-            Portals.addPermanentPortals(this.name, destinations);
+            Portals.addPermanentPortals(room.name, destinations);
         }
     },
 
