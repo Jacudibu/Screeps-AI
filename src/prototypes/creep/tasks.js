@@ -498,6 +498,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
                 if (targetPos === ERR_INVALID_ARGS) {
                     log.warning(this + "unable to place source container!");
                     targetPos = source.pos;
+                    this.memory.task = taskWhenFinished;
                 }
             } else {
                 this.memory.task = taskWhenFinished;

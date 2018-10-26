@@ -391,7 +391,7 @@ const spawnlogic = {
                     case 8:  // 700E
                         return 3.5;
                     case 9:  // 750E
-                    default: // 800E
+                    default: // 800E, At this point workers will have 6W and start building containers
                         return 3;
                 }
             case 4:
