@@ -355,32 +355,79 @@ const spawnlogic = {
     },
 
     calculateRequiredHaulers(room, remoteMiningRoomMemory) {
-        // TODO: Properly calculate those values.
+        return remoteMiningRoomMemory.requiredHaulers * this.calculateRequiredHaulerFactor(room);
+    },
+
+    calculateRequiredHaulerFactor(room) {
+        // 2500E for full hauler
+        // Below 550E
         switch (room.controller.level) {
-            case 1:
-                return remoteMiningRoomMemory.requiredHaulers * 5;
+            case 1: // 300E, 2W Harvesters
+                return 2;
             case 2:
                 switch (room.extensions.length) {
                     case 0:
-                        return remoteMiningRoomMemory.requiredHaulers * 5;
-                    case 1:
-                    case 2:
-                    case 3:
-                        return remoteMiningRoomMemory.requiredHaulers * 4;
-                    case 4:
-                    case 5:
-                        return remoteMiningRoomMemory.requiredHaulers * 3;
+                        return 2;
+                    case 1:  // 350E, 3W Harvesters
+                        return 3;
+                    case 2:  // 400E
+                        return 2.75;
+                    case 3:  // 450E, 4W Harvesters
+                        return 2.5;
+                    case 4:  // 500E
+                        return 2.25;
+                    default: // 550E, 5W harvesters
+                        return 2.75;
                 }
-                break;
             case 3:
-                if (room.extensions.length < 7) {
-                    return remoteMiningRoomMemory.requiredHaulers * 2;
-                } else {
-                    // Claimers available -> energy output doubled
-                    return remoteMiningRoomMemory.requiredHaulers * 2;
+                switch (room.extensions.length) {
+                    case 5:  // 550E
+                        return 2.75;
+                    case 6:  // 600E
+                        return 2;
+                    case 7:  // 650E, Claimers are now available -> energy output is doubled!
+                    case 8:  // 700E
+                        return 3.5;
+                    case 9:  // 750E
+                    default: // 800E
+                        return 3;
                 }
-            default:
-                return remoteMiningRoomMemory.requiredHaulers;
+            case 4:
+                switch (room.extensions.length) {
+                    case 10: // 800E
+                        return 3;
+                    case 11: // 850E
+                    case 12: // 900E
+                    case 13: // 950E
+                    case 14: // 1000E
+                        return 2.5;
+                    case 15: // 1050E
+                    case 16: // 1100E
+                    case 17: // 1150E
+                    case 18: // 1200E
+                    case 19: // 1250E
+                    default: // 1300E
+                        return 2;
+                }
+            case 5:
+                switch (room.extensions.length) {
+                    case 20: // 1300E
+                        return 2;
+                    case 21: // 1350E
+                    case 22: // 1400E
+                    case 23: // 1450E
+                    case 24: // 1500E
+                    case 25: // 1550E
+                        return 2.5;
+                    case 26: // 1600E
+                    case 27: // 1650E
+                    case 28: // 1700E
+                    case 29: // 1750E
+                    default: // 1800E
+                        return 1.3;
+                }
+            default: // Full 50 Part-Haulers!
+                return 1;
         }
     },
 

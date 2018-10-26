@@ -272,16 +272,26 @@ Spawn.prototype.spawnRemoteHarvester = function(energy, targetRoomName) {
 
     let body = [];
 
-    if (energy > 800) {
+    if (energy >= 800) {
         energy = 800;
     }
 
-    while (energy >= 300) {
-        body.push(WORK, WORK, MOVE);
-        energy -= 250;
+    body.push(MOVE);
+    energy -= 50;
+
+    for (let i = 0; i < 5 && energy >= 100; i++) {
+        body.push(WORK);
+        energy -= 100;
     }
 
-    body.push(CARRY);
+    for (let i = 0; i < 2 && energy >= 50; i++) {
+        body.push(MOVE);
+        energy -= 50;
+    }
+
+    if (energy >= 150) {
+        body.push(WORK, CARRY);
+    }
 
     let opts = {
         memory: {
