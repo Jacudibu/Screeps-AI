@@ -109,6 +109,7 @@ Room.prototype.sortRemotesByRelevance = function() {
                 return B_GOES_FIRST;
             }
 
+            /*
             const sourceCountA = Object.keys(Memory.rooms[remoteNameA].sources).length;
             const sourceCountB = Object.keys(Memory.rooms[remoteNameB].sources).length;
             if (sourceCountA > sourceCountB) {
@@ -118,6 +119,7 @@ Room.prototype.sortRemotesByRelevance = function() {
             if (sourceCountA < sourceCountB) {
                 return B_GOES_FIRST;
             }
+            */
 
             /* TODO: Better solution once scouting and source memory revamp go life.
             if (Memory.rooms[remoteNameA].sourceCount > Memory.rooms[remoteNameB].sourceCount) {
