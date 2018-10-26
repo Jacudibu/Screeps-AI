@@ -5,6 +5,7 @@ const cachedValues = [
     "remoteHaulStorageRoom",
     "respawnTTL",
     "role",
+    "stayInRoom,"
 ];
 
 // noinspection ConstantIfStatementJS
@@ -18,6 +19,7 @@ if (false) {
     Creep.prototype.remoteHaulStorageRoom = '';
     Creep.prototype.respawnTTL = '';
     Creep.prototype.role = '';
+    Creep.prototype.stayInRoom = '';
 }
 
 const caches = {};

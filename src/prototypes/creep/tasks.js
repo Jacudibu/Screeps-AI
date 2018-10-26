@@ -686,7 +686,7 @@ Creep.prototype.defendRoomByChargingIntoEnemy = function() {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
             this.say(creepTalk.victory, true);
-            if (this.countBodyPartsOfType(HEAL) === 0) {
+            if (!this.stayInRoom) {
                 this.targetRoomName = this.memory.homeRoomName;
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
             } else if (this.room !== this.targetRoomName) {
@@ -727,7 +727,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
         let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
         if (possibleTargets.length === 0) {
             this.say(creepTalk.victory, true);
-            if (this.countBodyPartsOfType(HEAL) === 0) {
+            if (!this.stayInRoom) {
                 this.targetRoomName = this.memory.homeRoomName;
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
             } else if (this.room !== this.targetRoomName) {

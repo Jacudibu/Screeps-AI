@@ -579,6 +579,7 @@ Spawn.prototype.spawnDefender = function(energy, targetRoomName) {
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
             homeRoomName: this.room.name,
             task: TASK.DECIDE_WHAT_TO_DO,
+            stayInRoom: isNPCAttack ? undefined : true,
         }
     };
 
@@ -627,6 +628,7 @@ Spawn.prototype.spawnRangedDefender = function(energy, targetRoomName) {
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
             homeRoomName: this.room.name,
             task: TASK.DECIDE_WHAT_TO_DO,
+            stayInRoom: isNPCAttack ? undefined : true,
         }
     };
 
