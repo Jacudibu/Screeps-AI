@@ -23,7 +23,9 @@ const ScoutData = {
         if (permanentPortals.length > 0) {
             const destinations = [];
             for (const portal of permanentPortals) {
-                destinations.push(portal.destination);
+                if (!destinations.includes(portal.destination.roomName)) {
+                    destinations.push(portal.destination.roomName);
+                }
             }
 
             Portals.addPermanentPortals(room.name, destinations);
