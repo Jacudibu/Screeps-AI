@@ -57,6 +57,18 @@ const spawnlogic = {
             }
         }
 
+        if (room.memory.claimAttackTimer) {
+            if (room.memory.claimAttackTimer < Game.time) {
+                room.memory.claimAttackTimer = Game.time + 1000;
+                const args = {
+                    role: ROLE.CLAIMER_ATTACKER,
+                    targetRoomName: "E54S58",
+                };
+                room.addToSpawnQueueEnd(args);
+                return;
+            }
+        }
+
         if (this.checkIfRoomIsAliveAndReviveIfNecessary(room)) {
             return;
         }
