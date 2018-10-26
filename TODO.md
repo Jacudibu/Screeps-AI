@@ -2,11 +2,9 @@
 :---:|  ----
  1  |   Automatically place controller container
  3  |   Multi-Source remote Harvesters
- 1  |   Make Harvesters stop harvesting if their container is filled
+ 1  |   (?) Make Harvesters stop harvesting if their container is filled
  2  |   Automatically place controller.link and source.link
  2  |   Sort Remote Repair Route to increase efficiency
- 3  |   Scale number of spawned RemoteHaulers with RCL
- 1  |   Ranged defenders
  2  |   Remote Room Invaders (attacking enemy haulers, miners and roads, switching rooms on incoming threat)
  2  |   Remote Room Milkers (basically just stealing energy)
  2  |   Remote Room Raiders (Invaders + Milker = Raider -> attacking enemy haulers & stealing energy)
