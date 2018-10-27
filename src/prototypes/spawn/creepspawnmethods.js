@@ -500,7 +500,10 @@ Spawn.prototype.spawnRangedAttacker = function(energy, targetRoomName) {
 
     while (energy >= 200) {
         body.push(RANGED_ATTACK, MOVE);
+        energy -= 200;
     }
+
+    body.sort();
 
     body.push(HEAL, MOVE);
 

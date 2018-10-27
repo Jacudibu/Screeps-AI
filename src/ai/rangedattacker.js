@@ -24,7 +24,7 @@ const guidedRangedAttacker = {
                 }
 
                 if (!target) {
-                    let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS, {filter: target => creep.pos.getRangeTo(target) < 4});
+                    let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
                     if (possibleTargets.length === 0) {
                         creep.say(creepTalk.noTargetFound);
                         return;
