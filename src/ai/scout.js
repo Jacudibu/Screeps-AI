@@ -3,19 +3,36 @@ const reserver = {
         switch (creep.memory.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 creep.room.updateScoutData();
-                creep.selectNextRoomToScout();
-                creep.setTask(TASK.MOVE_TO_ROOM);
-                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+
+                if (creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES).length > 0) {
+                    creep.setTask(TASK.STOMP_HOSTILE_CONSTRUCTION_SITES);
+                    break;
+                }
+
+                this.continueScouting(creep);
                 break;
 
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
 
+            case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:
+                const result = creep.stompHostileConstructionSites();
+                if (result === ERR_NOT_FOUND) {
+                    this.continueScouting(creep);
+                }
+                break;
+
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
         }
+    },
+
+    continueScouting(creep) {
+        creep.selectNextRoomToScout();
+        creep.setTask(TASK.MOVE_TO_ROOM);
+        creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
     }
 };
 

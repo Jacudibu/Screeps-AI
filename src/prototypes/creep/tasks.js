@@ -887,7 +887,7 @@ Creep.prototype.selectNextRoomToScout = function() {
     this.targetRoomName = targetRoom;
 };
 
-Creep.prototype.stepOntoHostileConstructionSites = function() {
+Creep.prototype.stompHostileConstructionSites = function() {
     const target = this._getClosestHostileConstructionSite();
     if (target === ERR_NOT_FOUND) {
         return ERR_NOT_FOUND;
