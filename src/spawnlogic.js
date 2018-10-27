@@ -374,7 +374,9 @@ const spawnlogic = {
             return NO_CREEP_SPAWNED;
         }
 
-        if (!this.isReserverNeeded(remoteRoom, remoteMemory))
+        if (!this.isReserverNeeded(remoteRoom, remoteMemory)) {
+            return NO_CREEP_SPAWNED;
+        }
 
         room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
 
@@ -392,11 +394,7 @@ const spawnlogic = {
             return false;
         }
 
-        if (remoteRoomMemory.isReserverAssigned) {
-            return false;
-        }
-
-        return true;
+        return !remoteRoomMemory.isReserverAssigned;
     },
 
     calculateRequiredHaulers(room, remoteMiningRoomMemory) {
