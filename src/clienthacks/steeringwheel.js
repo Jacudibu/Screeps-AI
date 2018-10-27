@@ -3,7 +3,7 @@
  */
 Creep.prototype.steeringWheel = function() {
     return getHTMLForDirection(this, TOP_LEFT,    "↖") + " " + getHTMLForDirection(this, TOP,    "↑") + " " + getHTMLForDirection(this, TOP_RIGHT,    "↗") + "\n" +
-           getHTMLForDirection(this, LEFT,        "←") + " " +                                   "·"  + " " + getHTMLForDirection(this, TOP_RIGHT,    "→") + "\n" +
+           getHTMLForDirection(this, LEFT,        "←") + " " +                                   "·"  + " " + getHTMLForDirection(this, RIGHT,        "→") + "\n" +
            getHTMLForDirection(this, BOTTOM_LEFT, "↙") + " " + getHTMLForDirection(this, BOTTOM, "↓") + " " + getHTMLForDirection(this, BOTTOM_RIGHT, "↘")
         ;
 };
