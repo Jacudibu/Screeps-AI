@@ -82,19 +82,6 @@ const memoryManagment = {
                 break;
 
             case ROLE.CLAIMER_ATTACKER:
-                // TODO: This is basically just a lazy #HACK right now. REMOVE IT.
-                const room = Game.rooms[creep.targetRoomName];
-                if (room) {
-                    if (room.controller && room.controller.level === 0) {
-                        break;
-                    }
-                }
-
-                let args2 = {
-                    role: ROLE.CLAIMER_ATTACKER,
-                    targetRoomName: creep.targetRoomName,
-                };
-                Memory.rooms[creep.spawnRoom].spawnQueue.push(args2);
                 break;
 
             case ROLE.SCOUT:
@@ -103,6 +90,12 @@ const memoryManagment = {
                     Game.rooms[creep.targetRoomName].updateScoutData();
                 } else if (Memory.rooms[creep.targetRoomName]) {
                     delete Memory.rooms[creep.targetRoomName].isAlreadyScouted;
+                }
+                break;
+            case ROLE.DEFENDER:
+            case ROLE.RANGED_DEFENDER:
+                if (roomThreats[creep.targetRoomName]) {
+                    Memory.rooms.creep.targetRoomName.requiresHelp = true;
                 }
                 break;
         }
