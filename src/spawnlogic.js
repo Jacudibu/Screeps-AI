@@ -1,4 +1,4 @@
-const SCOUT_SPAWN_INTERVAL = 200;
+const SCOUT_SPAWN_INTERVAL = 100;
 const nextScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
 
@@ -497,10 +497,22 @@ const spawnlogic = {
 
     addDefenderToSpawnQueue(spawnRoom, targetRoomName) {
         Memory.rooms[targetRoomName].requiresHelp = false;
-        if (roomThreats[targetRoomName] && roomThreats[targetRoomName].ranged > 0) {
-            spawnRoom.addToSpawnQueueStart({role: ROLE.RANGED_DEFENDER, targetRoomName: targetRoomName});
-        } else {
+        const threat = roomThreats[targetRoomName];
+
+        let useMeleeDefender = false;
+
+        if (threat && threat.ranged > 0) {
+            if (threat.players.length === 1 && threat.players[0] === INVADER_PLAYER_NAME) {
+                useMeleeDefender = threat.creepCount === 1 && threat.attack > 0;
+            } else {
+                useMeleeDefender = false;
+            }
+        }
+
+        if (useMeleeDefender) {
             spawnRoom.addToSpawnQueueStart({role: ROLE.DEFENDER, targetRoomName: targetRoomName});
+        } else {
+            spawnRoom.addToSpawnQueueStart({role: ROLE.RANGED_DEFENDER, targetRoomName: targetRoomName});
         }
     },
 

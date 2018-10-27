@@ -4,6 +4,9 @@ global.ERR_REPAIR_RAMPARTS_FIRST = -102;
 
 global.REMOTE_REPAIRER_SPAWN_INTERVAL = 5000;
 
+global.INVADER_PLAYER_NAME = "Invader";
+global.SOURCE_KEEPER_PLAYER_NAME = "Source Keeper";
+
 // ------------------
 // -- Haul Amounts --
 // ------------------

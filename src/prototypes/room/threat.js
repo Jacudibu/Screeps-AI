@@ -19,6 +19,7 @@ Room.prototype.updateThreat = function() {
 
     let threat = {
         players: [],
+        creepCount: 0,
         attack: 0,
         ranged: 0,
         heal: 0,
@@ -33,6 +34,7 @@ Room.prototype.updateThreat = function() {
             threat.players.push(creep.owner.username);
         }
 
+        threat.creepCount++;
         threat.attack += creep.countBodyPartsOfTypeAndApplyBoostWeighting(ATTACK);
         threat.ranged += creep.countBodyPartsOfTypeAndApplyBoostWeighting(RANGED_ATTACK);
         threat.heal   += creep.countBodyPartsOfTypeAndApplyBoostWeighting(HEAL);
@@ -55,8 +57,10 @@ Room.prototype.askForHelpIfThreatDetected = function() {
         const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER});
         if (myDefenseForce.length === 0) {
             this.memory.requiresHelp = true;
-            if (roomThreats[this.name].players[0] !== "Invader" && roomThreats[this.name].players[0] !== "Source Keeper" && this.controller
-                && (this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
+            if (   roomThreats[this.name].players[0] !== INVADER_PLAYER_NAME
+                && roomThreats[this.name].players[0] !== SOURCE_KEEPER_PLAYER_NAME
+                && this.controller
+                &&(this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
 
                 // TODO: Remove this once wtffrank stops sending dismantlers into that room.
                 if (this.name !== 'E51S49') {
