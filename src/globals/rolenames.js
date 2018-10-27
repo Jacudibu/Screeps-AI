@@ -19,6 +19,7 @@ ROLE_NAMES[ROLE.RESERVER]               = 'reserver';
 
 // Offensive Creeps
 ROLE_NAMES[ROLE.ATTACKER]               = 'behemoth';
+ROLE_NAMES[ROLE.RANGED_ATTACKER]        = 'archer';
 ROLE_NAMES[ROLE.GUIDED_RANGED_ATTACKER] = 'spitter';
 ROLE_NAMES[ROLE.DISMANTLER]             = 'badlifedecision';
 

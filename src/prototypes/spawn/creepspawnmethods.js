@@ -492,6 +492,29 @@ Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
 };
 
+Spawn.prototype.spawnRangedAttacker = function(energy, targetRoomName) {
+    let body = [];
+
+    // for heal & move later
+    energy -= 300;
+
+    while (energy >= 200) {
+        body.push(RANGED_ATTACK, MOVE);
+    }
+
+    body.push(HEAL, MOVE);
+
+    let opts = {
+        memory: {
+            role: ROLE.RANGED_ATTACKER,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.RANGED_ATTACKER, body, opts);
+};
+
 Spawn.prototype.spawnGuidedRangedAttacker = function(energy, targetRoomName) {
     let body = [];
 
