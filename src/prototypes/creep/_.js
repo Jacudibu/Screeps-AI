@@ -14,6 +14,20 @@ Creep.prototype.countBodyPartsOfType = function(types) {
     return _.filter(this.body, function(bodyPart) {return bodyPart.type === types}).length;
 };
 
+Creep.prototype.countBodyPartsOfTypeAndApplyBoostWeighting = function(searchedPart) {
+    return this.body.reduce((total, currentPart) => {
+            if (currentPart.type === searchedPart) {
+                if (currentPart.boost) {
+                    return total + 1 + boostTiers[currentPart.boost];
+                }
+
+                return total + 1;
+            }
+
+            return total;
+        }, 0);
+};
+
 Creep.prototype.logActionError = function(action, errorCode) {
     log.warning(this + " " + action + " resulted in unhandled error code " + errorCode)
 };

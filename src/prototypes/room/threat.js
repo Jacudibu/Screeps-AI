@@ -33,12 +33,12 @@ Room.prototype.updateThreat = function() {
             threat.players.push(creep.owner.username);
         }
 
-        threat.attack += creep.countBodyPartsOfType(ATTACK);
-        threat.ranged += creep.countBodyPartsOfType(RANGED_ATTACK);
-        threat.heal   += creep.countBodyPartsOfType(HEAL);
-        threat.tough  += creep.countBodyPartsOfType(TOUGH);
-        threat.claim  += creep.countBodyPartsOfType(CLAIM);
-        threat.other  += creep.countBodyPartsOfType(MOVE) + creep.countBodyPartsOfType(CARRY);
+        threat.attack += creep.countBodyPartsOfTypeAndApplyBoostWeighting(ATTACK);
+        threat.ranged += creep.countBodyPartsOfTypeAndApplyBoostWeighting(RANGED_ATTACK);
+        threat.heal   += creep.countBodyPartsOfTypeAndApplyBoostWeighting(HEAL);
+        threat.tough  += creep.countBodyPartsOfTypeAndApplyBoostWeighting(TOUGH);
+        threat.claim  += creep.countBodyPartsOfTypeAndApplyBoostWeighting(CLAIM);
+        threat.other  += creep.countBodyPartsOfType(MOVE) + creep.countBodyPartsOfType(CARRY); // cheaper calculation as no benefit for fighting
         threat.total  += creep.body.length;
     }
 

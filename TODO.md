@@ -15,7 +15,6 @@
  6  |   Optimize Kiting Code to avoid running into dead ends
  2  |   Boost upgraders on spawn
  8  |   Boost other creeps if needed
- 1  |   Increase threat if a creep has boosted bodyparts
  3  |   Automatically assign remote mining rooms
  3  |   Adjust Upgrader count depending on total energy storage
  4  |   Proper Healer AI

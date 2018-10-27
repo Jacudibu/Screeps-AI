@@ -8,12 +8,13 @@ require('clienthacks.clickabletostring');
 require('clienthacks.injectloan');
 require('clienthacks.steeringwheel');
 
+require('globals.boosttiers');
 require('globals.creeptalk');
 require('globals.infrastructure');
 require('globals.roles');
+require('globals.storagelimits');
 require('globals.tasks');
 require('globals.utility');
-require('globals.storagelimits');
 
 require('prototypes.container.isnexttosourceormineral');
 
