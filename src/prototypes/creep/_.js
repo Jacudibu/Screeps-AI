@@ -92,6 +92,11 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             args.respawnTTL = this.respawnTTL;
             addToSpawnQueueEnd(this.spawnRoom, args);
             break;
+        case ROLE.SCOUT:
+            args.targetRoomName = this.targetRoomName;
+            args.respawnTTL = this.respawnTTL;
+            addToSpawnQueueStart(this.spawnRoom, args);
+            break;
         default:
             log.warning(this + " undefined role asking for respawn?!" + args.role);
     }

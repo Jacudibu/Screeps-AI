@@ -251,7 +251,7 @@ const spawnlogic = {
             case ROLE.EARLY_RCL_HARVESTER:
                 return spawn.spawnEarlyRCLHarvester(energy);
             case ROLE.SCOUT:
-                return spawn.spawnScout(energy);
+                return spawn.spawnScout(energy, args.targetRoomName, args.respawnTTL);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue

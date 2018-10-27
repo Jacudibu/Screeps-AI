@@ -716,7 +716,7 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 
 };
 
-Spawn.prototype.spawnScout = function(energy, targetRoom = undefined) {
+Spawn.prototype.spawnScout = function(energy, targetRoom = undefined, respawnTTL = undefined) {
     if (energy < 50) {
         return ERR_NOT_ENOUGH_RESOURCES;
     }
@@ -727,7 +727,8 @@ Spawn.prototype.spawnScout = function(energy, targetRoom = undefined) {
             role: ROLE.SCOUT,
             spawnRoom: this.room.name,
             targetRoomName: targetRoom,
-            task: targetRoom ? TASK.MOVE_TO_ROOM : undefined,
+            task: targetRoom ? TASK.MOVE_TO_ROOM : undefined, // not needed for random scouting
+            respawnTTL: respawnTTL, // if we want to annoy some early rcl safemode-room
         }
     };
 
