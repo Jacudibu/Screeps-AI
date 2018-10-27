@@ -5,7 +5,7 @@ const cachedValues = [
     "remoteHaulStorageRoom",
     "respawnTTL",
     "role",
-    "stayInRoom,"
+    "stayInRoom",
 ];
 
 // noinspection ConstantIfStatementJS
