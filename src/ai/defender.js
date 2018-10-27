@@ -8,9 +8,9 @@ const defender = {
                         creep.setTask(TASK.RECYCLE);
                     } else {
                         if (creep.room.mySpawns.length > 0) {
-                            creep.setTask(TASK.DEFEND_STAY_ON_RAMPART);
+                            creep.setTask(TASK.DEFEND_RAMPARTS);
                         } else {
-                            creep.setTask(TASK.DEFEND_MELEE_CHARGE);
+                            creep.setTask(TASK.DEFEND_CHARGE);
                         }
                     }
                 } else {
@@ -21,11 +21,11 @@ const defender = {
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
-            case TASK.DEFEND_STAY_ON_RAMPART:
-                attackResult = creep.defendRoomByStandingOnRamparts();
+            case TASK.DEFEND_RAMPARTS:
+                attackResult = creep.defendRoomWithMeleeAttacks(true);
                 break;
-            case TASK.DEFEND_MELEE_CHARGE:
-                attackResult = creep.defendRoomByChargingIntoEnemy();
+            case TASK.DEFEND_CHARGE:
+                attackResult = creep.defendRoomWithMeleeAttacks(false);
                 break;
             case TASK.RECYCLE:
                 creep.recycle();

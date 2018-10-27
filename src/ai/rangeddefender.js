@@ -7,7 +7,11 @@ const defender = {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined) {
                         creep.setTask(TASK.RECYCLE);
                     } else {
-                        creep.setTask(TASK.ATTACK);
+                        if (creep.room.mySpawns.length > 0) {
+                            creep.setTask(TASK.DEFEND_RAMPARTS);
+                        } else {
+                            creep.setTask(TASK.DEFEND_CHARGE);
+                        }
                     }
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM);
@@ -17,8 +21,11 @@ const defender = {
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
-            case TASK.ATTACK:
-                attackResult = creep.defendRoomWithRangedAttacks();
+            case TASK.DEFEND_RAMPARTS:
+                attackResult = creep.defendRoomWithRangedAttacks(true);
+                break;
+            case TASK.DEFEND_CHARGE:
+                attackResult = creep.defendRoomWithRangedAttacks(false);
                 break;
             case TASK.RECYCLE:
                 creep.recycle();
