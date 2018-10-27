@@ -48,7 +48,7 @@ Room.prototype._recalculateRequestedCreeps = function() {
         case 3:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 2 + Math.floor((calculateDistanceFactor(this) * 0.50));
-            requestedCreeps[ROLE.UPGRADER]  = 1;
+            requestedCreeps[ROLE.UPGRADER]  = 2;
             requestedCreeps[ROLE.BUILDER]   = 2;
             requestedCreeps[ROLE.REPAIRER]  = 2;
             break;
@@ -56,7 +56,7 @@ Room.prototype._recalculateRequestedCreeps = function() {
         case 4:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 2 + Math.floor((calculateDistanceFactor(this) * 0.25));
-            requestedCreeps[ROLE.UPGRADER]  = 1;
+            requestedCreeps[ROLE.UPGRADER]  = 2;
             requestedCreeps[ROLE.BUILDER]   = 2;
             requestedCreeps[ROLE.REPAIRER]  = 2;
             break;
@@ -64,7 +64,7 @@ Room.prototype._recalculateRequestedCreeps = function() {
         case 5:
             requestedCreeps[ROLE.HARVESTER] = this.sources.length;
             requestedCreeps[ROLE.HAULER]    = 2;
-            requestedCreeps[ROLE.UPGRADER]  = 1;
+            requestedCreeps[ROLE.UPGRADER]  = 2;
             requestedCreeps[ROLE.BUILDER]   = 1;
             requestedCreeps[ROLE.REPAIRER]  = 1;
             break;
