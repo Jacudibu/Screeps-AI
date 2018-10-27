@@ -869,6 +869,7 @@ Creep.prototype.stompHostileConstructionSites = function() {
         return ERR_NOT_FOUND;
     }
 
+    this.say(creepTalk.blockConstructionSite, true);
     this.travelTo(target, {range: 0});
     return OK;
 };
