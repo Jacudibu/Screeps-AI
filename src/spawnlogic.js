@@ -57,18 +57,6 @@ const spawnlogic = {
             }
         }
 
-        if (room.memory.claimAttackTimer) {
-            if (room.memory.claimAttackTimer < Game.time) {
-                room.memory.claimAttackTimer = Game.time + 1000;
-                const args = {
-                    role: ROLE.CLAIMER_ATTACKER,
-                    targetRoomName: "E54S58",
-                };
-                room.addToSpawnQueueEnd(args);
-                return;
-            }
-        }
-
         if (this.checkIfRoomIsAliveAndReviveIfNecessary(room)) {
             return;
         }
@@ -175,6 +163,19 @@ const spawnlogic = {
             room.addToSpawnQueueEnd({role: ROLE.MINERAL_HARVESTER});
             room.memory.isMineralHarvesterAssigned = true;
             return;
+        }
+
+        if (room.memory.claimAttackTimer) {
+            if (room.memory.claimAttackTimer < Game.time) {
+                room.memory.claimAttackTimer = Game.time + 1500;
+                const args = {
+                    role: ROLE.CLAIMER_ATTACKER,
+                    targetRoomName: "E54S58",
+                };
+                room.addToSpawnQueueStart(args);
+                console.log(Game.time + " spawning claim attacker!");
+                return;
+            }
         }
 
         this.checkRemoteMiningRooms(room);
