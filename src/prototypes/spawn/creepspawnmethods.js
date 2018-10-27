@@ -169,22 +169,14 @@ Spawn.prototype.spawnMineralHarvester = function(energy) {
 Spawn.prototype.spawnUpgrader = function(energy) {
     let body = [];
 
-    body.push(MOVE, CARRY);
-    energy -= 100;
+    body.push(MOVE, MOVE, CARRY, CARRY);
+    energy -= 200;
 
-    for (let i = 0; i < 15 && energy > 150; i++) {
+    const maxWorkParts = this.room.controller.level === 8 ? 15 : 46;
+    while (energy >= 100 && body.length < maxWorkParts) {
         body.push(WORK);
-
-        if (i % 3 === 0) {
-            body.push(CARRY);
-        } else {
-            body.push(MOVE);
-        }
-
-        energy -= 150;
+        energy -= 100;
     }
-
-    body.sort();
 
     let opts = {
         memory: {
