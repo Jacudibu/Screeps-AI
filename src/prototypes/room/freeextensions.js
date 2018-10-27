@@ -27,6 +27,18 @@ Room.prototype._reloadFreeExtensionCache = function() {
 
 Room.prototype.refreshFreeExtensionsInNextTick = function() {
     areRoomExtensionsUpToDate[this.name] = false;
+
+    // Force a haul target refresh
+    for (const creep of this.find(FIND_MY_CREEPS)) {
+        if (creep.role !== ROLE.HAULER && creep.role !== ROLE.REMOTE_HAULER) {
+            continue;
+        }
+
+        if (    creep.memory.task === TASK.STORE_ENERGY
+            || (creep.memory.task === TASK.STORE_RESOURCE && creep.carry[RESOURCE_ENERGY] > 0)) {
+            delete creep.memory.taskTargetId;
+        }
+    }
 };
 
 Room.prototype.getClosestEmptyExtensionToPosition = function(creep, energy = 0) {

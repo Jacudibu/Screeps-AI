@@ -57,14 +57,14 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
 
     if (this.room.containers) {
         this.room.containers.map(container => {
-            if (container && container.store[RESOURCE_ENERGY] >= CONTAINER_MINIMUM_ENERGY_STORAGE_FOR_WORKER_COLLECTION) {
+            if (container && container.store[RESOURCE_ENERGY] >= this.carryCapacity) {
                 filledEnergyStorages.push(container);
             }
         })
     }
 
     if (this.room.storage) {
-        if (this.room.storage.store[RESOURCE_ENERGY] >= CONTAINER_MINIMUM_ENERGY_STORAGE_FOR_WORKER_COLLECTION) {
+        if (this.room.storage.store[RESOURCE_ENERGY] >= this.carryCapacity) {
             filledEnergyStorages.push(this.room.storage);
         }
     }
