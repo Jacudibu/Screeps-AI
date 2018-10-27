@@ -117,7 +117,8 @@ addToSpawnQueueStart = function(roomName, args) {
 
 Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
     this.say(creepTalk.withdrawEnergy, true);
-    switch (this.withdraw(storage, RESOURCE_ENERGY)) {
+    const result = this.withdraw(storage, RESOURCE_ENERGY);
+    switch (result) {
         case OK:
             if (_.sum(this.carry) === this.carryCapacity) {
                 this.setTask(taskWhenFinished);
@@ -133,9 +134,11 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
             this.memory.taskTargetId = undefined;
             break;
         default:
-            this.logActionError("Collecting Energy", this.withdraw(storage, RESOURCE_ENERGY));
+            this.logActionError("Collecting Energy", result);
             break;
     }
+
+    return result;
 };
 
 Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {

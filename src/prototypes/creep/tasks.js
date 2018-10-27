@@ -253,10 +253,10 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
 
     if (energyStorage === ERR_NOT_FOUND) {
         this.say(creepTalk.noEnergyStorage);
-        return;
+        return ERR_NOT_FOUND;
     }
 
-    this._withdrawEnergy(energyStorage, taskWhenFinished);
+    return this._withdrawEnergy(energyStorage, taskWhenFinished);
 };
 
 Creep.prototype.renew = function(taskWhenFinished) {

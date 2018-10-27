@@ -6,6 +6,9 @@ const upgrader = {
                 break;
             case TASK.UPGRADE_CONTROLLER:
                 creep.upgradeRoomController(TASK.COLLECT_ENERGY);
+                if (creep.carry.energy < 20) {
+                    creep.collectEnergy(TASK.UPGRADE_CONTROLLER);
+                }
                 break;
             case TASK.RENEW_CREEP:
                 creep.renew(TASK.HARVEST_ENERGY);
