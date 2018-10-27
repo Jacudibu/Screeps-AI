@@ -17,9 +17,16 @@ const reserver = {
                 break;
 
             case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:
+                if (roomThreats[creep.room.name]) {
+                    creep.say(creepTalk.flee3);
+                    this.continueScouting(creep);
+                    break;
+                }
+
                 const result = creep.stompHostileConstructionSites();
                 if (result === ERR_NOT_FOUND) {
                     this.continueScouting(creep);
+                    break;
                 }
                 break;
 

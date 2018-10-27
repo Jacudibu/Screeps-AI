@@ -20,4 +20,4 @@ global.creepTalk.chargeAttack           = "ò.o/^";
 global.creepTalk.defendRamparts         = "ồ.e";
 global.creepTalk.flee1                  = "┌(^o^)┘";
 global.creepTalk.flee2                  = "└(^o^)┐";
-
+global.creepTalk.flee3                  = "kthxbye!";
