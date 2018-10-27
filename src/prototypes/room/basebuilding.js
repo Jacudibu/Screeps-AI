@@ -393,13 +393,13 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
                         // noinspection JSUnresolvedVariable
-                        if (arrayElement.structure.structureType === structureType) {
+                        if (arrayElement.structure.structureType === STRUCTURE_RAMPART) {
                             return ERR_ALREADY_BUILT;
                         }
                         break;
                     case STRUCTURE_ROAD:
                         // noinspection JSUnresolvedVariable
-                        if (arrayElement.structure.structureType === structureType) {
+                        if (arrayElement.structure.structureType === STRUCTURE_ROAD) {
                             return ERR_ALREADY_BUILT;
                         }
                         break;
@@ -410,7 +410,7 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
                         }
 
                         // noinspection JSUnresolvedVariable
-                        if (arrayElement.structure.structureType !== STRUCTURE_RAMPART || arrayElement.structure.structureType !== STRUCTURE_ROAD) {
+                        if (arrayElement.structure.structureType !== STRUCTURE_RAMPART && arrayElement.structure.structureType !== STRUCTURE_ROAD) {
                             return ERR_BLOCKED_BY_STRUCTURE;
                         }
                         break;
