@@ -3,6 +3,10 @@ const nextScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
 
 const AUTO_UPGRADER_SPAWN_INTERVAL = 30;
+const MIN_RESERVER_ENERGY = BODYPART_COST.claim + BODYPART_COST.move;
+
+const CREEP_SPAWNED = true;
+const NO_CREEP_SPAWNED = false;
 
 const spawnlogic = {
     run() {
@@ -288,11 +292,11 @@ const spawnlogic = {
         let remotes = room.remotes;
 
         if (!remotes || remotes.length === 0) {
-            return;
+            return NO_CREEP_SPAWNED;
         }
 
         if (this.searchRemoteWhichNeedsDefender(room) !== null) {
-            return;
+            return CREEP_SPAWNED;
         }
 
         if (room.controller.level >= 3) {
@@ -303,76 +307,96 @@ const spawnlogic = {
                 room.memory.repairRoute = room.remotes;
 
                 room.memory.nextRemoteRepairerSpawn = utility.getFutureGameTimeWithRandomOffset(REMOTE_REPAIRER_SPAWN_INTERVAL, 200);
-                return;
+                return CREEP_SPAWNED;
             }
         }
 
         for (let i = 0; i < remotes.length; i++) {
-            let remoteMiningRoomMemory = Memory.rooms[remotes[i]];
-
-            if (!remoteMiningRoomMemory) {
-                continue;
-            }
-
-            if (remoteMiningRoomMemory.requiresHelp !== undefined) {
-                continue;
-            }
-
-            if (!remoteMiningRoomMemory.sources) {
-                if (Game.rooms[remotes[i]] !== undefined) {
-                    Game.rooms[remotes[i]].initializeMemoryForAllSourcesInRoom();
-                } else {
-                    // no vision, claimer will be spawned later
-                    continue;
-                }
-            }
-
-            if (remoteMiningRoomMemory.assignedHarvesters < Object.keys(remoteMiningRoomMemory.sources).length) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remotes[i]});
-                Memory.rooms[remotes[i]].assignedHarvesters++;
-                return;
-            }
-
-            if (remoteMiningRoomMemory.requiredHaulers === undefined) {
-                if (Game.rooms[remotes[i]]) {
-                    room.calculateRequiredHaulersForRemote(remotes[i]);
-                } else {
-                    // no vision, don't calculate and don't spawn.
-                }
-            } else if (remoteMiningRoomMemory.assignedHaulers < this.calculateRequiredHaulers(room, remoteMiningRoomMemory)) {
-                room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remotes[i]});
-                Memory.rooms[remotes[i]].assignedHaulers++;
-                return;
+            if (this.spawnRemoteCreepIfPossible(room, remotes[i]) === CREEP_SPAWNED) {
+                return CREEP_SPAWNED;
             }
         }
 
-        if (room.energyCapacityAvailable < BODYPART_COST.claim + BODYPART_COST.move) {
+        return NO_CREEP_SPAWNED;
+    },
+
+    spawnRemoteCreepIfPossible(room, remoteName) {
+        const remoteRoom = Game.rooms[remoteName];
+        let remoteMemory = Memory.rooms[remoteName];
+
+        if (!remoteMemory) {
+            return NO_CREEP_SPAWNED;
+        }
+
+        if (remoteMemory.requiresHelp !== undefined) {
+            return NO_CREEP_SPAWNED;
+        }
+
+        if (!remoteMemory.sources) {
+            if (remoteRoom !== undefined) {
+                remoteRoom.initializeMemoryForAllSourcesInRoom();
+            } else {
+                // no vision
+                if (!remoteMemory.isReserverAssigned && room.energyCapacityAvailable >= MIN_RESERVER_ENERGY) {
+                    room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+
+                    if (room.energyCapacityAvailable < 1250) {
+                        // spawn a second claimer since 1 claim part is not enough to keep reservation up
+                        room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+                    }
+                    return CREEP_SPAWNED;
+                } else {
+                    // Wait for scout or observer
+                }
+            }
+        }
+
+        if (remoteMemory.assignedHarvesters < Object.keys(remoteMemory.sources).length) {
+            room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteName});
+            Memory.rooms[remoteName].assignedHarvesters++;
+            return CREEP_SPAWNED;
+        }
+
+        if (remoteMemory.requiredHaulers === undefined) {
+            if (remoteRoom) {
+                room.calculateRequiredHaulersForRemote(remoteName);
+            } else {
+                // no vision, don't calculate and don't spawn.
+            }
+        } else if (remoteMemory.assignedHaulers < this.calculateRequiredHaulers(room, remoteMemory)) {
+            room.addToSpawnQueueEnd({role: ROLE.REMOTE_HAULER, targetRoomName: remoteName});
+            Memory.rooms[remoteName].assignedHaulers++;
+            return CREEP_SPAWNED;
+        }
+
+        if (room.energyCapacityAvailable < MIN_RESERVER_ENERGY) {
             // TODO: Add a constant for minimum costs of certain creeps and use that instead
-            return;
+            return NO_CREEP_SPAWNED;
         }
 
-        // Iterate reservers seperately
-        for (let i = 0; i < remotes.length; i++) {
-            let otherRoom = Game.rooms[remotes[i]];
+        if (!this.isReserverNeeded(remoteRoom, remoteMemory))
 
-            if (otherRoom && otherRoom.controller.reservation && otherRoom.controller.reservation.ticksToEnd > 1000) {
-                continue;
-            }
+        room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
 
-            let remoteMiningRoomMemory = Memory.rooms[remotes[i]];
-
-            if (!remoteMiningRoomMemory.isReserverAssigned && room.energyCapacityAvailable >= 650) {
-                room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remotes[i]});
-
-                if (room.energyCapacityAvailable < 1250) {
-                    // spawn a second claimer since 1 claim part is not enough to keep reservation up
-                    room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remotes[i]});
-                }
-
-                Memory.rooms[remotes[i]].isReserverAssigned = true;
-                return;
-            }
+        if (room.energyCapacityAvailable < MIN_RESERVER_ENERGY * 2) {
+            // spawn a second claimer since 1 claim part is not enough to keep reservation up
+            room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
         }
+
+        Memory.rooms[remoteName].isReserverAssigned = true;
+        return CREEP_SPAWNED;
+    },
+
+    isReserverNeeded(remoteRoom, remoteRoomMemory) {
+        if (remoteRoom && remoteRoom.controller.reservation && remoteRoom.controller.reservation.ticksToEnd > 1000) {
+            return false;
+        }
+
+        if (remoteRoomMemory.isReserverAssigned) {
+            return false;
+        }
+
+        return true;
     },
 
     calculateRequiredHaulers(room, remoteMiningRoomMemory) {
