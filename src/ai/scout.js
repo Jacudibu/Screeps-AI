@@ -18,9 +18,12 @@ const reserver = {
 
             case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:
                 if (roomThreats[creep.room.name]) {
-                    creep.say(creepTalk.flee3);
-                    this.continueScouting(creep);
-                    break;
+                    if (   !creep.room.controller.safeMode
+                        || roomThreats[creep.room.name].players.includes(creep.room.controller.owner)) {
+                        creep.say(creepTalk.flee3);
+                        this.continueScouting(creep);
+                        break;
+                    }
                 }
 
                 const result = creep.stompHostileConstructionSites();

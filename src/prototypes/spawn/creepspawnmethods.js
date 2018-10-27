@@ -716,7 +716,7 @@ Spawn.prototype.spawnCitizen = function(energy, role, opts) {
 
 };
 
-Spawn.prototype.spawnScout = function(energy) {
+Spawn.prototype.spawnScout = function(energy, targetRoom = undefined) {
     if (energy < 50) {
         return ERR_NOT_ENOUGH_RESOURCES;
     }
@@ -726,6 +726,8 @@ Spawn.prototype.spawnScout = function(energy) {
         memory: {
             role: ROLE.SCOUT,
             spawnRoom: this.room.name,
+            targetRoomName: targetRoom,
+            task: targetRoom ? TASK.MOVE_TO_ROOM : undefined,
         }
     };
 
