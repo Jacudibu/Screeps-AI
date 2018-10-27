@@ -439,7 +439,7 @@ const spawnlogic = {
                     case 23: // 1450E
                     case 24: // 1500E
                     case 25: // 1550E
-                        return 2.5;
+                        return 1.5;
                     case 26: // 1600E
                     case 27: // 1650E
                     case 28: // 1700E

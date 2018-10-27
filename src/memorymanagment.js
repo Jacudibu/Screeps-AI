@@ -37,6 +37,12 @@ const memoryManagment = {
                 }
                 break;
 
+            case ROLE.HAULER:
+                if (creep.task === TASK.STORE_ENERGY) {
+                    Game.rooms[creep.spawnRoom]._reloadFreeExtensionCache();
+                }
+                break;
+
             case ROLE.REMOTE_WORKER:
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
                     for (let i = 0; i < keys.length; i++) {
@@ -95,7 +101,7 @@ const memoryManagment = {
             case ROLE.DEFENDER:
             case ROLE.RANGED_DEFENDER:
                 if (roomThreats[creep.targetRoomName]) {
-                    Memory.rooms.creep.targetRoomName.requiresHelp = true;
+                    Memory.rooms[creep.targetRoomName].requiresHelp = true;
                 }
                 break;
         }

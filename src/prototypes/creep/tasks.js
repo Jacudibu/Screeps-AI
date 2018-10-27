@@ -745,7 +745,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
         let result = this.rangedMassAttack();
         switch (result) {
             case OK:
-                this.say(creepTalk.tableFlip, true);
+                this.say(creepTalk.rangedAttack, true);
                 break;
             default:
                 this.logActionError("defendRoomByChargingIntoEnemy while range attacking", this.rangedMassAttack());
@@ -755,7 +755,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function() {
         let result = this.rangedAttack(target);
         switch (result) {
             case OK:
-                this.say(creepTalk.tableFlip, true);
+                this.say(creepTalk.rangedMassAttack, true);
                 break;
             case ERR_NOT_IN_RANGE:
                 this.say(creepTalk.chargeAttack, true);
