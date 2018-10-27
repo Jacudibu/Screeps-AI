@@ -124,6 +124,12 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
             }
         }
 
+        if (this.room.powerSpawn) {
+            if (this.room.powerSpawn.energy < this.room.powerSpawn.energyCapacity) {
+                return this.room.powerSpawn;
+            }
+        }
+
         if (this.room.nuker) {
             if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
                 return this.room.nuker;
@@ -158,7 +164,9 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
 Creep.prototype.findMineralStorage = function(resourceType) {
     if (this.room.inputLabs.length > 0) {
         for (let lab of this.room.inputLabs) {
-            if (lab.requestedMineral === resourceType && lab.mineralAmount < lab.mineralCapacity) {
+            if ( (!lab.mineralType || lab.mineralType === resourceType)
+                && lab.requestedMineral === resourceType
+                && lab.mineralAmount < lab.mineralCapacity) {
                 return lab;
             }
         }
@@ -168,6 +176,12 @@ Creep.prototype.findMineralStorage = function(resourceType) {
         if (resourceType === RESOURCE_GHODIUM) {
             if (this.room.nuker && this.room.nuker.ghodium < this.room.nuker.ghodiumCapacity) {
                 return this.room.nuker;
+            }
+        }
+
+        if (resourceType === RESOURCE_POWER) {
+            if (this.room.powerSpawn && this.room.powerSpawn.power < this.room.powerSpawn.powerCapacity) {
+                return this.room.powerSpawn;
             }
         }
 

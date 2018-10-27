@@ -51,6 +51,7 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                     return mineralStorage;
                 case STRUCTURE_LAB:
                     if (   mineralStorage.requestedMineral === resourceType
+                        && (!mineralStorage.mineralType || mineralStorage.mineralType === resourceType)
                         && mineralStorage.mineralAmount < mineralStorage.mineralCapacity) {
                         return mineralStorage;
                     }
@@ -61,6 +62,15 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                     }
 
                     if (mineralStorage.ghodium < mineralStorage.ghodiumCapacity) {
+                        return mineralStorage;
+                    }
+                    break;
+                case STRUCTURE_POWER_SPAWN:
+                    if (resourceType !== RESOURCE_POWER) {
+                        break;
+                    }
+
+                    if (mineralStorage.power < mineralStorage.powerCapacity) {
                         return mineralStorage;
                     }
                     break;
@@ -399,6 +409,20 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         this.memory.taskTargetId = potentialTarget.id;
         this.memory.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
+    }
+
+    if (this.room.powerSpawn && this.room.powerSpawn.power < this.room.powerSpawn.powerCapacity) {
+        if (this.room.terminal && this.room.terminal.store[RESOURCE_POWER]) {
+            this.memory.taskTargetId = this.room.terminal.id;
+            this.memory.hauledResourceType = RESOURCE_POWER;
+            return this.room.terminal;
+        }
+
+        if (this.room.storage && this.room.storage.store[RESOURCE_POWER]) {
+            this.memory.taskTargetId = this.room.storage.id;
+            this.memory.hauledResourceType = RESOURCE_POWER;
+            return this.room.storage;
+        }
     }
 
     // Haul Storage -> Terminal if storage is full
