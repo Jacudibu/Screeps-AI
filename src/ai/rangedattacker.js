@@ -36,10 +36,14 @@ const guidedRangedAttacker = {
                     let result = OK;
                     if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
                         result = creep.rangedMassAttack();
-                        creep.say(creepTalk.rangedMassAttack, true);
+                        if (result === OK) {
+                            creep.say(creepTalk.rangedMassAttack, true);
+                        }
                     } else {
                         result = creep.rangedAttack(target);
-                        creep.say(creepTalk.rangedAttack, true);
+                        if (result === OK) {
+                            creep.say(creepTalk.rangedAttack, true);
+                        }
                     }
 
                     switch (result) {
