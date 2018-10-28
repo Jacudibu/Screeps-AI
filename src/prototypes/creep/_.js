@@ -63,6 +63,10 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             break;
         case ROLE.REMOTE_WORKER:
             const constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
+            if (this.room.energyCapacityAvailable >= 500) {
+                break;
+            }
+
             if (constructionSites && constructionSites.length > 0) {
                 args.targetRoomName = this.targetRoomName;
                 args.respawnTTL = this.respawnTTL;
