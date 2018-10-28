@@ -26,6 +26,7 @@ global.TASK.STORE_RESOURCE = 'store_resource';
 global.TASK.ATTACK_CONTROLLER = 'attack_controller';
 global.TASK.WAIT = 'wait';
 global.TASK.STOMP_HOSTILE_CONSTRUCTION_SITES = "stomp_hostile_construction_sites";
+global.TASK.HEAL = "heal";
 
 
 

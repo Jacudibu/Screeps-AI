@@ -13,6 +13,7 @@ const remoteUpgraderAI      = require('ai.remoteupgrader');
 const reserverAI            = require('ai.reserver');
 const attackerAI            = require('ai.attacker');
 const rangedAttackerAI      = require('ai.rangedattacker');
+const healerAI              = require('ai.healer');
 const claimerAI             = require('ai.claimer');
 const claimerAttackerAI     = require('ai.claimerattacker');
 const dismantlerAI          = require('ai.dismantler');
@@ -108,6 +109,9 @@ const creepAi = {
                 break;
             case ROLE.RANGED_ATTACKER:
                 rangedAttackerAI.run(creep);
+                break;
+            case ROLE.HEALER:
+                healerAI.run(creep);
                 break;
             case ROLE.CLAIMER:
                 claimerAI.run(creep);

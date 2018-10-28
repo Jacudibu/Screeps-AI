@@ -24,6 +24,7 @@ global.creepTalk.flee1                  = "┌(^o^)┘";
 global.creepTalk.flee2                  = "└(^o^)┐";
 global.creepTalk.flee3                  = "kthxbye!";
 global.creepTalk.blockConstructionSite  = "(º﹃º)";
+global.creepTalk.heal                   = "(✿◠‿◠)";
 
 global.creepTalk.something1             = "ヽ(｀Д´)ﾉ";
 global.creepTalk.something2             = "¯\\(°_o)/¯";
@@ -31,7 +32,6 @@ global.creepTalk.something3             = "(╥﹏╥)";
 global.creepTalk.something4             = "ƪ(ړײ)‎ƪ​​";
 global.creepTalk.something5             = "ԅ(≖‿≖ԅ)";
 global.creepTalk.something6             = "(͡°͜ʖ͡°)";
-global.creepTalk.something7             = "(✿◠‿◠)";
 global.creepTalk.something8             = "(ღ˘⌣˘ღ)";
 global.creepTalk.something9             = "ಠ_ರೃ";
 global.creepTalk.something10            = "≧◡≦";

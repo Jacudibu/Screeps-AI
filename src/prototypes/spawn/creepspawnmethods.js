@@ -466,10 +466,16 @@ Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     body.push(RANGED_ATTACK);
     energy -= 150;
 
-    body.push(MOVE, MOVE, MOVE);
-    energy -= 150;
+    if (energy > 6000) {
+        body.push(RANGED_ATTACK, RANGED_ATTACK);
+        body.push(MOVE, MOVE);
+        energy -= 400;
+    }
 
-    // 12 parts gone, rest is fun
+    body.push(MOVE, MOVE, MOVE, MOVE);
+    energy -= 200;
+
+    // 8 parts gone, rest is fun
 
     let remainingPartCount = energy / 300;
     if (remainingPartCount > 19) {
@@ -520,6 +526,29 @@ Spawn.prototype.spawnRangedAttacker = function(energy, targetRoomName) {
 
     return this._spawnDefinedCreep(ROLE.RANGED_ATTACKER, body, opts);
 };
+
+Spawn.prototype.spawnHealer = function(energy, targetRoomName) {
+    let body = [];
+
+    while (energy >= 300 && body.length < 50) {
+        body.push(HEAL, MOVE);
+        energy -= 300;
+    }
+
+    body.sort();
+    body.reverse();
+
+    let opts = {
+        memory: {
+            role: ROLE.HEALER,
+            targetRoomName: targetRoomName ? targetRoomName : this.room.name,
+            task: TASK.MOVE_TO_ROOM,
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.HEALER, body, opts);
+};
+
 
 Spawn.prototype.spawnGuidedRangedAttacker = function(energy, targetRoomName) {
     let body = [];

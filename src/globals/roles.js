@@ -22,6 +22,7 @@ global.ROLE.RESERVER = 'reserver';
 // Offensive
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.RANGED_ATTACKER = 'ranged_attacker';
+global.ROLE.HEALER = "healer";
 global.ROLE.GUIDED_RANGED_ATTACKER = 'guided_ranged_attacker';
 global.ROLE.CLAIMER_ATTACKER = 'claimer_attacker';
 global.ROLE.DISMANTLER = 'dismantler';
