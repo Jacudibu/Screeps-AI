@@ -122,7 +122,6 @@ Room.prototype.getUnoccupiedSources = function() {
     } else {
         return sources;
     }
-
 };
 
 Room.prototype.getEmptyPublicEnergyContainers = function() {

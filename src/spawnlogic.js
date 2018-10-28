@@ -337,17 +337,27 @@ const spawnlogic = {
                 remoteRoom.initializeMemoryForAllSourcesInRoom();
             } else {
                 // no vision
-                if (!remoteMemory.isReserverAssigned && room.energyCapacityAvailable >= MIN_RESERVER_ENERGY) {
-                    room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
-
-                    if (room.energyCapacityAvailable < 1250) {
-                        // spawn a second claimer since 1 claim part is not enough to keep reservation up
+                if (!remoteMemory.isReserverAssigned) {
+                    if (room.energyCapacityAvailable >= MIN_RESERVER_ENERGY) {
                         room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+
+                        if (room.energyCapacityAvailable < 1250) {
+                            // spawn a second claimer since 1 claim part is not enough to keep reservation up
+                            room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+                        }
+                        return CREEP_SPAWNED;
                     }
-                    return CREEP_SPAWNED;
+
+                    if (!remoteMemory.isAlreadyScouted) {
+                        room.addToSpawnQueueStart({role: ROLE.SCOUT, targetRoomName: remoteName});
+                        Memory.rooms[remoteName].isAlreadyScouted = true;
+                        return CREEP_SPAWNED;
+                    }
+
                 } else {
                     // Wait for scout or observer
                 }
+                return NO_CREEP_SPAWNED;
             }
         }
 
