@@ -185,19 +185,19 @@ Creep.prototype.findMineralStorage = function(resourceType) {
             }
         }
 
-        if (this.room.storage) {
+        if (this.room.storage && this.room.storage.my) {
             if (!this.room.storage.store[resourceType] || this.room.storage.store[resourceType] < STORAGE_MAX[resourceType]) {
                 return this.room.storage;
             }
         }
     }
 
-    if (this.room.terminal) {
+    if (this.room.terminal && this.room.terminal.my) {
         return this.room.terminal;
     }
 
     if (!this.room.shouldEvacuate) {
-        if (this.room.storage) {
+        if (this.room.storage && this.room.storage.my) {
             return this.room.storage;
         }
     }
