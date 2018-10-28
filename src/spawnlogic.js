@@ -1,4 +1,4 @@
-const SCOUT_SPAWN_INTERVAL = 100;
+const SCOUT_SPAWN_INTERVAL = Game.shard.name === "shard2" ? 500 : 100;
 const nextScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
 
@@ -72,12 +72,9 @@ const spawnlogic = {
             }
             ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
         } else {
-            // TODO: Remove this if. Just a safety net so we don't start spawning faulty scouts on the main server.
-            if (Game.shard.name === 'screepsplus1' || Game.shard.name === 'swc' ) {
-                if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
-                    nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
-                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
-                }
+            if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
+                nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
+                this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
             }
 
             if (room.energyCapacityAvailable === room.energyAvailable) {
