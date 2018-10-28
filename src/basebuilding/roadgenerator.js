@@ -1,4 +1,5 @@
 const ERR_NO_VISION = -100;
+const TUNNEL_PATH_COST = 60;
 
 const RoadGenerator = {
     generateAndGetRoads(room, layout, forceRegeneration = false) {
@@ -215,6 +216,15 @@ const RoadGenerator = {
                 }
 
                 let costs = new PathFinder.CostMatrix;
+                const terrain = room.getTerrain();
+
+                for (let x = 1; x < 49; x++) {
+                    for (let y = 1; y < 49; y++) {
+                        if (terrain.get(x, y) === TERRAIN_MASK_WALL) {
+                            costs.set(x, y, TUNNEL_PATH_COST);
+                        }
+                    }
+                }
 
                 // Existing Structures in owned rooms
                 if (room.controller && room.controller.my) {
@@ -226,7 +236,6 @@ const RoadGenerator = {
                 }
 
                 // Minerals, Sources & Controllers minimum distance 1
-                const terrain = room.getTerrain();
                 const thingsToKeepDistanceFrom = [];
                 thingsToKeepDistanceFrom.push(...room.find(FIND_MINERALS));
                 thingsToKeepDistanceFrom.push(...room.find(FIND_SOURCES));
@@ -243,7 +252,7 @@ const RoadGenerator = {
                     }
                 });
 
-                // Already generated roads
+                // Already generated roads by now
                 for (const roadPos of roadsGeneratedByNow) {
                     //console.log(JSON.stringify(roadPos));
                     if (roadPos.roomName === roomName) {
