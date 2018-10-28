@@ -32,7 +32,7 @@ const healer = {
 
                 if (target) {
                     let result = this.heal;
-                    if (creep.getRangeTo(target) === 1) {
+                    if (creep.getRangeTo(target) < 2) {
                         result = creep.heal(target);
                     } else {
                         result = creep.rangedHeal(target);
