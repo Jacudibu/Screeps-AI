@@ -761,7 +761,7 @@ Spawn.prototype.spawnScout = function(energy, targetRoom = undefined, respawnTTL
             role: ROLE.SCOUT,
             spawnRoom: this.room.name,
             targetRoomName: targetRoom,
-            task: targetRoom ? TASK.MOVE_TO_ROOM : undefined, // not needed for random scouting
+            task: TASK.DISABLE_ATTACK_NOTIFICATION,
             respawnTTL: respawnTTL, // if we want to annoy some early rcl safemode-room
         }
     };

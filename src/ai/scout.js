@@ -33,6 +33,13 @@ const reserver = {
                 }
                 break;
 
+            case TASK.DISABLE_ATTACK_NOTIFICATION:
+                creep.notifyWhenAttacked(false);
+
+                creep.memory.task = creep.targetRoomName ? TASK.MOVE_TO_ROOM : TASK.DECIDE_WHAT_TO_DO;
+                this.run(creep);
+                break;
+
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;
