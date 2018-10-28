@@ -13,6 +13,7 @@ require('globals.creeptalk');
 require('globals.infrastructure');
 require('globals.roles');
 require('globals.storagelimits');
+require('globals.shortcuts');
 require('globals.tasks');
 require('globals.utility');
 

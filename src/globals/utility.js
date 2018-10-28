@@ -36,20 +36,16 @@ global.utility.countOwnedMinerals = function() {
     log.info("Total rooms: " + total + JSON.stringify(minerals, null, 2));
 };
 
-global.print = (x) => JSON.stringify(x, null, 2);
+global.utility.countFreeTilesAroundRoomObject = function(roomObject) {
+    const terrain = roomObject.room.getTerrain();
+    let freeTileCount = 0;
+    [roomObject.pos.x - 1, roomObject.pos.x, roomObject.pos.x + 1].forEach(x => {
+        [roomObject.pos.y - 1, roomObject.pos.y, roomObject.pos.y + 1].forEach(y => {
+            if (terrain.get(x, y) !== TERRAIN_MASK_WALL) {
+                freeTileCount++;
+            }
+        });
+    });
 
-global.g = {
-    c: global.gc = Game.creeps,
-    f: global.gf = Game.flags,
-    s: global.gs = Game.spawns,
-    r: global.gr = Game.rooms,
-    m: global.gm = Game.market,
-    p: global.gp = Game.profiler,
-    t: global.gt = Game.time,
-};
-
-global.m = {
-    c: global.mc = Memory.creeps,
-    r: global.mr = Memory.rooms,
-    s: global.ms = Memory.stats,
+    return freeTileCount;
 };
