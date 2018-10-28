@@ -391,8 +391,12 @@ const spawnlogic = {
         room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
 
         if (room.energyCapacityAvailable < MIN_RESERVER_ENERGY * 2) {
-            // spawn a second claimer since 1 claim part is not enough to keep reservation up
-            room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+            if (remoteRoom) {
+                if (remoteRoom.controller.freeTileCount > 1) {
+                    // spawn a second claimer since 1 claim part is not enough to keep reservation up
+                    room.addToSpawnQueueEnd({role: ROLE.RESERVER, targetRoomName: remoteName});
+                }
+            }
         }
 
         Memory.rooms[remoteName].isReserverAssigned = true;
