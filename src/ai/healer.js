@@ -24,13 +24,20 @@ const healer = {
                     const damagedCreeps = myCreeps.filter(c => c.hits < c.hitsMax);
 
                     if (damagedCreeps.length === 0) {
-                        target = myCreeps[0];
+                        if (creep.previousTarget) {
+                            target = Game.getObjectById(creep.previousTarget);
+                        }
+
+                        if (!target) {
+                            target = myCreeps[0];
+                        }
                     } else {
                         target = damagedCreeps[0];
                     }
                 }
 
                 if (target) {
+                    creep.previousTarget = target.id;
                     let result = this.heal;
                     if (creep.pos.getRangeTo(target) < 2) {
                         result = creep.heal(target);
@@ -43,6 +50,9 @@ const healer = {
                         case OK:
                             creep.say(creepTalk.heal, true);
                             return;
+                        case ERR_NOT_IN_RANGE:
+                            creep.heal(creep);
+                            break;
                         default:
                             break;
                     }
