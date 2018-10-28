@@ -458,12 +458,15 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     let body = [];
 
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 3; i++) {
         body.push(TOUGH);
         energy -= 10;
     }
 
     body.push(RANGED_ATTACK);
+    energy -= 150;
+
+    body.push(MOVE, MOVE, MOVE);
     energy -= 150;
 
     // 12 parts gone, rest is fun
