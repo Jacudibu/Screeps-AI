@@ -386,7 +386,9 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
             case 'terrain':
                 // noinspection JSUnresolvedVariable
                 if (arrayElement.terrain === 'wall') {
-                    return ERR_BLOCKED_BY_TERRAIN_WALL;
+                    if (structureType !== STRUCTURE_ROAD) {
+                        return ERR_BLOCKED_BY_TERRAIN_WALL;
+                    }
                 }
                 break;
             case 'structure':
