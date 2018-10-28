@@ -70,6 +70,8 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
     }
 
     body.sort();
+    body.reverse();
+
     let opts = {
         memory: {
             role: ROLE.DISMANTLER,
