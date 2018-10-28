@@ -13,7 +13,7 @@ const reserver = {
                 break;
 
             case TASK.MOVE_TO_ROOM:
-                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO, {preferHighway: true, offRoad: true});
                 break;
 
             case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:

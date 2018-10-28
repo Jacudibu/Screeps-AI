@@ -558,7 +558,7 @@ Creep.prototype.determineHarvesterStartTask = function() {
     return this.memory.task = TASK.MOVE_ONTO_CONTAINER;
 };
 
-Creep.prototype.moveToRoom = function(taskWhenFinished) {
+Creep.prototype.moveToRoom = function(taskWhenFinished, options = undefined) {
     const roomName = this.targetRoomName;
 
     if (this.room.name === roomName) {
@@ -566,7 +566,7 @@ Creep.prototype.moveToRoom = function(taskWhenFinished) {
     }
 
     const positionInNextRoom = new RoomPosition(28, 25, roomName);
-    this.travelTo(positionInNextRoom);
+    this.travelTo(positionInNextRoom, options);
 };
 
 Creep.prototype.dismantleStructure = function(taskWhenFinished) {
