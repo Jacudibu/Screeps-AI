@@ -50,6 +50,9 @@ const remoteWorker = {
             case TASK.DISMANTLE:
                 creep.dismantleStructure(TASK.DECIDE_WHAT_TO_DO);
                 break;
+            case TASK.UPGRADE_CONTROLLER:
+                creep.upgradeRoomController(TASK.DECIDE_WHAT_TO_DO);
+                break;
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
                 break;

@@ -44,6 +44,10 @@ const memoryManagment = {
                 break;
 
             case ROLE.REMOTE_WORKER:
+                if (!Memory.rooms[creep.targetRoomName] || !Memory.rooms[creep.targetRoomName].sources) {
+                    break;
+                }
+
                 let keys = Object.keys(Memory.rooms[creep.targetRoomName].sources);
                     for (let i = 0; i < keys.length; i++) {
                         if (keys[i] === creep.taskTargetId) {

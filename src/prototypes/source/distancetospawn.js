@@ -11,6 +11,12 @@ Object.defineProperty(Source.prototype, "distanceToSpawn", {
 
 Source.prototype._calculateDistanceToSpawn = function() {
     if (this.room.spawns.length === 0) {
+        const spawnConstructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES, {filter: cs => cs.structureType === STRUCTURE_SPAWN});
+        if (spawnConstructionSites.length > 0) {
+            const travelPath = Traveler.findTravelPath(this, spawnConstructionSites[0]);
+            return travelPath.path.length;
+        }
+
         log.warning(this.room + "Distance to spawn was called, but there is no spawn in room!");
         return;
     }
