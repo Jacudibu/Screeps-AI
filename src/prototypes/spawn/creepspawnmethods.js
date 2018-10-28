@@ -458,38 +458,38 @@ Spawn.prototype.spawnAttacker = function(energy, targetRoomName) {
 Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     let body = [];
 
-    if (energy < 4 * 10 + 25 * 50 + 7 * 80 + 14 * 250) {
-        log.info("not enough energy. Need at least 5350 for that monstrosity..");
-        return;
-    }
-
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 11; i++) {
         body.push(TOUGH);
+        energy -= 10;
     }
 
-    for (let i = 0; i < 24; i++) {
+    body.push(RANGED_ATTACK);
+    energy -= 150;
+
+    // 12 parts gone, rest is fun
+
+    let remainingPartCount = energy / 300;
+    if (remainingPartCount > 19) {
+        remainingPartCount = 19;
+    }
+
+    for (let i = 0; i < remainingPartCount; i++) {
         body.push(MOVE);
     }
 
-    for (let i = 0; i < 7; i++) {
-        body.push(ATTACK);
-    }
-
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < remainingPartCount; i++) {
         body.push(HEAL);
     }
 
-    body.push(MOVE);
-
     let opts = {
         memory: {
-            role: ROLE.ATTACKER,
+            role: ROLE.GUIDED_RANGED_ATTACKER,
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
             task: TASK.MOVE_TO_ROOM,
         }
     };
 
-    return this._spawnDefinedCreep(ROLE.ATTACKER, body, opts);
+    return this._spawnDefinedCreep(ROLE.GUIDED_RANGED_ATTACKER, body, opts);
 };
 
 Spawn.prototype.spawnRangedAttacker = function(energy, targetRoomName) {
