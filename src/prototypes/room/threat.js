@@ -62,14 +62,11 @@ Room.prototype.askForHelpIfThreatDetected = function() {
                 && this.controller
                 &&(this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
 
-                // TODO: Remove this once wtffrank stops sending dismantlers into that room.
-                if (this.name !== 'E51S49') {
-                    const message = this + " is being attacked by " + JSON.stringify(roomThreats[this.name].players) + "<br>" +
-                        "Threat info: " + JSON.stringify(roomThreats[this.name], null, 2);
-                    log.warning(message);
+                const message = this + " is being attacked by " + JSON.stringify(roomThreats[this.name].players) + "<br>" +
+                    "Threat info: " + JSON.stringify(roomThreats[this.name], null, 2);
+                log.warning(message);
 
-                    Game.notify(message);
-                }
+                Game.notify(message);
             }
         }
     }
