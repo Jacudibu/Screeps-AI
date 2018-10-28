@@ -626,20 +626,9 @@ Creep.prototype._getDismantleTarget = function() {
         }
     }
 
-    let enemyStructures = this.room.find(FIND_HOSTILE_STRUCTURES, {
-        filter: (structure) => structure.structureType !== STRUCTURE_RAMPART
-                            && structure.structureType !== STRUCTURE_WALL
-                            && (!structure.store || _.sum(structure.store) < 5000)
-    });
-    if (enemyStructures.length > 0) {
-        let target = utility.getClosestObjectFromArray(this, enemyStructures);
-        this.memory.taskTargetId = target.id;
-        return target;
-    }
-
     let flags = this.room.find(FIND_FLAGS, {
         filter: flag => flag.color === COLOR_WHITE && flag.secondaryColor === COLOR_WHITE
-                     && this.room.lookForAt(LOOK_STRUCTURES, flag.pos).length > 0
+            && this.room.lookForAt(LOOK_STRUCTURES, flag.pos).length > 0
     });
     if (flags.length > 0) {
         let flag = utility.getClosestObjectFromArray(this, flags);
@@ -651,6 +640,17 @@ Creep.prototype._getDismantleTarget = function() {
             this.memory.taskTargetId = target.id;
             return target;
         }
+    }
+
+    let enemyStructures = this.room.find(FIND_HOSTILE_STRUCTURES, {
+        filter: (structure) => structure.structureType !== STRUCTURE_RAMPART
+                            && structure.structureType !== STRUCTURE_WALL
+                            && (!structure.store || _.sum(structure.store) < 5000)
+    });
+    if (enemyStructures.length > 0) {
+        let target = utility.getClosestObjectFromArray(this, enemyStructures);
+        this.memory.taskTargetId = target.id;
+        return target;
     }
 
     return ERR_NOT_FOUND;
