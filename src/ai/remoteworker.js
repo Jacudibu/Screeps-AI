@@ -11,13 +11,32 @@ const remoteWorker = {
                     return;
                 }
 
-                if (creep._getDamagedStructure(0.5, true) !== ERR_NOT_FOUND) {
+                if (creep.room.controller) {
+                    if (creep.room.controller.isDowngradeTimerBelowSafeModeThreshold() || creep.room.controller.level === 1) {
+                        creep.setTask(TASK.UPGRADE_CONTROLLER);
+                        return;
+                    }
+                }
+
+                // repair critically damaged structures
+                if (creep._getDamagedStructure(0.1, true) !== ERR_NOT_FOUND) {
                     creep.memory.task = TASK.REPAIR_STRUCTURE;
                     return;
                 }
 
                 if (creep._getConstructionSite() !== ERR_NOT_FOUND) {
                     creep.memory.task = TASK.BUILD_STRUCTURE;
+                    return;
+                }
+
+                // repair anything else
+                if (creep._getDamagedStructure(0.75, true) !== ERR_NOT_FOUND) {
+                    creep.memory.task = TASK.REPAIR_STRUCTURE;
+                    return;
+                }
+
+                if (creep._getEnergyStorage() !== ERR_NOT_FOUND) {
+                    creep.setTask(TASK.STORE_ENERGY);
                     return;
                 }
 
@@ -52,6 +71,9 @@ const remoteWorker = {
                 break;
             case TASK.UPGRADE_CONTROLLER:
                 creep.upgradeRoomController(TASK.DECIDE_WHAT_TO_DO);
+                break;
+            case TASK.STORE_ENERGY:
+                creep.storeEnergy(TASK.DECIDE_WHAT_TO_DO);
                 break;
             default:
                 creep.setTask(TASK.DECIDE_WHAT_TO_DO);
