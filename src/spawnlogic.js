@@ -7,7 +7,7 @@ const MIN_RESERVER_ENERGY = BODYPART_COST.claim + BODYPART_COST.move;
 
 const CREEP_SPAWNED = true;
 const NO_CREEP_SPAWNED = false;
-const MIN_STORAGE_ENERGY_TO_SPAWN_MORE_UPGRADERS = 50000;
+const MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS = 50000;
 
 const spawnlogic = {
     run() {
@@ -87,7 +87,7 @@ const spawnlogic = {
     },
 
     handleIdleRoomAtMaxEnergy(room, spawns) {
-        if (room.storage && room.storage.store[RESOURCE_ENERGY] < MIN_STORAGE_ENERGY_TO_SPAWN_MORE_UPGRADERS) {
+        if (room.storage && room.storage.store[RESOURCE_ENERGY] < MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS) {
             return;
         }
 
@@ -155,8 +155,12 @@ const spawnlogic = {
             }
 
             if (this.isRoleNeeded(room, spawns, ROLE.UPGRADER)) {
-                room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
-                return;
+                if (  !room.storage
+                    || room.storage.store[RESOURCE_ENERGY] > MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS
+                    || room.controller.isDowngradeTimerBelowSafeModeThreshold()) {
+                        room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
+                    return;
+                }
             }
 
             if (this.isRoleNeeded(room, spawns, ROLE.BUILDER) && room.find(FIND_CONSTRUCTION_SITES).length > 0) {
