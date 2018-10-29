@@ -35,7 +35,7 @@ Room.prototype.commandTowersToAttackHostiles = function() {
 };
 
 const focusClosestEnemy = function(towers, hostiles) {
-    const closestEnemy = towers[0].findClosestByRange(hostiles);
+    const closestEnemy = towers[0].pos.findClosestByRange(hostiles);
     commandTowersToFocusTarget(towers, closestEnemy);
 };
 
@@ -43,7 +43,7 @@ const focusClosestHealer = function(towers, hostiles) {
     const healers = hostiles.filter(creep => creep.isHealer());
 
     // TODO: Use this.centerPosition once that's set up everywhere.
-    const closestHealer = towers[0].findClosestByRange(healers);
+    const closestHealer = towers[0].pos.findClosestByRange(healers);
     commandTowersToFocusTarget(towers, closestHealer);
 };
 
