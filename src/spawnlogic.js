@@ -7,7 +7,8 @@ const MIN_RESERVER_ENERGY = BODYPART_COST.claim + BODYPART_COST.move;
 
 const CREEP_SPAWNED = true;
 const NO_CREEP_SPAWNED = false;
-const MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS = 50000;
+const MIN_STORAGE_ENERGY_TO_SPAWN_MAIN_UPGRADERS = 50000;
+const MIN_STORAGE_ENERGY_TO_SPAWN_EXTRA_UPGRADERS = 100000;
 
 const spawnlogic = {
     run() {
@@ -87,7 +88,7 @@ const spawnlogic = {
     },
 
     handleIdleRoomAtMaxEnergy(room, spawns) {
-        if (room.storage && room.storage.store[RESOURCE_ENERGY] < MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS) {
+        if (room.storage && room.storage.store[RESOURCE_ENERGY] < MIN_STORAGE_ENERGY_TO_SPAWN_EXTRA_UPGRADERS) {
             return;
         }
 
@@ -156,10 +157,10 @@ const spawnlogic = {
 
             if (this.isRoleNeeded(room, spawns, ROLE.UPGRADER)) {
                 if (  !room.storage
-                    || room.storage.store[RESOURCE_ENERGY] > MIN_STORAGE_ENERGY_TO_SPAWN_UPGRADERS
-                    || room.controller.isDowngradeTimerBelowSafeModeThreshold()) {
+                    || room.storage.store[RESOURCE_ENERGY] > MIN_STORAGE_ENERGY_TO_SPAWN_MAIN_UPGRADERS
+                    || room.controller.isDowngradeTimerAlmostBelowSafeModeThreshold()) {
                         room.addToSpawnQueueEnd({role: ROLE.UPGRADER});
-                    return;
+                        return;
                 }
             }
 

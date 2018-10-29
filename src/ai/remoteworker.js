@@ -12,7 +12,7 @@ const remoteWorker = {
                 }
 
                 if (creep.room.controller) {
-                    if (creep.room.controller.isDowngradeTimerBelowSafeModeThreshold() || creep.room.controller.level === 1) {
+                    if (creep.room.controller.isDowngradeTimerAlmostBelowSafeModeThreshold() || creep.room.controller.level === 1) {
                         creep.setTask(TASK.UPGRADE_CONTROLLER);
                         return;
                     }
