@@ -30,6 +30,12 @@ Room.prototype.commandTowersToAttackHostiles = function() {
         return;
     }
 
+    const separatedEnemy = findEnemySeparatedFromHealers(hostiles);
+    if (separatedEnemy !== ERR_NOT_FOUND) {
+        commandTowersToFocusTarget(this.myTowers, separatedEnemy[0]);
+        return;
+    }
+
     // our last hope. :D
     spreadFire(this.towers, this._dangerousHostiles);
 };
@@ -45,6 +51,24 @@ const focusClosestHealer = function(towers, hostiles) {
     // TODO: Use this.centerPosition once that's set up everywhere.
     const closestHealer = towers[0].pos.findClosestByRange(healers);
     commandTowersToFocusTarget(towers, closestHealer);
+};
+
+const findEnemySeparatedFromHealers = function(hostiles) {
+    const healers = hostiles.filter(creep =>  creep.isHealer());
+    const others  = hostiles.filter(creep => !creep.isHealer());
+
+    const separatedEnemies = [];
+    for (let creep of others) {
+        if (healers.every(healer => creep.pos.getRangeTo(healer) > 5)) {
+            separatedEnemies.push(creep);
+        }
+    }
+
+    if (separatedEnemies.length === 0) {
+        return ERR_NOT_FOUND;
+    }
+
+    return separatedEnemies;
 };
 
 const spreadFire = function(towers, hostileCreeps) {
