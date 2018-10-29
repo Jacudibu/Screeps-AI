@@ -95,6 +95,11 @@ Creep.prototype.findClosestFilledEnergyStorage = function() {
 };
 
 Creep.prototype.findClosestFreeEnergyStorage = function() {
+    let towersBelowThreshold = this.room.myTowers.filter(tower => tower.energy < tower.energyCapacity * 0.25);
+    if (towersBelowThreshold.length > 0) {
+        return utility.getClosestObjectFromArray(this, towersBelowThreshold);
+    }
+
     let spawns = this.room.mySpawns.filter(spawn => spawn.energy < spawn.energyCapacity);
     if (spawns.length > 0) {
         return utility.getClosestObjectFromArray(this, spawns);
