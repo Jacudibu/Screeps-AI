@@ -111,7 +111,7 @@ const spawnlogic = {
     },
 
     tryAddingNewCreepToSpawnQueue(room, spawns) {
-        if (room.energyCapacityAvailable < 550) {
+        if (room.energyCapacityAvailable < 550 && room.controller.level < 3) {
             // Early RCL. CUUUUTE!
             if (this.isRoleNeeded(room, spawns, ROLE.EARLY_RCL_HARVESTER)) {
                 room.addToSpawnQueueStart({role: ROLE.EARLY_RCL_HARVESTER});
