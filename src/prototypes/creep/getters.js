@@ -192,9 +192,12 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
 
     let damagedStructures = this.room.find(FIND_STRUCTURES, {
         filter: structure => {
-
             if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
-                return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
+                if (percentageToCountAsDamaged > 0.5) {
+                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
+                } else {
+                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level] * percentageToCountAsDamaged;
+                }
             }
 
             if (structure.structureType === STRUCTURE_SPAWN) {

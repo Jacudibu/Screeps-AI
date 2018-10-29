@@ -18,7 +18,7 @@ const remoteWorker = {
                     }
                 }
 
-                // repair critically damaged structures
+                // repair only critically damaged structures
                 if (creep._getDamagedStructure(0.1, true) !== ERR_NOT_FOUND) {
                     creep.task = TASK.REPAIR_STRUCTURE;
                     return;
@@ -36,7 +36,7 @@ const remoteWorker = {
                 }
 
                 if (creep._getEnergyStorage() !== ERR_NOT_FOUND) {
-                    creep.setTask(TASK.STORE_ENERGY);
+                    creep.task = TASK.STORE_ENERGY;
                     return;
                 }
 
