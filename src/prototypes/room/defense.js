@@ -19,11 +19,22 @@ Room.prototype.attackHostiles = function() {
 };
 
 Room.prototype.shouldSafeModeBeActivated = function() {
-    if (this.controller.safeMode || this.controller.safeModeCooldown) {
+    if (!roomThreats[this.name]) {
+        return false;
+    }
+
+    if (this.controller.safeMode || this.controller.safeModeCooldown || this.controller.safeModeAvailable === 0) {
         return false;
     }
 
     let spawns = this.mySpawns;
+    if (this.mySpawns.length === 0) {
+        if (this.find(FIND_MY_CREEPS).some(creep => creep.countBodyPartsOfType(WORK))) {
+            // spawn is just being constructed and someone is attacking us! o_o
+            return true;
+        }
+    }
+
     for (let i = 0; i < spawns.length; i++) {
         let spawn = spawns[i];
 
@@ -36,11 +47,7 @@ Room.prototype.shouldSafeModeBeActivated = function() {
         }
     }
 
-    if (this.controller.pos.findInRange(FIND_HOSTILE_CREEPS, 2).some(creep => creep.canAttackController())) {
-        return true;
-    }
-
-    return false;
+    return this.controller.pos.findInRange(FIND_HOSTILE_CREEPS, 2).some(creep => creep.canAttackController());
 };
 
 Room.prototype.repairDamagedCreeps = function() {
