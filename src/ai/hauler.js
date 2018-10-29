@@ -1,6 +1,6 @@
 const hauler = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.HAUL_RESOURCE:
                 if (_.sum(creep.carry) < creep.carryCapacity) {
                     creep.haulAnyResource(TASK.STORE_RESOURCE);

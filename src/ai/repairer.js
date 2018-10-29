@@ -1,6 +1,6 @@
 const repairer = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.COLLECT_ENERGY:
                 creep.collectEnergy(TASK.REPAIR_STRUCTURE);
                 break;

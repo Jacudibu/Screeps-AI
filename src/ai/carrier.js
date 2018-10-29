@@ -1,6 +1,6 @@
 const carrier = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === 0) {

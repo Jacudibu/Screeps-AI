@@ -4,7 +4,7 @@ const guidedRangedAttacker = {
             creep.heal(creep);
         }
 
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     creep.setTask(TASK.ATTACK);
@@ -19,8 +19,8 @@ const guidedRangedAttacker = {
 
             case TASK.ATTACK:
                 let target = undefined;
-                if (creep.memory.taskTargetId) {
-                    target = Game.getObjectById(creep.memory.taskTargetId);
+                if (creep.taskTargetId) {
+                    target = Game.getObjectById(creep.taskTargetId);
                 }
 
                 if (!target) {

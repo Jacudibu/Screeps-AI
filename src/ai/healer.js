@@ -1,6 +1,6 @@
 const healer = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     creep.setTask(TASK.HEAL);
@@ -15,7 +15,7 @@ const healer = {
 
             case TASK.HEAL:
                 let target = undefined;
-                if (creep.memory.taskTargetId) {
+                if (creep.taskTargetId) {
                     target = Game.getObjectById(creep.memory.taskTargetId);
                 }
 

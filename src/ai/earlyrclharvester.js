@@ -1,6 +1,6 @@
 const earlyRCLHarvester = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.HAUL_ENERGY:
                 if (creep.haulEnergy(TASK.STORE_ENERGY) === ERR_NOT_FOUND) {
                     creep.setTask(TASK.HARVEST_ENERGY);

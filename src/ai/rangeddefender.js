@@ -1,7 +1,7 @@
 const defender = {
     run(creep) {
         let attackResult = ERR_NOT_FOUND;
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined) {

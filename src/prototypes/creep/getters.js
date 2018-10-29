@@ -3,8 +3,8 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Creep.prototype._getSource = function() {
-    if (this.memory.taskTargetId) {
-        return Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        return Game.getObjectById(this.taskTargetId);
     }
 
     let sources = this.room.getUnoccupiedSources();
@@ -15,14 +15,14 @@ Creep.prototype._getSource = function() {
     let source = utility.getClosestObjectFromArray(this, sources);
 
     source.memory.workersAssigned++;
-    this.memory.taskTargetId = source.id;
+    this.taskTargetId = source.id;
     return source;
 };
 
 Creep.prototype._getEnergyStorage = function() {
     let structureThatRequiresEnergy;
-    if (this.memory.taskTargetId) {
-        structureThatRequiresEnergy = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        structureThatRequiresEnergy = Game.getObjectById(this.taskTargetId);
         if (structureThatRequiresEnergy) {
             if (structureThatRequiresEnergy.canStillStoreEnergy()) {
                 return structureThatRequiresEnergy;
@@ -36,14 +36,14 @@ Creep.prototype._getEnergyStorage = function() {
         return ERR_NOT_FOUND;
     }
 
-    this.memory.taskTargetId = structureThatRequiresEnergy.id;
+    this.taskTargetId = structureThatRequiresEnergy.id;
     return structureThatRequiresEnergy;
 };
 
 Creep.prototype._getMineralStorage = function(resourceType) {
     let mineralStorage = ERR_NOT_FOUND;
-    if (this.memory.taskTargetId) {
-        mineralStorage = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        mineralStorage = Game.getObjectById(this.taskTargetId);
         if (mineralStorage) {
             switch(mineralStorage.structureType) {
                 case STRUCTURE_STORAGE:
@@ -84,13 +84,13 @@ Creep.prototype._getMineralStorage = function(resourceType) {
         return ERR_NOT_FOUND;
     }
 
-    this.memory.taskTargetId = mineralStorage.id;
+    this.taskTargetId = mineralStorage.id;
     return mineralStorage;
 };
 
 Creep.prototype._getConstructionSite = function() {
-    if (this.memory.taskTargetId) {
-        let previousTarget = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let previousTarget = Game.getObjectById(this.taskTargetId);
         if (previousTarget !== null) {
             return previousTarget;
         }
@@ -174,13 +174,13 @@ Creep.prototype._getConstructionSite = function() {
         }
     }
 
-    this.memory.taskTargetId = constructionSites[0].id;
+    this.taskTargetId = constructionSites[0].id;
     return constructionSites[0];
 };
 
 Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.75, sortByRange = false) {
-    if (this.memory.taskTargetId) {
-        let previousTarget = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let previousTarget = Game.getObjectById(this.taskTargetId);
 
         // might have been destroyed by enemies or bulldozing players, so check its existence.
         if (previousTarget !== null) {
@@ -222,13 +222,13 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
         });
     }
 
-    this.memory.taskTargetId = damagedStructures[0].id;
+    this.taskTargetId = damagedStructures[0].id;
     return damagedStructures[0];
 };
 
 Creep.prototype._getEnergyHaulTarget = function() {
-    if (this.memory.taskTargetId) {
-        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let potentialTarget = Game.getObjectById(this.taskTargetId);
 
         if (potentialTarget) {
             if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
@@ -248,28 +248,28 @@ Creep.prototype._getEnergyHaulTarget = function() {
 
     let potentialTarget = this.findClosestDroppedEnergy();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
     potentialTarget = this.findClosestContainerAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
+        this.taskTargetId = potentialTarget.id;
         if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return potentialTarget;
         } else {
             if (this.carry[RESOURCE_ENERGY] === 0) {
-                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                this.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
                 return potentialTarget;
             }
         }
     }
 
     if (this.room.storageLink && this.room.storageLink.energy > 700) {
-        this.memory.taskTargetId = this.room.storageLink.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.taskTargetId = this.room.storageLink.id;
+        this.hauledResourceType = RESOURCE_ENERGY;
         return this.room.storageLink;
     }
 
@@ -282,14 +282,14 @@ Creep.prototype._getEnergyHaulTarget = function() {
     let hostileStructures = this.room.find(FIND_HOSTILE_STRUCTURES);
     for (let structure of hostileStructures) {
         if (structure.energy) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return structure;
         }
 
         if (structure.store && structure.store[RESOURCE_ENERGY]) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return structure;
         }
     }
@@ -298,10 +298,10 @@ Creep.prototype._getEnergyHaulTarget = function() {
 };
 
 Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
-    if (this.memory.taskTargetId) {
-        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let potentialTarget = Game.getObjectById(this.taskTargetId);
 
-        if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
+        if (potentialTarget && this.hauledResourceType === RESOURCE_ENERGY) {
             if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
                 return potentialTarget;
             }
@@ -319,28 +319,28 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
 
     let potentialTarget = this.findHighestDroppedResourceAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
     potentialTarget = this.findClosestContainerAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
+        this.taskTargetId = potentialTarget.id;
         if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return potentialTarget;
         } else {
             if (this.carry[RESOURCE_ENERGY] === 0) {
-                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                this.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
                 return potentialTarget;
             }
         }
     }
 
     if (this.room.storageLink && this.room.storageLink.energy > 700) {
-        this.memory.taskTargetId = this.room.storageLink.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.taskTargetId = this.room.storageLink.id;
+        this.hauledResourceType = RESOURCE_ENERGY;
         return this.room.storageLink;
     }
 
@@ -349,8 +349,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
             // Empty all of them
             for (let lab of this.room.labs) {
                 if (lab.mineralType && lab.mineralAmount > 0) {
-                    this.memory.taskTargetId = lab.id;
-                    this.memory.hauledResourceType = lab.mineralType;
+                    this.taskTargetId = lab.id;
+                    this.hauledResourceType = lab.mineralType;
                     return lab;
                 }
             }
@@ -359,12 +359,12 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
             for (let lab of this.room.inputLabs) {
                 if (lab.requestedMineral != null && lab.mineralAmount < 500) {
                     if (this.room.terminal.store[lab.requestedMineral] > 0) {
-                        this.memory.taskTargetId = this.room.terminal.id;
-                        this.memory.hauledResourceType = lab.requestedMineral;
+                        this.taskTargetId = this.room.terminal.id;
+                        this.hauledResourceType = lab.requestedMineral;
                         return this.room.terminal;
                     } else if (this.room.storage.store[lab.requestedMineral] > 0) {
-                        this.memory.taskTargetId = this.room.storage.id;
-                        this.memory.hauledResourceType = lab.requestedMineral;
+                        this.taskTargetId = this.room.storage.id;
+                        this.hauledResourceType = lab.requestedMineral;
                         return this.room.storage;
                     }
                 }
@@ -373,8 +373,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
             // Empty Output
             for (let lab of this.room.outputLabs) {
                 if (lab.mineralType && (lab.mineralAmount > LAB_OUTPUT_MINIMUM_HAUL_AMOUNT)) {
-                    this.memory.taskTargetId = lab.id;
-                    this.memory.hauledResourceType = lab.mineralType;
+                    this.taskTargetId = lab.id;
+                    this.hauledResourceType = lab.mineralType;
                     return lab;
                 }
             }
@@ -384,14 +384,14 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     if (this.room.nuker && !this.room.shouldEvacuate) {
         if (this.room.nuker.ghodium < this.room.nuker.ghodiumCapacity) {
             if (this.room.terminal.store[RESOURCE_GHODIUM] && this.room.terminal.store[RESOURCE_GHODIUM] > 0) {
-                this.memory.taskTargetId = this.room.terminal.id;
-                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                this.taskTargetId = this.room.terminal.id;
+                this.hauledResourceType = RESOURCE_GHODIUM;
                 return this.room.terminal;
             }
 
             if (this.room.storage.store[RESOURCE_GHODIUM] && this.room.storage.store[RESOURCE_GHODIUM] > 0) {
-                this.memory.taskTargetId = this.room.storage.id;
-                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                this.taskTargetId = this.room.storage.id;
+                this.hauledResourceType = RESOURCE_GHODIUM;
                 return this.room.storage;
             }
         }
@@ -399,28 +399,28 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
 
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = RESOURCE_ENERGY;
         return potentialTarget;
     }
 
     potentialTarget = this.findClosestDroppedResource();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
     if (this.room.powerSpawn && this.room.powerSpawn.power < this.room.powerSpawn.powerCapacity) {
         if (this.room.terminal && this.room.terminal.store[RESOURCE_POWER]) {
-            this.memory.taskTargetId = this.room.terminal.id;
-            this.memory.hauledResourceType = RESOURCE_POWER;
+            this.taskTargetId = this.room.terminal.id;
+            this.hauledResourceType = RESOURCE_POWER;
             return this.room.terminal;
         }
 
         if (this.room.storage && this.room.storage.store[RESOURCE_POWER]) {
-            this.memory.taskTargetId = this.room.storage.id;
-            this.memory.hauledResourceType = RESOURCE_POWER;
+            this.taskTargetId = this.room.storage.id;
+            this.hauledResourceType = RESOURCE_POWER;
             return this.room.storage;
         }
     }
@@ -434,8 +434,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
 
             const maxStorage = this.room.shouldEvacuate ? 0 : (STORAGE_MAX[resource] + this.carryCapacity);
             if (this.room.storage.store[resource] > maxStorage) {
-                this.memory.taskTargetId = this.room.storage.id;
-                this.memory.hauledResourceType = resource;
+                this.taskTargetId = this.room.storage.id;
+                this.hauledResourceType = resource;
                 return this.room.storage;
             }
         }
@@ -450,8 +450,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
                 }
 
                 if (!this.room.storage.store[resource] || this.room.storage.store[resource] < STORAGE_MAX[resource] - this.carryCapacity) {
-                    this.memory.taskTargetId = this.room.terminal.id;
-                    this.memory.hauledResourceType = resource;
+                    this.taskTargetId = this.room.terminal.id;
+                    this.hauledResourceType = resource;
                     return this.room.terminal;
                 }
             }
@@ -460,8 +460,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         // Just haul energy, and do something with it (worst case it will just dump it back in afterwards)
         if (this.room.storage) {
             if (this.room.storage.store[RESOURCE_ENERGY] > 0) {
-                this.memory.taskTargetId = this.room.storage.id;
-                this.memory.hauledResourceType = RESOURCE_ENERGY;
+                this.taskTargetId = this.room.storage.id;
+                this.hauledResourceType = RESOURCE_ENERGY;
                 return this.room.storage;
             }
         }
@@ -469,8 +469,8 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         // If storage is empty and terminal has energy, something has gone wrong - so let our haulers fix that.
         if (this.room.terminal) {
             if (this.room.terminal.store[RESOURCE_ENERGY] > 0) {
-                this.memory.taskTargetId = this.room.terminal.id;
-                this.memory.hauledResourceType = RESOURCE_ENERGY;
+                this.taskTargetId = this.room.terminal.id;
+                this.hauledResourceType = RESOURCE_ENERGY;
                 return this.room.terminal;
             }
         }
@@ -486,22 +486,22 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     for (let structure of hostileStructures) {
         // spawns etc
         if (structure.energy) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return structure;
         }
 
         // Labs
         if (structure.mineralAmount) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = structure.mineralType;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = structure.mineralType;
             return structure;
         }
 
         // storage & terminal
         if (structure.store && structure.store[RESOURCE_ENERGY]) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return structure;
         }
     }
@@ -510,10 +510,10 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
 };
 
 Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
-    if (this.memory.taskTargetId) {
-        let potentialTarget = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let potentialTarget = Game.getObjectById(this.taskTargetId);
 
-        if (potentialTarget && this.memory.hauledResourceType === RESOURCE_ENERGY) {
+        if (potentialTarget && this.hauledResourceType === RESOURCE_ENERGY) {
             if (potentialTarget.store && potentialTarget.store[RESOURCE_ENERGY] > CONTAINER_MINIMUM_HAUL_RESOURCE_AMOUNT) {
                 return potentialTarget;
             }
@@ -531,20 +531,20 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
     let potentialTarget = this.findHighestDroppedResourceAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
     potentialTarget = this.findClosestContainerAboveHaulThreshold();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
+        this.taskTargetId = potentialTarget.id;
         if (potentialTarget.store[RESOURCE_ENERGY] > 0) {
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return potentialTarget;
         } else {
             if (this.carry[RESOURCE_ENERGY] === 0) {
-                this.memory.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
+                this.hauledResourceType = Object.keys(potentialTarget.store).filter(name => name !== RESOURCE_ENERGY)[0];
                 return potentialTarget;
             }
         }
@@ -552,8 +552,8 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
     potentialTarget = this.findClosestTombstone();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = RESOURCE_ENERGY;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = RESOURCE_ENERGY;
         return potentialTarget;
     }
 
@@ -562,15 +562,15 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
     for (let structure of hostileStructures) {
         // spawns etc
         if (structure.energy) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = RESOURCE_ENERGY;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
             return structure;
         }
 
         // Labs
         if (structure.mineralAmount) {
-            this.memory.taskTargetId = structure.id;
-            this.memory.hauledResourceType = structure.mineralType;
+            this.taskTargetId = structure.id;
+            this.hauledResourceType = structure.mineralType;
             return structure;
         }
 
@@ -582,8 +582,8 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
                 const storedResources = Object.keys(structure.store);
                 for (const resource of storedResources) {
                     if (structure.store[resource]) {
-                        this.memory.taskTargetId = structure.id;
-                        this.memory.hauledResourceType = resource;
+                        this.taskTargetId = structure.id;
+                        this.hauledResourceType = resource;
                         return structure;
                     }
                 }
@@ -591,16 +591,16 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
             // Nuker
             if (structure.ghodium) {
-                this.memory.taskTargetId = structure.id;
-                this.memory.hauledResourceType = RESOURCE_GHODIUM;
+                this.taskTargetId = structure.id;
+                this.hauledResourceType = RESOURCE_GHODIUM;
                 return structure;
             }
         } else {
             // Just steal energy
             if (structure.store) {
                 if (structure.store[RESOURCE_ENERGY]) {
-                    this.memory.taskTargetId = structure.id;
-                    this.memory.hauledResourceType = RESOURCE_ENERGY;
+                    this.taskTargetId = structure.id;
+                    this.hauledResourceType = RESOURCE_ENERGY;
                     return structure;
                 }
             }
@@ -609,8 +609,8 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
     potentialTarget = this.findClosestDroppedResource();
     if (potentialTarget !== ERR_NOT_FOUND) {
-        this.memory.taskTargetId = potentialTarget.id;
-        this.memory.hauledResourceType = potentialTarget.resourceType;
+        this.taskTargetId = potentialTarget.id;
+        this.hauledResourceType = potentialTarget.resourceType;
         return potentialTarget;
     }
 
@@ -619,8 +619,8 @@ Creep.prototype._getAnyResourceHaulTargetInRemoteRoom = function() {
 
 
 Creep.prototype._getDismantleTarget = function() {
-    if (this.memory.taskTargetId) {
-        let target = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        let target = Game.getObjectById(this.taskTargetId);
         if (target != null && target instanceof Structure) {
             return target;
         }
@@ -637,7 +637,7 @@ Creep.prototype._getDismantleTarget = function() {
         flag.remove();
 
         if (target) {
-            this.memory.taskTargetId = target.id;
+            this.taskTargetId = target.id;
             return target;
         }
     }
@@ -649,7 +649,7 @@ Creep.prototype._getDismantleTarget = function() {
     });
     if (enemyStructures.length > 0) {
         let target = utility.getClosestObjectFromArray(this, enemyStructures);
-        this.memory.taskTargetId = target.id;
+        this.taskTargetId = target.id;
         return target;
     }
 
@@ -658,8 +658,8 @@ Creep.prototype._getDismantleTarget = function() {
 
 Creep.prototype._getClosestHostileConstructionSite = function() {
     let target;
-    if (this.memory.taskTargetId) {
-        target = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        target = Game.getObjectById(this.taskTargetId);
         if (target && target instanceof ConstructionSite && !target.my) {
             return target;
         }

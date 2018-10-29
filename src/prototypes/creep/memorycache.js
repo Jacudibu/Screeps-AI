@@ -1,11 +1,14 @@
 const cachedValues = [
-    "spawnRoom",
-    "targetRoomName",
+    "hauledResourceType",
     "remoteHaulTargetRoom",
     "remoteHaulStorageRoom",
     "respawnTTL",
     "role",
+    "spawnRoom",
     "stayInRoom",
+    "targetRoomName",
+    "task",
+    "taskTargetId",
 ];
 
 // noinspection ConstantIfStatementJS
@@ -13,13 +16,16 @@ if (false) {
     // for autocompletion in IDE
 
     // noinspection UnreachableCodeJS
-    Creep.prototype.spawnRoom = '';
-    Creep.prototype.targetRoomName = '';
+    Creep.prototype.hauledResourceType = '';
     Creep.prototype.remoteHaulTargetRoom = '';
     Creep.prototype.remoteHaulStorageRoom = '';
     Creep.prototype.respawnTTL = '';
     Creep.prototype.role = '';
+    Creep.prototype.spawnRoom = '';
     Creep.prototype.stayInRoom = '';
+    Creep.prototype.targetRoomName = '';
+    Creep.prototype.task = '';
+    Creep.prototype.taskTargetId = '';
 }
 
 const caches = {};

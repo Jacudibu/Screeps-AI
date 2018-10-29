@@ -1,6 +1,6 @@
 const remoteUpgrader = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name !== creep.targetRoomName) {
                     creep.setTask(TASK.MOVE_TO_ROOM);

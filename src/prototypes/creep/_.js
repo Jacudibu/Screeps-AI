@@ -1,13 +1,13 @@
 Creep.prototype.setTask = function(task, keepTaskTargetId) {
     if (!keepTaskTargetId) {
-        this.memory.taskTargetId = undefined;
+        this.taskTargetId = undefined;
     }
 
-    this.memory.task = task;
+    this.task = task;
 };
 
 Creep.prototype.resetCurrentTask = function() {
-    this.memory.taskTargetId = undefined;
+    this.taskTargetId = undefined;
 };
 
 Creep.prototype.countBodyPartsOfType = function(types) {
@@ -150,7 +150,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.memory.taskTargetId = undefined;
+            this.taskTargetId = undefined;
             break;
         default:
             this.logActionError("Collecting Energy", result);
@@ -163,7 +163,7 @@ Creep.prototype._withdrawEnergy = function(storage, taskWhenFinished) {
 Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {
     this.say(creepTalk.withdrawResource, true);
 
-    switch (this.withdraw(storage, this.memory.hauledResourceType)) {
+    switch (this.withdraw(storage, this.hauledResourceType)) {
         case OK:
             if (_.sum(this.carry) === this.carryCapacity) {
                 this.setTask(taskWhenFinished);
@@ -176,11 +176,11 @@ Creep.prototype._withdrawResource = function(storage, taskWhenFinished) {
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            this.memory.taskTargetId = undefined;
+            this.taskTargetId = undefined;
             break;
         default:
-            this.logActionError("Withdrawing " + this.memory.hauledResourceType,
-                                this.withdraw(storage, this.memory.hauledResourceType));
+            this.logActionError("Withdrawing " + this.hauledResourceType,
+                                this.withdraw(storage, this.hauledResourceType));
             break;
     }
 };

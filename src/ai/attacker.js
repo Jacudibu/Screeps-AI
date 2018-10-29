@@ -2,7 +2,7 @@ const attacker = {
     run(creep) {
         let attackResult = ERR_NOT_FOUND;
 
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     //creep.setTask(TASK.WAIT);
@@ -23,8 +23,8 @@ const attacker = {
 
             case TASK.ATTACK:
                 let target;
-                if (creep.memory.taskTargetId) {
-                    target = Game.getObjectById(creep.memory.taskTargetId);
+                if (creep.taskTargetId) {
+                    target = Game.getObjectById(creep.taskTargetId);
                 }
 
                 if (!target) {

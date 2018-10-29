@@ -1,10 +1,10 @@
 const remoteHauler = {
     run(creep) {
-        if (creep.memory.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
+        if (creep.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
             return;
         }
 
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.remoteHaulTargetRoom) {
                     if (_.sum(creep.carry) === creep.carryCapacity) {

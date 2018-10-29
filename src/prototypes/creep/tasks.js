@@ -40,8 +40,8 @@ Creep.prototype.harvestEnergyInBase = function() {
 
 Creep.prototype.harvestEnergyInLowRCLRoom = function(taskWhenFinishedOrEmptySource) {
     let source;
-    if (this.memory.taskTargetId) {
-        source = Game.getObjectById(this.memory.taskTargetId)
+    if (this.taskTargetId) {
+        source = Game.getObjectById(this.taskTargetId)
     }
 
     if (!source) {
@@ -68,7 +68,7 @@ Creep.prototype.harvestEnergyInLowRCLRoom = function(taskWhenFinishedOrEmptySour
             log.warning("something went wrong. random values: " + randomValues + ", total: " + total + " random value: " + randomValue);
         }
 
-        this.memory.taskTargetId = source.id;
+        this.taskTargetId = source.id;
     }
 
     if (!source) {
@@ -236,8 +236,8 @@ Creep.prototype.haulAnyResource = function(taskWhenFinished) {
 Creep.prototype.collectEnergy = function(taskWhenFinished) {
     let energyStorage;
 
-    if (this.memory.taskTargetId) {
-        energyStorage = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        energyStorage = Game.getObjectById(this.taskTargetId);
         // TODO check sufficient storage remaining?
     }
 
@@ -248,7 +248,7 @@ Creep.prototype.collectEnergy = function(taskWhenFinished) {
             energyStorage = this.findClosestFilledEnergyStorage();
         }
 
-        this.memory.taskTargetId = energyStorage.id;
+        this.taskTargetId = energyStorage.id;
     }
 
     if (energyStorage === ERR_NOT_FOUND) {
@@ -273,7 +273,7 @@ Creep.prototype.renew = function(taskWhenFinished) {
             this.travelTo(spawn);
             break;
         case ERR_FULL:
-            this.memory.task = taskWhenFinished;
+            this.task = taskWhenFinished;
             break;
         default:
             this.logActionError("renewing creep", spawn.renewCreep(this));
@@ -392,8 +392,8 @@ Creep.prototype.storeEnergy = function(nextTask, taskWhenNoStorageFound = undefi
             if (_.sum(this.carry) === 0) {
                 this.setTask(nextTask);
             } else {
-                this.memory.hauledResourceType = Object.keys(this.carry).filter(name => name !== RESOURCE_ENERGY)[0];
-                this.memory.taskTargetId = undefined;
+                this.hauledResourceType = Object.keys(this.carry).filter(name => name !== RESOURCE_ENERGY)[0];
+                this.taskTargetId = undefined;
             }
             break;
         case ERR_FULL:
@@ -498,10 +498,10 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
                 if (targetPos === ERR_INVALID_ARGS) {
                     log.warning(this + "unable to place source container!");
                     targetPos = source.pos;
-                    this.memory.task = taskWhenFinished;
+                    this.task = taskWhenFinished;
                 }
             } else {
-                this.memory.task = taskWhenFinished;
+                this.task = taskWhenFinished;
                 return;
             }
         }
@@ -509,7 +509,7 @@ Creep.prototype.moveOntoContainer = function(taskWhenFinished) {
 
     this.travelTo(targetPos, {maxRooms: 1, range: 0});
     if(this.pos.isEqualTo(targetPos)) {
-        this.memory.task = taskWhenFinished;
+        this.task = taskWhenFinished;
     }
 };
 
@@ -536,7 +536,7 @@ Creep.prototype.moveOntoMineralContainer = function(taskWhenFinished) {
 
     this.travelTo(targetPos, {maxRooms: 1});
     if(this.pos.isEqualTo(targetPos)) {
-        this.memory.task = taskWhenFinished;
+        this.task = taskWhenFinished;
     }
 };
 
@@ -555,7 +555,7 @@ Creep.prototype.determineHarvesterStartTask = function() {
         return;
     }
 
-    return this.memory.task = TASK.MOVE_ONTO_CONTAINER;
+    return this.task = TASK.MOVE_ONTO_CONTAINER;
 };
 
 Creep.prototype.moveToRoom = function(taskWhenFinished, options = undefined) {
@@ -658,11 +658,11 @@ Creep.prototype.reserveRoomController = function() {
 
 Creep.prototype.recycle = function() {
     let spawn;
-    if (this.memory.taskTargetId) {
-        spawn = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        spawn = Game.getObjectById(this.taskTargetId);
     } else {
         spawn = this.room.find(FIND_MY_SPAWNS)[0];
-        this.memory.taskTargetId = spawn.id;
+        this.taskTargetId = spawn.id;
     }
 
     switch(spawn.recycleCreep(this)) {
@@ -679,8 +679,8 @@ Creep.prototype.recycle = function() {
 
 Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
     let target = undefined;
-    if (this.memory.taskTargetId) {
-        target = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        target = Game.getObjectById(this.taskTargetId);
     }
 
     if (target === undefined) {
@@ -713,7 +713,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
             }
             break;
         case ERR_INVALID_TARGET:
-            this.memory.taskTargetId = undefined;
+            this.taskTargetId = undefined;
             break;
         default:
             this.logActionError("defendRoomWithMeleeAttacks attack command", this.attack(target));
@@ -724,8 +724,8 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
 
 Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
     let target = undefined;
-    if (this.memory.taskTargetId) {
-        target = Game.getObjectById(this.memory.taskTargetId);
+    if (this.taskTargetId) {
+        target = Game.getObjectById(this.taskTargetId);
     }
 
     if (target === undefined) {
@@ -770,7 +770,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
                 }
                 break;
             case ERR_INVALID_TARGET:
-                this.memory.taskTargetId = undefined;
+                this.taskTargetId = undefined;
                 break;
             default:
                 this.logActionError("defendRoomWithMeleeAttacks attack command", this.rangedAttack(target));
@@ -792,7 +792,7 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
     if (ramparts.length === 0) {
         this.say(creepTalk.chargeAttack, true);
         this.travelTo(enemy, {maxRooms: 1});
-        this.memory.task = TASK.DEFEND_CHARGE;
+        this.task = TASK.DEFEND_CHARGE;
         return;
     }
 

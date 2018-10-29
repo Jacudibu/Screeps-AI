@@ -1,10 +1,10 @@
 const remoteRepairer = {
     run(creep) {
-        if (creep.memory.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
+        if (creep.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
             return;
         }
 
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 this.decideWhatToDo(creep);
                 break;
@@ -83,10 +83,10 @@ const remoteRepairer = {
                     creep.setTask(TASK.MOVE_TO_ROOM);
                     return;
                 }
-                creep.memory.task = TASK.BUILD_STRUCTURE;
+                creep.task = TASK.BUILD_STRUCTURE;
                 return;
             } else {
-                creep.memory.task = TASK.REPAIR_STRUCTURE;
+                creep.task = TASK.REPAIR_STRUCTURE;
                 return;
             }
         }

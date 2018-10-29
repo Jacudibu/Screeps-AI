@@ -1,6 +1,6 @@
 const remoteWorker = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name !== creep.targetRoomName) {
                     creep.setTask(TASK.MOVE_TO_ROOM);
@@ -20,18 +20,18 @@ const remoteWorker = {
 
                 // repair critically damaged structures
                 if (creep._getDamagedStructure(0.1, true) !== ERR_NOT_FOUND) {
-                    creep.memory.task = TASK.REPAIR_STRUCTURE;
+                    creep.task = TASK.REPAIR_STRUCTURE;
                     return;
                 }
 
                 if (creep._getConstructionSite() !== ERR_NOT_FOUND) {
-                    creep.memory.task = TASK.BUILD_STRUCTURE;
+                    creep.task = TASK.BUILD_STRUCTURE;
                     return;
                 }
 
                 // repair anything else
                 if (creep._getDamagedStructure(0.75, true) !== ERR_NOT_FOUND) {
-                    creep.memory.task = TASK.REPAIR_STRUCTURE;
+                    creep.task = TASK.REPAIR_STRUCTURE;
                     return;
                 }
 

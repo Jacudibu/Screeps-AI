@@ -1,6 +1,6 @@
 const builder = {
     run(creep) {
-        switch (creep.memory.task) {
+        switch (creep.task) {
             case TASK.COLLECT_ENERGY:
                 creep.collectEnergy(TASK.BUILD_STRUCTURE);
                 break;

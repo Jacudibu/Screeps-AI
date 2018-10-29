@@ -34,9 +34,9 @@ Room.prototype.refreshFreeExtensionsInNextTick = function() {
             continue;
         }
 
-        if (    creep.memory.task === TASK.STORE_ENERGY
-            || (creep.memory.task === TASK.STORE_RESOURCE && creep.carry[RESOURCE_ENERGY] > 0)) {
-            delete creep.memory.taskTargetId;
+        if (    creep.task === TASK.STORE_ENERGY
+            || (creep.task === TASK.STORE_RESOURCE && creep.carry[RESOURCE_ENERGY] > 0)) {
+            creep.taskTargetId = undefined;
         }
     }
 };
