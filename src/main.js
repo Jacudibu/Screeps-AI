@@ -22,6 +22,7 @@ require('prototypes.container.isnexttosourceormineral');
 require('prototypes.controller._');
 
 require('prototypes.creep._');
+require('prototypes.creep.classification');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
 require('prototypes.creep.kite');
