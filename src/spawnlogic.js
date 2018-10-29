@@ -7,6 +7,7 @@ const MIN_RESERVER_ENERGY = BODYPART_COST.claim + BODYPART_COST.move;
 
 const CREEP_SPAWNED = true;
 const NO_CREEP_SPAWNED = false;
+const MIN_STORAGE_ENERGY_TO_SPAWN_MORE_UPGRADERS = 50000;
 
 const spawnlogic = {
     run() {
@@ -78,22 +79,31 @@ const spawnlogic = {
             }
 
             if (room.energyCapacityAvailable === room.energyAvailable) {
-                if (!ticksAtMaxEnergyWithoutSpawningSomething[room.name]) {
-                    ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
-                }
-
-                ticksAtMaxEnergyWithoutSpawningSomething[room.name]++;
-                if (ticksAtMaxEnergyWithoutSpawningSomething[room.name] > AUTO_UPGRADER_SPAWN_INTERVAL) {
-                    if (room.energyCapacityAvailable >= 550 && room.controller.level < 8) {
-                        ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
-                        this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.UPGRADER});
-                    }
-
-                }
+                this.handleIdleRoomAtMaxEnergy(room, spawns);
             }
         }
 
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
+    },
+
+    handleIdleRoomAtMaxEnergy(room, spawns) {
+        if (room.storage && room.storage.store[RESOURCE_ENERGY] < MIN_STORAGE_ENERGY_TO_SPAWN_MORE_UPGRADERS) {
+            return;
+        }
+
+        if (!ticksAtMaxEnergyWithoutSpawningSomething[room.name]) {
+            ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
+            return;
+        }
+
+        ticksAtMaxEnergyWithoutSpawningSomething[room.name]++;
+
+        if (ticksAtMaxEnergyWithoutSpawningSomething[room.name] > AUTO_UPGRADER_SPAWN_INTERVAL) {
+            if (room.energyCapacityAvailable >= 550 && room.controller.level < 8) {
+                ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
+                this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.UPGRADER});
+            }
+        }
     },
 
     checkAndSpawnLowRCLDefenderIfNecessary(room) {
