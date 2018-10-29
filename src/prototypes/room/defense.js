@@ -13,18 +13,34 @@ Room.prototype.attackHostiles = function() {
     }
 
     this.commandTowersToAttackTarget(this._dangerousHostiles[0]);
-    this.checkIfSafeModeShouldBeActivated();
+    if (this.shouldSafeModeBeActivated()) {
+        this.controller.activateSafeMode();
+    }
 };
 
-Room.prototype.checkIfSafeModeShouldBeActivated = function() {
+Room.prototype.shouldSafeModeBeActivated = function() {
+    if (this.controller.safeMode || this.controller.safeModeCooldown) {
+        return false;
+    }
+
     let spawns = this.mySpawns;
     for (let i = 0; i < spawns.length; i++) {
         let spawn = spawns[i];
 
-        if (spawn.hits < 5000 && !this.controller.safeMode) {
-            this.controller.activateSafeMode();
+        if (spawn.hits < 5000) {
+            return true;
+        }
+
+        if (spawn.pos.findInRange(FIND_HOSTILE_CREEPS, 3).some(creep => creep.canDealDamage())) {
+            return true;
         }
     }
+
+    if (this.controller.pos.findInRange(FIND_HOSTILE_CREEPS, 2).some(creep => creep.canAttackController())) {
+        return true;
+    }
+
+    return false;
 };
 
 Room.prototype.repairDamagedCreeps = function() {
