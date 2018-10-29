@@ -19,6 +19,8 @@ require('globals.utility');
 
 require('prototypes.container.isnexttosourceormineral');
 
+require('prototypes.controller._');
+
 require('prototypes.creep._');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
