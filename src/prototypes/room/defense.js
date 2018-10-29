@@ -1,18 +1,8 @@
 const RAMPART_TOWER_REPAIR_THRESHOLD = 7500;
 
-Room.prototype.attackHostiles = function() {
-    if (!roomThreats[this.name]) {
-        // Kill scouts and such things
-        const allHostiles = this.find(FIND_HOSTILE_CREEPS);
-        if (allHostiles.length > 0) {
-            if (this.towers.length > 0) {
-                this.towers[0].attack(allHostiles[0]);
-            }
-        }
-        return;
-    }
+Room.prototype.runDefenseProcedures = function() {
+    this.commandTowersToAttackHostiles();
 
-    this.commandTowersToAttackTarget(this._dangerousHostiles[0]);
     if (this.shouldSafeModeBeActivated()) {
         this.controller.activateSafeMode();
     }
@@ -42,7 +32,7 @@ Room.prototype.shouldSafeModeBeActivated = function() {
             return true;
         }
 
-        if (spawn.pos.findInRange(FIND_HOSTILE_CREEPS, 3).some(creep => creep.canDealDamage())) {
+        if (spawn.pos.findInRange(FIND_HOSTILE_CREEPS, 3).some(creep => creep.canDealSomeSortOfDamage())) {
             return true;
         }
     }

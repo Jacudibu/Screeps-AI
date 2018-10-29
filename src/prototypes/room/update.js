@@ -11,9 +11,10 @@ Room.prototype.updateAfterCreeps = function() {
             this.askForHelpIfThreatDetected();
 
             if (this.repairAlmostBrokenRamparts() === ERR_NOT_FOUND) {
-                this.attackHostiles();
+                this.runDefenseProcedures();
                 this.repairDamagedCreeps();
             }
+
             this.checkForRCLUpdate();
             this.tryPlacingConstructionSites();
 

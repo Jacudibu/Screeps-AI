@@ -56,18 +56,6 @@ Room.prototype.addToSpawnQueueStart = function(args) {
     this.memory.spawnQueue.unshift(args);
 };
 
-Room.prototype.commandTowersToAttackTarget = function(target) {
-    const towers = this.myTowers;
-
-    if (towers.length === 0) {
-        return;
-    }
-
-    for (let i = 0; i < towers.length; i++) {
-        towers[i].attack(target);
-    }
-};
-
 Room.prototype.commandTowersToHealCreep = function(target) {
     const towers = this.myTowers;
 

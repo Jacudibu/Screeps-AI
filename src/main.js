@@ -22,7 +22,7 @@ require('prototypes.container.isnexttosourceormineral');
 require('prototypes.controller._');
 
 require('prototypes.creep._');
-require('prototypes.creep.classification');
+require('prototypes.creep.classifications');
 require('prototypes.creep.getters');
 require('prototypes.creep.finders');
 require('prototypes.creep.kite');
@@ -48,6 +48,7 @@ require('prototypes.room.scoutdata');
 require('prototypes.room.sources');
 require('prototypes.room.structures');
 require('prototypes.room.threat');
+require('prototypes.room.towerdefense');
 require('prototypes.room.update');
 
 require('prototypes.roomobject.drawdebugtext');
