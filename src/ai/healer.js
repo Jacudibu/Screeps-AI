@@ -20,8 +20,7 @@ const healer = {
                 }
 
                 if (!target) {
-                    const myCreeps = creep.room.find(FIND_MY_CREEPS);
-                    const damagedCreeps = myCreeps.filter(c => c.hits < c.hitsMax);
+                    const damagedCreeps = creep.room.findDamagedCreeps();
 
                     if (damagedCreeps.length === 0) {
                         if (creep.previousTarget) {
@@ -29,7 +28,7 @@ const healer = {
                         }
 
                         if (!target) {
-                            target = myCreeps[0];
+                            target = creep.room.find(FIND_MY_CREEPS)[0];
                         }
                     } else {
                         target = damagedCreeps[0];

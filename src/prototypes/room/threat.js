@@ -2,7 +2,7 @@ Room.prototype.checkForHostiles = function() {
     this._dangerousHostiles = this.find(FIND_HOSTILE_CREEPS, {
         filter: creep =>
             creep.pos.x !== 0 && creep.pos.x !== 49 && creep.pos.y !== 0 && creep.pos.y !== 49
-            &&    (creep.countBodyPartsOfType(ATTACK) > 0
+            &&(creep.countBodyPartsOfType(ATTACK) > 0
             || creep.countBodyPartsOfType(RANGED_ATTACK) > 0
             || creep.countBodyPartsOfType(HEAL) > 0
             || creep.countBodyPartsOfType(WORK) > 4 && creep.countBodyPartsOfType(CARRY) < 4)
@@ -54,7 +54,7 @@ Room.prototype.askForHelpIfThreatDetected = function() {
     }
 
     if (this.memory.requiresHelp === undefined) {
-        const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER});
+        const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER || creep.role === ROLE.RANGED_DEFENDER});
         if (myDefenseForce.length === 0) {
             this.memory.requiresHelp = true;
             if (   roomThreats[this.name].players[0] !== INVADER_PLAYER_NAME

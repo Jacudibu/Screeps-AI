@@ -168,7 +168,7 @@ const labReactionRunner = {
         }
 
         // if still in demand => true
-        return resourceDemand[room.name].filter(demand => demand.resourceType === room.labReaction).length !== 0;
+        return resourceDemand[room.name].some(demand => demand.resourceType === room.labReaction);
     },
 
     determineReactionMaterials(room) {

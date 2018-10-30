@@ -17,7 +17,7 @@ const ScoutData = {
         const permanentPortals = room.find(FIND_STRUCTURES, {
             filter:
                 structure => structure.structureType === STRUCTURE_PORTAL
-                    && structure.ticksToDecay === undefined
+                          && structure.ticksToDecay === undefined
         });
 
         if (permanentPortals.length > 0) {
@@ -59,7 +59,7 @@ const ScoutData = {
     setupDataForUnownedRoom(room) {
         const scoutData = {};
 
-        if (room.find(FIND_STRUCTURES).filter(structure => scoutData.structureType === STRUCTURE_ROAD || structure.structureType === STRUCTURE_CONTAINER).length > 0) {
+        if (room.find(FIND_STRUCTURES).some(structure => scoutData.structureType === STRUCTURE_ROAD || structure.structureType === STRUCTURE_CONTAINER)) {
             scoutData.seemsToBeUsed = true;
         }
 

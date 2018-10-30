@@ -241,7 +241,7 @@ Creep.prototype.findClosestDroppedResource = function() {
 
 Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
     let droppedResources = this.room.find(FIND_DROPPED_RESOURCES, {
-        filter: function(drop) {return drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT;}
+        filter: drop => drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT
     });
 
     if (droppedResources.length === 0) {
@@ -253,7 +253,7 @@ Creep.prototype.findHighestDroppedResourceAboveHaulThreshold = function() {
 
 Creep.prototype.findClosestDroppedEnergy = function() {
     let droppedEnergy = this.room.find(FIND_DROPPED_RESOURCES, {
-        filter: function(drop) {return drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT && drop.resourceType === RESOURCE_ENERGY;}
+        filter: drop => drop.amount > RESOURCE_MINIMUM_HAUL_AMOUNT && drop.resourceType === RESOURCE_ENERGY
     });
 
     if (droppedEnergy.length === 0) {
@@ -266,9 +266,7 @@ Creep.prototype.findClosestDroppedEnergy = function() {
 
 Creep.prototype.findClosestTombstone = function() {
     const tombstones = this.room.find(FIND_TOMBSTONES, {
-        filter: (tomb) => {
-            return tomb.store[RESOURCE_ENERGY] > 0;
-        }
+        filter: tomb => tomb.store[RESOURCE_ENERGY] > 0
     });
 
     if (tombstones.length === 0) {
