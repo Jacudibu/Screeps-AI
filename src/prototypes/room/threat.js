@@ -45,8 +45,8 @@ Room.prototype.updateThreat = function() {
         threat.total  += creep.body.length;
     }
 
-    roomThreats[this.name].onlyNPCs = threat.players.length === 1
-                                   && threat.players[0] === INVADER_PLAYER_NAME || threat.players[0] === SOURCE_KEEPER_PLAYER_NAME;
+    threat.onlyNPCs = threat.players.length === 1
+                   &&(threat.players[0] === INVADER_PLAYER_NAME || threat.players[0] === SOURCE_KEEPER_PLAYER_NAME);
 
     roomThreats[this.name] = threat;
 };
