@@ -190,23 +190,7 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
         }
     }
 
-    let damagedStructures = this.room.find(FIND_STRUCTURES, {
-        filter: structure => {
-            if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
-                if (percentageToCountAsDamaged > 0.5) {
-                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
-                } else {
-                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level] * percentageToCountAsDamaged;
-                }
-            }
-
-            if (structure.structureType === STRUCTURE_SPAWN) {
-                return structure.hits < structure.hitsMax;
-            }
-
-            return structure.hits < structure.hitsMax * percentageToCountAsDamaged;
-        }
-    });
+    let damagedStructures = this.room.findDamagedStructures();
 
     if(damagedStructures.length === 0) {
         return ERR_NOT_FOUND;

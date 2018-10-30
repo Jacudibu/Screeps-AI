@@ -75,8 +75,26 @@ Room.prototype.commandTowersToRepairStructure = function(target) {
 };
 
 Room.prototype.findDamagedCreeps = function() {
-    return _.filter(this.find(FIND_MY_CREEPS), function (creep) {
-        return creep.hits < creep.hitsMax;
+    return this.find(FIND_MY_CREEPS, {filter: creep => creep.hits < creep.hitsMax});
+};
+
+Room.prototype.findDamagedStructures = function(percentageToCountAsDamaged = 0.75) {
+    return this.find(FIND_STRUCTURES, {
+        filter: structure => {
+            if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
+                if (percentageToCountAsDamaged > 0.5) {
+                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
+                } else {
+                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level] * percentageToCountAsDamaged;
+                }
+            }
+
+            if (structure.structureType === STRUCTURE_SPAWN) {
+                return structure.hits < structure.hitsMax;
+            }
+
+            return structure.hits < structure.hitsMax * percentageToCountAsDamaged;
+        }
     });
 };
 
