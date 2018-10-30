@@ -19,6 +19,7 @@ Room.prototype.updateThreat = function() {
 
     let threat = {
         players: [],
+        onlyNPCs: false, // will be set later
         creepCount: 0,
         attack: 0,
         ranged: 0,
@@ -44,6 +45,9 @@ Room.prototype.updateThreat = function() {
         threat.total  += creep.body.length;
     }
 
+    roomThreats[this.name].onlyNPCs = threat.players.length === 1
+                                   && threat.players[0] === INVADER_PLAYER_NAME || threat.players[0] === SOURCE_KEEPER_PLAYER_NAME;
+
     roomThreats[this.name] = threat;
 };
 
@@ -57,8 +61,7 @@ Room.prototype.askForHelpIfThreatDetected = function() {
         const myDefenseForce = this.find(FIND_MY_CREEPS, {filter: creep => creep.role === ROLE.DEFENDER || creep.role === ROLE.RANGED_DEFENDER});
         if (myDefenseForce.length === 0) {
             this.memory.requiresHelp = true;
-            if (   roomThreats[this.name].players[0] !== INVADER_PLAYER_NAME
-                && roomThreats[this.name].players[0] !== SOURCE_KEEPER_PLAYER_NAME
+            if (   roomThreats.onlyNPCs
                 && this.controller
                 &&(this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
 

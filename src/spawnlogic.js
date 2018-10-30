@@ -547,7 +547,7 @@ const spawnlogic = {
         let useMeleeDefender = false;
 
         if (threat && threat.ranged > 0) {
-            if (threat.players.length === 1 && threat.players[0] === INVADER_PLAYER_NAME) {
+            if (threat.onlyNPCs) {
                 useMeleeDefender = threat.creepCount === 1 && threat.attack > 0;
             } else {
                 useMeleeDefender = false;
