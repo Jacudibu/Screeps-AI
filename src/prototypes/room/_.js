@@ -83,9 +83,9 @@ Room.prototype.findDamagedStructures = function(percentageToCountAsDamaged = 0.7
         filter: structure => {
             if (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) {
                 if (percentageToCountAsDamaged > 0.5) {
-                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level];
+                    return structure.hits < WALLS_REPAIR_MAX[this.controller.level];
                 } else {
-                    return structure.hits < WALLS_REPAIR_MAX[this.room.controller.level] * percentageToCountAsDamaged;
+                    return structure.hits < WALLS_REPAIR_MAX[this.controller.level] * percentageToCountAsDamaged;
                 }
             }
 
