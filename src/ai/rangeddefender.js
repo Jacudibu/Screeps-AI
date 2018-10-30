@@ -4,7 +4,7 @@ const defender = {
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
-                    if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined) {
+                    if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined && !creep.stayInRoom) {
                         creep.setTask(TASK.RECYCLE);
                     } else {
                         if (creep.room.mySpawns.length > 0) {

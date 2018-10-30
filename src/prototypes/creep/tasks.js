@@ -690,7 +690,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
             if (!this.stayInRoom) {
                 this.targetRoomName = this.memory.homeRoomName;
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
-            } else if (this.room !== this.targetRoomName) {
+            } else if (this.room.name !== this.targetRoomName) {
                 this.setTask(TASK.MOVE_TO_ROOM)
             }
             return ERR_NOT_FOUND;
@@ -735,7 +735,7 @@ Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
             if (!this.stayInRoom) {
                 this.targetRoomName = this.memory.homeRoomName;
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
-            } else if (this.room !== this.targetRoomName) {
+            } else if (this.room.name !== this.targetRoomName) {
                 this.setTask(TASK.MOVE_TO_ROOM)
             }
             return ERR_NOT_FOUND;
