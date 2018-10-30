@@ -28,6 +28,7 @@ require('prototypes.creep.finders');
 require('prototypes.creep.kite');
 require('prototypes.creep.memorycache');
 require('prototypes.creep.pushandmove');
+require('prototypes.creep.respawn');
 require('prototypes.creep.tasks');
 
 require('prototypes.lab.requestedmineral');
