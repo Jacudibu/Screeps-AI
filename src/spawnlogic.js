@@ -26,7 +26,7 @@ const MIN_STORAGE_ENERGY_TO_SPAWN_EXTRA_UPGRADERS = {
     5: 150000,
     6: 300000,
     7: 400000,
-    8: 9999999,
+    8: Infinity,
 };
 
 const spawnlogic = {

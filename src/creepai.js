@@ -1,27 +1,29 @@
-const builderAI             = require('ai.builder');
-const harvesterAI           = require('ai.harvester');
-const earlyRCLHarvesterAI   = require('ai.earlyrclharvester');
-const haulerAI              = require('ai.hauler');
-const upgraderAI            = require('ai.upgrader');
-const repairerAI            = require('ai.repairer');
-const mineralHarvesterAI    = require('ai.mineralharvester');
-const remoteWorkerAI        = require('ai.remoteworker');
-const remoteHaulerAI        = require('ai.remotehauler');
-const remoteHarvesterAI     = require('ai.remoteharvester');
-const remoteRepairerAI      = require('ai.remoterepairer');
-const remoteUpgraderAI      = require('ai.remoteupgrader');
-const reserverAI            = require('ai.reserver');
-const attackerAI            = require('ai.attacker');
-const rangedAttackerAI      = require('ai.rangedattacker');
-const healerAI              = require('ai.healer');
-const claimerAI             = require('ai.claimer');
-const claimerAttackerAI     = require('ai.claimerattacker');
-const dismantlerAI          = require('ai.dismantler');
-const defenderAI            = require('ai.defender');
-const rangedDefenderAI      = require('ai.rangeddefender');
-const carrierAI             = require('ai.carrier');
-const guidedRangedAttackerAI= require('ai.guidedrangedattacker');
-const scoutAI               = require('ai.scout');
+const ai = {
+    [ROLE.ATTACKER]:                require('ai.attacker'),
+    [ROLE.BUILDER]:                 require('ai.builder'),
+    [ROLE.CARRIER]:                 require('ai.carrier'),
+    [ROLE.CLAIMER]:                 require('ai.claimer'),
+    [ROLE.CLAIMER_ATTACKER]:        require('ai.claimerattacker'),
+    [ROLE.DEFENDER]:                require('ai.defender'),
+    [ROLE.DISMANTLER]:              require('ai.dismantler'),
+    [ROLE.EARLY_RCL_HARVESTER]:     require('ai.earlyrclharvester'),
+    [ROLE.GUIDED_RANGED_ATTACKER]:  require('ai.guidedrangedattacker'),
+    [ROLE.HARVESTER]:               require('ai.harvester'),
+    [ROLE.HAULER]:                  require('ai.hauler'),
+    [ROLE.HEALER]:                  require('ai.healer'),
+    [ROLE.MINERAL_HARVESTER]:       require('ai.mineralharvester'),
+    [ROLE.REMOTE_WORKER]:           require('ai.remoteworker'),
+    [ROLE.REMOTE_HAULER]:           require('ai.remotehauler'),
+    [ROLE.REMOTE_HARVESTER]:        require('ai.remoteharvester'),
+    [ROLE.REMOTE_REPAIRER]:         require('ai.remoterepairer'),
+    [ROLE.REMOTE_UPGRADER]:         require('ai.remoteupgrader'),
+    [ROLE.RESERVER]:                require('ai.reserver'),
+    [ROLE.RANGED_ATTACKER]:         require('ai.rangedattacker'),
+    [ROLE.RANGED_DEFENDER]:         require('ai.rangeddefender'),
+    [ROLE.REPAIRER]:                require('ai.repairer'),
+    [ROLE.SCOUT]:                   require('ai.scout'),
+    [ROLE.UPGRADER]:                require('ai.upgrader'),
+};
 
 const creepAi = {
     run() {
@@ -70,80 +72,7 @@ const creepAi = {
             }
         }
 
-        switch (creep.role) {
-            case ROLE.HARVESTER:
-                harvesterAI.run(creep);
-                break;
-            case ROLE.BUILDER:
-                builderAI.run(creep);
-                break;
-            case ROLE.REPAIRER:
-                repairerAI.run(creep);
-                break;
-            case ROLE.UPGRADER:
-                upgraderAI.run(creep);
-                break;
-            case ROLE.HAULER:
-                haulerAI.run(creep);
-                break;
-            case ROLE.MINERAL_HARVESTER:
-                mineralHarvesterAI.run(creep);
-                break;
-            case ROLE.REMOTE_WORKER:
-                remoteWorkerAI.run(creep);
-                break;
-            case ROLE.REMOTE_HAULER:
-                remoteHaulerAI.run(creep);
-                break;
-            case ROLE.REMOTE_HARVESTER:
-                remoteHarvesterAI.run(creep);
-                break;
-            case ROLE.REMOTE_REPAIRER:
-                remoteRepairerAI.run(creep);
-                break;
-            case ROLE.REMOTE_UPGRADER:
-                remoteUpgraderAI.run(creep);
-                break;
-            case ROLE.ATTACKER:
-                attackerAI.run(creep);
-                break;
-            case ROLE.RANGED_ATTACKER:
-                rangedAttackerAI.run(creep);
-                break;
-            case ROLE.HEALER:
-                healerAI.run(creep);
-                break;
-            case ROLE.CLAIMER:
-                claimerAI.run(creep);
-                break;
-            case ROLE.RESERVER:
-                reserverAI.run(creep);
-                break;
-            case ROLE.DISMANTLER:
-                dismantlerAI.run(creep);
-                break;
-            case ROLE.DEFENDER:
-                defenderAI.run(creep);
-                break;
-            case ROLE.RANGED_DEFENDER:
-                rangedDefenderAI.run(creep);
-                break;
-            case ROLE.CARRIER:
-                carrierAI.run(creep);
-                break;
-            case ROLE.CLAIMER_ATTACKER:
-                claimerAttackerAI.run(creep);
-                break;
-            case ROLE.GUIDED_RANGED_ATTACKER:
-                guidedRangedAttackerAI.run(creep);
-                break;
-            case ROLE.EARLY_RCL_HARVESTER:
-                earlyRCLHarvesterAI.run(creep);
-                break;
-            case ROLE.SCOUT:
-                scoutAI.run(creep);
-                break;
-        }
+        ai[creep.role].run(creep);
     },
 };
 
