@@ -1,6 +1,9 @@
 global.ERR_CONSTRUCTION_WILL_BE_PLACED_NEXT_TICK = -100;
-global.ERR_NO_LAYOUT = -101;
-global.ERR_REPAIR_RAMPARTS_FIRST = -102;
+global.ERR_NO_LAYOUT                             = -101;
+global.ERR_REPAIR_RAMPARTS_FIRST                 = -102;
+
+global.DEFEND_CHARGE      = false;
+global.DEFEND_ON_RAMPARTS = true;
 
 global.REMOTE_REPAIRER_SPAWN_INTERVAL = 5000;
 

@@ -677,7 +677,7 @@ Creep.prototype.recycle = function() {
     }
 };
 
-Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
+Creep.prototype.defendRoomWithMeleeAttacks = function(defenseMode) {
     let target = undefined;
     if (this.taskTargetId) {
         target = Game.getObjectById(this.taskTargetId);
@@ -706,7 +706,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
             break;
         case ERR_NOT_IN_RANGE:
             this.say(creepTalk.chargeAttack, true);
-            if (stayOnRamparts) {
+            if (defenseMode === DEFEND_ON_RAMPARTS) {
                 this.moveToRampartClosestToEnemy(target);
             } else {
                 this.travelTo(target, {maxRooms: 1});
@@ -722,7 +722,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
     return result;
 };
 
-Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
+Creep.prototype.defendRoomWithRangedAttacks = function(defenseMode) {
     let target = undefined;
     if (this.taskTargetId) {
         target = Game.getObjectById(this.taskTargetId);
@@ -760,17 +760,17 @@ Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
         switch (result) {
             case OK:
                 this.say(creepTalk.rangedAttack, true);
-                if (!stayOnRamparts) {
-                    if (target.countBodyPartsOfType(ATTACK) > 0) {
+                if (target.countBodyPartsOfType(ATTACK) > 0) {
+                    if (defenseMode === DEFEND_CHARGE) {
                         this.kite(target);
-                    } else {
-                        this.travelTo(target);
                     }
+                } else {
+                    this.travelTo(target);
                 }
                 break;
             case ERR_NOT_IN_RANGE:
                 this.say(creepTalk.chargeAttack, true);
-                if (stayOnRamparts) {
+                if (defenseMode === DEFEND_ON_RAMPARTS) {
                     this.moveToRampartClosestToEnemy(target);
                 } else {
                     this.travelTo(target, {maxRooms: 1, range: 3});

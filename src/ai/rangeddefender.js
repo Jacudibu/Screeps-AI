@@ -22,10 +22,10 @@ const defender = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.DEFEND_RAMPARTS:
-                attackResult = creep.defendRoomWithRangedAttacks(true);
+                attackResult = creep.defendRoomWithRangedAttacks(DEFEND_ON_RAMPARTS);
                 break;
             case TASK.DEFEND_CHARGE:
-                attackResult = creep.defendRoomWithRangedAttacks(false);
+                attackResult = creep.defendRoomWithRangedAttacks(DEFEND_CHARGE);
                 break;
             case TASK.RECYCLE:
                 creep.recycle();

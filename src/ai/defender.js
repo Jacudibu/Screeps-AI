@@ -22,10 +22,10 @@ const defender = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.DEFEND_RAMPARTS:
-                attackResult = creep.defendRoomWithMeleeAttacks(true);
+                attackResult = creep.defendRoomWithMeleeAttacks(DEFEND_ON_RAMPARTS);
                 break;
             case TASK.DEFEND_CHARGE:
-                attackResult = creep.defendRoomWithMeleeAttacks(false);
+                attackResult = creep.defendRoomWithMeleeAttacks(DEFEND_CHARGE);
                 break;
             case TASK.RECYCLE:
                 creep.recycle();
