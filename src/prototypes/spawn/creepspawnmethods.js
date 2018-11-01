@@ -504,26 +504,38 @@ Spawn.prototype.spawnDrainAttacker = function(energy, targetRoomName) {
     return this._spawnDefinedCreep(ROLE.GUIDED_RANGED_ATTACKER, body, opts);
 };
 
+const RANGED_TO_HEAL_RATIO = 4;
 Spawn.prototype.spawnRangedAttacker = function(energy, targetRoomName) {
     let body = [];
 
-    // for heal & move later
+    // Heal to range ratio => 4:1
+    let additionalHealCount = 1;
     energy -= 300;
 
-    while (energy >= 200) {
+    for (let i = 0; (i * 2 + additionalHealCount * 2) < 50 && energy >= 200; i++) {
         body.push(RANGED_ATTACK, MOVE);
         energy -= 200;
+
+        if (i % RANGED_TO_HEAL_RATIO === 0 && energy >= 300) {
+            additionalHealCount++;
+            energy -= 300;
+        }
     }
 
     body.sort();
 
-    body.push(HEAL, MOVE);
+    for (let i = 0; i < additionalHealCount; i++) {
+        body.push(MOVE);
+    }
+    for (let i = 0; i < additionalHealCount; i++) {
+        body.push(HEAL);
+    }
 
     let opts = {
         memory: {
             role: ROLE.RANGED_ATTACKER,
             targetRoomName: targetRoomName ? targetRoomName : this.room.name,
-            task: TASK.MOVE_TO_ROOM,
+            task: TASK.DISABLE_ATTACK_NOTIFICATION,
         }
     };
 
