@@ -660,44 +660,5 @@ Creep.prototype._getClosestHostileConstructionSite = function() {
         return ERR_NOT_FOUND;
     }
 
-    const A_GOES_FIRST = -1;
-    const B_GOES_FIRST = 1;
-    const A_B_SAME = 0;
-
-    if (this.room.controller && this.room.controller.safeMode) {
-        hostileConstructionSites.sort((a, b) => {
-            if (a.structureType === b.structureType) {
-                return A_B_SAME;
-            }
-
-            if (a.structureType === STRUCTURE_SPAWN) {
-                return A_GOES_FIRST;
-            }
-
-            if (b.structureType === STRUCTURE_SPAWN) {
-                return B_GOES_FIRST;
-            }
-
-            if (a.structureType === STRUCTURE_TOWER) {
-                return A_GOES_FIRST;
-            }
-
-            if (b.structureType === STRUCTURE_TOWER) {
-                return B_GOES_FIRST;
-            }
-
-            if (a.progress > b.progress) {
-                return A_GOES_FIRST;
-            }
-
-            if (b.progress > a.progress) {
-                return B_GOES_FIRST;
-            }
-
-            return A_B_SAME;
-        });
-        return hostileConstructionSites[0];
-    } else {
-        return utility.getClosestObjectFromArray(this, hostileConstructionSites);
-    }
+    return utility.getClosestObjectFromArray(this, hostileConstructionSites);
 };
