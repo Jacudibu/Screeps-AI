@@ -1,4 +1,4 @@
-const guidedRangedAttacker = {
+const ai = {
     run(creep) {
         healStuff(creep);
 
@@ -10,6 +10,7 @@ const guidedRangedAttacker = {
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 decideWhatToDo(creep);
+                this.run(creep);
                 break;
 
             case TASK.MOVE_TO_ROOM:
@@ -37,6 +38,8 @@ const guidedRangedAttacker = {
 
                 if (target) {
                     attackTarget(creep, nearbyHostiles, target);
+                } else {
+                    creep.stompHostileConstructionSites();
                 }
                 break;
 
@@ -44,6 +47,7 @@ const guidedRangedAttacker = {
                 creep.notifyWhenAttacked(false);
                 creep.task = TASK.DECIDE_WHAT_TO_DO;
                 this.run(creep);
+                break;
 
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);
@@ -146,4 +150,4 @@ const attackTarget = function(creep, nearbyHostiles, target) {
     return result;
 };
 
-module.exports = guidedRangedAttacker;
+module.exports = ai;
