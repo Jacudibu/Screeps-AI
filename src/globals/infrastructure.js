@@ -5,6 +5,13 @@ global.ERR_REPAIR_RAMPARTS_FIRST                 = -102;
 global.DEFEND_CHARGE      = false;
 global.DEFEND_ON_RAMPARTS = true;
 
+global.CREEP_BUILD_RANGE = 3;
+global.CREEP_RANGED_ATTACK_RANGE = 3;
+global.CREEP_UPGRADE_RANGE = 3;
+global.CREEP_REPAIR_RANGE = 3;
+global.CREEP_RANGED_HEAL_RANGE = 3;
+global.CREEP_HARVEST_RANGE = 1;
+
 global.REMOTE_REPAIRER_SPAWN_INTERVAL = 5000;
 
 global.INVADER_PLAYER_NAME = "Invader";
