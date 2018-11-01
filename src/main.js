@@ -62,7 +62,7 @@ require('prototypes.source.memory');
 
 require('prototypes.spawn.creepspawnmethods');
 
-require('prototypes.structure.energystorage');
+require('prototypes.structure.canstillstoreenergy');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
