@@ -83,7 +83,7 @@ const healStuff = function(creep) {
 };
 
 const findNearbyHostiles = function(creep) {
-    const result = creep.room.find(FIND_HOSTILE_CREEPS, {filter: c => creep.pos.getRangeTo(c) < CREEP_RANGED_ATTACK_RANGE});
+    const result = creep.room.find(FIND_HOSTILE_CREEPS, {filter: c => creep.pos.getRangeTo(c) <= CREEP_RANGED_ATTACK_RANGE});
 
     if (result.length === 0) {
         return ERR_NOT_FOUND;
@@ -93,7 +93,7 @@ const findNearbyHostiles = function(creep) {
 };
 
 const findNearbyDamagedFriends = function(creep) {
-    const result = creep.room.find(FIND_MY_CREEPS, {filter: c => creep.pos.getRangeTo(c) < CREEP_RANGED_HEAL_RANGE && creep.hits < creep.hitsMax});
+    const result = creep.room.find(FIND_MY_CREEPS, {filter: c => creep.pos.getRangeTo(c) <= CREEP_RANGED_HEAL_RANGE && creep.hits < creep.hitsMax});
     if (result.length === 0) {
         return ERR_NOT_FOUND;
     }
@@ -113,7 +113,7 @@ const findNearbyDamagedFriends = function(creep) {
 
 const attackTarget = function(creep, nearbyHostiles, target) {
     let result = OK;
-    if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
+    if (creep.pos.getRangeTo(target.pos) === 1) {
         result = creep.rangedMassAttack();
         if (result === OK) {
             creep.say(creepTalk.rangedMassAttack, true);
