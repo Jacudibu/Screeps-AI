@@ -51,7 +51,7 @@ const guidedRangedAttacker = {
                             if (target instanceof Creep) {
                                 if (target.countBodyPartsOfType(ATTACK) > 0) {
                                     // Kiting!
-                                    creep.travelTo(target,  {range: 2});
+                                    creep.kite(target, {range: 3});
                                 }else {
                                     // Mass attacking!
                                     creep.travelTo(target);
