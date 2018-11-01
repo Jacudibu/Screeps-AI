@@ -709,7 +709,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
             if (stayOnRamparts) {
                 this.moveToRampartClosestToEnemy(target);
             } else {
-                this.travelTo(target, {maxRooms: 1, range: 3});
+                this.travelTo(target, {maxRooms: 1});
             }
             break;
         case ERR_INVALID_TARGET:

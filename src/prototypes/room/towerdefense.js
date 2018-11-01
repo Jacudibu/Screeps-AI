@@ -36,8 +36,9 @@ Room.prototype.commandTowersToAttackHostiles = function() {
         return;
     }
 
+    // TODO: Find seperated healers which can't sustain focus fire by themselves
     // our last hope. :D
-    spreadFire(this.towers, this._dangerousHostiles);
+    //spreadFire(this.towers, this._dangerousHostiles);
 };
 
 const focusClosestEnemy = function(towers, hostiles) {
