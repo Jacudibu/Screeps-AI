@@ -21,7 +21,7 @@ Room.prototype.commandTowersToAttackHostiles = function() {
     const hostiles = this._dangerousHostiles;
 
     if (threat.heal === 0) {
-        focusClosestEnemy(this.myTowers, hostiles);
+        defendAgainstAttackWithoutHealers(this.myTowers, hostiles);
         return;
     }
 
@@ -41,9 +41,18 @@ Room.prototype.commandTowersToAttackHostiles = function() {
     //spreadFire(this.towers, this._dangerousHostiles);
 };
 
-const focusClosestEnemy = function(towers, hostiles) {
+const defendAgainstAttackWithoutHealers = function(towers, hostiles) {
     const closestEnemy = towers[0].pos.findClosestByRange(hostiles);
-    commandTowersToFocusTarget(towers, closestEnemy);
+    if (closestEnemy.hitsMax < TOWER_MIN_DAMAGE) {
+        const firstTower = towers[0];
+        firstTower.attack(closestEnemy);
+
+        if (towers.length > 1 && hostiles.length > 1) {
+            spreadFire(towers.slice(1), hostiles);
+        }
+    } else {
+        commandTowersToFocusTarget(towers, closestEnemy);
+    }
 };
 
 const focusClosestHealer = function(towers, hostiles) {
