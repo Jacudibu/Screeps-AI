@@ -413,7 +413,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     }
 
     // Haul Storage -> Terminal if storage is full
-    if (this.room.storage) {
+    if (this.room.storage && this.room.terminal) {
         for (let resource of RESOURCES_ALL) {
             if (!this.room.storage.store[resource]) {
                 continue;
