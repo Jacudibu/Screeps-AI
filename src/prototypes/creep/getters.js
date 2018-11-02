@@ -331,6 +331,21 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         return this.room.storageLink;
     }
 
+    // Avoid energy starvation if no harvesters are on it right now
+    if (this.room.energyAvailable < this.room.energyCapacityAvailable) {
+        if (this.room.storage && this.room.storage.store[RESOURCE_ENERGY] > 0) {
+            this.taskTargetId = this.room.storage.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.storage;
+        }
+
+        if (this.room.terminal && this.room.terminal.store[RESOURCE_ENERGY] > 0) {
+            this.taskTargetId = this.room.terminal.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.terminal;
+        }
+    }
+
     if (this.room.labTask) {
         if (this.room.labTask === LABTASK.MAKE_EMPTY) {
             // Empty all of them
