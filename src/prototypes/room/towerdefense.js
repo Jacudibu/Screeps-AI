@@ -43,9 +43,8 @@ Room.prototype.commandTowersToAttackHostiles = function() {
 
 const defendAgainstAttackWithoutHealers = function(towers, hostiles) {
     const closestEnemy = towers[0].pos.findClosestByRange(hostiles);
-    if (closestEnemy.hitsMax < TOWER_MIN_DAMAGE) {
-        const firstTower = towers[0];
-        firstTower.attack(closestEnemy);
+    if (closestEnemy.hitsMax < towers[0].calculateExpectedDamage(closestEnemy)) {
+        towers[0].attack(closestEnemy);
 
         if (towers.length > 1 && hostiles.length > 1) {
             spreadFire(towers.slice(1), hostiles);
@@ -84,7 +83,6 @@ const findEnemySeparatedFromHealers = function(hostiles) {
 const spreadFire = function(towers, hostileCreeps) {
     towers.forEach(tower => tower.attack(hostileCreeps[_.random(0, hostileCreeps.length)]));
 };
-
 
 const commandTowersToFocusTarget = function(towers, target) {
     for (let i = 0; i < towers.length; i++) {

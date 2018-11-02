@@ -65,6 +65,8 @@ require('prototypes.spawn.creepspawnmethods');
 require('prototypes.structure.canstillstoreenergy');
 require('prototypes.structure.cancreepswalkoverthis');
 
+require('prototypes.tower.efficiencycalculation');
+
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 
 require('tools.traveler');
