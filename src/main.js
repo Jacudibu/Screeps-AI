@@ -63,6 +63,7 @@ require('prototypes.source.memory');
 require('prototypes.spawn.creepspawnmethods');
 
 require('prototypes.structure.canstillstoreenergy');
+require('prototypes.structure.cancreepswalkoverthis');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 

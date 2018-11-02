@@ -797,6 +797,17 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
         return;
     }
 
+    ramparts.filter(rampart => {
+        const structuresOnSameSpot = rampart.room.lookForAt(LOOK_STRUCTURES, rampart.pos.x, rampart.pos.y);
+        for (let structure of structuresOnSameSpot) {
+            if (!structure.canCreepsWalkOverThis) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
     let closestRampart = utility.getClosestObjectFromArray(enemy, ramparts);
 
     this.travelTo(closestRampart, {maxRooms: 1, range: 0});
