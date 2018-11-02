@@ -1,5 +1,5 @@
 const RANGE_TO_COUNT_AS_SEPARATED = 5;
-const TOWER_ANTI_HEALER_DAMAGE_FACTOR = 0.4;
+const TOWER_ANTI_HEALER_DAMAGE_FACTOR = 0.5;
 
 Room.prototype.commandTowersToAttackHostiles = function() {
     if (this.towers.length === 0) {

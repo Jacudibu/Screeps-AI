@@ -21,10 +21,12 @@ Room.prototype.updateThreat = function() {
         players: [],
         onlyNPCs: false, // will be set later
         creepCount: 0,
+
         attack: 0,
         ranged: 0,
         heal: 0,
         tough: 0,
+        work: 0,
         claim: 0,
         other: 0,
         total: 0,
@@ -41,6 +43,7 @@ Room.prototype.updateThreat = function() {
         threat.heal   += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(HEAL);
         threat.tough  += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(TOUGH);
         threat.claim  += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(CLAIM);
+        threat.work  += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(WORK);
         threat.other  += creep.countBodyPartsOfType(MOVE) + creep.countBodyPartsOfType(CARRY); // cheaper calculation as no benefit for fighting
         threat.total  += creep.body.length;
     }
