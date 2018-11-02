@@ -1,4 +1,4 @@
-const TOWER_MIN_DAMAGE = TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF);
+const RANGE_TO_COUNT_AS_SEPERATED = 5;
 
 Room.prototype.commandTowersToAttackHostiles = function() {
     if (this.towers.length === 0) {
@@ -68,7 +68,7 @@ const findEnemySeparatedFromHealers = function(hostiles) {
 
     const separatedEnemies = [];
     for (let creep of others) {
-        if (healers.every(healer => creep.pos.getRangeTo(healer) > 5)) {
+        if (healers.every(healer => creep.pos.getRangeTo(healer) > RANGE_TO_COUNT_AS_SEPERATED)) {
             separatedEnemies.push(creep);
         }
     }
