@@ -59,8 +59,10 @@ Room.prototype.addToSpawnQueueStart = function(args) {
 Room.prototype.commandTowersToHealCreep = function(target) {
     const towers = this.myTowers;
 
-    for (let i = 0; i < towers.length; i++) {
+    let creepHits = target.hits;
+    for (let i = 0; i < towers.length && creepHits < target.hitsMax; i++) {
         towers[i].heal(target);
+        creepHits += TOWER_POWER_HEAL;
     }
 
     target.say(creepTalk.gettingHealed, true);

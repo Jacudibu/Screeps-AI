@@ -20,7 +20,7 @@ Room.prototype.commandTowersToAttackHostiles = function() {
 
     const hostiles = this._dangerousHostiles;
 
-    if (threat.heal === 0) {
+    if (threat.heal === 0 || (this.room.controller && this.room.controller.safeMode)) {
         defendAgainstAttackWithoutHealers(this.myTowers, hostiles);
         return;
     }

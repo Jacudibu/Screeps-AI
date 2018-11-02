@@ -36,11 +36,11 @@ Room.prototype.updateThreat = function() {
         }
 
         threat.creepCount++;
-        threat.attack += creep.countBodyPartsOfTypeAndApplyBoostWeighting(ATTACK);
-        threat.ranged += creep.countBodyPartsOfTypeAndApplyBoostWeighting(RANGED_ATTACK);
-        threat.heal   += creep.countBodyPartsOfTypeAndApplyBoostWeighting(HEAL);
-        threat.tough  += creep.countBodyPartsOfTypeAndApplyBoostWeighting(TOUGH);
-        threat.claim  += creep.countBodyPartsOfTypeAndApplyBoostWeighting(CLAIM);
+        threat.attack += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(ATTACK);
+        threat.ranged += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(RANGED_ATTACK);
+        threat.heal   += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(HEAL);
+        threat.tough  += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(TOUGH);
+        threat.claim  += creep.countActiveBodyPartsOfTypeAndApplyBoostWeighting(CLAIM);
         threat.other  += creep.countBodyPartsOfType(MOVE) + creep.countBodyPartsOfType(CARRY); // cheaper calculation as no benefit for fighting
         threat.total  += creep.body.length;
     }
