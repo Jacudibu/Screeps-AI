@@ -760,12 +760,12 @@ Creep.prototype.defendRoomWithRangedAttacks = function(defenseMode) {
         switch (result) {
             case OK:
                 this.say(creepTalk.rangedAttack, true);
-                if (target.countBodyPartsOfType(ATTACK) > 0) {
-                    if (defenseMode === DEFEND_CHARGE) {
+                if (defenseMode === DEFEND_CHARGE) {
+                    if (target.countBodyPartsOfType(ATTACK) > 0) {
                         this.kite(target);
+                    } else {
+                        this.travelTo(target);
                     }
-                } else {
-                    this.travelTo(target);
                 }
                 break;
             case ERR_NOT_IN_RANGE:
