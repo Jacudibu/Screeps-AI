@@ -1,4 +1,5 @@
-const RANGE_TO_COUNT_AS_SEPERATED = 5;
+const RANGE_TO_COUNT_AS_SEPARATED = 5;
+const TOWER_ANTI_HEALER_DAMAGE_FACTOR = 0.4;
 
 Room.prototype.commandTowersToAttackHostiles = function() {
     if (this.towers.length === 0) {
@@ -25,7 +26,7 @@ Room.prototype.commandTowersToAttackHostiles = function() {
         return;
     }
 
-    if (threat.heal * HEAL_POWER < TOWER_FALLOFF_RANGE) {
+    if (threat.heal * HEAL_POWER < this.myTowers.length * TOWER_POWER_ATTACK * TOWER_ANTI_HEALER_DAMAGE_FACTOR) {
         focusClosestHealer(this.myTowers, hostiles);
         return;
     }
@@ -68,7 +69,7 @@ const findEnemySeparatedFromHealers = function(hostiles) {
 
     const separatedEnemies = [];
     for (let creep of others) {
-        if (healers.every(healer => creep.pos.getRangeTo(healer) > RANGE_TO_COUNT_AS_SEPERATED)) {
+        if (healers.every(healer => creep.pos.getRangeTo(healer) > RANGE_TO_COUNT_AS_SEPARATED)) {
             separatedEnemies.push(creep);
         }
     }
