@@ -113,7 +113,7 @@ Room.prototype.askForHelpIfThreatDetected = function() {
     if (this.memory.requiresHelp === undefined) {
         if (!roomThreatResponses[this.name]) {
             this.memory.requiresHelp = true;
-            if (  !roomThreats.onlyNPCs
+            if (  !roomThreats[this.name].onlyNPCs
                 && this.controller
                 &&(this.controller.my || this.controller.reservation && this.controller.reservation.username === "Jacudibu")) {
 
