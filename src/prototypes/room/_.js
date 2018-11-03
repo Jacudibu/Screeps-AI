@@ -100,14 +100,6 @@ Room.prototype.findDamagedStructures = function(percentageToCountAsDamaged = 0.7
     });
 };
 
-Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
-    this.memory.sources = {};
-    const sources = this.sources;
-    for (let i = 0; i < sources.length; i++) {
-        sources[i].initializeMemory();
-    }
-};
-
 Room.prototype.getUnoccupiedSources = function() {
     let possibleSources = [];
 

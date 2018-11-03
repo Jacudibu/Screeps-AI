@@ -59,7 +59,6 @@ require('prototypes.source.distancetospawn');
 require('prototypes.source.freetilecount');
 require('prototypes.source.container');
 require('prototypes.source.link');
-require('prototypes.source.memory');
 
 require('prototypes.spawn.creepspawnmethods');
 
