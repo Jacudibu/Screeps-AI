@@ -822,7 +822,7 @@ Creep.prototype.selectNextRoomToScout = function(skipRoomsWithTowers = false) {
 
         if (skipRoomsWithTowers) {
             const roomMemory = Memory.rooms[roomName];
-            if (roomMemory && roomMemory.towers > 0) {
+            if (roomMemory && roomMemory.scoutData && roomMemory.scoutData.towers > 0) {
                 continue;
             }
         }
