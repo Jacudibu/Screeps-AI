@@ -21,6 +21,7 @@ Room.prototype.updateThreat = function() {
 Room.prototype.updateHostileThreat = function() {
     if (this._dangerousHostiles.length === 0) {
         roomThreats[this.name] = null;
+        return;
     }
 
     let threat = {
