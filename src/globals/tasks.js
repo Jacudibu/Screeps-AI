@@ -28,6 +28,7 @@ global.TASK.WAIT = 'wait';
 global.TASK.STOMP_HOSTILE_CONSTRUCTION_SITES = "stomp_hostile_construction_sites";
 global.TASK.HEAL = "heal";
 
+global.TASK.CHECK_REMOTE_ROAD_REGENERATION = "check_remote_road_regeneration";
 global.TASK.DISABLE_ATTACK_NOTIFICATION = "disable_notification";
 
 
