@@ -190,7 +190,7 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
         }
     }
 
-    let damagedStructures = this.room.findDamagedStructures();
+    let damagedStructures = this.room.findDamagedStructures(percentageToCountAsDamaged);
 
     if(damagedStructures.length === 0) {
         return ERR_NOT_FOUND;

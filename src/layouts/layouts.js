@@ -81,6 +81,10 @@ global.baseLayouts.SWC2 = offsetAndSortLayout(baseLayouts.SWC2, -21, -32);
 global.baseLayouts.SWC2.width = 14;
 global.baseLayouts.SWC2.height = 14;
 
+global.baseLayouts.SWC3 = offsetAndSortLayout(baseLayouts.SWC3, -39, -29);
+global.baseLayouts.SWC3.width = 14;
+global.baseLayouts.SWC3.height = 14;
+
 module.exports = {
     offsetLayout: offsetLayout,
 };
