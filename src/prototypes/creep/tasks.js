@@ -817,3 +817,19 @@ Creep.prototype.stompHostileConstructionSites = function() {
     this.travelTo(target, {range: 0});
     return OK;
 };
+
+Creep.prototype.standbyTalk = function() {
+    switch (this.ticksToLive % 15) {
+        case 0:
+            this.say(creepTalk.standby1, true);
+            break;
+        case 5:
+            this.say(creepTalk.standby2, true);
+            break;
+        case 10:
+            this.say(creepTalk.standby3, true);
+            break;
+        default:
+            break
+    }
+};

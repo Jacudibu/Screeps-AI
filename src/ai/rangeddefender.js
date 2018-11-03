@@ -26,6 +26,7 @@ const ai = {
                 attackResult = creep.defendRoomWithRangedAttacks(DEFEND_CHARGE);
                 break;
             case TASK.STANDBY:
+                creep.standbyTalk();
                 if (creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
                     setDefenseTask(creep);
                 }
