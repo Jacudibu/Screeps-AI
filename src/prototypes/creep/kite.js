@@ -13,7 +13,7 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
                     this.drop(RESOURCE_ENERGY);
                 }
 
-                if (this.task === TASK.HARVEST_ENERGY) {
+                if (this.task === TASK.HARVEST_ENERGY || this.task === TASK.MOVE_ONTO_CONTAINER) {
                     utility.reduceSourceWorkerAssignedCount(this.taskTargetId);
                 }
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
