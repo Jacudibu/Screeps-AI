@@ -782,7 +782,7 @@ Spawn.prototype.spawnScout = function(energy, targetRoom = undefined, respawnTTL
     return this._spawnDefinedCreep(ROLE.SCOUT, body, opts);
 };
 
-Spawn.prototype.spawnScoutOffensive = function(energy, targetRoom = undefined, respawnTTL = undefined) {
+Spawn.prototype.spawnScoutWithAttackPart = function(energy, targetRoom = undefined, respawnTTL = undefined) {
     if (energy < 130) {
         return ERR_NOT_ENOUGH_RESOURCES;
     }

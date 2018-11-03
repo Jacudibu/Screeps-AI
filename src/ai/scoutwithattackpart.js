@@ -115,7 +115,6 @@ const continueScouting = function(creep) {
     creep.selectNextRoomToScout(SKIP_ROOMS_WITH_TOWERS);
     creep.setTask(TASK.MOVE_TO_ROOM);
     creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
-    ai.run(creep);
 };
 
 module.exports = ai;

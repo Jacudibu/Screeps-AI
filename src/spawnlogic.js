@@ -102,7 +102,7 @@ const spawnlogic = {
                     totalScoutSpawns[room.name] = 0;
                 }
 
-                if (totalScoutSpawns[room.Name] % SCOUT_WITH_ATTACK_PART === 1) {
+                if (totalScoutSpawns[room.name] % SCOUT_WITH_ATTACK_PART === 1) {
                     this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT_WITH_ATTACK_PART});
                 } else {
                     this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
@@ -297,7 +297,7 @@ const spawnlogic = {
             case ROLE.SCOUT:
                 return spawn.spawnScout(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.SCOUT_WITH_ATTACK_PART:
-                return spawn.spawnScoutOffensive(energy, args.targetRoomName, args.respawnTTL);
+                return spawn.spawnScoutWithAttackPart(energy, args.targetRoomName, args.respawnTTL);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue
