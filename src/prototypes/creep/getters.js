@@ -14,7 +14,7 @@ Creep.prototype._getSource = function() {
 
     let source = utility.getClosestObjectFromArray(this, sources);
 
-    source.memory.workersAssigned++;
+    source.assignedWorkers++;
     this.taskTargetId = source.id;
     return source;
 };

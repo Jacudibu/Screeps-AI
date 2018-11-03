@@ -10,7 +10,6 @@
  2  |   Remote Room Raiders (Invaders + Milker = Raider -> attacking enemy haulers & stealing energy)
  2  |   Create Safemode GCL<3 pests -> 1 move creeps blocking construction sites by just standing on them 
  2  |   Threat response depending on attackers
- 4  |   Source Memory Rework
  4  |   Grouping Creeps into Squads
  6  |   Optimize Kiting Code to avoid running into dead ends
  2  |   Boost upgraders on spawn

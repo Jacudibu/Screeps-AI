@@ -109,26 +109,18 @@ Room.prototype.initializeMemoryForAllSourcesInRoom = function() {
 };
 
 Room.prototype.getUnoccupiedSources = function() {
-    if (!this.memory.sources) {
-        this.initializeMemoryForAllSourcesInRoom();
-    }
+    let possibleSources = [];
 
-    let sources = [];
-
-    let keys = Object.keys(this.memory.sources);
-    for (let i = 0; i < keys.length; i++) {
-        if (this.memory.sources[keys[i]].workersAssigned < this.memory.sources[keys[i]].workersMax) {
-            let source = Game.getObjectById(keys[i]);
-            if (source.energy > 0) {
-                sources.push(Game.getObjectById(keys[i]));
-            }
+    for (let source of this.sources) {
+        if (source.assignedWorkers < MAX_WORKERS_PER_SOURCE && source.energy > 0) {
+            possibleSources.push(source);
         }
     }
 
-    if (sources.length === 0) {
+    if (possibleSources.length === 0) {
         return ERR_NOT_FOUND;
     } else {
-        return sources;
+        return possibleSources;
     }
 };
 

@@ -54,6 +54,7 @@ require('prototypes.room.update');
 
 require('prototypes.roomobject.drawdebugtext');
 
+require('prototypes.source.assignedworkers');
 require('prototypes.source.distancetospawn');
 require('prototypes.source.freetilecount');
 require('prototypes.source.container');

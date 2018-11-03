@@ -378,9 +378,10 @@ const spawnlogic = {
             return NO_CREEP_SPAWNED;
         }
 
-        if (!remoteMemory.sources) {
+        if (remoteMemory.sourceCount === undefined) {
             if (remoteRoom !== undefined) {
-                remoteRoom.initializeMemoryForAllSourcesInRoom();
+                remoteRoom.updateScoutData();
+                remoteMemory = Memory.rooms[remoteName];
             } else {
                 // no vision
                 if (!remoteMemory.isReserverAssigned) {
@@ -407,7 +408,7 @@ const spawnlogic = {
             }
         }
 
-        if (remoteMemory.assignedHarvesters < Object.keys(remoteMemory.sources).length) {
+        if (remoteMemory.assignedHarvesters < remoteMemory.sourceCount) {
             room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteName});
             Memory.rooms[remoteName].assignedHarvesters++;
             return CREEP_SPAWNED;

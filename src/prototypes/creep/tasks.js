@@ -171,7 +171,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
         case OK:
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            source.memory.workersAssigned--;
+            source.assignedWorkers--;
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_IN_RANGE:
@@ -194,7 +194,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
             }
         }
 
-        source.memory.workersAssigned--;
+        source.assignedWorkers--;
         this.setTask(taskWhenFinished);
     }
 };
