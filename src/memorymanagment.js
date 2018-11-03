@@ -95,6 +95,7 @@ const memoryManagment = {
                 break;
 
             case ROLE.SCOUT:
+            case ROLE.SCOUT_WITH_ATTACK_PART:
                 if (Game.rooms[creep.targetRoomName]) {
                     // creep got killed while switching rooms, a cruel act!
                     Game.rooms[creep.targetRoomName].updateScoutData();

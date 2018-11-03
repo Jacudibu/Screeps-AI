@@ -26,13 +26,13 @@ const ai = {
             case TASK.ATTACK:
                 if (roomThreats[creep.room.name]) {
                     creep.say(creepTalk.flee3, true);
-                    creep.continueScouting();
+                    continueScouting(creep);
                     return;
                 }
 
                 if (creep.room.controller && creep.room.controller.safeMode) {
                     creep.say(creepTalk.safeModeActived, true);
-                    creep.continueScouting();
+                    continueScouting(creep);
                     return;
                 }
 
@@ -79,11 +79,13 @@ const attackHostiles = function(creep) {
 
     if (!target) {
         const allHostiles = creep.room.find(FIND_HOSTILE_CREEPS);
-        const workers = allHostiles.filter(c => c.countBodyPartsOfType(WORK > 2));
-        if (workers.length > 0) {
-            target = utility.getClosestObjectFromArray(creep, workers);
-        } else {
-            target = utility.getClosestObjectFromArray(creep, allHostiles);
+        if (allHostiles.length > 0) {
+            const workers = allHostiles.filter(c => c.countBodyPartsOfType(WORK > 2));
+            if (workers.length > 0) {
+                target = utility.getClosestObjectFromArray(creep, workers);
+            } else {
+                target = utility.getClosestObjectFromArray(creep, allHostiles);
+            }
         }
 
         if (target) {
