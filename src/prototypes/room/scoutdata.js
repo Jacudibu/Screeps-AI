@@ -36,7 +36,10 @@ const ScoutData = {
         const scoutData = {};
         scoutData.owner = room.controller.owner.username;
         scoutData.rcl = room.controller.level;
-        scoutData.towers = room.find(FIND_HOSTILE_STRUCTURES, {filter: s => s.structureType === STRUCTURE_TOWER}).length;
+
+        if (scoutData.owner !== PLAYER_NAME) {
+            scoutData.towers = room.find(FIND_HOSTILE_STRUCTURES, {filter: s => s.structureType === STRUCTURE_TOWER}).length;
+        }
 
         if (room.controller.safeMode) {
             scoutData.safeMode = room.controller.safeMode;

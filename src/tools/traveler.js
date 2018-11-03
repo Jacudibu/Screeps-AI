@@ -154,7 +154,16 @@ class Traveler {
      * @returns {RoomMemory|number}
      */
     static checkAvoid(roomName) {
-        return Memory.rooms && Memory.rooms[roomName] && Memory.rooms[roomName].avoid;
+        const roomMemory = Memory.rooms[roomName];
+        if (!roomMemory) {
+            return false;
+        }
+
+        if (roomMemory.avoid) {
+            return true;
+        }
+
+        return roomMemory.scoutData && roomMemory.scoutData.owner && roomMemory.scoutData.towers > 0;
     }
     /**
      * check if a position is an exit
