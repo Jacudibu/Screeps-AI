@@ -59,7 +59,7 @@ Room.prototype.updateHostileThreat = function() {
     threat.onlyNPCs = threat.players.length === 1
                    &&(threat.players[0] === INVADER_PLAYER_NAME || threat.players[0] === SOURCE_KEEPER_PLAYER_NAME);
 
-    threat.canHarmCreeps = threat.attack === 0 && threat.ranged === 0;
+    threat.canHarmCreeps = threat.attack > 0 || threat.ranged > 0;
 
     roomThreats[this.name] = threat;
 };
