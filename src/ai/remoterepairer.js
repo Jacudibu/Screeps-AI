@@ -1,4 +1,4 @@
-const remoteRepairer = {
+const ai = {
     run(creep) {
         if (creep.task !== TASK.MOVE_TO_ROOM && creep.fleeFromNearbyEnemies(true) !== ERR_NOT_FOUND) {
             return;
@@ -6,7 +6,7 @@ const remoteRepairer = {
 
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                this.decideWhatToDo(creep);
+                decideWhatToDo(creep);
                 break;
 
             case TASK.MOVE_TO_ROOM:
@@ -15,7 +15,7 @@ const remoteRepairer = {
 
             case TASK.HAUL_ENERGY:
                 let result = creep.haulEnergy(TASK.DECIDE_WHAT_TO_DO);
-                if (result === ERR_NOT_FOUND) {
+                if (result === ERR_NOT_FOUND && creep.carry[RESOURCE_ENERGY] === 0) {
                     // Goto spawn room and collect energy there
                     creep.targetRoomName = creep.spawnRoom;
                     creep.setTask(TASK.MOVE_TO_ROOM);
@@ -43,59 +43,60 @@ const remoteRepairer = {
                 break;
         }
     },
+};
 
-    decideWhatToDo(creep) {
-        if (creep.room.name === creep.spawnRoom) {
-            creep.targetRoomName = Memory.rooms[creep.spawnRoom].repairRoute[creep.memory.repairRouteIndex];
+const decideWhatToDo = function(creep) {
+    if (creep.room.name === creep.spawnRoom) {
+        creep.targetRoomName = Memory.rooms[creep.spawnRoom].repairRoute[creep.memory.repairRouteIndex];
 
-            if (_.sum(creep.carry) < creep.carryCapacity) {
-                creep.setTask(TASK.COLLECT_ENERGY);
-            } else {
-                creep.setTask(TASK.MOVE_TO_ROOM);
-            }
-            return;
-        }
-
-        if (creep.room.name !== creep.targetRoomName) {
+        if (_.sum(creep.carry) < creep.carryCapacity) {
+            creep.setTask(TASK.COLLECT_ENERGY);
+        } else {
             creep.setTask(TASK.MOVE_TO_ROOM);
-            return;
         }
+        return;
+    }
 
-        if (creep.carry[RESOURCE_ENERGY] > 0) {
-            let damagedStructure = creep._getDamagedStructure(0.9, true);
-            if (damagedStructure === ERR_NOT_FOUND) {
-                let constructionSite = creep._getConstructionSite();
-                if (constructionSite === ERR_NOT_FOUND) {
-                    if (creep.dismantleStructure() === OK) {
-                        creep.setTask(TASK.DISMANTLE);
-                        return;
-                    }
+    if (creep.room.name !== creep.targetRoomName) {
+        creep.setTask(TASK.MOVE_TO_ROOM);
+        return;
+    }
 
-                    const nextRoomIndex = ++creep.memory.repairRouteIndex;
-                    const repairRoute = Memory.rooms[creep.spawnRoom].repairRoute;
-
-                    if (nextRoomIndex >= repairRoute.length) {
-                        creep.suicide();
-                        return;
-                    }
-
-                    creep.targetRoomName = repairRoute[nextRoomIndex];
-                    creep.setTask(TASK.MOVE_TO_ROOM);
+    if (creep.carry[RESOURCE_ENERGY] > 0) {
+        let damagedStructure = creep._getDamagedStructure(0.9, true);
+        if (damagedStructure === ERR_NOT_FOUND) {
+            let constructionSite = creep._getConstructionSite();
+            if (constructionSite === ERR_NOT_FOUND) {
+                if (creep.dismantleStructure() === OK) {
+                    creep.setTask(TASK.DISMANTLE);
                     return;
                 }
-                creep.task = TASK.BUILD_STRUCTURE;
-                return;
-            } else {
-                creep.task = TASK.REPAIR_STRUCTURE;
+
+                const nextRoomIndex = ++creep.memory.repairRouteIndex;
+                const repairRoute = Memory.rooms[creep.spawnRoom].repairRoute;
+
+                if (nextRoomIndex >= repairRoute.length) {
+                    creep.suicide();
+                    return;
+                }
+
+                creep.targetRoomName = repairRoute[nextRoomIndex];
+                creep.setTask(TASK.MOVE_TO_ROOM);
                 return;
             }
-        }
-
-        if (creep.dismantleStructure() === OK) {
-            creep.setTask(TASK.DISMANTLE);
+            creep.task = TASK.BUILD_STRUCTURE;
+            return;
         } else {
-            creep.setTask(TASK.HAUL_ENERGY);
+            creep.task = TASK.REPAIR_STRUCTURE;
+            return;
         }
     }
+
+    if (creep.dismantleStructure() === OK) {
+        creep.setTask(TASK.DISMANTLE);
+    } else {
+        creep.setTask(TASK.HAUL_ENERGY);
+    }
 };
-module.exports = remoteRepairer;
+
+module.exports = ai;
