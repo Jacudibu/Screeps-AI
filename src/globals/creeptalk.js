@@ -25,6 +25,7 @@ global.creepTalk.flee2                  = "└(^o^)┐";
 global.creepTalk.flee3                  = "kthxbye!";
 global.creepTalk.blockConstructionSite  = "(º﹃º)";
 global.creepTalk.heal                   = "(✿◠‿◠)";
+global.creepTalk.safeModeActived        = "boooring";
 
 global.creepTalk.something1             = "ヽ(｀Д´)ﾉ";
 global.creepTalk.something2             = "¯\\(°_o)/¯";

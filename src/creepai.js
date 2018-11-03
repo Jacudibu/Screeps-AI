@@ -22,6 +22,7 @@ const ai = {
     [ROLE.RANGED_DEFENDER]:         require('ai.rangeddefender'),
     [ROLE.REPAIRER]:                require('ai.repairer'),
     [ROLE.SCOUT]:                   require('ai.scout'),
+    [ROLE.SCOUT_WITH_ATTACK_PART]:  require('ai.scoutwithattackpart'),
     [ROLE.UPGRADER]:                require('ai.upgrader'),
 };
 

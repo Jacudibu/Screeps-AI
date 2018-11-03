@@ -782,6 +782,25 @@ Spawn.prototype.spawnScout = function(energy, targetRoom = undefined, respawnTTL
     return this._spawnDefinedCreep(ROLE.SCOUT, body, opts);
 };
 
+Spawn.prototype.spawnScoutOffensive = function(energy, targetRoom = undefined, respawnTTL = undefined) {
+    if (energy < 130) {
+        return ERR_NOT_ENOUGH_RESOURCES;
+    }
+
+    let body = [ATTACK, MOVE];
+    let opts = {
+        memory: {
+            role: ROLE.SCOUT_WITH_ATTACK_PART,
+            spawnRoom: this.room.name,
+            targetRoomName: targetRoom,
+            task: TASK.DISABLE_ATTACK_NOTIFICATION,
+            respawnTTL: respawnTTL, // if we want to annoy some early rcl safemode-room
+        }
+    };
+
+    return this._spawnDefinedCreep(ROLE.SCOUT_WITH_ATTACK_PART, body, opts);
+};
+
 const roleNames = require('globals.rolenames');
 Spawn.prototype._spawnDefinedCreep = function(role, body, opts) {
     let name = roleNames.getRoleName(role) + (Memory.creepsBuilt % 1000);

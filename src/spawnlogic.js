@@ -1,5 +1,7 @@
 const SCOUT_SPAWN_INTERVAL = Game.shard.name === "shard2" ? 500 : 100;
+const SCOUT_WITH_ATTACK_PART = Game.shard.name === "shard2" ? Number.MAX_SAFE_INTEGER : 2;
 const nextScoutSpawns = {};
+const totalScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
 
 const AUTO_UPGRADER_SPAWN_INTERVAL = 30;
@@ -95,7 +97,18 @@ const spawnlogic = {
         } else {
             if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
                 nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
-                this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+
+                if (!totalScoutSpawns[room.name]) {
+                    totalScoutSpawns[room.name] = 0;
+                }
+
+                if (totalScoutSpawns[room.Name] % SCOUT_WITH_ATTACK_PART === 1) {
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT_WITH_ATTACK_PART});
+                } else {
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+                }
+
+                totalScoutSpawns[room.name]++;
             }
 
             if (room.energyCapacityAvailable === room.energyAvailable) {
@@ -283,6 +296,8 @@ const spawnlogic = {
                 return spawn.spawnEarlyRCLHarvester(energy);
             case ROLE.SCOUT:
                 return spawn.spawnScout(energy, args.targetRoomName, args.respawnTTL);
+            case ROLE.SCOUT_WITH_ATTACK_PART:
+                return spawn.spawnScoutOffensive(energy, args.targetRoomName, args.respawnTTL);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue
