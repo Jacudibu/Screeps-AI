@@ -1,5 +1,7 @@
 const ai = {
     run(creep) {
+        creep.healNearbyWoundedCreeps();
+
         let attackResult = ERR_NOT_FOUND;
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
@@ -33,10 +35,6 @@ const ai = {
             default:
                 creep.setTask(TASK.MOVE_TO_ROOM);
                 break;
-        }
-
-        if (creep.hits < creep.hitsMax && attackResult !== OK) {
-            creep.heal(creep);
         }
     },
 };
