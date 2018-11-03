@@ -825,6 +825,10 @@ Creep.prototype.selectNextRoomToScout = function(skipRoomsWithTowers = false) {
             if (roomMemory && roomMemory.scoutData && roomMemory.scoutData.towers > 0) {
                 continue;
             }
+
+            if (utility.isRoomSK(roomName)) {
+                continue;
+            }
         }
 
         if (Game.map.isRoomAvailable(roomName)) {

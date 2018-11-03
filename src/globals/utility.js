@@ -49,3 +49,15 @@ global.utility.countFreeTilesAroundRoomObject = function(roomObject) {
 
     return freeTileCount;
 };
+
+global.utility.isRoomSK = function(roomName) {
+    const parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+    let x = parsed[1] % 10;
+    let y = parsed[2] % 10;
+    return !( x === 5 && y === 5) && ((x >= 4) && (x <= 6)) && ((y >= 4) && (y <= 6));
+};
+
+global.utility.isRoomHighway = function(roomName) {
+    const parsed = /^[WE]([0-9]+)[NS]([0-9]+)$/.exec(roomName);
+    return (parsed[1] % 10 === 0) || (parsed[2] % 10 === 0);
+};
