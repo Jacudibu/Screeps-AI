@@ -1,4 +1,4 @@
-const defender = {
+const ai = {
     run(creep) {
         let attackResult = ERR_NOT_FOUND;
         switch (creep.task) {
@@ -41,4 +41,4 @@ const defender = {
     },
 };
 
-module.exports = defender;
+module.exports = ai;
