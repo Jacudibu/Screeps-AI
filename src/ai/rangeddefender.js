@@ -7,7 +7,7 @@ const ai = {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined && !creep.stayInRoom) {
-                        creep.setTask(TASK.ON_GUARD);
+                        creep.setTask(TASK.STANDBY);
                     } else {
                         setDefenseTask(creep);
                     }
@@ -25,7 +25,7 @@ const ai = {
             case TASK.DEFEND_CHARGE:
                 attackResult = creep.defendRoomWithRangedAttacks(DEFEND_CHARGE);
                 break;
-            case TASK.ON_GUARD:
+            case TASK.STANDBY:
                 if (creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
                     setDefenseTask(creep);
                 }
