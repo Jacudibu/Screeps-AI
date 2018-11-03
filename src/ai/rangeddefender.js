@@ -7,13 +7,9 @@ const ai = {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined && !creep.stayInRoom) {
-                        creep.setTask(TASK.RECYCLE);
+                        creep.setTask(TASK.ON_GUARD);
                     } else {
-                        if (creep.room.mySpawns.length > 0) {
-                            creep.setTask(TASK.DEFEND_RAMPARTS);
-                        } else {
-                            creep.setTask(TASK.DEFEND_CHARGE);
-                        }
+                        setDefenseTask(creep);
                     }
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM);
@@ -29,6 +25,11 @@ const ai = {
             case TASK.DEFEND_CHARGE:
                 attackResult = creep.defendRoomWithRangedAttacks(DEFEND_CHARGE);
                 break;
+            case TASK.ON_GUARD:
+                if (creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
+                    setDefenseTask(creep);
+                }
+                break;
             case TASK.RECYCLE:
                 creep.recycle();
                 break;
@@ -37,6 +38,14 @@ const ai = {
                 break;
         }
     },
+};
+
+const setDefenseTask = function(creep) {
+    if (creep.room.mySpawns.length > 0) {
+        creep.setTask(TASK.DEFEND_RAMPARTS);
+    } else {
+        creep.setTask(TASK.DEFEND_CHARGE);
+    }
 };
 
 module.exports = ai;
