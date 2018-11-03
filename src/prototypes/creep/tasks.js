@@ -813,59 +813,52 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
     this.travelTo(closestRampart, {maxRooms: 1, range: 0});
 };
 
-Creep.prototype.selectNextRoomToScout = function() {
+Creep.prototype.selectNextRoomToScout = function(skipRoomsWithTowers = false) {
     const exits = Game.map.describeExits(this.room.name);
-    const rooms = [];
+    const availableRooms = [];
 
     for (let direction in exits) {
-        rooms.push(exits[direction]);
+        const roomName = exits[direction];
+
+        if (skipRoomsWithTowers) {
+            const roomMemory = Memory.rooms[roomName];
+            if (roomMemory && roomMemory.towers > 0) {
+                continue;
+            }
+        }
+
+        if (Game.map.isRoomAvailable(roomName)) {
+            availableRooms.push(roomName);
+        }
     }
 
-    const targetRoom = rooms.reduce((acc, room) => {
-        if (!Game.map.isRoomAvailable(acc)) {
-            return room;
-        }
-
-        if (!Game.map.isRoomAvailable(room)) {
-            return acc;
-        }
-
-        const accMemory  = Memory.rooms[acc];
-
-        // Check if acc has priority
-        if (accMemory === undefined) {
-            return acc;
-        }
-
-        if (accMemory.isAlreadyScouted) {
-            return room;
-        }
-
-        if (accMemory.lastScouted === undefined) {
-            return acc;
-        }
-
-        // Check if room has priority
-        const roomMemory = Memory.rooms[room];
+    let targetRoom;
+    let lowestLastScouted = Game.time;
+    for (let roomName of availableRooms) {
+        const roomMemory = Memory.rooms[roomName];
         if (roomMemory === undefined) {
-            return room;
+            targetRoom = roomName;
+            break;
         }
 
         if (roomMemory.isAlreadyScouted) {
-            return acc;
+            continue;
         }
 
         if (roomMemory.lastScouted === undefined) {
-            return room;
+            targetRoom = roomName;
+            break;
         }
 
-        // Just return the one with the oldest entry
-        if (accMemory.lastScouted < roomMemory.lastScouted) {
-            return acc;
-        } else {
-            return room;
+        if (roomMemory.lastScouted < lowestLastScouted) {
+            targetRoom = roomName;
+            lowestLastScouted = roomMemory.lastScouted;
         }
-    });
+    }
+
+    if (!targetRoom) {
+        targetRoom = availableRooms[_.random(0, availableRooms.length - 1)];
+    }
 
     if (!Memory.rooms[targetRoom]) {
         Memory.rooms[targetRoom] = {};
