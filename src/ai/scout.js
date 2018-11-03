@@ -17,7 +17,7 @@ const reserver = {
                 break;
 
             case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:
-                if (roomThreats[creep.room.name]) {
+                if (roomThreats[creep.room.name] && roomThreats[creep.room.name].canHarmCreeps) {
                     if (   !creep.room.controller
                         || !creep.room.controller.safeMode
                         || roomThreats[creep.room.name].players.includes(creep.room.controller.owner.username)) {

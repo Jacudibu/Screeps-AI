@@ -6,7 +6,8 @@ const ai = {
             case TASK.DECIDE_WHAT_TO_DO:
                 creep.room.updateScoutData();
 
-                if (!roomThreats[creep.room.name] && creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
+                if ((!roomThreats[creep.room.name] || !roomThreats[creep.room.name].canHarmCreeps)
+                        && creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
                     creep.setTask(TASK.ATTACK);
                     break;
                 }
@@ -24,7 +25,7 @@ const ai = {
                 break;
 
             case TASK.ATTACK:
-                if (roomThreats[creep.room.name]) {
+                if (roomThreats[creep.room.name] && roomThreats[creep.room.name].canHarmCreeps) {
                     creep.say(creepTalk.flee3, true);
                     continueScouting(creep);
                     return;
