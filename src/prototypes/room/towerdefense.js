@@ -1,5 +1,5 @@
 const RANGE_TO_COUNT_AS_SEPARATED = 5;
-const TOWER_ANTI_HEALER_DAMAGE_FACTOR = 0.5;
+const TOWER_ANTI_HEALER_DAMAGE_FACTOR = 0.8;
 
 Room.prototype.commandTowersToAttackHostiles = function() {
     if (this.towers.length === 0) {
@@ -26,8 +26,9 @@ Room.prototype.commandTowersToAttackHostiles = function() {
         return;
     }
 
-    if (threat.heal * HEAL_POWER < this.myTowers.length * TOWER_POWER_ATTACK * TOWER_ANTI_HEALER_DAMAGE_FACTOR) {
-        focusClosestHealer(this.myTowers, hostiles);
+    const closestHealer = findClosestHealer(this.myTowers, hostiles);
+    if (this.myTowers[0].calculateExpectedDamage(closestHealer) * TOWER_ANTI_HEALER_DAMAGE_FACTOR > threat.heal * HEAL_POWER) {
+        commandTowersToFocusTarget(this.myTowers, closestHealer);
         return;
     }
 
@@ -55,12 +56,11 @@ const defendAgainstAttackWithoutHealers = function(towers, hostiles) {
     }
 };
 
-const focusClosestHealer = function(towers, hostiles) {
+const findClosestHealer = function(towers, hostiles) {
     const healers = hostiles.filter(creep => creep.isHealer());
 
     // TODO: Use this.centerPosition once that's set up everywhere.
-    const closestHealer = towers[0].pos.findClosestByRange(healers);
-    commandTowersToFocusTarget(towers, closestHealer);
+    return towers[0].pos.findClosestByRange(healers);
 };
 
 const findEnemySeparatedFromHealers = function(hostiles) {

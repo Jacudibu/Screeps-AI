@@ -6,7 +6,7 @@ const upgrader = {
                 break;
             case TASK.UPGRADE_CONTROLLER:
                 creep.upgradeRoomController(TASK.COLLECT_ENERGY);
-                if (creep.carry.energy < 20) {
+                if (creep.carry.energy < creep.countBodyPartsOfType(WORK) * UPGRADE_CONTROLLER_POWER) {
                     creep.collectEnergy(TASK.UPGRADE_CONTROLLER);
                 }
                 break;
