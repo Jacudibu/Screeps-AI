@@ -27,7 +27,7 @@ global.utility.countOwnedMinerals = function() {
     let total = 0;
     for (const roomName in Game.rooms) {
         const room = Game.rooms[roomName];
-        if (room.controller && room.controller.my) {
+        if (room.claimedByMe) {
             minerals[room.mineral.mineralType]++;
             total++;
         }

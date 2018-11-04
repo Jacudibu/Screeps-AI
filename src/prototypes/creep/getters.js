@@ -261,7 +261,7 @@ Creep.prototype._getEnergyHaulTarget = function() {
     }
 
     // TODO: Check if hostile structures length === 0 instead
-    if (this.room.controller.my) {
+    if (this.room.claimedByMe) {
         return ERR_NOT_FOUND;
     }
 
@@ -479,7 +479,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     }
 
     // TODO: Check if hostile structures length === 0 instead
-    if (this.room.controller.my) {
+    if (this.room.claimedByMe) {
         return ERR_NOT_FOUND;
     }
 

@@ -1,3 +1,9 @@
+Object.defineProperty(Room.prototype, "claimedByMe", {
+    enumerable: false,
+    configurable: true,
+    get: function() {return this.controller && this.controller.my; }
+});
+
 Room.prototype.wipeConstructionSites = function() {
     let sites = this.find(FIND_MY_CONSTRUCTION_SITES);
 
