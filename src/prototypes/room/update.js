@@ -81,11 +81,10 @@ Room.prototype.manageStandbyDefenders = function() {
     }
 
     for (let remoteName of this.remotes) {
-        if (remoteName.requiresHelp) {
+        if (Memory.rooms[remoteName].requiresHelp) {
             for (let defender of defendersOnStandby) {
                 defender.targetRoomName = remoteName;
                 defender.setTask(TASK.MOVE_TO_ROOM);
-                log.info(defender + " moved out to save " + remoteName + "!");
             }
 
             Memory.rooms[remoteName].requiresHelp = false;
