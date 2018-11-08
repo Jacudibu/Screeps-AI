@@ -259,7 +259,7 @@ const spawnlogic = {
 
         switch (args.role) {
             case ROLE.BUILDER:
-                return spawn.spawnWorker(args.role, energy);
+                return spawn.spawnBuilder(energy);
             case ROLE.HARVESTER:
                 return spawn.spawnHarvester(energy);
             case ROLE.HAULER:
@@ -267,7 +267,7 @@ const spawnlogic = {
             case ROLE.UPGRADER:
                 return spawn.spawnUpgrader(energy);
             case ROLE.REPAIRER:
-                return spawn.spawnWorker(args.role, energy);
+                return spawn.spawnRepairer(energy);
             case ROLE.REMOTE_WORKER:
                 return spawn.spawnRemoteWorker(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.REMOTE_HARVESTER:

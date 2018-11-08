@@ -28,6 +28,14 @@ Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
     return this._spawnDefinedCreep(role, body, opts);
 };
 
+Spawn.prototype.spawnRepairer = function(energy) {
+    this.spawnWorker(ROLE.REPAIRER, energy);
+};
+
+Spawn.prototype.spawnBuilder = function(energy) {
+    this.spawnWorker(ROLE.BUILDER, energy);
+};
+
 Spawn.prototype.spawnEarlyRCLHarvester = function(energy) {
     let body = [];
 
