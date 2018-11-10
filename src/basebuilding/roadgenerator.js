@@ -44,6 +44,11 @@ const RoadGenerator = {
         for (let i = 0; i < remoteRoom.sources.length; i++) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
             const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsA);
+
+            if (pathFinderResult === ERR_NO_VISION) {
+                return ERR_NO_VISION;
+            }
+
             for (const roadPos of pathFinderResult.path) {
                 if (!_.find(roadsA, road => roadPos.isEqualTo(road))) {
                     roadsA.push(roadPos);
@@ -57,6 +62,11 @@ const RoadGenerator = {
         for (let i = remoteRoom.sources.length - 1; i >= 0; i--) {
             const fromPos = remoteRoom.sources[i].calculateContainerConstructionSitePosition(layoutCenterPosition);
             const pathFinderResult = this.findPathForRoads(fromPos, layoutCenterPosition, layout, roadsB);
+
+            if (pathFinderResult === ERR_NO_VISION) {
+                return ERR_NO_VISION;
+            }
+
             for (const roadPos of pathFinderResult.path) {
                 if (!_.find(roadsB, road => roadPos.isEqualTo(road))) {
                     roadsB.push(roadPos);
