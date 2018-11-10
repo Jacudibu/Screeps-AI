@@ -3,6 +3,7 @@ Creep.prototype.harvestEnergyInBase = function() {
 
     if (source === ERR_NOT_FOUND) {
         this.say(creepTalk.noSourceAvailable);
+        utility.resetAssignedWorkersCache(this.room);
         return;
     }
 
@@ -99,6 +100,7 @@ Creep.prototype.harvestMineral = function() {
 
     if (mineral === ERR_NOT_FOUND) {
         this.say(creepTalk.noSourceAvailable);
+        utility.resetAssignedWorkersCache(this.room);
     }
 
     switch (this.harvest(mineral)) {

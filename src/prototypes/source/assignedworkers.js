@@ -26,3 +26,11 @@ global.utility.reduceSourceWorkerAssignedCount = function(sourceId) {
         assignedWorkersCache[sourceId]--;
     }
 };
+
+global.utility.resetAssignedWorkersCache = function(room) {
+    log.warning("Reset assignedWorkersCache called in " + room);
+
+    for (const source of room.sources) {
+        assignedWorkersCache[source.id] = countAssignedWorkers(source);
+    }
+};
