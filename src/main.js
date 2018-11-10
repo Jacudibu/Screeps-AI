@@ -86,7 +86,7 @@ if (!Memory.creepsBuilt) {
     Memory.creepsBuilt = 0;
 }
 
-profiler.enable();
+//profiler.enable();
 
 module.exports.loop = function () {
     profiler.wrap(function() {

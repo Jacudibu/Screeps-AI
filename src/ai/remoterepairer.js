@@ -67,8 +67,8 @@ const decideWhatToDo = function(creep) {
         if (damagedStructure === ERR_NOT_FOUND) {
             let constructionSite = creep._getConstructionSite();
             if (constructionSite === ERR_NOT_FOUND) {
-                if (creep.dismantleStructure() === OK) {
-                    creep.setTask(TASK.DISMANTLE);
+                if (creep.dismantleStructure() !== ERR_NOT_FOUND) {
+                    creep.task = TASK.DISMANTLE;
                     return;
                 }
 
@@ -92,8 +92,8 @@ const decideWhatToDo = function(creep) {
         }
     }
 
-    if (creep.dismantleStructure() === OK) {
-        creep.setTask(TASK.DISMANTLE);
+    if (creep.dismantleStructure() !== ERR_NOT_FOUND) {
+        creep.task = TASK.DISMANTLE;
     } else {
         creep.setTask(TASK.HAUL_ENERGY);
     }
