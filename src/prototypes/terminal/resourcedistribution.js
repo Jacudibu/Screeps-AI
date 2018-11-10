@@ -159,6 +159,7 @@ const terminalResourceDistribution = {
         let orders = Game.market.getAllOrders(
             order => order.type === ORDER_BUY
                   && supplyResourceTypes.includes(order.resourceType)
+                  && TERMINAL_MIN_PRICES[order.resourceType]
                   && order.price > TERMINAL_MIN_PRICES[order.resourceType]
         );
 
