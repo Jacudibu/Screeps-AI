@@ -7,6 +7,7 @@ const DISTRIBUTION_INTERVAL = 11;
 const TRANSACTION_ENERGY_COST_FACTOR = 0.05;
 const MIN_DEMAND_AMOUNT = 1500;
 const MIN_SUPPLY_AMOUNT = 1500;
+const MIN_ENERGY_TO_SUPPLY = 20000;
 
 global.resourceDemand = {};
 global.resourceSupply = {};
@@ -256,6 +257,11 @@ StructureTerminal.prototype.calculateDemand = function() {
 };
 
 StructureTerminal.prototype.calculateSupply = function() {
+    if (this.store[RESOURCE_ENERGY] < MIN_ENERGY_TO_SUPPLY) {
+        resourceSupply[this.name] = [];
+        return;
+    }
+
     if (this.room.shouldEvacuate) {
         RESOURCES_ALL.forEach(resource => {
             if (this.store[resource] && this.store[resource] > 0) {
