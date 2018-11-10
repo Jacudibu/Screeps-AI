@@ -1,17 +1,15 @@
-const defender = {
+const ai = {
     run(creep) {
+        creep.healNearbyWoundedCreeps();
+
         let attackResult = ERR_NOT_FOUND;
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
                 if (creep.room.name === creep.targetRoomName) {
                     if (creep.room.name === creep.memory.homeRoomName && creep.room.memory.requiresHelp === undefined && !creep.stayInRoom) {
-                        creep.setTask(TASK.RECYCLE);
+                        creep.setTask(TASK.STANDBY);
                     } else {
-                        if (creep.room.mySpawns.length > 0) {
-                            creep.setTask(TASK.DEFEND_RAMPARTS);
-                        } else {
-                            creep.setTask(TASK.DEFEND_CHARGE);
-                        }
+                        setDefenseTask(creep);
                     }
                 } else {
                     creep.setTask(TASK.MOVE_TO_ROOM);
@@ -22,10 +20,16 @@ const defender = {
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
                 break;
             case TASK.DEFEND_RAMPARTS:
-                attackResult = creep.defendRoomWithRangedAttacks(true);
+                attackResult = creep.defendRoomWithRangedAttacks(DEFEND_ON_RAMPARTS);
                 break;
             case TASK.DEFEND_CHARGE:
-                attackResult = creep.defendRoomWithRangedAttacks(false);
+                attackResult = creep.defendRoomWithRangedAttacks(DEFEND_CHARGE);
+                break;
+            case TASK.STANDBY:
+                creep.standbyTalk();
+                if (creep.room.find(FIND_HOSTILE_CREEPS).length > 0) {
+                    setDefenseTask(creep);
+                }
                 break;
             case TASK.RECYCLE:
                 creep.recycle();
@@ -34,11 +38,15 @@ const defender = {
                 creep.setTask(TASK.MOVE_TO_ROOM);
                 break;
         }
-
-        if (creep.hits < creep.hitsMax && attackResult !== OK) {
-            creep.heal(creep);
-        }
     },
 };
 
-module.exports = defender;
+const setDefenseTask = function(creep) {
+    if (creep.room.mySpawns.length > 0) {
+        creep.setTask(TASK.DEFEND_RAMPARTS);
+    } else {
+        creep.setTask(TASK.DEFEND_CHARGE);
+    }
+};
+
+module.exports = ai;

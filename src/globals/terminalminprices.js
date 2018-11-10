@@ -1,6 +1,22 @@
-global.boostTiers = {
+const TERMINAL_MIN_PRICES = {
+    [RESOURCE_ENERGY]                        : 0.01,
+    [RESOURCE_POWER]                         : 0.2,
+
+    // Minerals
+    [RESOURCE_HYDROGEN]                      : 0.1,
+    [RESOURCE_OXYGEN]                        : 0.05,
+    [RESOURCE_UTRIUM]                        : 0.05,
+    [RESOURCE_KEANIUM]                       : 0.03,
+    [RESOURCE_LEMERGIUM]                     : 0.03,
+    [RESOURCE_ZYNTHIUM]                      : 0.03,
+    [RESOURCE_CATALYST]                      : 0.1,
+};
+
+module.exports = TERMINAL_MIN_PRICES;
+
+    /*
     // T0
-    [RESOURCE_HYDROXIDE]                     : 0,
+    [RESOURCE_HYDROXIDE]                     : 0.4,
     [RESOURCE_ZYNTHIUM_KEANITE]              : 0,
     [RESOURCE_UTRIUM_LEMERGITE]              : 0,
     [RESOURCE_GHODIUM]                       : 0,
@@ -41,3 +57,4 @@ global.boostTiers = {
     [RESOURCE_CATALYZED_GHODIUM_ACID]        : 3,
     [RESOURCE_CATALYZED_GHODIUM_ALKALIDE]    : 3,
 };
+    */

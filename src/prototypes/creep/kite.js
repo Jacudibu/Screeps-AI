@@ -13,13 +13,9 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
                     this.drop(RESOURCE_ENERGY);
                 }
 
-                if (this.taskTargetId) {
-                    let taskTarget = Game.getObjectById(this.taskTargetId);
-                    if (taskTarget instanceof Source) {
-                        taskTarget.memory.workersAssigned--;
-                    }
+                if (this.task === TASK.HARVEST_ENERGY || this.task === TASK.MOVE_ONTO_CONTAINER) {
+                    utility.reduceSourceWorkerAssignedCount(this.taskTargetId);
                 }
-
                 this.setTask(TASK.DECIDE_WHAT_TO_DO);
 
                 this.say(this.ticksToLive % 2 === 0 ? creepTalk.flee1 : creepTalk.flee2, true);

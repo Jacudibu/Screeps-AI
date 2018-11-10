@@ -10,8 +10,12 @@ Creep.prototype.resetCurrentTask = function() {
     this.taskTargetId = undefined;
 };
 
-Creep.prototype.countBodyPartsOfTypeAndApplyBoostWeighting = function(searchedPart) {
+Creep.prototype.countActiveBodyPartsOfTypeAndApplyBoostWeighting = function(searchedPart) {
     return this.body.reduce((total, currentPart) => {
+            if (currentPart.hits === 0) {
+                return total;
+            }
+
             if (currentPart.type === searchedPart) {
                 if (currentPart.boost) {
                     return total + 1 + boostTiers[currentPart.boost];

@@ -1,6 +1,10 @@
 Room.prototype.updateBeforeCreeps = function() {
     this.checkForHostiles();
     this.updateThreat();
+
+    if (this.controller && this.controller.my) {
+        this.manageStandbyDefenders();
+    }
 };
 
 Room.prototype.updateAfterCreeps = function() {
@@ -65,4 +69,26 @@ Room.prototype.checkForRCLUpdate = function() {
 Room.prototype.onRCLUpdate = function() {
     this._recalculateRequestedCreeps();
     this._forceConstructionTimerReset();
+};
+
+Room.prototype.manageStandbyDefenders = function() {
+    const defendersOnStandby = this.find(FIND_MY_CREEPS, {
+        filter: c => c.task === TASK.STANDBY && (c.role === ROLE.DEFENDER || c.role === ROLE.RANGED_DEFENDER)
+    });
+
+    if (defendersOnStandby.length === 0) {
+        return;
+    }
+
+    for (let remoteName of this.remotes) {
+        if (Memory.rooms[remoteName].requiresHelp) {
+            for (let defender of defendersOnStandby) {
+                defender.targetRoomName = remoteName;
+                defender.setTask(TASK.MOVE_TO_ROOM);
+            }
+
+            Memory.rooms[remoteName].requiresHelp = false;
+            return;
+        }
+    }
 };

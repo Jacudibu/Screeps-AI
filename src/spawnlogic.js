@@ -1,5 +1,7 @@
 const SCOUT_SPAWN_INTERVAL = Game.shard.name === "shard2" ? 500 : 100;
+const SCOUT_WITH_ATTACK_PART = Game.shard.name === "shard2" ? Number.MAX_SAFE_INTEGER : 2;
 const nextScoutSpawns = {};
+const totalScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
 
 const AUTO_UPGRADER_SPAWN_INTERVAL = 30;
@@ -95,7 +97,18 @@ const spawnlogic = {
         } else {
             if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
                 nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
-                this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+
+                if (!totalScoutSpawns[room.name]) {
+                    totalScoutSpawns[room.name] = 0;
+                }
+
+                if (totalScoutSpawns[room.name] % SCOUT_WITH_ATTACK_PART === 1) {
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT_WITH_ATTACK_PART});
+                } else {
+                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+                }
+
+                totalScoutSpawns[room.name]++;
             }
 
             if (room.energyCapacityAvailable === room.energyAvailable) {
@@ -246,7 +259,7 @@ const spawnlogic = {
 
         switch (args.role) {
             case ROLE.BUILDER:
-                return spawn.spawnWorker(args.role, energy);
+                return spawn.spawnBuilder(energy);
             case ROLE.HARVESTER:
                 return spawn.spawnHarvester(energy);
             case ROLE.HAULER:
@@ -254,7 +267,7 @@ const spawnlogic = {
             case ROLE.UPGRADER:
                 return spawn.spawnUpgrader(energy);
             case ROLE.REPAIRER:
-                return spawn.spawnWorker(args.role, energy);
+                return spawn.spawnRepairer(energy);
             case ROLE.REMOTE_WORKER:
                 return spawn.spawnRemoteWorker(energy, args.targetRoomName, args.respawnTTL);
             case ROLE.REMOTE_HARVESTER:
@@ -283,6 +296,8 @@ const spawnlogic = {
                 return spawn.spawnEarlyRCLHarvester(energy);
             case ROLE.SCOUT:
                 return spawn.spawnScout(energy, args.targetRoomName, args.respawnTTL);
+            case ROLE.SCOUT_WITH_ATTACK_PART:
+                return spawn.spawnScoutWithAttackPart(energy, args.targetRoomName, args.respawnTTL);
             default:
                 log.warning("Unknown role requested to spawn: " + args.role);
                 return OK; // so it gets removed from our spawn queue
@@ -363,9 +378,10 @@ const spawnlogic = {
             return NO_CREEP_SPAWNED;
         }
 
-        if (!remoteMemory.sources) {
+        if (remoteMemory.sourceCount === undefined) {
             if (remoteRoom !== undefined) {
-                remoteRoom.initializeMemoryForAllSourcesInRoom();
+                remoteRoom.updateScoutData();
+                remoteMemory = Memory.rooms[remoteName];
             } else {
                 // no vision
                 if (!remoteMemory.isReserverAssigned) {
@@ -392,7 +408,7 @@ const spawnlogic = {
             }
         }
 
-        if (remoteMemory.assignedHarvesters < Object.keys(remoteMemory.sources).length) {
+        if (remoteMemory.assignedHarvesters < remoteMemory.sourceCount) {
             room.addToSpawnQueueEnd({role: ROLE.REMOTE_HARVESTER, targetRoomName: remoteName});
             Memory.rooms[remoteName].assignedHarvesters++;
             return CREEP_SPAWNED;

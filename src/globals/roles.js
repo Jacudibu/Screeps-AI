@@ -20,6 +20,7 @@ global.ROLE.CLAIMER = 'claimer';
 global.ROLE.RESERVER = 'reserver';
 
 // Offensive
+global.ROLE.SCOUT_WITH_ATTACK_PART = 'scout_offensive';
 global.ROLE.ATTACKER = 'attacker';
 global.ROLE.RANGED_ATTACKER = 'ranged_attacker';
 global.ROLE.HEALER = "healer";

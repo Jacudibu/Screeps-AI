@@ -54,15 +54,18 @@ require('prototypes.room.update');
 
 require('prototypes.roomobject.drawdebugtext');
 
+require('prototypes.source.assignedworkers');
 require('prototypes.source.distancetospawn');
 require('prototypes.source.freetilecount');
 require('prototypes.source.container');
 require('prototypes.source.link');
-require('prototypes.source.memory');
 
 require('prototypes.spawn.creepspawnmethods');
 
 require('prototypes.structure.canstillstoreenergy');
+require('prototypes.structure.cancreepswalkoverthis');
+
+require('prototypes.tower.efficiencycalculation');
 
 const terminalResourceDistribution = require('prototypes.terminal.resourcedistribution');
 

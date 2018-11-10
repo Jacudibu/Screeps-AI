@@ -227,7 +227,7 @@ const RoadGenerator = {
                 }
 
                 // Existing Structures in owned rooms
-                if (room.controller && room.controller.my) {
+                if (room.claimedByMe) {
                     room.find(FIND_STRUCTURES).forEach(function (structure) {
                         if (structure.structureType !== STRUCTURE_RAMPART && structure.structureType !== STRUCTURE_ROAD) {
                             costs.set(structure.pos.x, structure.pos.y, 255);

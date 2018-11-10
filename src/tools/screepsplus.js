@@ -50,7 +50,7 @@ function collectRoomStats() {
     _.forEach(Object.keys(Game.rooms), function(roomName) {
         let room = Game.rooms[roomName];
 
-        if(room.controller && room.controller.my){
+        if(room.claimedByMe){
             roomStats[roomName] = {};
 
             roomStats[roomName].rcl = {};
@@ -85,16 +85,14 @@ function countRooms() {
 
     for (const roomName in Game.rooms) {
         let room = Game.rooms[roomName];
-        if (room.controller) {
-            if (room.controller.my) {
-                roomNumbers.claimed++;
-                if (room.remotes) {
-                    roomNumbers.remotes += room.remotes.length;
-                }
-            } else if (room.controller.reservation) {
-                if (room.controller.reservation.username === 'Jacudibu') {
-                    roomNumbers.reserved++;
-                }
+        if (room.claimedByMe) {
+            roomNumbers.claimed++;
+            if (room.remotes) {
+                roomNumbers.remotes += room.remotes.length;
+            }
+        } else if (room.controller && room.controller.reservation) {
+            if (room.controller.reservation.username === 'Jacudibu') {
+                roomNumbers.reserved++;
             }
         }
         roomNumbers.total++;

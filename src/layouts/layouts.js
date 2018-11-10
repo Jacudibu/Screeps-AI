@@ -72,14 +72,29 @@ global.baseLayouts.E54S58 = offsetAndSortLayout(baseLayouts.E54S58, -35, -27);
 global.baseLayouts.E54S58.width = 14;
 global.baseLayouts.E54S58.height = 14;
 
+global.baseLayouts.E58S49 = offsetAndSortLayout(baseLayouts.E58S49, -25, -18);
+global.baseLayouts.E58S49.width = 14;
+global.baseLayouts.E58S49.height = 14;
 
-global.baseLayouts.SWC = offsetAndSortLayout(baseLayouts.SWC, -26, -20);
-global.baseLayouts.SWC.width = 14;
-global.baseLayouts.SWC.height = 14;
+global.baseLayouts.E59S45 = offsetAndSortLayout(baseLayouts.E59S45, -18, -23);
+global.baseLayouts.E59S45.width = 14;
+global.baseLayouts.E59S45.height = 14;
 
-global.baseLayouts.SWC2 = offsetAndSortLayout(baseLayouts.SWC2, -21, -32);
-global.baseLayouts.SWC2.width = 14;
-global.baseLayouts.SWC2.height = 14;
+global.baseLayouts.E58S47 = offsetAndSortLayout(baseLayouts.E58S47, -26, -28);
+global.baseLayouts.E58S47.width = 14;
+global.baseLayouts.E58S47.height = 14;
+
+global.baseLayouts.E52S48 = offsetAndSortLayout(baseLayouts.E52S48, -27, -30);
+global.baseLayouts.E52S48.width = 14;
+global.baseLayouts.E52S48.height = 14;
+
+global.baseLayouts.E59S53 = offsetAndSortLayout(baseLayouts.E59S53, -37, -9);
+global.baseLayouts.E59S53.width = 14;
+global.baseLayouts.E59S53.height = 14;
+
+
+
+
 
 module.exports = {
     offsetLayout: offsetLayout,

@@ -14,7 +14,7 @@ Creep.prototype._getSource = function() {
 
     let source = utility.getClosestObjectFromArray(this, sources);
 
-    source.memory.workersAssigned++;
+    source.assignedWorkers++;
     this.taskTargetId = source.id;
     return source;
 };
@@ -190,7 +190,7 @@ Creep.prototype._getDamagedStructure = function(percentageToCountAsDamaged = 0.7
         }
     }
 
-    let damagedStructures = this.room.findDamagedStructures();
+    let damagedStructures = this.room.findDamagedStructures(percentageToCountAsDamaged);
 
     if(damagedStructures.length === 0) {
         return ERR_NOT_FOUND;
@@ -261,7 +261,7 @@ Creep.prototype._getEnergyHaulTarget = function() {
     }
 
     // TODO: Check if hostile structures length === 0 instead
-    if (this.room.controller.my) {
+    if (this.room.claimedByMe) {
         return ERR_NOT_FOUND;
     }
 
@@ -329,6 +329,21 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         this.taskTargetId = this.room.storageLink.id;
         this.hauledResourceType = RESOURCE_ENERGY;
         return this.room.storageLink;
+    }
+
+    // Avoid energy starvation if no harvesters are on it right now
+    if (this.room.energyAvailable < this.room.energyCapacityAvailable) {
+        if (this.room.storage && this.room.storage.store[RESOURCE_ENERGY] > 0) {
+            this.taskTargetId = this.room.storage.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.storage;
+        }
+
+        if (this.room.terminal && this.room.terminal.store[RESOURCE_ENERGY] > 0) {
+            this.taskTargetId = this.room.terminal.id;
+            this.hauledResourceType = RESOURCE_ENERGY;
+            return this.room.terminal;
+        }
     }
 
     if (this.room.labTask) {
@@ -464,7 +479,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
     }
 
     // TODO: Check if hostile structures length === 0 instead
-    if (this.room.controller.my) {
+    if (this.room.claimedByMe) {
         return ERR_NOT_FOUND;
     }
 

@@ -17,7 +17,8 @@ const reserver = {
                 break;
 
             case TASK.STOMP_HOSTILE_CONSTRUCTION_SITES:
-                if (roomThreats[creep.room.name]) {
+
+                if (roomThreats[creep.room.name] && roomThreats[creep.room.name].canHarmCreeps) {
                     creep.say(creepTalk.flee3);
                     this.continueScouting(creep);
                     break;

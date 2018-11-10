@@ -1,4 +1,6 @@
-const TERMINAL_DISTRIBUTION_CONSTANTS = require('globals.terminallimits');
+const TERMINAL_DISTRIBUTION_CONSTANTS = require("globals.terminallimits");
+const TERMINAL_MIN_PRICES             = require("globals.terminalminprices");
+
 const DEAL = true;
 const NO_DEAL = false;
 const DISTRIBUTION_INTERVAL = 11;
@@ -153,7 +155,11 @@ const terminalResourceDistribution = {
         }
 
         // initially filter orders
-        let orders = Game.market.getAllOrders(order => order.type === ORDER_BUY && supplyResourceTypes.includes(order.resourceType));
+        let orders = Game.market.getAllOrders(
+            order => order.type === ORDER_BUY
+                  && supplyResourceTypes.includes(order.resourceType)
+                  && order.price > TERMINAL_MIN_PRICES[order.resourceType]
+        );
 
         for (const terminal of terminals) {
             if (terminal.cooldown > 0) {

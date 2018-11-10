@@ -3,6 +3,7 @@ Creep.prototype.harvestEnergyInBase = function() {
 
     if (source === ERR_NOT_FOUND) {
         this.say(creepTalk.noSourceAvailable);
+        utility.resetAssignedWorkersCache(this.room);
         return;
     }
 
@@ -99,6 +100,7 @@ Creep.prototype.harvestMineral = function() {
 
     if (mineral === ERR_NOT_FOUND) {
         this.say(creepTalk.noSourceAvailable);
+        utility.resetAssignedWorkersCache(this.room);
     }
 
     switch (this.harvest(mineral)) {
@@ -171,7 +173,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
         case OK:
             break;
         case ERR_NOT_ENOUGH_RESOURCES:
-            source.memory.workersAssigned--;
+            source.assignedWorkers--;
             this.setTask(taskWhenFinished);
             break;
         case ERR_NOT_IN_RANGE:
@@ -194,7 +196,7 @@ Creep.prototype.harvestEnergyAndWork = function(taskWhenFinished) {
             }
         }
 
-        source.memory.workersAssigned--;
+        source.assignedWorkers--;
         this.setTask(taskWhenFinished);
     }
 };
@@ -216,7 +218,7 @@ Creep.prototype.haulEnergy = function(taskWhenFinished) {
 
 Creep.prototype.haulAnyResource = function(taskWhenFinished) {
     let target;
-    if (this.room.controller && this.room.controller.my) {
+    if (this.room.claimedByMe) {
         target = this._getAnyResourceHaulTargetInOwnedRoom();
     } else {
         target = this._getAnyResourceHaulTargetInRemoteRoom();
@@ -677,7 +679,7 @@ Creep.prototype.recycle = function() {
     }
 };
 
-Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
+Creep.prototype.defendRoomWithMeleeAttacks = function(defenseMode) {
     let target = undefined;
     if (this.taskTargetId) {
         target = Game.getObjectById(this.taskTargetId);
@@ -706,7 +708,7 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
             break;
         case ERR_NOT_IN_RANGE:
             this.say(creepTalk.chargeAttack, true);
-            if (stayOnRamparts) {
+            if (defenseMode === DEFEND_ON_RAMPARTS) {
                 this.moveToRampartClosestToEnemy(target);
             } else {
                 this.travelTo(target, {maxRooms: 1});
@@ -722,71 +724,6 @@ Creep.prototype.defendRoomWithMeleeAttacks = function(stayOnRamparts) {
     return result;
 };
 
-Creep.prototype.defendRoomWithRangedAttacks = function(stayOnRamparts) {
-    let target = undefined;
-    if (this.taskTargetId) {
-        target = Game.getObjectById(this.taskTargetId);
-    }
-
-    if (target === undefined) {
-        let possibleTargets = this.room.find(FIND_HOSTILE_CREEPS);
-        if (possibleTargets.length === 0) {
-            this.say(creepTalk.victory, true);
-            if (!this.stayInRoom) {
-                this.targetRoomName = this.memory.homeRoomName;
-                this.setTask(TASK.DECIDE_WHAT_TO_DO);
-            } else if (this.room.name !== this.targetRoomName) {
-                this.setTask(TASK.MOVE_TO_ROOM)
-            }
-            return ERR_NOT_FOUND;
-        }
-
-        target = utility.getClosestObjectFromArray(this, possibleTargets);
-    }
-
-    const rangeToTarget = this.pos.getRangeTo(target);
-    if (rangeToTarget === 1) {
-        let result = this.rangedMassAttack();
-        switch (result) {
-            case OK:
-                this.say(creepTalk.rangedMassAttack, true);
-                break;
-            default:
-                this.logActionError("defendRoomWithMeleeAttacks while range attacking", this.rangedMassAttack());
-                break;
-        }
-    } else {
-        let result = this.rangedAttack(target);
-        switch (result) {
-            case OK:
-                this.say(creepTalk.rangedAttack, true);
-                if (!stayOnRamparts) {
-                    if (target.countBodyPartsOfType(ATTACK) > 0) {
-                        this.kite(target);
-                    } else {
-                        this.travelTo(target);
-                    }
-                }
-                break;
-            case ERR_NOT_IN_RANGE:
-                this.say(creepTalk.chargeAttack, true);
-                if (stayOnRamparts) {
-                    this.moveToRampartClosestToEnemy(target);
-                } else {
-                    this.travelTo(target, {maxRooms: 1, range: 3});
-                }
-                break;
-            case ERR_INVALID_TARGET:
-                this.taskTargetId = undefined;
-                break;
-            default:
-                this.logActionError("defendRoomWithMeleeAttacks attack command", this.rangedAttack(target));
-                break;
-        }
-        return result;
-    }
-};
-
 Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
     let ramparts = this.room.myRamparts;
 
@@ -797,64 +734,72 @@ Creep.prototype.moveToRampartClosestToEnemy = function(enemy) {
         return;
     }
 
+    ramparts.filter(rampart => {
+        const structuresOnSameSpot = rampart.room.lookForAt(LOOK_STRUCTURES, rampart.pos.x, rampart.pos.y);
+        for (let structure of structuresOnSameSpot) {
+            if (!structure.canCreepsWalkOverThis) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
     let closestRampart = utility.getClosestObjectFromArray(enemy, ramparts);
 
     this.travelTo(closestRampart, {maxRooms: 1, range: 0});
 };
 
-Creep.prototype.selectNextRoomToScout = function() {
+Creep.prototype.selectNextRoomToScout = function(skipRoomsWithTowers = false) {
     const exits = Game.map.describeExits(this.room.name);
-    const rooms = [];
+    const availableRooms = [];
 
     for (let direction in exits) {
-        rooms.push(exits[direction]);
+        const roomName = exits[direction];
+
+        if (skipRoomsWithTowers) {
+            const roomMemory = Memory.rooms[roomName];
+            if (roomMemory && roomMemory.scoutData && roomMemory.scoutData.towers > 0) {
+                continue;
+            }
+
+            if (utility.isRoomSK(roomName)) {
+                continue;
+            }
+        }
+
+        if (Game.map.isRoomAvailable(roomName)) {
+            availableRooms.push(roomName);
+        }
     }
 
-    const targetRoom = rooms.reduce((acc, room) => {
-        if (!Game.map.isRoomAvailable(acc)) {
-            return room;
-        }
-
-        if (!Game.map.isRoomAvailable(room)) {
-            return acc;
-        }
-
-        const accMemory  = Memory.rooms[acc];
-
-        // Check if acc has priority
-        if (accMemory === undefined) {
-            return acc;
-        }
-
-        if (accMemory.isAlreadyScouted) {
-            return room;
-        }
-
-        if (accMemory.lastScouted === undefined) {
-            return acc;
-        }
-
-        // Check if room has priority
-        const roomMemory = Memory.rooms[room];
+    let targetRoom;
+    let lowestLastScouted = Game.time;
+    for (let roomName of availableRooms) {
+        const roomMemory = Memory.rooms[roomName];
         if (roomMemory === undefined) {
-            return room;
+            targetRoom = roomName;
+            break;
         }
 
         if (roomMemory.isAlreadyScouted) {
-            return acc;
+            continue;
         }
 
         if (roomMemory.lastScouted === undefined) {
-            return room;
+            targetRoom = roomName;
+            break;
         }
 
-        // Just return the one with the oldest entry
-        if (accMemory.lastScouted < roomMemory.lastScouted) {
-            return acc;
-        } else {
-            return room;
+        if (roomMemory.lastScouted < lowestLastScouted) {
+            targetRoom = roomName;
+            lowestLastScouted = roomMemory.lastScouted;
         }
-    });
+    }
+
+    if (!targetRoom) {
+        targetRoom = availableRooms[_.random(0, availableRooms.length - 1)];
+    }
 
     if (!Memory.rooms[targetRoom]) {
         Memory.rooms[targetRoom] = {};
@@ -873,4 +818,20 @@ Creep.prototype.stompHostileConstructionSites = function() {
     this.say(creepTalk.blockConstructionSite, true);
     this.travelTo(target, {range: 0});
     return OK;
+};
+
+Creep.prototype.standbyTalk = function() {
+    switch (this.ticksToLive % 15) {
+        case 0:
+            this.say(creepTalk.standby1, true);
+            break;
+        case 5:
+            this.say(creepTalk.standby2, true);
+            break;
+        case 10:
+            this.say(creepTalk.standby3, true);
+            break;
+        default:
+            break
+    }
 };

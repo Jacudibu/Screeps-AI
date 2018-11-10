@@ -1,16 +1,16 @@
-const guidedRangedAttacker = {
+const ai = {
     run(creep) {
-        if (creep.hits < creep.hitsMax) {
-            creep.heal(creep);
+        creep.healNearbyWoundedCreeps();
+
+        const nearbyHostiles = creep.findNearbyHostiles();
+        if (nearbyHostiles !== ERR_NOT_FOUND) {
+            creep.attackNearbyHostilesWithRangedAttacks(nearbyHostiles);
         }
 
         switch (creep.task) {
             case TASK.DECIDE_WHAT_TO_DO:
-                if (creep.room.name === creep.targetRoomName) {
-                    creep.setTask(TASK.ATTACK);
-                } else {
-                    creep.setTask(TASK.MOVE_TO_ROOM)
-                }
+                decideWhatToDo(creep);
+                this.run(creep);
                 break;
 
             case TASK.MOVE_TO_ROOM:
@@ -24,49 +24,29 @@ const guidedRangedAttacker = {
                 }
 
                 if (!target) {
-                    let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
-                    if (possibleTargets.length === 0) {
-                        creep.say(creepTalk.noTargetFound);
-                        return;
+                    if (nearbyHostiles !== ERR_NOT_FOUND) {
+                        target = nearbyHostiles[0];
+                    } else {
+                        let possibleTargets = creep.room.find(FIND_HOSTILE_CREEPS);
+                        if (possibleTargets.length === 0) {
+                            creep.say(creepTalk.noTargetFound);
+                            return;
+                        }
+                        target = utility.getClosestObjectFromArray(creep, possibleTargets);
                     }
-                    target = utility.getClosestObjectFromArray(creep, possibleTargets);
                 }
 
                 if (target) {
-                    let result = OK;
-                    if (creep.hits === creep.hitsMax && creep.pos.getRangeTo(target.pos) === 1) {
-                        result = creep.rangedMassAttack();
-                        if (result === OK) {
-                            creep.say(creepTalk.rangedMassAttack, true);
-                        }
-                    } else {
-                        result = creep.rangedAttack(target);
-                        if (result === OK) {
-                            creep.say(creepTalk.rangedAttack, true);
-                        }
-                    }
-
-                    switch (result) {
-                        case OK:
-                            if (target instanceof Creep) {
-                                if (target.countBodyPartsOfType(ATTACK) > 0) {
-                                    // Kiting!
-                                    creep.travelTo(target,  {range: 2});
-                                }else {
-                                    // Mass attacking!
-                                    creep.travelTo(target);
-                                }
-                            }
-                            return;
-                        case ERR_NOT_IN_RANGE:
-                            creep.travelTo(target, {range: 3, ignoreCreeps: false});
-                            break;
-                        case ERR_INVALID_TARGET:
-                            break;
-                        default:
-                            break;
-                    }
+                    creep.attackTargetWithRangedAttacks(nearbyHostiles, target);
+                } else {
+                    creep.stompHostileConstructionSites();
                 }
+                break;
+
+            case TASK.DISABLE_ATTACK_NOTIFICATION:
+                creep.notifyWhenAttacked(false);
+                creep.task = TASK.DECIDE_WHAT_TO_DO;
+                this.run(creep);
                 break;
 
             default:
@@ -76,4 +56,15 @@ const guidedRangedAttacker = {
     },
 };
 
-module.exports = guidedRangedAttacker;
+const decideWhatToDo = function(creep) {
+    if (creep.room.name === creep.targetRoomName) {
+        creep.setTask(TASK.ATTACK);
+    } else {
+        creep.setTask(TASK.MOVE_TO_ROOM)
+    }
+};
+
+
+
+
+module.exports = ai;
