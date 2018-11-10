@@ -436,7 +436,7 @@ Room.prototype._placeConstructionSitesBasedOnMagic = function(structureType, lay
             return this._placeExtractor();
 
         default:
-            log.warning(this + structureType + " should be placed in layout but wasn't. Layout: " + layout.name);
+            //log.warning(this + structureType + " should be placed in layout but wasn't. Layout: " + layout.name);
             break;
     }
 };
