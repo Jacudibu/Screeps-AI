@@ -29,11 +29,11 @@ Spawn.prototype.spawnWorker = function(role, energy, targetRoomName) {
 };
 
 Spawn.prototype.spawnRepairer = function(energy) {
-    this.spawnWorker(ROLE.REPAIRER, energy);
+    return this.spawnWorker(ROLE.REPAIRER, energy);
 };
 
 Spawn.prototype.spawnBuilder = function(energy) {
-    this.spawnWorker(ROLE.BUILDER, energy);
+    return this.spawnWorker(ROLE.BUILDER, energy);
 };
 
 Spawn.prototype.spawnEarlyRCLHarvester = function(energy) {
