@@ -17,7 +17,7 @@ const remoteHauler = {
                     if (_.sum(creep.carry) === 0) {
                         if (creep.respawnTTL != null) {
                             creep.targetRoomName = creep.remoteHaulTargetRoom;
-                            creep.setTask(TASK.MOVE_TO_ROOM);
+                            creep.setTask(TASK.MOVE_TO_ROOM_OFFROAD);
                         } else {
                             // respawn has triggered and we are going to die soon - better now than later!
                             creep.suicide();
@@ -55,6 +55,10 @@ const remoteHauler = {
 
             case TASK.MOVE_TO_ROOM:
                 creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO);
+                break;
+
+            case TASK.MOVE_TO_ROOM_OFFROAD:
+                creep.moveToRoom(TASK.DECIDE_WHAT_TO_DO, {offRoad: true});
                 break;
 
             case TASK.HAUL_ENERGY:

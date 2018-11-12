@@ -16,6 +16,7 @@ global.TASK.HARVEST_MINERAL = 'harvest_mineral';
 global.TASK.HEAL = "heal";
 global.TASK.MOVE_ONTO_CONTAINER = 'move_onto_container';
 global.TASK.MOVE_TO_ROOM = 'move_to_room';
+global.TASK.MOVE_TO_ROOM_OFFROAD = 'move_to_room_offroad';
 global.TASK.RECYCLE = 'recycle';
 global.TASK.RENEW_CREEP = 'renew_creep';
 global.TASK.REPAIR_STRUCTURE = 'repair_structure';
