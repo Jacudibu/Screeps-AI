@@ -181,10 +181,9 @@ Spawn.prototype.spawnUpgrader = function(energy) {
 
     body.push(MOVE, MOVE, CARRY, CARRY);
     energy -= 200;
-    const lengthWithoutWorkParts = body.length;
 
-    const maxWorkParts = this.room.controller.level === 8 ? 15 : 46;
-    while (energy >= 100 && body.length < maxWorkParts - lengthWithoutWorkParts) {
+    const maxWorkParts = this.room.controller.level === 8 ? 15 : (46 - body.length);
+    for (let i = 0; i < maxWorkParts && energy >= 100; i++) {
         body.push(WORK);
         energy -= 100;
     }
