@@ -821,7 +821,7 @@ Creep.prototype.stompHostileConstructionSites = function() {
     this.travelTo(target, {range: 0, maxRooms: 1, returnData: returnData});
 
     // Ensure that the construction site isn't obstructed by walls/ramparts
-    if (returnData.pathfinderReturn.incomplete) {
+    if (returnData.pathfinderReturn && returnData.pathfinderReturn.incomplete) {
         return ERR_NOT_FOUND;
     }
 
