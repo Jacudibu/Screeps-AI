@@ -815,8 +815,16 @@ Creep.prototype.stompHostileConstructionSites = function() {
         return ERR_NOT_FOUND;
     }
 
+    const returnData = {};
+
     this.say(creepTalk.blockConstructionSite, true);
-    this.travelTo(target, {range: 0});
+    this.travelTo(target, {range: 0, maxRooms: 1, returnData: returnData});
+
+    // Ensure that the construction site isn't obstructed by walls/ramparts
+    if (returnData.pathfinderReturn.incomplete) {
+        return ERR_NOT_FOUND;
+    }
+
     return OK;
 };
 
