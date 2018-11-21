@@ -228,8 +228,8 @@ const RoadGenerator = {
                 let costs = new PathFinder.CostMatrix;
                 const terrain = room.getTerrain();
 
-                for (let x = 1; x < 49; x++) {
-                    for (let y = 1; y < 49; y++) {
+                for (let x = 2; x < 48; x++) { // ]2, 48[ instead of ]1, 49[ as a workaround to edge tiles being always cost 0
+                    for (let y = 2; y < 48; y++) {
                         if (terrain.get(x, y) === TERRAIN_MASK_WALL) {
                             costs.set(x, y, TUNNEL_PATH_COST);
                         }
