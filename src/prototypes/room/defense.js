@@ -48,14 +48,15 @@ Room.prototype.repairDamagedCreeps = function() {
 };
 
 Room.prototype.repairAlmostBrokenRamparts = function() {
-    for(let rampart of this.ramparts) {
-        if (rampart && rampart.hits < RAMPART_TOWER_REPAIR_THRESHOLD) {
-            this.commandTowersToRepairStructure(rampart);
-            return OK;
-        }
+    const almostBrokenRamparts = this.ramparts.filter(rampart => rampart && rampart.hits < RAMPART_TOWER_REPAIR_THRESHOLD);
+
+    if (almostBrokenRamparts.length === 0) {
+        return ERR_NOT_FOUND;
     }
 
-    return ERR_NOT_FOUND;
+    const mostBrokenRampart = _.min(almostBrokenRamparts, rampart => rampart.hits);
+    this.commandTowersToRepairStructure(mostBrokenRampart);
+    return OK;
 };
 
 Room.prototype.sortHostilesByPriority = function() {
