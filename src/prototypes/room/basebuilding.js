@@ -56,8 +56,6 @@ const ERR_BLOCKED_BY_TERRAIN_WALL   = 5;
 const ERR_NOT_YET_IMPLEMENTED       = 42;
 const ERR_UNDEFINED                 = 999;
 
-const DEBUG = true;
-
 Room.prototype.tryPlacingConstructionSites = function() {
     try {
         this._automaticallyPlaceConstructionSites();
@@ -112,7 +110,7 @@ Room.prototype._forceConstructionTimerReset = function() {
 };
 
 Room.prototype._automaticallyPlaceConstructionSites = function() {
-    if (DEBUG && this.memory.layout) {
+    if (DEBUG_STATE.DRAW_ROADS && this.memory.layout) {
         this._debugRoadPlacement(this.memory.layout);
         this._debugRampartPlacement();
     }
@@ -173,7 +171,7 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
 };
 
 Room.prototype._automaticallyPlaceRemoteConstructionSites = function() {
-    if (DEBUG && this.memory.layout) {
+    if (DEBUG_STATE.DRAW_ROADS && this.memory.layout) {
         this._debugRoadPlacement();
     }
 

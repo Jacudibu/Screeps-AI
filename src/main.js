@@ -16,6 +16,7 @@ require('globals.storagelimits');
 require('globals.shortcuts');
 require('globals.tasks');
 require('globals.utility');
+require('globals.debugstate');
 
 require('prototypes.container.isnexttosourceormineral');
 
