@@ -96,7 +96,9 @@ global.baseLayouts.E56S43 = offsetAndSortLayout(baseLayouts.E56S43, -29, -41);
 global.baseLayouts.E56S43.width = 14;
 global.baseLayouts.E56S43.height = 14;
 
-
+global.baseLayouts.E51S35 = offsetAndSortLayout(baseLayouts.E51S35, -38, -11);
+global.baseLayouts.E51S35.width = 14;
+global.baseLayouts.E51S35.height = 14;
 
 
 module.exports = {
