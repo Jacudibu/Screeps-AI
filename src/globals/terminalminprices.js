@@ -3,9 +3,9 @@ const TERMINAL_MIN_PRICES = {
     [RESOURCE_POWER]                         : 0.2,
 
     // Minerals
-    [RESOURCE_HYDROGEN]                      : 0.1,
-    [RESOURCE_OXYGEN]                        : 0.05,
-    [RESOURCE_UTRIUM]                        : 0.05,
+    [RESOURCE_HYDROGEN]                      : 0.04,
+    [RESOURCE_OXYGEN]                        : 0.04,
+    [RESOURCE_UTRIUM]                        : 0.04,
     [RESOURCE_KEANIUM]                       : 0.03,
     [RESOURCE_LEMERGIUM]                     : 0.03,
     [RESOURCE_ZYNTHIUM]                      : 0.03,
