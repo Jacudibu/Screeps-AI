@@ -9,6 +9,7 @@ const remoteWorker = {
                 if (_.sum(creep.carry) < 10) {
                     if (creep._getEnergyHaulTarget() !== ERR_NOT_FOUND) {
                         creep.setTask(TASK.HAUL_ENERGY)
+                        return;
                     }
 
                     creep.setTask(TASK.HARVEST_ENERGY);
