@@ -110,14 +110,14 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         return extension;
     }
 
-    let towers = this.room.myTowers.filter(tower => tower.energy < tower.energyCapacity);
-    if (towers.length > 0) {
-        return utility.getClosestObjectFromArray(this, towers);
-    }
-
     let publicEnergyContainers = this.room.getEmptyPublicEnergyContainers();
     if (publicEnergyContainers !== ERR_NOT_FOUND) {
         return utility.getClosestObjectFromArray(this, publicEnergyContainers);
+    }
+
+    let towers = this.room.myTowers.filter(tower => tower.energy < tower.energyCapacity);
+    if (towers.length > 0) {
+        return utility.getClosestObjectFromArray(this, towers);
     }
 
     if (!this.room.shouldEvacuate) {
