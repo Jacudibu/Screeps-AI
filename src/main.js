@@ -48,6 +48,7 @@ require('prototypes.room.remotes');
 require('prototypes.room.requestedcreeps');
 require('prototypes.room.scoutdata');
 require('prototypes.room.sources');
+require('prototypes.room.spawnqueue');
 require('prototypes.room.structures');
 require('prototypes.room.threat');
 require('prototypes.room.towerdefense');
