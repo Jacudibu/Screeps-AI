@@ -1,5 +1,5 @@
-const SCOUT_SPAWN_INTERVAL = Game.shard.name === "shard2" ? 500 : 100;
-const SCOUT_WITH_ATTACK_PART = Game.shard.name === "shard2" ? Number.MAX_SAFE_INTEGER : 2;
+const SCOUT_SPAWN_INTERVAL = 333;
+const SCOUT_WITH_ATTACK_PART = 2;
 const nextScoutSpawns = {};
 const totalScoutSpawns = {};
 const ticksAtMaxEnergyWithoutSpawningSomething = {};
@@ -95,20 +95,8 @@ const spawnlogic = {
             }
             ticksAtMaxEnergyWithoutSpawningSomething[room.name] = 0;
         } else {
-            if (!nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
-                nextScoutSpawns[room.name] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
-
-                if (!totalScoutSpawns[room.name]) {
-                    totalScoutSpawns[room.name] = 0;
-                }
-
-                if (totalScoutSpawns[room.name] % SCOUT_WITH_ATTACK_PART === 1) {
-                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT_WITH_ATTACK_PART});
-                } else {
-                    this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
-                }
-
-                totalScoutSpawns[room.name]++;
+            if (Game.shard.name !== "shard2" && !nextScoutSpawns[room.name] || nextScoutSpawns[room.name] < Game.time) {
+                this.spawnScout(room.name, spawns);
             }
 
             if (room.energyCapacityAvailable === room.energyAvailable) {
@@ -117,6 +105,22 @@ const spawnlogic = {
         }
 
         room.memory.allowEnergyCollection = room.isSpawnQueueEmpty() && !room.storage;
+    },
+
+    spawnScout: function (roomName, spawns) {
+        nextScoutSpawns[roomName] = utility.getFutureGameTimeWithRandomOffset(SCOUT_SPAWN_INTERVAL);
+
+        if (!totalScoutSpawns[roomName]) {
+            totalScoutSpawns[roomName] = 0;
+        }
+
+        if (totalScoutSpawns[roomName] % SCOUT_WITH_ATTACK_PART === 1) {
+            this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT_WITH_ATTACK_PART});
+        } else {
+            this.searchUnoccupiedSpawnAndSpawnNewCreepWithArgs(spawns, {role: ROLE.SCOUT});
+        }
+
+        totalScoutSpawns[roomName]++;
     },
 
     handleIdleRoomAtMaxEnergy(room, spawns) {
