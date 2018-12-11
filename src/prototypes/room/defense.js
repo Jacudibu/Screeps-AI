@@ -13,6 +13,10 @@ Room.prototype.shouldSafeModeBeActivated = function() {
         return false;
     }
 
+    if (roomThreats[this.name].onlyNPCs) {
+        return false;
+    }
+
     if (this.controller.safeMode || this.controller.safeModeCooldown || this.controller.safeModeAvailable === 0) {
         return false;
     }
@@ -32,7 +36,7 @@ Room.prototype.shouldSafeModeBeActivated = function() {
             return true;
         }
 
-        if (spawn.pos.findInRange(FIND_HOSTILE_CREEPS, 3).some(creep => creep.canDealSomeSortOfDamage())) {
+        if (spawn.pos.findInRange(FIND_HOSTILE_CREEPS, 3).some(creep => creep.canDealSomeSortOfDamage() && creep)) {
             return true;
         }
     }
