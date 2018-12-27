@@ -100,6 +100,10 @@ global.baseLayouts.E51S35 = offsetAndSortLayout(baseLayouts.E51S35, -38, -11);
 global.baseLayouts.E51S35.width = 14;
 global.baseLayouts.E51S35.height = 14;
 
+global.baseLayouts.E48S49 = offsetAndSortLayout(baseLayouts.E48S49, -31, -23);
+global.baseLayouts.E48S49.width = 14;
+global.baseLayouts.E48S49.height = 14;
+
 
 module.exports = {
     offsetLayout: offsetLayout,

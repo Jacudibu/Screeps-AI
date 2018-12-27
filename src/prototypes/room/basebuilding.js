@@ -124,7 +124,7 @@ Room.prototype._automaticallyPlaceConstructionSites = function() {
             this.memory.predefinedLayoutName = this.name;
         } else {
             // Those rooms are manually built right now
-            LOG_WARNING(this + " no layout found!");
+            log.warning(this + " no layout found!");
             allowConstructionSiteRequests[this.name] = false;
             nextConstructionTimer[this.name] = utility.getFutureGameTimeWithRandomOffset(WAIT_TIME_WHEN_NO_LAYOUT_SETUP);
             return;
