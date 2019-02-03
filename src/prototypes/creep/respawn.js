@@ -29,6 +29,7 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             //addToSpawnQueueEnd(this.spawnRoom, args);
             //Memory.rooms[args.targetRoomName].assignedHaulers++;
             break;
+
         case ROLE.REMOTE_WORKER:
             if (this.room.energyCapacityAvailable >= 500) {
                 // Room is mature enough to survive on its own
@@ -60,8 +61,12 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
         case ROLE.CARRIER:
             args.targetRoomName = this.remoteHaulTargetRoom;
 
-            if (Game.rooms[args.targetRoomName] && Game.rooms[args.targetRoomName].terminal) {
-                break;
+            if (Game.rooms[args.targetRoomName]) {
+                const terminal = Game.rooms[args.targetRoomName].terminal;
+                if (terminal && terminal.my)
+                {
+                    args.role = ROLE.REMOTE_UPGRADER;
+                }
             }
 
             args.storageRoomName = this.remoteHaulStorageRoom;
