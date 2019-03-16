@@ -24,7 +24,7 @@ writeMessage = function(message, logLevel, color=undefined) {
         return;
     }
 
-    formattedMessage = formattedMessage.replace(/[WE]\d+[NS]\d+".onClick=[^[]*>/, "");
+    formattedMessage = formattedMessage.replace(/[WE]\d+[NS]\d+".onClick=[^[]*/, "");
     Game.notify(formattedMessage);
 };
 
