@@ -614,15 +614,7 @@ Creep.prototype.claimRoomController = function() {
 Creep.prototype.attackRoomController = function() {
     switch (this.attackController(this.room.controller)) {
         case OK:
-            if (this.room.name === 'E52S43') {
-                this.targetRoomName = 'E53S44';
-                this.setTask(TASK.MOVE_TO_ROOM);
-            } else if (this.room.name === 'E53S44') {
-                this.targetRoomName = 'E52S43';
-                this.setTask(TASK.MOVE_TO_ROOM);
-            } else {
-                this.suicide();
-            }
+            this.suicide();
             break;
         case ERR_NOT_IN_RANGE:
             this.travelTo(this.room.controller);
@@ -650,6 +642,9 @@ Creep.prototype.reserveRoomController = function() {
             this.travelTo(this.room.controller, {maxRooms: 1});
             break;
         case ERR_INVALID_TARGET:
+            if (this.room.controller.owner && this.room.controller.owner.username !== PLAYER_NAME) {
+                this.attackRoomController()
+            }
             this.setTask(TASK.DECIDE_WHAT_TO_DO);
             break;
         default:
