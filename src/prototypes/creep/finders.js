@@ -129,15 +129,15 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
             }
         }
 
-        if (this.room.powerSpawn) {
-            if (this.room.powerSpawn.energy < POWER_SPAWN_MINIMUM_ENERGY_HAUL_AMOUNT) {
-                return this.room.powerSpawn;
-            }
-        }
-
         if (this.room.nuker) {
             if (this.room.nuker.energy < this.room.nuker.energyCapacity) {
                 return this.room.nuker;
+            }
+        }
+
+        if (this.room.powerSpawn) {
+            if (this.room.powerSpawn.energy < POWER_SPAWN_MINIMUM_ENERGY_HAUL_AMOUNT) {
+                return this.room.powerSpawn;
             }
         }
 
