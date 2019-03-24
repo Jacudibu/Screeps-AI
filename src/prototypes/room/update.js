@@ -31,6 +31,10 @@ Room.prototype.updateAfterCreeps = function() {
                     }
                 }
             }
+
+            if (this.powerSpawn) {
+                this.powerSpawn.processPower();
+            }
         }
     }
 };

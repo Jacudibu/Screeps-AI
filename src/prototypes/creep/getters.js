@@ -70,7 +70,7 @@ Creep.prototype._getMineralStorage = function(resourceType) {
                         break;
                     }
 
-                    if (mineralStorage.power < mineralStorage.powerCapacity) {
+                    if (mineralStorage.power < POWER_SPAWN_MINIMUM_POWER_HAUL_AMOUNT) {
                         return mineralStorage;
                     }
                     break;
@@ -413,7 +413,7 @@ Creep.prototype._getAnyResourceHaulTargetInOwnedRoom = function() {
         return potentialTarget;
     }
 
-    if (this.room.powerSpawn && this.room.powerSpawn.power < this.room.powerSpawn.powerCapacity) {
+    if (this.room.powerSpawn && this.room.powerSpawn.power < POWER_SPAWN_MINIMUM_POWER_HAUL_AMOUNT) {
         if (this.room.terminal && this.room.terminal.store[RESOURCE_POWER]) {
             this.taskTargetId = this.room.terminal.id;
             this.hauledResourceType = RESOURCE_POWER;

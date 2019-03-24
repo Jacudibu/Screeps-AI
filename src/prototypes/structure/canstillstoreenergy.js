@@ -20,4 +20,6 @@ StructureTower.prototype.canStillStoreEnergy      = structureWithEnergyProperty;
 StructureSpawn.prototype.canStillStoreEnergy      = structureWithEnergyProperty;
 StructureLink.prototype.canStillStoreEnergy       = structureWithEnergyProperty;
 StructureNuker.prototype.canStillStoreEnergy      = structureWithEnergyProperty;
-StructurePowerSpawn.prototype.canStillStoreEnergy = structureWithEnergyProperty;
+StructurePowerSpawn.prototype.canStillStoreEnergy = function() {
+    return this.energy < POWER_SPAWN_MINIMUM_ENERGY_HAUL_AMOUNT;
+};

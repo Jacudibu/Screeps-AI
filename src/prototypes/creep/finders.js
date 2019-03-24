@@ -130,7 +130,7 @@ Creep.prototype.findClosestFreeEnergyStorage = function() {
         }
 
         if (this.room.powerSpawn) {
-            if (this.room.powerSpawn.energy < this.room.powerSpawn.energyCapacity) {
+            if (this.room.powerSpawn.energy < POWER_SPAWN_MINIMUM_ENERGY_HAUL_AMOUNT) {
                 return this.room.powerSpawn;
             }
         }
@@ -185,7 +185,7 @@ Creep.prototype.findMineralStorage = function(resourceType) {
         }
 
         if (resourceType === RESOURCE_POWER) {
-            if (this.room.powerSpawn && this.room.powerSpawn.power < this.room.powerSpawn.powerCapacity) {
+            if (this.room.powerSpawn && this.room.powerSpawn.power < POWER_SPAWN_MINIMUM_POWER_HAUL_AMOUNT) {
                 return this.room.powerSpawn;
             }
         }
