@@ -282,6 +282,8 @@ const spawnlogic = {
                 return spawn.spawnRemoteRepairer(energy, args.repairRouteIndex);
             case ROLE.REMOTE_UPGRADER:
                 return spawn.spawnRemoteUpgrader(energy, args.targetRoomName, args.respawnTTL);
+            case ROLE.DISMANTLER:
+                return spawn.spawnDismantler(energy, args.targetRoomName, args.respawnTTL, args.taskTargetId);
             case ROLE.RESERVER:
                 return spawn.spawnReserver(energy, args.targetRoomName);
             case ROLE.ATTACKER:
