@@ -130,3 +130,55 @@ calculateRouteLengthBetweenRooms = function(roomA, roomB) {
 
     return route.length;
 };
+
+Room.prototype._scanSurroundingsForRemoteRooms = function(sourceAmount) {
+    let searchedRooms = [this.name];
+    let interestingRooms = [];
+    let availableRoomsInSameDepth = [];
+    let availableRoomsLater = Object.values(Game.map.describeExits(this.name));
+    let depth = 0;
+
+    while (availableRoomsLater.length > 0 && sourceAmount > 0) {
+        availableRoomsInSameDepth.push(...availableRoomsLater);
+        availableRoomsLater = [];
+        depth++;
+
+        while (availableRoomsInSameDepth.length > 0 && sourceAmount > 0) {
+            const current = availableRoomsInSameDepth.pop();
+            searchedRooms.push(current);
+
+            const currentRoomMemory = Memory.rooms[current];
+            if (currentRoomMemory == null) {
+                continue;
+            }
+
+            if (currentRoomMemory.sourceCount == null) {
+                continue;
+            }
+
+            if (currentRoomMemory.sourceCount < 1 || currentRoomMemory.sourceCount > 2) {
+                continue;
+            }
+
+            if (currentRoomMemory.scoutData != null) {
+                if (currentRoomMemory.scoutData.reserver != null || currentRoomMemory.scoutData.owner != null) {
+                    continue;
+                }
+            }
+
+            sourceAmount -= currentRoomMemory.sourceCount * depth;
+            interestingRooms.push(current);
+
+            const availableExits = Object.values(Game.map.describeExits(current));
+            for (const exit of availableExits) {
+                if (searchedRooms.some(x => x === exit) || availableRoomsInSameDepth.some(x => x === exit)) {
+                    continue;
+                }
+
+                availableRoomsLater.push(exit);
+            }
+        }
+    }
+
+    return interestingRooms;
+};
