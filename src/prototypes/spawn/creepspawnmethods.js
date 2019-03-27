@@ -65,7 +65,7 @@ Spawn.prototype.spawnEarlyRCLHarvester = function(energy) {
     return this._spawnDefinedCreep(ROLE.EARLY_RCL_HARVESTER, body, opts);
 };
 
-Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
+Spawn.prototype.spawnDismantler = function(energy, targetRoomName, respawnTTL) {
     let body = [];
 
     if (energy > 150 * 25) {
@@ -83,6 +83,7 @@ Spawn.prototype.spawnDismantler = function(energy, targetRoomName) {
     let opts = {
         memory: {
             role: ROLE.DISMANTLER,
+            respawnTTL: respawnTTL,
             targetRoomName: targetRoomName,
         }
     };
