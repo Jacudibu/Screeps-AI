@@ -80,6 +80,17 @@ Creep.prototype.addRespawnEntryToSpawnQueue = function() {
             addToSpawnQueueStart(this.spawnRoom, args);
             break;
 
+        case ROLE.DISMANTLER:
+            if (this.taskTargetId == null) {
+                break;
+            }
+
+            args.taskTargetId = this.taskTargetId;
+            args.targetRoomName = this.targetRoomName;
+            args.respawnTTL = this.respawnTTL;
+
+            break;
+
         default:
             log.warning(this + " undefined role asking for respawn?!" + args.role);
     }
