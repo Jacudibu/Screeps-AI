@@ -124,7 +124,9 @@ Room.prototype.askForHelpIfThreatDetected = function() {
                     "Threat info: " + JSON.stringify(roomThreats[this.name], null, 2);
                 log.warning(message);
 
-                Game.notify(message);
+                if (this.mySpawns.length > 0) {
+                    Game.notify(message);
+                }
             }
         }
     }
