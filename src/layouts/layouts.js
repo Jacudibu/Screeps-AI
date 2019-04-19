@@ -116,7 +116,7 @@ global.baseLayouts.E55S52 = offsetAndSortLayout(baseLayouts.E55S52, -42, -11);
 global.baseLayouts.E55S52.width = 14;
 global.baseLayouts.E55S52.height = 14;
 
-global.baseLayouts.E53S59 = offsetAndSortLayout(baseLayouts.E55S52, -25, -30);
+global.baseLayouts.E53S59 = offsetAndSortLayout(baseLayouts.E53S59, -25, -30);
 global.baseLayouts.E53S59.width = 14;
 global.baseLayouts.E53S59.height = 14;
 
