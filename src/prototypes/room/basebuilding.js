@@ -384,9 +384,9 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
 
     for (const arrayElement of stuffAtPos) {
         switch (arrayElement.type) {
-            //case 'creep':
+            //case LOOKAT_RESULT_TYPES.CREEP:
             //    return ERR_BLOCKED_BY_CREEP;
-            case 'terrain':
+            case LOOKAT_RESULT_TYPES.TERRAIN:
                 // noinspection JSUnresolvedVariable
                 if (arrayElement.terrain === 'wall') {
                     if (structureType !== STRUCTURE_ROAD) {
@@ -394,7 +394,7 @@ Room.prototype._checkIfStructureTypeCouldBePlacedAt = function(x, y, structureTy
                     }
                 }
                 break;
-            case 'structure':
+            case LOOKAT_RESULT_TYPES.STRUCTURE:
                 switch (structureType) {
                     case STRUCTURE_RAMPART:
                         // noinspection JSUnresolvedVariable
