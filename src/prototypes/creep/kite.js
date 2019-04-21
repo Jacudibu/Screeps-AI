@@ -9,6 +9,10 @@ Creep.prototype.fleeFromNearbyEnemies = function(shouldCarryBeDropped = false) {
     if (this.room._dangerousHostiles && this.room._dangerousHostiles.length > 0) {
         for (let hostile of this.room._dangerousHostiles) {
             if (this.pos.getRangeTo(hostile) <= DEFAULT_FLEE_RANGE) {
+                if (this.room.lookAt(this.pos).some(x => x.type === LOOKAT_RESULT_TYPES.STRUCTURE && x.structure.structureType === STRUCTURE_RAMPART)) {
+                    return ERR_NOT_FOUND;
+                }
+
                 if (shouldCarryBeDropped && _.sum(this.carry) > 0) {
                     this.drop(RESOURCE_ENERGY);
                 }
