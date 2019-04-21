@@ -1,3 +1,6 @@
+require("quests.questtypes");
+const questCache = require("quests.questcache");
+
 function Quest() {
     this.targetRoom = null;
     this.targetPos = null;
@@ -7,34 +10,14 @@ function Quest() {
     this.assignedParty = null
 }
 
-global.QUEST_TYPE = {
-    DISMANTLE: 1,
-    NUKE: 666,
-};
-
-// TODO: Extract to questcache class
-if (Memory.quests == null) {
-    Memory.quests = [];
-}
-
-let allQuests;
-const questCache = {
-    getAll() {
-        if (allQuests == null) {
-            allQuests = Memory.quests;
-        }
-
-        return allQuests;
-    },
-
-    persist() {
-        Memory.quests = allQuests;
-    }
-};
-
 global.Quests = {
     getAll() {
         return questCache.getAll();
+    },
+
+    add(quest) {
+        questCache.getAll().push(quest);
+        this.persist();
     },
 
     persist() {
