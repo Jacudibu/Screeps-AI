@@ -11,14 +11,14 @@ const STRUCTURE_PRIORITY_ORDER = [
     STRUCTURE_TOWER,
 
     // Nice To Have
+    STRUCTURE_ROAD,
     STRUCTURE_STORAGE,
-    STRUCTURE_TERMINAL,
     //STRUCTURE_CONTAINER, // spams warnings right now, so leave out until autoplacement works properly
+    STRUCTURE_TERMINAL,
     STRUCTURE_EXTRACTOR,
     STRUCTURE_RAMPART,
     STRUCTURE_LINK,
     STRUCTURE_LAB,
-    STRUCTURE_ROAD,
     STRUCTURE_WALL,
 
     // Fluff
