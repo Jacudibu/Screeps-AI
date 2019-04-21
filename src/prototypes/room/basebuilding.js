@@ -501,17 +501,17 @@ Room.prototype._placeExtraRoads = function(layout) {
     const extraRoadPositions = roadGenerator.generateAndGetRoads(this, layout);
 
     for (let i = 0; i < this.sources.length; i++) {
-        if (this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
+        if (extraRoadPositions['source' + i] && this._placeExtraRoadsArray(extraRoadPositions['source' + i] ) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
 
-    if (this._placeExtraRoadsArray(extraRoadPositions.controller) === SUCCESSFULLY_PLACED) {
+    if (extraRoadPositions.controller && this._placeExtraRoadsArray(extraRoadPositions.controller) === SUCCESSFULLY_PLACED) {
         return SUCCESSFULLY_PLACED;
     }
 
     if (this.controller.level >= 6) {
-        if (this._placeExtraRoadsArray(extraRoadPositions.mineral) === SUCCESSFULLY_PLACED) {
+        if (extraRoadPositions.mineral && this._placeExtraRoadsArray(extraRoadPositions.mineral) === SUCCESSFULLY_PLACED) {
             return SUCCESSFULLY_PLACED;
         }
     }
