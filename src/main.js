@@ -73,6 +73,7 @@ const terminalResourceDistribution = require('prototypes.terminal.resourcedistri
 
 require('tools.traveler');
 require('tools.logger');
+require("quests.quests");
 
 const memoryManagment = require('memorymanagment');
 const spawnlogic = require('spawnlogic');
