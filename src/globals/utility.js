@@ -36,6 +36,28 @@ global.utility.countOwnedMinerals = function() {
     log.info("Total rooms: " + total + JSON.stringify(minerals, null, 2));
 };
 
+global.utility.panicCleanup = function() {
+    for (let roomName in Memory.rooms) {
+        let room = Memory.rooms[roomName];
+        if (room.spawnQueue) {
+            room.spawnQueue = [];
+        }
+
+        if (room.assignedHarvesters !== undefined) {
+            room.assignedHarvesters = 0
+        }
+
+        if (room.isReserverAssigned) {
+            room.isReserverAssigned = false;
+        }
+    }
+
+    for (let creepName in Memory.creeps) {
+        let creep = Memory.creeps[creepName];
+        creep.respawnTTL = undefined;
+    }
+};
+
 global.utility.countFreeTilesAroundRoomObject = function(roomObject) {
     const terrain = roomObject.room.getTerrain();
     let freeTileCount = 0;
