@@ -1,10 +1,11 @@
 # Screeps-AI
 My take on an AI for the programmer MMO Screeps (https://screeps.com/)
 
-You can watch the AI in action over here: [https://screeps.com/a/#!/profile/Jacudibu/](), although you might need an account in order to see everything.
+You can watch the AI in action over here: [https://screeps.com/a/#!/profile/Jacudibu/](https://screeps.com/a/#!/profile/Jacudibu/), although you might need an account in order to see everything.
 
 ### Current Status
-The AI is still in development and lacks a whole lot of things (see [TODO.md](../master/TODO.md) for more on that), especially when it comes to autonomous long-term decision making and fighting.
+I've pretty much stopped playing the game a couple years ago, and by now the AI has been eradicated from the map due to some code errors after an update.
+See [TODO.md](../master/TODO.md) for things the AI still lacked whcih I eventually wanted to add, especially when it comes to autonomous long-term decision making and fighting.
 
 #### Submodules
 Right now we are using the following submodules:
